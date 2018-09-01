@@ -1,0 +1,8 @@
+site_name: OpenCatapult Docs
+site_description: Documentation of open source Catapult project
+copyright: Copyright (c) Polyrific, Inc 2018. All rights reserved.
+repo_url: https://github.com/Polyrific-Inc/OpenCatapult
+nav:
+  - Home: 'index.md'
+  - About: 'about.md'
+theme: readthedocs
