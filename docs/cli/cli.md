@@ -39,7 +39,7 @@ User account related commands
 
 ### Subcommands
 
-- [Register](cli/account/register.md)
-- [Remove](cli/account/remove.md)
-- [Suspend](cli/account/suspend.md)
-- [Activate](cli/account/activate.md)
+- [Register](../account/#register)
+- [Remove](../account/#remove)
+- [Suspend](../account/#suspend)
+- [Activate](../account/#activate)
