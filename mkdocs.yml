@@ -4,6 +4,13 @@ copyright: Copyright (c) Polyrific, Inc 2018. All rights reserved.
 repo_url: https://github.com/Polyrific-Inc/OpenCatapult
 nav:
   - Home: 'index.md'
+  - CLI: 'cli.md'
+  - CLI:
+      - Account:
+          - Register: 'cli/account/register.md'
+          - Remove: 'cli/account/remove.md'
+          - Suspend: 'cli/account/suspend.md'
+          - Activate: 'cli/account/activate.md'
   - About: 'about.md'
 theme: 
   name: readthedocs
