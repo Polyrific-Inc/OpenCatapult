@@ -1,3 +1,3 @@
-# Mobile
+# Web UI
 
 [coming soon]
