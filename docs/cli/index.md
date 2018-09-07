@@ -39,10 +39,10 @@ User account related commands
 
 ### Subcommands
 
-- [Register](../account/#register)
-- [Remove](../account/#remove)
-- [Suspend](../account/#suspend)
-- [Activate](../account/#activate)
+- [Register](account/#register)
+- [Remove](account/#remove)
+- [Suspend](account/#suspend)
+- [Activate](account/#activate)
 
 ## Engine		
 Catapult engine registration commands
@@ -52,13 +52,13 @@ Usage:
 
 ### Subcommands
 
-- [activate](../engine/#activate)
-- [get](../engine/#get)
-- [list](../engine/#list)
-- [register](../engine/#register)
-- [remove](../engine/#remove)
-- [suspend](../engine/#suspend)
-- [token](../engine/#token)
+- [activate](engine/#activate)
+- [get](engine/#get)
+- [list](engine/#list)
+- [register](engine/#register)
+- [remove](engine/#remove)
+- [suspend](engine/#suspend)
+- [token](engine/#token)
 
 ## Job		
 Job Definition related commands
@@ -68,9 +68,9 @@ Usage:
 
 ### Subcommands
 
-- [add](../job/#add)
-- [list](../job/#list)
-- [remove](../job/#remove)
+- [add](job/#add)
+- [list](job/#list)
+- [remove](job/#remove)
 
 ## Member		
 Project member related commands
@@ -80,10 +80,10 @@ Usage:
 
 ### Subcommands
 
-- [add](../member/#add)
-- [list](../member/#list)
-- [remove](../member/#remove)
-- [update](../member/#update)
+- [add](member/#add)
+- [list](member/#list)
+- [remove](member/#remove)
+- [update](member/#update)
 
 ## Model		
 Project Data Model related commands
@@ -93,10 +93,10 @@ Usage:
 
 ### Subcommands
 
-- [add](../model/#add)
-- [list](../model/#list)
-- [remove](../model/#remove)
-- [update](../model/#update)
+- [add](model/#add)
+- [list](model/#list)
+- [remove](model/#remove)
+- [update](model/#update)
 
 ## Project		
 Project related commands
@@ -106,13 +106,13 @@ Usage:
 
 ### Subcommands
 
-- [archive](../project/#archive)
-- [clone](../project/#clone)
-- [create](../project/#create)
-- [export](../project/#export)
-- [List](../project/#list)
-- [remove](../project/#remove)
-- [restore](../project/#restore)
+- [archive](project/#archive)
+- [clone](project/#clone)
+- [create](project/#create)
+- [export](project/#export)
+- [List](project/#list)
+- [remove](project/#remove)
+- [restore](project/#restore)
 
 ## Property		
 Project Data Model Property related commands
@@ -122,10 +122,10 @@ Usage:
 
 ### Subcommands
 
-- [add](../property/#add)
-- [list](../property/#list)
-- [remove](../property/#remove)
-- [update](../property/#update)
+- [add](property/#add)
+- [list](property/#list)
+- [remove](property/#remove)
+- [update](property/#update)
 
 ## Property		
 Job Queue related command.
@@ -135,10 +135,10 @@ Usage:
 
 ### Subcommands
 
-- [add](../queue/#add)
-- [get](../queue/#get)
-- [list](../queue/#list)
-- [restart](../queue/#restart)
+- [add](queue/#add)
+- [get](queue/#get)
+- [list](queue/#list)
+- [restart](queue/#restart)
 
 ## Task		
 Job Task Definitions related command.
@@ -148,7 +148,7 @@ Usage:
 
 ### Subcommands
 
-- [add](../task/#add)
-- [list](../task/#list)
-- [remove](../task/#remove)
-- [update](../task/#update)
+- [add](task/#add)
+- [list](task/#list)
+- [remove](task/#remove)
+- [update](task/#update)
