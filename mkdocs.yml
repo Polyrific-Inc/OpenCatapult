@@ -3,7 +3,15 @@ site_description: Documentation of open source Catapult project
 copyright: Copyright (c) Polyrific, Inc 2018. All rights reserved.
 repo_url: https://github.com/Polyrific-Inc/OpenCatapult
 nav:
-  - Home: 'index.md'
+  - Home: 
+    - Welcome: 'index.md'
+    - Quick Start: 'home/start.md'
+  - User Guide:
+    - Manage a project: 'guide/project.md'
+    - Manage data models: 'guide/data-models.md'
+    - Manage job definitions: 'guide/job-definitions.md'
+    - Manage job queues: 'guide/job-queues.md'
+    - Manage users: 'guide/users.md'
   - Command Line Interface:
     - Overview: 'cli/cli.md'
     - Account: 'cli/account.md'
