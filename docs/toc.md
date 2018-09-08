@@ -1,7 +1,12 @@
 # Summary
 
+## Home
+
 * [Introduction](index.md)
 * [Quick Start](home/start.md)
+* [About this doc](abount.md)
+
+## Guides
 
 * [User Guide](guide/index.md)
     * [Manage a project](guide/project.md)
@@ -9,6 +14,12 @@
     * [Manage job definitions](guide/job-definitions.md)
     * [Manage job queues](guide/job-queues.md)
     * [Manage users](guide/users.md)
+
+* [Developer Guide](dev/index.md)
+    * [Install plugin](dev/install-plugin.md)
+    * [Create a plugin](dev/create-plugin.md)
+
+## References
 
 * [CLI](cli/index.md)
     * [Account](cli/account.md)
@@ -25,4 +36,3 @@
 * [Engine](engine/index.md)
 * [Web UI](webui/index.md)
 * [Mobile](mobile/index.md)
-* [About this doc](abount.md)
