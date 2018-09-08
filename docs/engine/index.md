@@ -2,4 +2,4 @@
 
 ## Architecture
 
-![Architecture](img/engine-arch.jpeg)
+![Architecture](../img/engine-arch.jpeg)

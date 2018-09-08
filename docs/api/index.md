@@ -2,4 +2,4 @@
 
 ## Architecture
 
-![Architecture](img/api-arch.jpeg)
+![Architecture](../img/api-arch.jpeg)
