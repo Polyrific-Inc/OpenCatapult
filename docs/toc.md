@@ -18,6 +18,8 @@
 * [Developer Guide](dev/index.md)
     * [Install plugin](dev/install-plugin.md)
     * [Create a plugin](dev/create-plugin.md)
+    * [Coding Style](dev/coding-style.md)
+    * [Code of conduct](dev/contribute.md)
 
 ## References
 
