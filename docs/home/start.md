@@ -1,16 +1,16 @@
 # Quick Start
 
-This document will guide you to get started with Polyrific Catapult.
+This document will guide you to get started with `OpenCatapult`.
 
 ## Setup from release library
 
-Please go to <https://opencatapult.net/releases> to download the latest release of Polyrific Catapult.
+Please go to <https://opencatapult.net/releases> to download the latest release of `OpenCatapult`.
 
 Unzip the release package into your local directory, and run the components.
 
 ## Build from source code
 
-Clone Polyrific Catapult source code from the repository:
+Clone `OpenCatapult` source code from the repository:
 ``` shell
 git clone https://github.com/Polyrific-Inc/OpenCatapult.git
 ```

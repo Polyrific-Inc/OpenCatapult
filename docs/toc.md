@@ -4,7 +4,7 @@
 
 * [Introduction](index.md)
 * [Quick Start](home/start.md)
-* [About this doc](abount.md)
+* [About this doc](about.md)
 
 ## Guides
 

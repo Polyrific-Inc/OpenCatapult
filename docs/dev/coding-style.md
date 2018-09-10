@@ -1,8 +1,10 @@
 # Coding Style
 
-Polyrific Catapult uses [EditorConfig](https://editorconfig.org/) to help developers adhere with consistence coding style.
+OpenCatapult uses [EditorConfig](https://editorconfig.org/) to help developers adhere with consistence coding style.
 
-Please find the following guide https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2017 on how to utilize EditorConfig in Visual Studio 2017. This plugin https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig can be used to work with EditorConfig in Visual Studio Code.
+For usage in `Visual Studio 2017`, you can find the guide in this article https://docs.microsoft.com/en-us/visualstudio/ide/create-portable-custom-editor-options?view=vs-2017.
+
+If you work with `Visual Studio Code`, you can use this plugin https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig. There are various plugins available for many IDE of your choice, which you can find  the list in the `EditorConfig` website.
 
 ## Naming Guidelines
 
