@@ -1,34 +1,29 @@
-# CLI
+# Command Line Intefrace Commands
 
 Opencatapult provide a command line interface to interact with the API
 
 ## Login
-
 Login to catapult
 
-Usage: `dotnet pc.dll login --user [user] --password [password]`
+Usage:
+`dotnet pc.dll login --user [user] --password [password]`
 
 **Options:**
-
-user \(mandatory\)
-
- `--user` \(alias: `-u`\)
-
- The user email used for loginpassword \(mandatory\)
-
- `--password` \(alias: `-p`\)
-
- The password of the user
+* user (mandatory)
+    * The user email used for login
+    * Usage: `--user` (alias: `-u`)
+* password (mandatory)
+    * The password of the user
+    * Usage: `--password` (alias: `-p`)
 
 ## Logout
-
 Logout from catapult
 
-Usage: `dotnet pc.dll logout`
+Usage:
+`dotnet pc.dll logout`
 
-## Account
-
-User account related commands
+## Account		
+User account related commands			
 
 ### Subcommands
 
@@ -37,11 +32,24 @@ User account related commands
 * [Suspend](account.md#suspend)
 * [Activate](account.md#activate)
 
-## Engine
+## Config		
+CLI Configurations
 
+Usage: 
+`dotnet pc.dll config [subcommands]`
+
+### Subcommands
+
+* [get](config.md#get)
+* [import](config.md#import)
+* [remove](config.md#remove)
+* [set](config.md#set)
+
+## Engine		
 Catapult engine registration commands
 
-Usage: `dotnet pc.dll engine [subcommands]`
+Usage: 
+`dotnet pc.dll engine [subcommands]`
 
 ### Subcommands
 
@@ -53,11 +61,11 @@ Usage: `dotnet pc.dll engine [subcommands]`
 * [suspend](engine.md#suspend)
 * [token](engine.md#token)
 
-## Job
-
+## Job		
 Job Definition related commands
 
-Usage: `dotnet pc.dll job [subcommands]`
+Usage: 
+`dotnet pc.dll job [subcommands]`
 
 ### Subcommands
 
@@ -65,11 +73,11 @@ Usage: `dotnet pc.dll job [subcommands]`
 * [list](job.md#list)
 * [remove](job.md#remove)
 
-## Member
-
+## Member		
 Project member related commands
 
-Usage: `dotnet pc.dll member [subcommands]`
+Usage: 
+`dotnet pc.dll member [subcommands]`
 
 ### Subcommands
 
@@ -78,11 +86,11 @@ Usage: `dotnet pc.dll member [subcommands]`
 * [remove](member.md#remove)
 * [update](member.md#update)
 
-## Model
-
+## Model		
 Project Data Model related commands
 
-Usage: `dotnet pc.dll model [subcommands]`
+Usage: 
+`dotnet pc.dll model [subcommands]`
 
 ### Subcommands
 
@@ -91,27 +99,41 @@ Usage: `dotnet pc.dll model [subcommands]`
 * [remove](model.md#remove)
 * [update](model.md#update)
 
-## Project
+## Plugin		
+Plugin registration commands
 
+Usage: 
+`dotnet pc.dll plugin [subcommands]`
+
+### Subcommands
+
+* [get](plugin.md#get)
+* [list](plugin.md#list)
+* [register](plugin.md#register)
+* [remove](plugin.md#remove)
+
+## Project		
 Project related commands
 
-Usage: `dotnet pc.dll project [subcommands]`
+Usage: 
+`dotnet pc.dll project [subcommands]`
 
 ### Subcommands
 
 * [archive](project.md#archive)
 * [clone](project.md#clone)
 * [create](project.md#create)
+* [update](project.md#update)
 * [export](project.md#export)
 * [List](project.md#list)
 * [remove](project.md#remove)
 * [restore](project.md#restore)
 
-## Property
-
+## Property		
 Project Data Model Property related commands
 
-Usage: `dotnet pc.dll property [subcommands]`
+Usage: 
+`dotnet pc.dll property [subcommands]`
 
 ### Subcommands
 
@@ -120,11 +142,11 @@ Usage: `dotnet pc.dll property [subcommands]`
 * [remove](property.md#remove)
 * [update](property.md#update)
 
-## Property
+## Queue		
+Job Queue related commands
 
-Job Queue related command.
-
-Usage: `dotnet pc.dll queue [subcommands]`
+Usage: 
+`dotnet pc.dll queue [subcommands]`
 
 ### Subcommands
 
@@ -133,16 +155,28 @@ Usage: `dotnet pc.dll queue [subcommands]`
 * [list](queue.md#list)
 * [restart](queue.md#restart)
 
-## Task
+## Service		
+External service manager commands
 
-Job Task Definitions related command.
+Usage: 
+`dotnet pc.dll service [subcommands]`
 
-Usage: `dotnet pc.dll task [subcommands]`
+### Subcommands
+
+* [add](service.md#add)
+* [get](service.md#get)
+* [list](service.md#list)
+* [remove](service.md#remove)
+* [update](service.md#update)
+
+## Task		
+Job Task Definitions related commands
+
+Usage: 
+`dotnet pc.dll task [subcommands]`
 
 ### Subcommands
 
 * [add](task.md#add)
 * [list](task.md#list)
 * [remove](task.md#remove)
-* [update](task.md#update)
-

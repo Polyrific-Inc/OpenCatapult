@@ -4,87 +4,67 @@
 
 Add a project data model
 
-Usage: `dotnet pc.dll model add --project [project] --name [name]`
+Usage: 
+`dotnet pc.dll model add --project [project] --name [name]`
 
 **Options**
+* project (mandatory)
+    * Name of the project
+    * Usage: `--project` (alias: `-p`)
+* name (mandatory)
+    * Name of the data model
+    * Usage: `--name` (alias: `-n`)
+* description
+    * Description of the data model
+    * Usage: `--description` (alias: `-d`)
+* label
+    * Label of the data model
+    * Usage: `--label` (alias: `-l`)
 
-project \(mandatory\)
-
- `--project` \(alias: `-p`\)
-
- Name of the projectname \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the data modeldescription
-
- `--description` \(alias: `-d`\)
-
- Description of the data modellabel
-
- `--label` \(alias: `-l`\)
-
- Label of the data model
-
-## List
-
+# List
 List data models in a project
 
-Usage: `dotnet pc.dll model list --project [project]`
+Usage: 
+`dotnet pc.dll model list --project [project]`
 
 **Options**
+* project (mandatory)
+    * Name of the project
+    * Usage: `--project` (alias: `-p`)
 
-project \(mandatory\)
-
- `--project` \(alias: `-p`\)
-
- Name of the project
-
-## Remove
-
+# Remove
 Remove a project data model
 
-Usage: `dotnet pc.dll model remove --project [project] --name [name]`
+Usage: 
+`dotnet pc.dll model remove --project [project] --name [name]`
 
 **Options**
+* project (mandatory)
+    * Name of the project
+    * Usage: `--project` (alias: `-p`)
+* name (mandatory)
+    * Name of the data model
+    * Usage: `--name` (alias: `-n`)
 
-project \(mandatory\)
-
- `--project` \(alias: `-p`\)
-
- Name of the projectname \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the data model
-
-## Update
-
+# Update
 Update a project data model
 
-Usage: `dotnet pc.dll model update --project [project] --name [name] --rename [newname]`
+Usage: 
+`dotnet pc.dll model update --project [project] --name [name] --rename [newname]`
 
 **Options**
-
-project \(mandatory\)
-
- `--project` \(alias: `-p`\)
-
- Name of the projectname \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the data modelrename
-
- `--rename` \(alias: `-r`\)
-
- New name of the data modeldescription
-
- `--description` \(alias: `-d`\)
-
- Description of the data modellabel
-
- `--label` \(alias: `-l`\)
-
- Label of the data model
-
+* project (mandatory)
+    * Name of the project
+    * Usage: `--project` (alias: `-p`)
+* name (mandatory)
+    * Name of the data model
+    * Usage: `--name` (alias: `-n`)
+* rename
+    * New name of the data model
+    * Usage: `--rename` (alias: `-r`)
+* description
+    * Description of the data model
+    * Usage: `--description` (alias: `-d`)
+* label
+    * Label of the data model
+    * Usage: `--label` (alias: `-l`)

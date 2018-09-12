@@ -4,101 +4,78 @@
 
 Activate a suspended engine
 
-Usage: `dotnet pc.dll engine activate --name [name]`
+Usage: 
+`dotnet pc.dll engine activate --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the engine to be activated
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine to be activated
-
-## Get
-
+# Get
 Get a single engine record
 
-Usage: `dotnet pc.dll engine get --name [name]`
+Usage: 
+`dotnet pc.dll engine get --name [name]`
 
 **Options**
-
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine to get
-
-## List
-
+* name (mandatory)
+    * Name of the engine to get
+    * Usage: `--name` (alias: `-n`)
+    
+# List
 List registered engines
 
-Usage: `dotnet pc.dll engine list --status [status]`
+Usage: 
+`dotnet pc.dll engine list --status [status]`
 
 **Options**
+* status
+    * Filter the engines by their status
+    * Usage: `--status` (alias: `-s`)
+    * Allowed values: Allowed values: `all` | `active` | `suspended` | `running`
+    * Default value: `all`
 
-status
-
- `--status` \(alias: `-s`\)
-
- Filter the engines by their status.
-
- Allowed values: `all` \| `active` \| `suspended` \| `running`.
-
- Default value: `all`.
-
-## Register
-
+# Register
 Register a new engine
 
-Usage: `dotnet pc.dll engine register --name [name]`
+Usage: 
+`dotnet pc.dll engine register --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the engine to be registered
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine to be registered
-
-## Remove
-
+# Remove
 Remove an engine
 
-Usage: `dotnet pc.dll engine remove --name [name]`
+Usage: 
+`dotnet pc.dll engine remove --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the engine to be removed
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine to be removed
-
-## Suspend
-
+# Suspend
 Suspend an engine
 
-Usage: `dotnet pc.dll engine suspend --name [name]`
+Usage: 
+`dotnet pc.dll engine suspend --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the engine to be suspended
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine to be suspended
-
-## Token
-
+# Token
 Generate a token for the engine
 
-Usage: `dotnet pc.dll engine token --name [name]`
+Usage: 
+`dotnet pc.dll engine token --name [name]`
 
 **Options**
-
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the engine
-
+* name (mandatory)
+    * Name of the engine
+    * Usage: `--name` (alias: `-n`)

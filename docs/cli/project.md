@@ -4,117 +4,118 @@
 
 Archive a project
 
-Usage: `dotnet pc.dll project archive --name [name]`
+Usage: 
+`dotnet pc.dll project archive --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the project to be archived
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the project to be archived
-
-## Clone
-
+# Clone
 Clone a project
 
-Usage: `dotnet pc.dll project clone --project [project] --name [name]`
+Usage: 
+`dotnet pc.dll project clone --project [project] --name [name] --includemember --includejob`
 
 **Options**
+* project (mandatory)
+    * Name of the project to be cloned
+    * Usage: `--project` (alias: `-p`)
+* name (mandatory)
+    * Name of the new project
+    * Usage: `--name` (alias: `-n`)
+* includemember
+    * Include project members
+    * Usage: `--includemember` (alias: `-m`)
+* includejob
+    * Include job definitions
+    * Usage: `--includejob` (alias: `-j`)
 
-project \(mandatory\)
-
- `--project` \(alias: `-p`\)
-
- Name of the project to be clonedname \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the new project
-
-## Create
-
+# Create
 Create a project
 
-Usage: `dotnet pc.dll project create --name [name] --client [client] --template [template]`
+Usage: 
+`dotnet pc.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]`
 
 **Options**
+* name (mandatory)
+    * Name of the new project
+    * Usage: `--name` (alias: `-n`)
+* client
+    * Client of the new project
+    * Usage: `--client` (alias: `-c`)
+* template
+    * Project template name or path to template file (.yaml)
+    * Usage: `--template` (alias: `-t`)
+* property
+    * Project properties
+    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
+    * Allows multiple values
 
-name \(mandatory\)
+# Update
+Update a project
 
- `--name` \(alias: `-n`\)
+Usage: 
+`dotnet pc.dll project update --name [name] --client [client] --property [propname]:[propvalue]`
 
- Name of the new projectclient
+**Options**
+* name (mandatory)
+    * Name of the new project
+    * Usage: `--name` (alias: `-n`)
+* client
+    * Client of the new project
+    * Usage: `--client` (alias: `-c`)
+* property
+    * Project properties
+    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
+    * Allows multiple values
 
- `--client` \(alias: `-c`\)
-
- Client of the new projecttemplate
-
- `--template` \(alias: `-t`\)
-
- Project template name or path to template file \(.yaml\)
-
-## Export
-
+# Export
 Export project into a yaml file
 
-Usage: `dotnet pc.dll project export --name [name]`
+Usage: 
+`dotnet pc.dll project export --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the project to be exported
+    * Usage: `--name` (alias: `-n`)
+* output
+    * Output file location
+    * Usage: `--output` (alias: `-o`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the project to be exportedoutput
-
- `--output` \(alias: `-o`\)
-
- Output file location
-
-## List
-
+# List
 List projects which the user has access to
 
-Usage: `dotnet pc.dll project list --status [status]`
+Usage: 
+`dotnet pc.dll project list --status [status]`
 
 **Options**
+* status
+    * Filter the projects by their status
+    * Usage: `--status` (alias: `-s`)
+    * Allowed values: `all` | `active` | `archived`
+    * Default value: `all`
 
-status
-
- `--status` \(alias: `-s`\)
-
- Filter the projects by their status
-
- Default value: `all`
-
- Allowed values: `all` \| `active` \| `archived`
-
-## Remove
-
+# Remove
 Remove a project
 
-Usage: `dotnet pc.dll project remove --name [name]`
+Usage: 
+`dotnet pc.dll project remove --name [name]`
 
 **Options**
+* name (mandatory)
+    * Name of the project to be removed
+    * Usage: `--name` (alias: `-n`)
 
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the project to be removed
-
-## restore
-
+# restore
 Restore an archived project
 
-Usage: `dotnet pc.dll project restore --name [name]`
+Usage: 
+`dotnet pc.dll project restore --name [name]`
 
 **Options**
-
-name \(mandatory\)
-
- `--name` \(alias: `-n`\)
-
- Name of the project to be restored
-
+* name (mandatory)
+    * Name of the project to be restored
+    * Usage: `--name` (alias: `-n`)
