@@ -16,7 +16,7 @@ only_commits:
 configuration: Release
 dotnet_csproj:
   patch: true
-  file: '**/Polyrific.Catapult.Cli.csproj'
+  file: '**\Polyrific.Catapult.Cli.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'
