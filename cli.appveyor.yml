@@ -1,0 +1,28 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+    - master
+    - ci-cd
+only_commits:
+  files:
+    - src/CLI/
+    - src/Shared/Polyrific.Catapult.Shared.ApiClient/
+    - src/Shared/Polyrific.Catapult.Shared.Dto/
+    - src/Shared/Polyrific.Catapult.Shared.Service/
+    - tests/Polyrific.Catapult.Cli.UnitTests/
+configuration: Release
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj
+build_script:
+  - cmd: dotnet publish ./src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj
+test_script:
+  - cmd: dotnet test ./tests/Polyrific.Catapult.Cli.UnitTests/Polyrific.Catapult.Cli.UnitTests.csproj
+artifacts:
+  - path: 'src/CLI/Polyrific.Catapult.Cli/bin/$(configuration)/*.dll'
+    name: CLI
+    type: zip
+deploy: off
