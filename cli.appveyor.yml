@@ -5,7 +5,6 @@ pull_requests:
 branches:
   only:
     - master
-    - ci-cd
 only_commits:
   files:
     - cli.appveyor.yml
@@ -23,7 +22,7 @@ build_script:
 test_script:
   - cmd: dotnet test ./tests/Polyrific.Catapult.Cli.UnitTests/Polyrific.Catapult.Cli.UnitTests.csproj
 artifacts:
-  - path: 'src/CLI/Polyrific.Catapult.Cli/bin/$(configuration)/*.dll'
+  - path: 'src/CLI/Polyrific.Catapult.Cli/bin/$(configuration)/'
     name: CLI
     type: zip
 deploy: off
