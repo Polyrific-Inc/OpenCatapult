@@ -164,17 +164,11 @@ namespace Polyrific.Catapult.Api.Data
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);
-            if (user != null)
+            if (user != null && user.UserProfile != null)
             {
-                _mapper.Map(entity, user);
-
-                await _userManager.UpdateAsync(user);
-
-                if (user.UserProfile != null)
-                {
-                    _mapper.Map(entity, user.UserProfile);
-                    await _userProfileRepository.Update(user.UserProfile, cancellationToken);
-                }                
+                user.UserProfile.FirstName = entity.FirstName;
+                user.UserProfile.LastName = entity.LastName;
+                await _userProfileRepository.Update(user.UserProfile, cancellationToken);
             }
         }
 
