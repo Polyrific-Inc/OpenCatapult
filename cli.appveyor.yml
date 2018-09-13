@@ -8,6 +8,7 @@ branches:
     - ci-cd
 only_commits:
   files:
+    - cli.appveyor.yml
     - src/CLI/
     - src/Shared/Polyrific.Catapult.Shared.ApiClient/
     - src/Shared/Polyrific.Catapult.Shared.Dto/
