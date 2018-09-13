@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Polyrific.Catapult.Plugins.Abstraction</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PackageId>Polyrific.Catapult.Plugins.Abstraction</PackageId>
+    <Description>Abstraction of Polyrific Catapult Plugins, to be used as a contract between Engine and the plugins.</Description>
+    <Version>1.0.0</Version>
+    <Authors>frandi-polyrific</Authors>
+    <Company>Polyrific, Inc</Company>
+    <PackageTags>catapult;plugins;catapult plugins</PackageTags>
+    <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Polyrific-Inc/OpenCatapult/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Dto\Polyrific.Catapult.Shared.Dto.csproj" />
+  </ItemGroup>
+
+</Project>

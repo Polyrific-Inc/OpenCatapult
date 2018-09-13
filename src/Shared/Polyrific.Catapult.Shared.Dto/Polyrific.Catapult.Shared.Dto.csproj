@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Polyrific.Catapult.Shared.Dto</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PackageId>Polyrific.Catapult.Shared.Dto</PackageId>
+    <Description>Shared library for Polyrific Catapult Data Transfer Object (DTO)</Description>
+    <Version>1.0.1</Version>
+    <Authors>frandi-polyrific</Authors>
+    <Company>Polyrific, Inc</Company>
+    <PackageTags>catapult;dto;catapult dto</PackageTags>
+    <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Polyrific-Inc/OpenCatapult/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
+  </PropertyGroup>
+
+</Project>
