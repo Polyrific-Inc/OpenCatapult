@@ -1,0 +1,36 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+    - master
+only_commits:
+  files:
+    - api.appveyor.yml
+    - src/API/
+    - src/Shared/Polyrific.Catapult.Shared.Common/
+    - src/Shared/Polyrific.Catapult.Shared.Dto/
+    - src/Shared/Polyrific.Catapult.Shared.SecretVault/
+    - tests/Polyrific.Catapult.Api.UnitTests/
+configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\Polyrific.Catapult.Api.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/API/Polyrific.Catapult.Api/Polyrific.Catapult.Api.csproj
+build_script:
+  - cmd: dotnet publish ./src/API/Polyrific.Catapult.Api/Polyrific.Catapult.Api.csproj
+test_script:
+  - cmd: dotnet test ./tests/Polyrific.Catapult.Api.UnitTests/Polyrific.Catapult.Api.UnitTests.csproj
+artifacts:
+  - path: 'src/API/Polyrific.Catapult.Api/bin/$(configuration)/publish/'
+    name: API
+    type: WebDeployPackage
+deploy: off
