@@ -14,6 +14,14 @@ only_commits:
     - src/Shared/Polyrific.Catapult.Shared.Service/
     - tests/Polyrific.Catapult.Cli.UnitTests/
 configuration: Release
+dotnet_csproj:
+  patch: true
+  file: 'src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
 before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore ./src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj
