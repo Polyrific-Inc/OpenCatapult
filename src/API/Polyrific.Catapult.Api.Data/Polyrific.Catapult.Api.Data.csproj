@@ -1,0 +1,62 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Polyrific.Catapult.Api.Data</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CatapultEngineIdentity\**" />
+    <EmbeddedResource Remove="CatapultEngineIdentity\**" />
+    <None Remove="CatapultEngineIdentity\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="EngineDbContext.cs" />
+    <Compile Remove="Identity\ApplicationCatapultEngine.cs" />
+    <Compile Remove="Identity\RoleStore.cs" />
+    <Compile Remove="Identity\UserStore.cs" />
+    <Compile Remove="Migrations\20180727094247_InitMigration.cs" />
+    <Compile Remove="Migrations\20180727094652_InitMigration.cs" />
+    <Compile Remove="Migrations\20180813015949_UserRoleSeed.cs" />
+    <Compile Remove="Migrations\20180815062913_CatapultEngine.cs" />
+    <Compile Remove="Migrations\20180815063230_CatapultEngine.cs" />
+    <Compile Remove="Migrations\20180815064349_CatapultEngine.cs" />
+    <Compile Remove="Migrations\20180815064746_CatapultEngine.cs" />
+    <Compile Remove="Migrations\20180815134024_RoleSeedData2.cs" />
+    <Compile Remove="Migrations\20180815134256_RoleSeedData2.cs" />
+    <Compile Remove="Migrations\20180819121631_AddConcurrencyStamp.cs" />
+    <Compile Remove="Migrations\20180820045628_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820045816_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050002_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050207_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050305_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050418_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050536_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180820050652_UserEngineProfile.cs" />
+    <Compile Remove="Migrations\20180823100407_IsActiveUserAndEngine.cs" />
+    <Compile Remove="Migrations\20180910085943_ExternalService.cs" />
+    <Compile Remove="Migrations\20180910090135_ExternalService.cs" />
+    <Compile Remove="Migrations\EngineDb\20180815061308_testing.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="7.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.1.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Dto\Polyrific.Catapult.Shared.Dto.csproj" />
+    <ProjectReference Include="..\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\EngineDb\" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,203 @@
+﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
+using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
+using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Common;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace Polyrific.Catapult.Api.Core.Services
+{
+    public class ProjectDataModelService : IProjectDataModelService
+    {
+        private readonly IProjectDataModelRepository _dataModelRepository;
+        private readonly IProjectDataModelPropertyRepository _dataModelPropertyRepository;
+        private readonly IProjectRepository _projectRepository;
+
+        public ProjectDataModelService(IProjectDataModelRepository dataModelRepository, 
+            IProjectDataModelPropertyRepository dataModelPropertyRepository,
+            IProjectRepository projectRepository)
+        {
+            _dataModelRepository = dataModelRepository;
+            _dataModelPropertyRepository = dataModelPropertyRepository;
+            _projectRepository = projectRepository;
+        }
+
+        public async Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var dataModel = await _dataModelRepository.GetById(dataModelId, cancellationToken);
+            if (dataModel == null)
+            {
+                throw new ProjectDataModelNotFoundException(dataModelId);
+            }
+
+            var projectDataModelPropertyByProjectSpec = new ProjectDataModelPropertyFilterSpecification(name, dataModelId);
+            if (await _dataModelPropertyRepository.CountBySpec(projectDataModelPropertyByProjectSpec, cancellationToken) > 0)
+            {
+                throw new DuplicateProjectDataModelPropertyException(name);
+            }
+
+            var newDataModelProperty = new ProjectDataModelProperty
+            {
+                ProjectDataModelId = dataModelId,
+                Name = name,
+                Label = label,
+                DataType = dataType,
+                ControlType = controlType,
+                RelatedProjectDataModelId = relatedDataModelId,
+                RelationalType = relationalType,
+                IsRequired = isRequired
+            };
+
+            return await _dataModelPropertyRepository.Create(newDataModelProperty, cancellationToken);
+        }
+
+        public async Task<int> AddProjectDataModel(int projectId, string name, string description, string label, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var project = await _projectRepository.GetById(projectId, cancellationToken);
+            if (project == null)
+            {
+                throw new ProjectNotFoundException(projectId);
+            }
+
+            var projectDataModelPropertyByProjectSpec = new ProjectDataModelFilterSpecification(name, projectId);
+            if (await _dataModelRepository.CountBySpec(projectDataModelPropertyByProjectSpec, cancellationToken) > 0)
+            {
+                throw new DuplicateProjectDataModelException(name);
+            }
+            
+            var newDataModel = new ProjectDataModel { ProjectId = projectId, Name = name, Description = description, Label = label};
+
+            if (string.IsNullOrEmpty(newDataModel.Label))
+            {
+                newDataModel.Label = TextHelper.SplitTextOnCapitalLetters(name);
+            }
+
+            return await _dataModelRepository.Create(newDataModel, cancellationToken);
+        }
+
+        public async Task DeleteDataModel(int id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var propertyByDataModelSpec = new ProjectDataModelPropertyFilterSpecification(id);
+            var properties = await _dataModelPropertyRepository.GetBySpec(propertyByDataModelSpec, cancellationToken);
+            foreach (var property in properties.ToList())
+            {
+                await DeleteDataModelProperty(property.Id, cancellationToken);
+            }
+
+            await _dataModelRepository.Delete(id, cancellationToken);
+        }
+
+        public async Task DeleteDataModelProperty(int id, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _dataModelPropertyRepository.Delete(id, cancellationToken);
+        }
+
+        public async Task<List<ProjectDataModelProperty>> GetDataModelProperties(int dataModelId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var propertyByDataModelSpec = new ProjectDataModelPropertyFilterSpecification(dataModelId);
+            var properties = await _dataModelPropertyRepository.GetBySpec(propertyByDataModelSpec, cancellationToken);
+
+            return properties.ToList();
+        }
+
+        public async Task<ProjectDataModel> GetProjectDataModelById(int modelId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _dataModelRepository.GetById(modelId, cancellationToken);
+        }
+
+        public async Task<ProjectDataModel> GetProjectDataModelByName(int projectId, string modelName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _dataModelRepository.GetSingleBySpec(new ProjectDataModelFilterSpecification(modelName, projectId), cancellationToken);
+        }
+
+        public async Task<ProjectDataModelProperty> GetProjectDataModelPropertyById(int dataModelPropertyId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _dataModelPropertyRepository.GetById(dataModelPropertyId, cancellationToken);
+        }
+
+        public async Task<ProjectDataModelProperty> GetProjectDataModelPropertyByName(int dataModelId, string propertyName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _dataModelPropertyRepository.GetSingleBySpec(new ProjectDataModelPropertyFilterSpecification(propertyName, dataModelId), cancellationToken);
+        }
+
+        public async Task<List<ProjectDataModel>> GetProjectDataModels(int projectId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var projectMemberByProjectSpec = new ProjectDataModelFilterSpecification(projectId);
+            var projectMembers = await _dataModelRepository.GetBySpec(projectMemberByProjectSpec, cancellationToken);
+
+            return projectMembers.ToList();
+        }
+
+        public async Task UpdateDataModel(ProjectDataModel updatedDataModel, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var dataModel = await _dataModelRepository.GetById(updatedDataModel.Id, cancellationToken);
+
+            if (dataModel != null)
+            {
+                var dataModelByNameSpec = new ProjectDataModelFilterSpecification(updatedDataModel.Name, dataModel.ProjectId, dataModel.Id);
+                if (await _dataModelRepository.CountBySpec(dataModelByNameSpec, cancellationToken) > 0)
+                {
+                    throw new DuplicateProjectDataModelException(updatedDataModel.Name);
+                }
+
+                dataModel.Name = updatedDataModel.Name;
+                dataModel.Description = updatedDataModel.Description;
+                dataModel.Label = updatedDataModel.Label;
+
+                await _dataModelRepository.Update(dataModel, cancellationToken);
+            }
+        }
+
+        public async Task UpdateDataModelProperty(ProjectDataModelProperty editedProperty, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var propertyByNameSpec = new ProjectDataModelPropertyFilterSpecification(editedProperty.Name, editedProperty.ProjectDataModelId, editedProperty.Id);
+            if (await _dataModelPropertyRepository.CountBySpec(propertyByNameSpec, cancellationToken) > 0)
+            {
+                throw new DuplicateProjectDataModelPropertyException(editedProperty.Name);
+            }
+
+            var property = await _dataModelPropertyRepository.GetById(editedProperty.Id, cancellationToken);
+
+            if (property != null)
+            {
+                property.Name = editedProperty.Name;
+                property.DataType = editedProperty.DataType;
+                property.Label = editedProperty.Label;
+                property.IsRequired = editedProperty.IsRequired;
+                property.ControlType = editedProperty.ControlType;
+                property.RelatedProjectDataModelId = editedProperty.RelatedProjectDataModelId;
+                property.RelationalType = editedProperty.RelationalType;
+                await _dataModelPropertyRepository.Update(property, cancellationToken);
+            }
+        }
+    }                  
+}

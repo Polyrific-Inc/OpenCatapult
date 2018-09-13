@@ -1,0 +1,3 @@
+2018-09-07T11:22:15.7133441+07:00 [INF] (Catapult-API/FRANDESKTOP) <> Starting Catapult API host..
+2018-09-07T11:27:39.1293367+07:00 [INF] (Catapult-API/FRANDESKTOP) <> Starting Catapult API host..
+2018-09-07T13:56:01.8513803+07:00 [INF] (Catapult-API/FRANDESKTOP) <> Starting Catapult API host..

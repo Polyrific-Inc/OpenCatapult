@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Polyrific.Catapult.Api.Infrastructure</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.SecretVault\Polyrific.Catapult.Shared.SecretVault.csproj" />
+    <ProjectReference Include="..\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
+    <ProjectReference Include="..\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj" />
+  </ItemGroup>
+
+</Project>
