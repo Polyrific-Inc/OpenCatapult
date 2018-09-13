@@ -22,7 +22,7 @@ build_script:
 test_script:
   - cmd: dotnet test ./tests/Polyrific.Catapult.Cli.UnitTests/Polyrific.Catapult.Cli.UnitTests.csproj
 artifacts:
-  - path: 'src/CLI/Polyrific.Catapult.Cli/bin/$(configuration)/'
+  - path: 'src/CLI/Polyrific.Catapult.Cli/bin/$(configuration)/publish/'
     name: CLI
     type: zip
 deploy: off
