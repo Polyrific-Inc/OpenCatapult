@@ -94,10 +94,7 @@ namespace Polyrific.Catapult.Api
 
             services.AddSignalR();
 
-            var section = Configuration.GetSection("SmtpSetting");
-            var smtpSetting = section.Get<SmtpSetting>();
-            services.AddSingleton(smtpSetting);
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddNotifications(Configuration);
 
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>

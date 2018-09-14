@@ -2,13 +2,15 @@
 
 using System.Collections.Generic;
 using MailKit.Net.Smtp;
+using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
+using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Common.Interface;
 
-namespace Polyrific.Catapult.Shared.Common
+namespace Polyrific.Catapult.Shared.EmailNotification
 {
-    public class EmailSender : IEmailSender
+    public class EmailSender : INotificationSender
     {
         private readonly SmtpSetting _smtpSetting;
 
@@ -17,16 +19,16 @@ namespace Polyrific.Catapult.Shared.Common
             _smtpSetting = smtpSetting;
         }
 
-        public void SendRegisterEmail(string email, string confirmUrl)
+        public void SendRegisterEmail(SendNotificationRequest request, string confirmUrl)
         {
             // TODO: use razor html
             SendEmail(new List<string>
             {
-                email
+                request.Email
             }, "Catapult - Please confirm your account", $"Click this link confirm: {confirmUrl}");
         }
 
-        public void SendEmail(List<string> toAddresses, string subject, string body)
+        private void SendEmail(List<string> toAddresses, string subject, string body)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_smtpSetting.SenderEmail));
@@ -43,12 +45,17 @@ namespace Polyrific.Catapult.Shared.Common
 
             using (var client = new SmtpClient())
             {
-                client.Connect(_smtpSetting.Server, _smtpSetting.Port, true);
+                client.Connect(_smtpSetting.Server, _smtpSetting.Port, SecureSocketOptions.Auto);
                 client.Authenticate(_smtpSetting.Username, _smtpSetting.Password);
 
                 client.Send(message);
                 client.Disconnect(true);
             }
         }
-    }    
+
+        public bool ValidateRequest(SendNotificationRequest request)
+        {
+            return !string.IsNullOrEmpty(request.Email);
+        }
+    }
 }

@@ -28,6 +28,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyrific.Catapult.Shared.EmailNotification", "src\Shared\Polyrific.Catapult.Shared.EmailNotification\Polyrific.Catapult.Shared.EmailNotification.csproj", "{5B56B220-6C35-46C6-9D88-0FD6D00B1255}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -134,6 +136,18 @@ Global
 		{834DA7EB-9716-4EDB-B736-9ADC97139002}.Release|x64.Build.0 = Release|Any CPU
 		{834DA7EB-9716-4EDB-B736-9ADC97139002}.Release|x86.ActiveCfg = Release|Any CPU
 		{834DA7EB-9716-4EDB-B736-9ADC97139002}.Release|x86.Build.0 = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|x64.Build.0 = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Debug|x86.Build.0 = Debug|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|x64.ActiveCfg = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|x64.Build.0 = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|x86.ActiveCfg = Release|Any CPU
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,6 +161,7 @@ Global
 		{8E8D4D11-9834-4D88-9F7A-A12730A2D3E3} = {F8518B51-1C58-47BE-9C2D-2F1F3AB68A1D}
 		{B48C52BF-D0CB-4FAC-B0E7-47F293641AEA} = {EA8F9D68-7137-4262-910C-1C95A70B1698}
 		{834DA7EB-9716-4EDB-B736-9ADC97139002} = {F8518B51-1C58-47BE-9C2D-2F1F3AB68A1D}
+		{5B56B220-6C35-46C6-9D88-0FD6D00B1255} = {F8518B51-1C58-47BE-9C2D-2F1F3AB68A1D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F43516A2-7975-499F-9C5D-42832969C5ED}

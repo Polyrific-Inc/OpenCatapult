@@ -23,13 +23,13 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly IEmailSender _emailSender;
+        private readonly NotificationProvider _notificationProvider;
 
-        public AccountController(IUserService service, IMapper mapper, IEmailSender emailSender)
+        public AccountController(IUserService service, IMapper mapper, NotificationProvider notificationProvider)
         {
             _userService = service;
             _mapper = mapper;
-            _emailSender = emailSender;
+            _notificationProvider = notificationProvider;
         }
 
         /// <summary>
@@ -54,7 +54,10 @@ namespace Polyrific.Catapult.Api.Controllers
 
                     // TODO: We might need to change the confirm url into the web UI url, when it's ready
                     var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{userId}/confirm?token={confirmToken}";
-                    _emailSender.SendRegisterEmail(dto.Email, confirmUrl);
+                    _notificationProvider.SendRegisterEmail(new SendNotificationRequest
+                    {
+                        Email = dto.Email
+                    }, confirmUrl);
                 }
             }
             catch (UserCreationFailedException uex)

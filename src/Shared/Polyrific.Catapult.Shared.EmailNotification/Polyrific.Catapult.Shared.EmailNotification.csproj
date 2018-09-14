@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <RootNamespace>Polyrific.Catapult.Shared.EmailNotification</RootNamespace>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <PackageId>Polyrific.Catapult.Shared.EmailNotification</PackageId>
+    <Description>Shared library for Polyrific Catapult Email Notification</Description>
+    <Version>1.0.1</Version>
+    <Authors>frandi-polyrific</Authors>
+    <Company>Polyrific, Inc</Company>
+    <PackageTags>catapult;notification;email</PackageTags>
+    <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/Polyrific-Inc/OpenCatapult/master/LICENSE</PackageLicenseUrl>
+    <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="mailkit" Version="2.0.6" />
+    <PackageReference Include="microsoft.extensions.configuration.abstractions" Version="2.1.1" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection.abstractions" Version="2.1.1" />
+    <PackageReference Include="microsoft.extensions.options.configurationextensions" Version="2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
+  </ItemGroup>
+
+</Project>

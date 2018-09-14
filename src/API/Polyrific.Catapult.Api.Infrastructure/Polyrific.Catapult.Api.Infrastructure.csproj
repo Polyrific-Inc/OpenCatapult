@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.EmailNotification\Polyrific.Catapult.Shared.EmailNotification.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.SecretVault\Polyrific.Catapult.Shared.SecretVault.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj" />
