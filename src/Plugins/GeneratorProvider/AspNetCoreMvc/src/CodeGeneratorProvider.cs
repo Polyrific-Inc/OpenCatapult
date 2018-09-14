@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading.Tasks;
-using AspNetCoreMvc.Helpers;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
@@ -23,9 +22,18 @@ namespace AspNetCoreMvc
 
             var outputLocation = Path.Combine(config.WorkingLocation, outputFolderName);
 
-            var args = $"new mvc -n {projectName} -o {outputLocation}";
-            var result = await CommandHelper.Execute("dotnet", args);
+            var generator = new CodeGenerator(projectName, outputLocation, models);
 
+            await generator.InitProject();
+
+            await generator.GenerateModels();
+
+            await generator.GenerateDbContext();
+
+            await generator.GenerateControllers();
+
+            await generator.GenerateViews();
+            
             return (outputLocation, "");
         }
     }
