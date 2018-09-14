@@ -177,7 +177,7 @@ namespace Polyrific.Catapult.Api.Data
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = await _userManager.FindByNameAsync(userName);
-            if (user != null)
+            if (user != null && user.EmailConfirmed)
                 return await _userManager.CheckPasswordAsync(user, password);
 
             return false;

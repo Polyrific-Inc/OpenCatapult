@@ -8,10 +8,5 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// Id of the new user
         /// </summary>
         public int UserId { get; set; }
-
-        /// <summary>
-        /// Token code which can be used to confirm user email
-        /// </summary>
-        public string ConfirmToken { get; set; }
     }
 }
