@@ -15,6 +15,11 @@ namespace AspNetCoreMvc
     {
         public string Name => "AspNetCoreMvc";
 
+        public Task<string> BeforeGenerate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config)
+        {
+            return Task.FromResult("");
+        }
+
         public async Task<(string outputLocation, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config)
         {
             if (config.ProviderName != Name)
@@ -35,6 +40,11 @@ namespace AspNetCoreMvc
             await generator.GenerateViews();
             
             return (outputLocation, "");
+        }
+
+        public Task<string> AfterGenerate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config)
+        {
+            return Task.FromResult("");
         }
     }
 }

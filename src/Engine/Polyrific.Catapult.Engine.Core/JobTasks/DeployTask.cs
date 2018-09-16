@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -17,7 +18,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Instantiate <see cref="DeployTask"/>
         /// </summary>
         /// <param name="logger">Logger</param>
-        public DeployTask(ILogger<DeployTask> logger) : base(logger)
+        public DeployTask(IProjectService projectService, ILogger<DeployTask> logger) 
+            : base(projectService, logger)
         {
         }
 
@@ -25,6 +27,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         [ImportMany(typeof(IDeployProvider))]
         public IEnumerable<IDeployProvider> DeployProviders;
+
+        public override async Task<TaskRunnerResult> RunPreprocessingTask()
+        {
+            var provider = DeployProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            if (provider == null)
+                return new TaskRunnerResult($"Deploy provider \"{TaskConfig.ProviderName}\" could not be found.");
+
+            var error = await provider.BeforeDeploy(TaskConfig);
+            if (!string.IsNullOrEmpty(error))
+                return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
+
+            return new TaskRunnerResult(true, "");
+        }
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
@@ -37,6 +52,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
             return new TaskRunnerResult(true, result.returnValue);
+        }
+
+        public override async Task<TaskRunnerResult> RunPostprocessingTask()
+        {
+            var provider = DeployProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            if (provider == null)
+                return new TaskRunnerResult($"Deploy provider \"{TaskConfig.ProviderName}\" could not be found.");
+
+            var error = await provider.AfterDeploy(TaskConfig);
+            if (!string.IsNullOrEmpty(error))
+                return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
+
+            return new TaskRunnerResult(true, "");
         }
     }
 }

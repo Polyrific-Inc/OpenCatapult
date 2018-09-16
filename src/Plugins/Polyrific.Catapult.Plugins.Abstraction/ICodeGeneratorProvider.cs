@@ -15,6 +15,16 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         string Name { get; }
 
         /// <summary>
+        /// Process to run before executing the code generation
+        /// </summary>
+        /// <param name="projectName">Name of the project</param>
+        /// <param name="models">Project data models</param>
+        /// <param name="outputFolderName">Name of the output folder</param>
+        /// <param name="config">Generate task configuration</param>
+        /// <returns>Error message</returns>
+        Task<string> BeforeGenerate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config);
+
+        /// <summary>
         /// Generate code from data models
         /// </summary>
         /// <param name="projectName">Name of the project</param>
@@ -23,5 +33,15 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="config">Generate task configuration</param>
         /// <returns></returns>
         Task<(string outputLocation, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config);
+
+        /// <summary>
+        /// Process to run after executing code generation
+        /// </summary>
+        /// <param name="projectName">Name of the project</param>
+        /// <param name="models">Project data models</param>
+        /// <param name="outputFolderName">Name of the output folder</param>
+        /// <param name="config">Generate task configuration</param>
+        /// <returns>Error message</returns>
+        Task<string> AfterGenerate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config);
     }
 }

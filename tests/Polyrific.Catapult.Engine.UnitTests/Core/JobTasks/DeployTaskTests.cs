@@ -7,6 +7,8 @@ using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using Polyrific.Catapult.Shared.Dto.Project;
+using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using Xunit;
 
@@ -15,10 +17,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     public class DeployTaskTests
     {
         private readonly Mock<ILogger<DeployTask>> _logger;
+        private readonly Mock<IProjectService> _projectService;
 
         public DeployTaskTests()
         {
             _logger = new Mock<ILogger<DeployTask>>();
+
+            _projectService = new Mock<IProjectService>();
+            _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
+                .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
         }
 
         [Fact]
@@ -35,7 +42,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeDeployProvider("good-result", "")
             };
 
-            var task = new DeployTask(_logger.Object) {DeployProviders = providers};
+            var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
             task.SetConfig(configString);
 
             var result = await task.RunMainTask();
@@ -58,7 +65,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeDeployProvider("", "error-message")
             };
 
-            var task = new DeployTask(_logger.Object) {DeployProviders = providers};
+            var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
             task.SetConfig(configString);
 
             var result = await task.RunMainTask();
@@ -76,7 +83,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             };
             var configString = JsonConvert.SerializeObject(config);
 
-            var task = new DeployTask(_logger.Object);
+            var task = new DeployTask(_projectService.Object, _logger.Object);
             task.SetConfig(configString);
 
             var result = await task.RunMainTask();

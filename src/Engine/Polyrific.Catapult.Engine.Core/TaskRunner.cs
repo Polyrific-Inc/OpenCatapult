@@ -42,17 +42,29 @@ namespace Polyrific.Catapult.Engine.Core
                 var taskObj = GetJobTaskInstance(projectId, queueCode, jobTask);
 
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} pre-processing task");
-                await taskObj.RunPreprocessingTask();
+                var preResult = await taskObj.RunPreprocessingTask();
+                if (!preResult.IsSuccess && preResult.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
+                    break;
+                }
 
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} task");
                 var result = await taskObj.RunMainTask();
                 results[jobTask.Id] = result;
+                if (!result.IsSuccess && result.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
+                    break;
+                }
 
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} post-processing task");
-                await taskObj.RunPostprocessingTask();
-                
-                if (!result.IsSuccess && result.StopTheProcess)
+                var postResult = await taskObj.RunPostprocessingTask();
+                if (!postResult.IsSuccess && postResult.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
                     break;
+                }
             }
 
             _logger.LogInformation($"[Queue \"{queueCode}\"] Job tasks execution complete with the following result: {results}");
