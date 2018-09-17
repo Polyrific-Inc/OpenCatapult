@@ -15,6 +15,11 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         string Name { get; }
 
         /// <summary>
+        /// Required service connections
+        /// </summary>
+        string[] RequiredServices { get; }
+
+        /// <summary>
         /// Process to run before executing the code generation
         /// </summary>
         /// <param name="projectName">Name of the project</param>

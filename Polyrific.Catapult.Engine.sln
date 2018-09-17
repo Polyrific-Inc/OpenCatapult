@@ -38,6 +38,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreMvc", "src\Plugin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreMvc.Tests", "src\Plugins\GeneratorProvider\AspNetCoreMvc\tests\AspNetCoreMvc.Tests\AspNetCoreMvc.Tests.csproj", "{43B966E8-C9AC-4876-B19F-BCA606775DC7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryProvider", "RepositoryProvider", "{30C3AE23-D960-4145-AC34-21B24382D83B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubRepositoryProvider", "src\Plugins\RepositoryProvider\GitHubRepositoryProvider\src\GitHubRepositoryProvider\GitHubRepositoryProvider.csproj", "{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -180,6 +184,18 @@ Global
 		{43B966E8-C9AC-4876-B19F-BCA606775DC7}.Release|x64.Build.0 = Release|Any CPU
 		{43B966E8-C9AC-4876-B19F-BCA606775DC7}.Release|x86.ActiveCfg = Release|Any CPU
 		{43B966E8-C9AC-4876-B19F-BCA606775DC7}.Release|x86.Build.0 = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|x64.Build.0 = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Debug|x86.Build.0 = Debug|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x64.ActiveCfg = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x64.Build.0 = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x86.ActiveCfg = Release|Any CPU
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -198,6 +214,8 @@ Global
 		{461C9CCD-4254-445C-AE7F-A2EF116D4AF1} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
 		{ADE84ABF-2213-458B-B9AD-C78ECEB89333} = {461C9CCD-4254-445C-AE7F-A2EF116D4AF1}
 		{43B966E8-C9AC-4876-B19F-BCA606775DC7} = {FF9F631E-2EAA-40A8-B388-04A7C40B4821}
+		{30C3AE23-D960-4145-AC34-21B24382D83B} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
+		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE} = {30C3AE23-D960-4145-AC34-21B24382D83B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5C87EB-EEBD-4A9B-A955-07A34F904FF1}

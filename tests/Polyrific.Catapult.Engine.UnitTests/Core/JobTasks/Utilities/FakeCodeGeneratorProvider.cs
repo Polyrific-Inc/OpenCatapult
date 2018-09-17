@@ -40,6 +40,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string Name => nameof(FakeCodeGeneratorProvider);
 
+        public string[] RequiredServices => new string[0];
+
         public Task<string> BeforeGenerate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config)
         {
             return Task.FromResult(_preProcessError);

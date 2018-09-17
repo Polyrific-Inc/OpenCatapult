@@ -4,6 +4,9 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
 {
     public class PushTaskConfig : BaseJobTaskConfig
     {
-        
+        /// <summary>
+        /// Repository branch to push
+        /// </summary>
+        public string Branch { get; set; }
     }
 }

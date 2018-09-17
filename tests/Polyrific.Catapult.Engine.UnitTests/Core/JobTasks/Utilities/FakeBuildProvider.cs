@@ -38,6 +38,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string Name => nameof(FakeBuildProvider);
 
+        public string[] RequiredServices => new string[0];
+
         public Task<string> BeforeBuild(BuildTaskConfig config)
         {
             return Task.FromResult(_preProcessError);

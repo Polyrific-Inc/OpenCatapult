@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
@@ -38,32 +40,34 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string Name => nameof(FakeCodeRepositoryProvider);
 
-        public Task<string> BeforeClone()
+        public string[] RequiredServices => new string[0];
+
+        public Task<string> BeforeClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Clone()
+        public Task<(string returnValue, string errorMessage)> Clone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
         {
             return Task.FromResult(_actionResult);
         }
 
-        public Task<string> AfterClone()
+        public Task<string> AfterClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
         {
             return Task.FromResult(_postProcessError);
         }
 
-        public Task<string> BeforePush(PushTaskConfig config)
+        public Task<string> BeforePush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config)
+        public Task<(string returnValue, string errorMessage)> Push(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
         {
             return Task.FromResult(_actionResult);
         }
 
-        public Task<string> AfterPush(PushTaskConfig config)
+        public Task<string> AfterPush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
         {
             return Task.FromResult(_postProcessError);
         }
