@@ -87,5 +87,13 @@ namespace Polyrific.Catapult.Shared.Service
         /// <param name="dto">DTO containing required details</param>
         /// <returns></returns>
         Task SetUserRole(int userId, SetUserRoleDto dto);
+
+        /// <summary>
+        /// Update user password
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="dto">DTO containing required details</param>
+        /// <returns></returns>
+        Task UpdatePassword(int userId, UpdatePasswordDto dto);
     }
 }

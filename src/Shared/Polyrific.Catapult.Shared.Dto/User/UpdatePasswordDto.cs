@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// Confirm new password for the user
         /// </summary>
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "The new password and confirmation new password do not match.")]
+        [Compare("NewPassword", ErrorMessage = "The new password and confirmation new password do not match.")]
         public string ConfirmNewPassword { get; set; }
     }
 }
