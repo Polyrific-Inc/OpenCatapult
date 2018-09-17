@@ -38,10 +38,11 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Login_Execute_ReturnsSuccessMessage()
         {
-            var command = new LoginCommand(_console.Object, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object)
-            {
-                Username = "user1@opencatapult.net"
-            };
+            var mockCommand = new Mock<LoginCommand>(_console.Object, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object);
+            mockCommand.CallBase = true;
+            mockCommand.Setup(x => x.GetPassword()).Returns("testpassword");
+            var command = mockCommand.Object;
+            command.Username = "user1@opencatapult.net";
 
             var resultMessage = command.Execute();
 

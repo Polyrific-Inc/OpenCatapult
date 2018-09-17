@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
@@ -24,21 +24,22 @@ namespace Polyrific.Catapult.Cli.Commands
         [Option("-u|--user <USER>", "Username", CommandOptionType.SingleValue)]
         public string Username { get; set; }
 
-        [Required]
-        [Option("-p|--password <PASSWORD>", "Passowrd", CommandOptionType.SingleValue)]
-        public string Password { get; set; }
-
         public override string Execute()
         {
             var token = _tokenService.RequestToken(new RequestTokenDto
             {
                 Email = Username,
-                Password = Password
+                Password = GetPassword()
             }).Result;
 
             _tokenStore.SaveToken(token);
 
             return $"Logged in as {Username}";
+        }
+
+        public virtual string GetPassword()
+        {
+            return Prompt.GetPassword("Enter password:");
         }
     }
 }

@@ -21,15 +21,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         [Required]
         [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
         public string Email { get; set; }
-
-        [Required]
-        [Option("-op|--oldpassword <PASSWORD>", "Old Password  of the user", CommandOptionType.SingleValue)]
-        public string OldPassword { get; set; }
-
-        [Required]
-        [Option("-np|--newpassword <PASSWORD>", "New Password  of the user", CommandOptionType.SingleValue)]
-        public string NewPassword { get; set; }
-
+        
         public override string Execute()
         {
             string message = string.Empty;
@@ -41,9 +33,9 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                 _accountService.UpdatePassword(userId, new UpdatePasswordDto
                 {
                     Id = userId,
-                    OldPassword = OldPassword,
-                    NewPassword = NewPassword,
-                    ConfirmNewPassword = NewPassword
+                    OldPassword = GetPassword("Enter old password:"),
+                    NewPassword = GetPassword("Enter new password:"),
+                    ConfirmNewPassword = GetPassword("Re-enter new password:")
                 }).Wait();
                 message = $"Password for user {Email} has been updated";
                 Logger.LogInformation(message);
@@ -54,6 +46,11 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             }
 
             return message;
+        }
+
+        public virtual string GetPassword(string prompt)
+        {
+            return Prompt.GetPassword(prompt);
         }
     }
 }

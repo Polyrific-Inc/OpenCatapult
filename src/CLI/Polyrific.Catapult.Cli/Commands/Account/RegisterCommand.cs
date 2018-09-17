@@ -22,11 +22,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         [Required]
         [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
         public string Email { get; set; }
-
-        [Required]
-        [Option("-p|--password <PASSWORD>", "Password  of the user", CommandOptionType.SingleValue)]
-        public string Password { get; set; }
-
+        
         [Option("-fn|--firstname <FIRSTNAME>", "First name  of the user", CommandOptionType.SingleValue)]
         public string FirstName { get; set; }
 
@@ -36,11 +32,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         public override string Execute()
         {
             string message = string.Empty;
+                       
             var user = _accountService.RegisterUser(new RegisterUserDto
             {
                 Email = Email,
-                Password = Password,
-                ConfirmPassword = Password,
+                Password = GetPassword("Enter password:"),
+                ConfirmPassword = GetPassword("Re-enter password:"),
                 FirstName = FirstName,
                 LastName = LastName
             }).Result;
@@ -49,6 +46,11 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             Logger.LogInformation(message);
 
             return message;
+        }
+
+        public virtual string GetPassword(string prompt)
+        {
+            return Prompt.GetPassword(prompt);
         }
     }
 }

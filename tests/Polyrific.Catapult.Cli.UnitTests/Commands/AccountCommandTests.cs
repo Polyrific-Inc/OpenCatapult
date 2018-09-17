@@ -84,7 +84,11 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _accountService.Setup(s => s.RegisterUser(It.IsAny<RegisterUserDto>()))
                 .ReturnsAsync(new RegisterUserResultDto());
 
-            var command = new RegisterCommand(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object);
+            var mockCommand = new Mock<RegisterCommand>(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object);
+            mockCommand.CallBase = true;
+            mockCommand.Setup(x => x.GetPassword(It.IsAny<string>())).Returns("testpassword");
+
+            var command = mockCommand.Object;
             var resultMessage = command.Execute();
 
             Assert.StartsWith("User registered", resultMessage);
@@ -159,6 +163,34 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void AccountUpdate_Execute_ReturnsNotFoundMessage()
         {
             var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _accountService.Object)
+            {
+                Email = "user2@opencatapult.net"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+        }
+
+        [Fact]
+        public void AccountUpdatePassword_Execute_ReturnsSuccessMessage()
+        {
+            var mockCommand = new Mock<UpdatePasswordCommand>(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object);
+            mockCommand.CallBase = true;
+            mockCommand.Setup(x => x.GetPassword(It.IsAny<string>())).Returns("testpassword");
+
+            var command = mockCommand.Object;
+            command.Email = "user1@opencatapult.net";
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Password for user user1@opencatapult.net has been updated", resultMessage);
+        }
+
+        [Fact]
+        public void AccountUpdatePassword_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new UpdatePasswordCommand(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
