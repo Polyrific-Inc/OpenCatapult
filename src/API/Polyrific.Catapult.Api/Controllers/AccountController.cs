@@ -1,5 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,12 +11,9 @@ using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Common;
-using Polyrific.Catapult.Shared.Common.Interface;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
@@ -54,9 +54,12 @@ namespace Polyrific.Catapult.Api.Controllers
 
                     // TODO: We might need to change the confirm url into the web UI url, when it's ready
                     var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{userId}/confirm?token={confirmToken}";
-                    _notificationProvider.SendRegisterEmail(new SendNotificationRequest
+                    _notificationProvider.SendRegisterNotification(new SendNotificationRequest
                     {
-                        Email = dto.Email
+                        Emails = new List<string>
+                        {
+                            dto.Email
+                        }
                     }, confirmUrl);
                 }
             }

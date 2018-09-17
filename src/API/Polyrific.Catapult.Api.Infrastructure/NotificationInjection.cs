@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Polyrific.Catapult.Shared.Common;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.EmailNotification;
 
 namespace Polyrific.Catapult.Api.Infrastructure
@@ -21,6 +21,8 @@ namespace Polyrific.Catapult.Api.Infrastructure
                 services.AddEmailSender(configuration);
             }
 
+            NotificationConfig.InitConfigFile().Wait();
+            services.AddTransient<NotificationConfig>();
             services.AddTransient<NotificationProvider>();
         }
     }
