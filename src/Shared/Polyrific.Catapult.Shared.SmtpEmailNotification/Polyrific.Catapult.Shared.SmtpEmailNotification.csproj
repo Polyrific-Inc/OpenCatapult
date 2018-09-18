@@ -2,9 +2,9 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <RootNamespace>Polyrific.Catapult.Shared.EmailNotification</RootNamespace>
+    <RootNamespace>Polyrific.Catapult.Shared.SmtpEmailNotification</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <PackageId>Polyrific.Catapult.Shared.EmailNotification</PackageId>
+    <PackageId>Polyrific.Catapult.Shared.SmtpEmailNotification</PackageId>
     <Description>Shared library for Polyrific Catapult Email Notification</Description>
     <Version>1.0.1</Version>
     <Authors>frandi-polyrific</Authors>

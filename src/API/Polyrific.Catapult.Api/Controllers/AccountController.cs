@@ -54,13 +54,17 @@ namespace Polyrific.Catapult.Api.Controllers
 
                     // TODO: We might need to change the confirm url into the web UI url, when it's ready
                     var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{userId}/confirm?token={confirmToken}";
-                    _notificationProvider.SendRegisterNotification(new SendNotificationRequest
+                    _notificationProvider.SendNotification(new SendNotificationRequest
                     {
+                        MessageType = NotificationConfig.RegistrationCompleted,
                         Emails = new List<string>
                         {
                             dto.Email
                         }
-                    }, confirmUrl);
+                    }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ConfirmUrl, confirmUrl}
+                    });
                 }
             }
             catch (UserCreationFailedException uex)

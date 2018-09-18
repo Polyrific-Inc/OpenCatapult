@@ -8,23 +8,22 @@ using MimeKit.Text;
 using Polyrific.Catapult.Shared.Common.Interface;
 using Polyrific.Catapult.Shared.Common.Notification;
 
-namespace Polyrific.Catapult.Shared.EmailNotification
+namespace Polyrific.Catapult.Shared.SmtpEmailNotification
 {
-    public class EmailSender : INotificationSender
+    public class SmtpEmailSender : INotificationSender
     {
         private readonly SmtpSetting _smtpSetting;
 
-        public string Name => "email";
+        public string Name => NotificationProvider.SmtpEmail;
 
-        public EmailSender(SmtpSetting smtpSetting)
+        public SmtpEmailSender(SmtpSetting smtpSetting)
         {
             _smtpSetting = smtpSetting;
         }
-
-        public void SendRegisterNotification(SendNotificationRequest request, string confirmUrl)
+        
+        public void SendNotification(SendNotificationRequest request, string subject, string body)
         {
-            // TODO: use razor html
-            SendEmail(request.Emails, "Catapult - Please confirm your account", $"Click this link confirm: {confirmUrl}");
+            SendEmail(request.Emails, subject, body);
         }
 
         private void SendEmail(List<string> toAddresses, string subject, string body)

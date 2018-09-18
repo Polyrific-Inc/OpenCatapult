@@ -25,8 +25,17 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             Load().Wait();
         }
 
-        public const string SendRegistrationNotificationProvidersKey = "SendRegistrationNotificationProviders";
-        public string[] SendRegistrationNotificationProviders => GetConfigArrayValue(SendRegistrationNotificationProvidersKey, new string[0]);
+        public const string RegistrationCompleted = "RegistrationCompleted";
+        
+        public string[] GetNotificationProviders(string messageType)
+        {
+            return GetConfigArrayValue(messageType, new string[0]);
+        }
+
+        public string GetNotificationSubject(string messageType)
+        {
+            return GetConfigValue($"{messageType}Subject", "");
+        }
 
         public async Task Load()
         {
@@ -41,33 +50,7 @@ namespace Polyrific.Catapult.Shared.Common.Notification
                     _configs.Add(conf.Key, conf.Value);
             }
         }
-
-        public async Task Save()
-        {
-            await File.WriteAllTextAsync(NotificationConfigFile, JsonConvert.SerializeObject(new { NotificationConfig = _configs }));
-        }
-
-        public void SetValue(string configName, string configValue)
-        {
-            SetConfigValue(configName, configValue);
-        }
-
-        public void RemoveValue(string configName)
-        {
-            if (_configs.ContainsKey(configName))
-            {
-                var defaultConfigs = GetDefaultConfigs();
-                if (defaultConfigs.ContainsKey(configName))
-                {
-                    _configs[configName] = defaultConfigs[configName];
-                }
-                else
-                {
-                    _configs.Remove(configName);
-                }
-            }
-        }
-
+        
         public static async Task InitConfigFile(bool reset = false)
         {
             if (reset && File.Exists(NotificationConfigFile))
@@ -86,19 +69,17 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             return _configs.TryGetValue(key, out var sValue) ? sValue.Split(_arraySplitChar) : defaultValue;
         }
 
-        private void SetConfigValue(string key, object value)
+        private string GetConfigValue(string key, string defaultValue)
         {
-            if (_configs.ContainsKey(key))
-                _configs[key] = value.ToString();
-            else
-                _configs.Add(key, value.ToString());
+            return _configs.TryGetValue(key, out var sValue) ? sValue : defaultValue;
         }
 
         private static Dictionary<string, string> GetDefaultConfigs()
         {
             var configs = new Dictionary<string, string>
             {
-                {SendRegistrationNotificationProvidersKey, "email"}
+                {RegistrationCompleted, $"{NotificationProvider.SmtpEmail}"},
+                {$"{RegistrationCompleted}Subject", "Catapult - Please confirm your account"}
             };
 
             return configs;

@@ -7,7 +7,7 @@ namespace Polyrific.Catapult.Shared.Common.Interface
     public interface INotificationSender
     {
         string Name { get; }
-        void SendRegisterNotification(SendNotificationRequest request, string confirmUrl);
+        void SendNotification(SendNotificationRequest request, string subject, string body);
         bool ValidateRequest(SendNotificationRequest request);
     }
 }

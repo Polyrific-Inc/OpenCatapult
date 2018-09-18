@@ -5,7 +5,7 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Polyrific.Catapult.Shared.Common.Notification;
-using Polyrific.Catapult.Shared.EmailNotification;
+using Polyrific.Catapult.Shared.SmtpEmailNotification;
 
 namespace Polyrific.Catapult.Api.Infrastructure
 {
@@ -16,9 +16,9 @@ namespace Polyrific.Catapult.Api.Infrastructure
             var providerString = configuration["NotificationProviders"];
             var providers = providerString.Split(',');
             
-            if (providers.Contains("email"))
+            if (providers.Contains(NotificationProvider.SmtpEmail))
             {
-                services.AddEmailSender(configuration);
+                services.AddSmtpEmailSender(configuration);
             }
 
             NotificationConfig.InitConfigFile().Wait();
