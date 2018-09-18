@@ -12,10 +12,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account
     public class UpdatePasswordCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
+        private readonly IConsoleReader _consoleReader;
 
-        public UpdatePasswordCommand(IConsole console, ILogger<UpdatePasswordCommand> logger, IAccountService accountService) : base(console, logger)
+        public UpdatePasswordCommand(IConsole console, ILogger<UpdatePasswordCommand> logger, IAccountService accountService, IConsoleReader consoleReader) : base(console, logger)
         {
             _accountService = accountService;
+            _consoleReader = consoleReader;
         }
 
         [Required]
@@ -33,9 +35,9 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                 _accountService.UpdatePassword(userId, new UpdatePasswordDto
                 {
                     Id = userId,
-                    OldPassword = GetPassword("Enter old password:"),
-                    NewPassword = GetPassword("Enter new password:"),
-                    ConfirmNewPassword = GetPassword("Re-enter new password:")
+                    OldPassword = _consoleReader.GetPassword("Enter old password:"),
+                    NewPassword = _consoleReader.GetPassword("Enter new password:"),
+                    ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
                 }).Wait();
                 message = $"Password for user {Email} has been updated";
                 Logger.LogInformation(message);
@@ -46,11 +48,6 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             }
 
             return message;
-        }
-
-        public virtual string GetPassword(string prompt)
-        {
-            return Prompt.GetPassword(prompt);
         }
     }
 }

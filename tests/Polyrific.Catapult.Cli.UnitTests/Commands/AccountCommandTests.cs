@@ -17,6 +17,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     {
         private readonly Mock<IConsole> _console;
         private readonly Mock<IAccountService> _accountService;
+        private readonly Mock<IConsoleReader> _consoleReader;
 
         public AccountCommandTests()
         {
@@ -41,6 +42,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 if (user != null)
                     users.Remove(user);
             });
+
+            _consoleReader = new Mock<IConsoleReader>();
         }
 
         [Fact]
@@ -84,11 +87,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _accountService.Setup(s => s.RegisterUser(It.IsAny<RegisterUserDto>()))
                 .ReturnsAsync(new RegisterUserResultDto());
 
-            var mockCommand = new Mock<RegisterCommand>(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object);
-            mockCommand.CallBase = true;
-            mockCommand.Setup(x => x.GetPassword(It.IsAny<string>())).Returns("testpassword");
-
-            var command = mockCommand.Object;
+            var command = new RegisterCommand(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object, _consoleReader.Object);
             var resultMessage = command.Execute();
 
             Assert.StartsWith("User registered", resultMessage);
@@ -175,12 +174,10 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdatePassword_Execute_ReturnsSuccessMessage()
         {
-            var mockCommand = new Mock<UpdatePasswordCommand>(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object);
-            mockCommand.CallBase = true;
-            mockCommand.Setup(x => x.GetPassword(It.IsAny<string>())).Returns("testpassword");
-
-            var command = mockCommand.Object;
-            command.Email = "user1@opencatapult.net";
+            var command = new UpdatePasswordCommand(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object, _consoleReader.Object)
+            {
+                Email = "user1@opencatapult.net"
+            };
 
             var resultMessage = command.Execute();
 
@@ -190,7 +187,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdatePassword_Execute_ReturnsNotFoundMessage()
         {
-            var command = new UpdatePasswordCommand(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object)
+            var command = new UpdatePasswordCommand(_console.Object, LoggerMock.GetLogger<UpdatePasswordCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
                 Email = "user2@opencatapult.net"
             };

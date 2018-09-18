@@ -15,6 +15,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IConsole> _console;
         private readonly Mock<ITokenStore> _tokenStore;
         private readonly Mock<ITokenService> _tokenService;
+        private readonly Mock<IConsoleReader> _consoleReader;
 
         public LoginCommandTests()
         {
@@ -33,16 +34,17 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _tokenStore = new Mock<ITokenStore>();
             _tokenStore.Setup(s => s.GetSavedToken()).ReturnsAsync("testToken");
+
+            _consoleReader = new Mock<IConsoleReader>();
         }
 
         [Fact]
         public void Login_Execute_ReturnsSuccessMessage()
         {
-            var mockCommand = new Mock<LoginCommand>(_console.Object, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object);
-            mockCommand.CallBase = true;
-            mockCommand.Setup(x => x.GetPassword()).Returns("testpassword");
-            var command = mockCommand.Object;
-            command.Username = "user1@opencatapult.net";
+            var command = new LoginCommand(_console.Object, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object, _consoleReader.Object)
+            {
+                Username = "user1@opencatapult.net"
+            };
 
             var resultMessage = command.Execute();
 

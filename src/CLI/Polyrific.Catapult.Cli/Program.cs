@@ -62,6 +62,7 @@ namespace Polyrific.Catapult.Cli
 
             services.AddTransient<ITemplateWriter, TemplateWriter>();
             services.AddTransient<ICliConfig, CliConfig>();
+            services.AddTransient<IConsoleReader, ConsoleReader>();
 
             services.AddCatapultApi(configuration);
         }

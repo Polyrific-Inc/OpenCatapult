@@ -13,11 +13,13 @@ namespace Polyrific.Catapult.Cli.Commands
     {
         private readonly ITokenService _tokenService;
         private readonly ITokenStore _tokenStore;
+        private readonly IConsoleReader _consoleReader;
 
-        public LoginCommand(IConsole console, ILogger<LoginCommand> logger, ITokenService tokenService, ITokenStore tokenStore) : base(console, logger)
+        public LoginCommand(IConsole console, ILogger<LoginCommand> logger, ITokenService tokenService, ITokenStore tokenStore, IConsoleReader consoleReader) : base(console, logger)
         {
             _tokenService = tokenService;
             _tokenStore = tokenStore;
+            _consoleReader = consoleReader;
         }
 
         [Required]
@@ -29,17 +31,12 @@ namespace Polyrific.Catapult.Cli.Commands
             var token = _tokenService.RequestToken(new RequestTokenDto
             {
                 Email = Username,
-                Password = GetPassword()
+                Password = _consoleReader.GetPassword("Enter password:")
             }).Result;
 
             _tokenStore.SaveToken(token);
 
             return $"Logged in as {Username}";
-        }
-
-        public virtual string GetPassword()
-        {
-            return Prompt.GetPassword("Enter password:");
         }
     }
 }
