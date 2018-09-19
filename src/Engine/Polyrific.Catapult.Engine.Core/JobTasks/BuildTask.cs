@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Build provider \"{TaskConfig.ProviderName}\" could not be found.");
 
-            var result = await provider.Build(TaskConfig);
+            var result = await provider.Build(Project.Name, JobQueueCode, TaskConfig);
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 

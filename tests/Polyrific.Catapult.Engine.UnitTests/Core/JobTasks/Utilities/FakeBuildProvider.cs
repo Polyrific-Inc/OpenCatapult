@@ -45,7 +45,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Build(BuildTaskConfig config)
+        public Task<(string returnValue, string errorMessage)> Build(string projectName, string jobQueueCode, BuildTaskConfig config)
         {
             return Task.FromResult(_buildResult);
         }

@@ -27,9 +27,11 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <summary>
         /// Build the code, and produce a ready to deploy artifact
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
+        /// <param name="jobQueueCode">Job queue code</param>
         /// <param name="config">Build task configuration</param>
         /// <returns></returns>
-        Task<(string returnValue, string errorMessage)> Build(BuildTaskConfig config);
+        Task<(string returnValue, string errorMessage)> Build(string projectName, string jobQueueCode, BuildTaskConfig config);
 
         /// <summary>
         /// Process to run after executing build

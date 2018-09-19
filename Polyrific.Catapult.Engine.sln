@@ -40,7 +40,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCoreMvc.Tests", "src\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryProvider", "RepositoryProvider", "{30C3AE23-D960-4145-AC34-21B24382D83B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GitHubRepositoryProvider", "src\Plugins\RepositoryProvider\GitHubRepositoryProvider\src\GitHubRepositoryProvider\GitHubRepositoryProvider.csproj", "{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitHubRepositoryProvider", "src\Plugins\RepositoryProvider\GitHubRepositoryProvider\src\GitHubRepositoryProvider\GitHubRepositoryProvider.csproj", "{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildProvider", "BuildProvider", "{F05EADFC-1BE6-4C9D-8749-1815B1F8A8EC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetCoreBuildProvider", "src\Plugins\BuildProvider\DotNetCoreBuildProvider\src\DotNetCoreBuildProvider\DotNetCoreBuildProvider.csproj", "{B304B3C9-5125-4395-882C-670B5E04CB0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -196,6 +200,18 @@ Global
 		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x64.Build.0 = Release|Any CPU
 		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x86.ActiveCfg = Release|Any CPU
 		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE}.Release|x86.Build.0 = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|x64.Build.0 = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Debug|x86.Build.0 = Debug|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|x64.ActiveCfg = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|x64.Build.0 = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|x86.ActiveCfg = Release|Any CPU
+		{B304B3C9-5125-4395-882C-670B5E04CB0D}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -216,6 +232,8 @@ Global
 		{43B966E8-C9AC-4876-B19F-BCA606775DC7} = {FF9F631E-2EAA-40A8-B388-04A7C40B4821}
 		{30C3AE23-D960-4145-AC34-21B24382D83B} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
 		{27E1D4C1-5FFE-417C-A71D-3B64DC1FA3EE} = {30C3AE23-D960-4145-AC34-21B24382D83B}
+		{F05EADFC-1BE6-4C9D-8749-1815B1F8A8EC} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
+		{B304B3C9-5125-4395-882C-670B5E04CB0D} = {F05EADFC-1BE6-4C9D-8749-1815B1F8A8EC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5C87EB-EEBD-4A9B-A955-07A34F904FF1}
