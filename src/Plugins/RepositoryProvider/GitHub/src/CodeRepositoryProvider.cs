@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
-namespace GitHubRepositoryProvider
+namespace GitHub
 {
     [Export(typeof(ICodeRepositoryProvider))]
     public class CodeRepositoryProvider : ICodeRepositoryProvider

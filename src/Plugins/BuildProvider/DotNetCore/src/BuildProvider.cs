@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
-namespace DotNetCoreBuildProvider
+namespace DotNetCore
 {
     [Export(typeof(IBuildProvider))]
     public class BuildProvider : IBuildProvider

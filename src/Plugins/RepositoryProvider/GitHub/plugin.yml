@@ -1,4 +1,4 @@
-name: 'GitHubRepositoryProvider'
+name: 'GitHub'
 type: 'RepositoryProvider'
 author: 'Polyrific'
 version: '1.0'

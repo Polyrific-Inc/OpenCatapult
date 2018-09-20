@@ -1,0 +1,6 @@
+name: 'AzureAppService'
+type: 'DeployProvider'
+author: 'Polyrific'
+version: '1.0'
+required_services:
+  - AzureAppService

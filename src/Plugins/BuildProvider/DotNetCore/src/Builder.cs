@@ -2,9 +2,9 @@
 
 using System.IO.Compression;
 using System.Threading.Tasks;
-using DotNetCoreBuildProvider.Helpers;
+using DotNetCore.Helpers;
 
-namespace DotNetCoreBuildProvider
+namespace DotNetCore
 {
     public class Builder : IBuilder
     {

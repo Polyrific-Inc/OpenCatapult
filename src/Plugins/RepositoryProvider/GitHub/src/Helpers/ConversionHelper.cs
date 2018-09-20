@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace GitHubRepositoryProvider.Helpers
+namespace GitHub.Helpers
 {
     public class ConversionHelper
     {

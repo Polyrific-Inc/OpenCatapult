@@ -5,7 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DotNetCoreBuildProvider.Helpers
+namespace DotNetCore.Helpers
 {
     public class CommandHelper
     {

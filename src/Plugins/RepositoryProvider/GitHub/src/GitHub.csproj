@@ -6,16 +6,17 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\BuildProvider\DotNetCoreBuildProvider\</OutputPath>
+    <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\RepositoryProvider\GitHub\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibGit2Sharp" Version="0.25.2" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
     <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Polyrific.Catapult.Plugins.Abstraction\Polyrific.Catapult.Plugins.Abstraction.csproj" />
+    <ProjectReference Include="..\..\..\Polyrific.Catapult.Plugins.Abstraction\Polyrific.Catapult.Plugins.Abstraction.csproj" />
   </ItemGroup>
 
 </Project>

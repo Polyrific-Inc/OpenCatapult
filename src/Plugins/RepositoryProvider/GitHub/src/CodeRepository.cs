@@ -4,11 +4,11 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using GitHubRepositoryProvider.Helpers;
+using GitHub.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.Logging;
 
-namespace GitHubRepositoryProvider
+namespace GitHub
 {
     public class CodeRepository : ICodeRepository
     {

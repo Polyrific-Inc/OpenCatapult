@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace GitHubRepositoryProvider
+namespace GitHub
 {
     public interface ICodeRepository
     {

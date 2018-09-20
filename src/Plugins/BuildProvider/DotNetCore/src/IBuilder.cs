@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace DotNetCoreBuildProvider
+namespace DotNetCore
 {
     public interface IBuilder
     {
