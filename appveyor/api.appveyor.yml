@@ -7,7 +7,7 @@ branches:
     - master
 only_commits:
   files:
-    - api.appveyor.yml
+    - appveyor/api.appveyor.yml
     - src/API/
     - src/Shared/Polyrific.Catapult.Shared.Common/
     - src/Shared/Polyrific.Catapult.Shared.Dto/

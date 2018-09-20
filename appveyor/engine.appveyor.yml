@@ -7,7 +7,7 @@ branches:
     - master
 only_commits:
   files:
-    - engine.appveyor.yml
+    - appveyor/engine.appveyor.yml
     - src/Engine/
     - src/Shared/Polyrific.Catapult.Shared.ApiClient/
     - src/Shared/Polyrific.Catapult.Shared.Common/
