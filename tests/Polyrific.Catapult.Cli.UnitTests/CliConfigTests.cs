@@ -174,7 +174,6 @@ namespace Polyrific.Catapult.Cli.UnitTests
             Assert.Equal("https://localhost", config.ApiUrl);
             Assert.Equal(TimeSpan.Parse("00:01:00"), config.ApiRequestTimeout);
             Assert.Equal("Polyrific/Catapult", config.AppDataFolderPath);
-            Assert.Equal("Templates", config.InstalledTemplateFolder);
         }
     }
 }
