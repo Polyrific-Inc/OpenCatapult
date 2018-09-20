@@ -24,11 +24,6 @@ namespace Polyrific.Catapult.Cli
         string AppDataFolderPath { get; }
 
         /// <summary>
-        /// Get the installed template folder
-        /// </summary>
-        string InstalledTemplateFolder { get; }
-
-        /// <summary>
         /// Get available configs
         /// </summary>
         Dictionary<string, string> Configs { get; }

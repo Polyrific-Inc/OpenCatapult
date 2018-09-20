@@ -15,10 +15,5 @@ namespace Polyrific.Catapult.Cli
         /// The child folder path in AppData
         /// </summary>
         public string AppDataFolderPath { get; set; }
-
-        /// <summary>
-        /// The child folder path for installed template
-        /// </summary>
-        public string InstalledTemplateFolder { get; set; }
     }
 }

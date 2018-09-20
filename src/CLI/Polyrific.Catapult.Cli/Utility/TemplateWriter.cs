@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Cli
     {
         private readonly CatapultCliConfig _config;
         private const string FileExtension = "yaml";
+        private const string TemplateFolder = "Templates";
 
         public TemplateWriter(CatapultCliConfig config)
         {
@@ -45,7 +46,7 @@ namespace Polyrific.Catapult.Cli
 
         private string GetDefaultTemplateFilePath(string templateName)
         {
-            var defaultPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), _config.AppDataFolderPath, _config.InstalledTemplateFolder);
+            var defaultPath = Path.Combine(AppContext.BaseDirectory, TemplateFolder);
             return Path.Combine(defaultPath, $"{templateName}.{FileExtension}");
         }
     }

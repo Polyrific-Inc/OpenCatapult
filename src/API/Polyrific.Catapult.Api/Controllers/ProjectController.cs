@@ -108,6 +108,10 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 return BadRequest(dupEx.Message);
             }
+            catch (ProjectDataModelNotFoundException modelEx)
+            {
+                return BadRequest(modelEx.Message);
+            }
         }
 
         /// <summary>

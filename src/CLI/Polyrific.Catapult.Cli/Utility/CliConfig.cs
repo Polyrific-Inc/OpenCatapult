@@ -37,9 +37,6 @@ namespace Polyrific.Catapult.Cli
         public const string AppDataFolderPathKey = "AppDataFolderPath";
         public string AppDataFolderPath => GetConfigValue(AppDataFolderPathKey, "");
 
-        public const string InstalledTemplateFolderKey = "InstalledTemplateFolder";
-        public string InstalledTemplateFolder => GetConfigValue(InstalledTemplateFolderKey, "");
-
         public Dictionary<string, string> Configs => _configs;
 
         public async Task Load()
@@ -183,8 +180,7 @@ namespace Polyrific.Catapult.Cli
             {
                 {ApiUrlKey, "https://localhost"},
                 {ApiRequestTimeoutKey, "00:01:00"},
-                {AppDataFolderPathKey, "Polyrific/Catapult" },
-                {InstalledTemplateFolderKey, "Templates" }
+                {AppDataFolderPathKey, "Polyrific/Catapult" }
             };
 
             return configs;

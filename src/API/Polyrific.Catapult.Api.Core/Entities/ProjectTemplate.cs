@@ -6,9 +6,9 @@ namespace Polyrific.Catapult.Api.Core.Entities
 {
     internal class ProjectTemplate
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Client { get; set; }
+        public Dictionary<string, string> Config { get; set; }
         public List<ProjectDataModelTemplate> Models { get; set; }
         public List<JobDefinitionTemplate> Jobs { get; set; }
     }
@@ -16,6 +16,8 @@ namespace Polyrific.Catapult.Api.Core.Entities
     internal class ProjectDataModelTemplate
     {
         public string Name { get; set; }
+        public string Label { get; set; }
+        public string Description { get; set; }
         public List<ProjectDataModelPropertyTemplate> Properties { get; set; }
     }
 
@@ -24,6 +26,9 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Name { get; set; }
         public string Label { get; set; }
         public string DataType { get; set; }
+        public string ControlType { get; set; }
+        public string RelatedProjectDataModelName { get; set; }
+        public string RelationalType { get; set; }
         public bool IsRequired { get; set; }
     }
 
@@ -35,9 +40,9 @@ namespace Polyrific.Catapult.Api.Core.Entities
 
     internal class JobTaskDefinitionTemplate
     {
-        public int Id { get; set; }
+        public string Name { get; set; }
         public string Type { get; set; }
-        public string ConfigString { get; set; }
+        public Dictionary<string, string> Config { get; set; }
         public bool? ContinueWhenError { get; set; }
         public int? Sequence { get; set; }
     }

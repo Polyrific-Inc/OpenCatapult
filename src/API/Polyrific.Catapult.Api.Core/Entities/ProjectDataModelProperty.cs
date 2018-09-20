@@ -45,6 +45,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public virtual ProjectDataModel RelatedProjectDataModel { get; set; }
 
         /// <summary>
+        /// Name of the related project data model
+        /// </summary>
+        public string RelatedProjectDataModelName { get; set; }
+
+        /// <summary>
         /// Type of the relation with the related project data model
         /// </summary>
         public string RelationalType { get; set; }

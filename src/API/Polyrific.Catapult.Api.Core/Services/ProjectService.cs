@@ -7,6 +7,7 @@ using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.Project;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,12 +22,14 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IProjectRepository _projectRepository;
         private readonly IProjectMemberRepository _projectMemberRepository;
+        private readonly IProjectDataModelPropertyRepository _projectDataModelPropertyRepository;
         private readonly IMapper _mapper;
 
-        public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IMapper mapper)
+        public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, IMapper mapper)
         {
             _projectRepository = projectRepository;
             _projectMemberRepository = projectMemberRepository;
+            _projectDataModelPropertyRepository = projectDataModelPropertyRepository;
             _mapper = mapper;
         }
 
@@ -125,7 +128,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             var duplicateProjectsCount = await _projectRepository.CountBySpec(projectByNameSpec, cancellationToken);
             if (duplicateProjectsCount > 0)
                 throw new DuplicateProjectException(projectName);
-
+            
             var newProject = new Project{ Name = projectName, Client = client };
             newProject.Models = models;
             newProject.Jobs = jobs;
@@ -147,8 +150,17 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }).ToList();
             }
 
+            List<ProjectDataModelProperty> propertiesWithRelational = null;
             if (newProject.Models != null)
             {
+                // validate related models
+                propertiesWithRelational = newProject.Models.SelectMany(m => m.Properties).Where(p => !string.IsNullOrEmpty(p.RelatedProjectDataModelName)).ToList();
+                var propertyWithInvalidRelational = propertiesWithRelational.FirstOrDefault(p => !models.Any(m => m.Name == p.RelatedProjectDataModelName));
+                if (propertyWithInvalidRelational != null)
+                {
+                    throw new ProjectDataModelNotFoundException(propertyWithInvalidRelational.RelatedProjectDataModelName);
+                }
+
                 foreach (var model in newProject.Models)
                 {
                     model.Created = DateTime.UtcNow;
@@ -181,6 +193,16 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             var newProjectId = await _projectRepository.Create(newProject, cancellationToken);
 
+            // map the relational property from RelatedProjectDataModelName
+            if (propertiesWithRelational != null)
+            {
+                foreach (var property in propertiesWithRelational)
+                {
+                    property.RelatedProjectDataModelId = newProject.Models.FirstOrDefault(m => m.Name == property.RelatedProjectDataModelName)?.Id;
+                    await _projectDataModelPropertyRepository.Update(property);
+                }
+            }
+
             return newProject;
         }
 
@@ -194,12 +216,22 @@ namespace Polyrific.Catapult.Api.Core.Services
         public async Task<string> ExportProject(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             var projectFilter = new ProjectFilterSpecification(id);
-            projectFilter.IncludeStrings.Add("Models.Properties");
+            projectFilter.IncludeStrings.Add("Models.Properties.RelatedProjectDataModel");
             projectFilter.IncludeStrings.Add("Jobs.Tasks");
             var project = await _projectRepository.GetSingleBySpec(projectFilter, cancellationToken);
 
             if (project != null)
             {
+                // set the relational property
+                var propertiesWithRelational = project.Models?.SelectMany(m => m.Properties).Where(p => p.RelatedProjectDataModel != null).ToList();
+                if (propertiesWithRelational != null)
+                {
+                    foreach (var property in propertiesWithRelational)
+                    {
+                        property.RelatedProjectDataModelName = property.RelatedProjectDataModel.Name;
+                    }
+                }
+
                 var projectTemplate = _mapper.Map<ProjectTemplate>(project);
                 return YamlSerialize(projectTemplate);
             }
