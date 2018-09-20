@@ -67,7 +67,6 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     Logger.LogInformation(message);
                     return message;
                 }
-
             }
 
             message = $"Failed adding task {Name}. Make sure the project and job definition names are correct.";

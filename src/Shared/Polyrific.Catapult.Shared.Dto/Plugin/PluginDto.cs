@@ -35,5 +35,10 @@ namespace Polyrific.Catapult.Shared.Dto.Plugin
         /// Date when the plugin was registered
         /// </summary>
         public DateTime RegistrationDate { get; set; }
+
+        /// <summary>
+        /// Required services of the plugin
+        /// </summary>
+        public string[] RequiredServices { get; set; }
     }
 }

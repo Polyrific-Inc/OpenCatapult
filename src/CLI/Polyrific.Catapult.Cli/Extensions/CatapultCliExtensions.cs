@@ -1,18 +1,22 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 
 namespace Polyrific.Catapult.Cli.Extensions
 {
     public static class CatapultCliExtensions
     {
-        public static string ToCliString<T>(this T obj, string openingLine = "")
+        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null)
         {
+            if (obj is string stringValue)
+                return stringValue;
+
             PropertyInfo[] propertyInfos = null;
             propertyInfos = obj.GetType().GetProperties();
 
@@ -31,7 +35,7 @@ namespace Polyrific.Catapult.Cli.Extensions
                     sb.AppendLine($"{item.Name}:");
                     foreach (var dictItem in propDictionary)
                     {
-                        sb.AppendLine($" {dictItem.Key}: {dictItem.Value}");
+                        sb.AppendLine($" {dictItem.Key}: {GetDisplayValue(dictItem.Key, dictItem.Value, obfuscatedFields)}");
                     }
                 }
                 else if (prop is IEnumerable enumProp && !(prop is string))
@@ -40,7 +44,7 @@ namespace Polyrific.Catapult.Cli.Extensions
                 }
                 else
                 {
-                    sb.AppendLine($"{item.Name}: {prop.ToString()}");
+                    sb.AppendLine($"{item.Name}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
                 }
             }
 
@@ -86,6 +90,11 @@ namespace Polyrific.Catapult.Cli.Extensions
                     target[key] = value;
                 }
             }
+        }
+
+        private static string GetDisplayValue(string name, string value, string[] obfuscatedFields)
+        {
+            return !string.IsNullOrEmpty(value) && (obfuscatedFields?.Contains(name) ?? false) ? "****" : value;
         }
     }
 }

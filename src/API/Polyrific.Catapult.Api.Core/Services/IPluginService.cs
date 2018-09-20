@@ -16,9 +16,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="type">Type of the plugin</param>
         /// <param name="author">Author of the plugin</param>
         /// <param name="version">Version of the plugin</param>
+        /// <param name="requiredServices">Required services of the plugin</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Plugin object</returns>
-        Task<Plugin> AddPlugin(string name, string type, string author, string version,
+        Task<Plugin> AddPlugin(string name, string type, string author, string version, string[] requiredServices,
             CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>

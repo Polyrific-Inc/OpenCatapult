@@ -19,9 +19,9 @@ namespace Polyrific.Catapult.Shared.Dto.ExternalService
         public string Description { get; set; }
 
         /// <summary>
-        /// Type of the external service
+        /// Id of the external service type
         /// </summary>
-        public string Type { get; set; }
+        public int ExternalServiceTypeId { get; set; }
 
         /// <summary>
         /// Config of the external service

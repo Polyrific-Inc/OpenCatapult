@@ -38,6 +38,11 @@
     <Compile Remove="Migrations\20180823100407_IsActiveUserAndEngine.cs" />
     <Compile Remove="Migrations\20180910085943_ExternalService.cs" />
     <Compile Remove="Migrations\20180910090135_ExternalService.cs" />
+    <Compile Remove="Migrations\20180919070821_ExternalServiceType.cs" />
+    <Compile Remove="Migrations\20180919071542_ExternalServiceType.cs" />
+    <Compile Remove="Migrations\20180919071803_ExternalServiceType.cs" />
+    <Compile Remove="Migrations\20180919081452_ExternalServiceType.cs" />
+    <Compile Remove="Migrations\20180919081842_ExternalServiceType.cs" />
     <Compile Remove="Migrations\EngineDb\20180815061308_testing.cs" />
   </ItemGroup>
 

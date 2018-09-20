@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+
 namespace Polyrific.Catapult.Api.Core.Entities
 {
     public class Plugin : BaseEntity
@@ -23,5 +25,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Version of the plugin
         /// </summary>
         public string Version { get; set; }
+
+        /// <summary>
+        /// Required services of the plugin separated by comma
+        /// </summary>
+        public string RequiredServicesString { get; set; }
     }
 }

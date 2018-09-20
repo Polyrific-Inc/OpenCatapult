@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.Plugin;
@@ -98,10 +99,17 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterPlugin(NewPluginDto dto)
         {
-            var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version);
-            var result = _mapper.Map<PluginDto>(plugin);
+            try
+            {
+                var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices);
+                var result = _mapper.Map<PluginDto>(plugin);
 
-            return CreatedAtRoute("GetPluginById", new {pluginId = plugin.Id}, result);
+                return CreatedAtRoute("GetPluginById", new { pluginId = plugin.Id }, result);
+            }
+            catch (RequiredServicesNotSupportedException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

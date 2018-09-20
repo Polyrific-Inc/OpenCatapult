@@ -6,8 +6,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
     {
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Type { get; set; }
         public int UserId { get; set; }
+
+        public int? ExternalServiceTypeId { get; set; }
+        public virtual ExternalServiceType ExternalServiceType { get; set; }
 
         public string ConfigString { get; set; }
     }

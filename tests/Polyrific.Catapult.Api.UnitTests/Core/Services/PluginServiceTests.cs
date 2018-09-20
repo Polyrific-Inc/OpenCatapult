@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Shared.Dto.Constants;
@@ -16,10 +17,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
     public class PluginServiceTests
     {
         private readonly Mock<IPluginRepository> _pluginRepository;
+        private readonly Mock<IExternalServiceTypeRepository> _externalServiceTypeRepository;
 
         public PluginServiceTests()
         {
-            _pluginRepository = new Mock<IPluginRepository>();    
+            _pluginRepository = new Mock<IPluginRepository>();
+            _externalServiceTypeRepository = new Mock<IExternalServiceTypeRepository>();
         }
 
         [Fact]
@@ -33,7 +36,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     new Plugin {Id = 3, Name = "BuildProvider1", Type = PluginType.BuildProvider}
                 });
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var results = await service.GetPlugins();
 
@@ -47,7 +50,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync(new List<Plugin>
                     {new Plugin {Id = 3, Name = "BuildProvider1", Type = PluginType.BuildProvider}});
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var results = await service.GetPlugins(PluginType.BuildProvider);
 
@@ -61,7 +64,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _pluginRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<Plugin>());
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var results = await service.GetPlugins(PluginType.DeployProvider);
 
@@ -75,7 +78,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .Setup(r => r.GetById(1, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Plugin {Id = 1, Name = "GeneratorProvider1"});
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var result = await service.GetPluginById(1);
 
@@ -90,7 +93,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .Setup(r => r.GetById(4, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Plugin)null);
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var result = await service.GetPluginById(4);
 
@@ -104,7 +107,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(() => new Plugin { Id = 1, Name = "GeneratorProvider1"});
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var result = await service.GetPluginByName("GeneratorProvider1");
 
@@ -119,7 +122,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Plugin)null);
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             var result = await service.GetPluginByName("DeployProvider1");
 
@@ -133,11 +136,25 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _pluginRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin {Id = id, Name = "DeployProvider1"});
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
-            var result = await service.AddPlugin("DeployProvider1", PluginType.DeployProvider, "Frandi", "1.0");
+            var result = await service.AddPlugin("DeployProvider1", PluginType.DeployProvider, "Frandi", "1.0", null);
 
             Assert.Equal(4, result.Id);
+        }
+
+        [Fact]
+        public void AddPlugin_RequiredServiceNotSupporedException()
+        {
+            _pluginRepository.Setup(r => r.Create(It.IsAny<Plugin>(), It.IsAny<CancellationToken>())).ReturnsAsync(4);
+            _pluginRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin { Id = id, Name = "DeployProvider1" });
+
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
+
+            var exception = Record.ExceptionAsync(() => service.AddPlugin("DeployProvider1", PluginType.DeployProvider, "Frandi", "1.0", new string[] { "Service" }));
+
+            Assert.IsType<RequiredServicesNotSupportedException>(exception?.Result);
         }
 
         [Fact]
@@ -146,7 +163,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _pluginRepository.Setup(r => r.Delete(1, It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var service = new PluginService(_pluginRepository.Object);
+            var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
             await service.DeletePlugin(1);
 

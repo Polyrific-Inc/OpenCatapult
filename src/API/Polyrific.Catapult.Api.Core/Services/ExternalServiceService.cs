@@ -23,7 +23,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _secretVault = secretVault;
         }
 
-        public async Task<int> AddExternalService(string name, string description, string type, string configString, int userId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddExternalService(string name, string description, int typeId, string configString, int userId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var externalServiceByNameSpec = new ExternalServiceFilterSpecification(name);
             if (await _repository.CountBySpec(externalServiceByNameSpec, cancellationToken) > 0)
@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 Name = name,
                 Description = description,
-                Type = type,
+                ExternalServiceTypeId = typeId,
                 UserId = userId
             };
 
@@ -90,7 +90,6 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (entity != null)
             {
-                entity.Type = externalService.Type;
                 entity.Description = externalService.Description;
 
                 if (!string.IsNullOrEmpty(externalService.ConfigString))

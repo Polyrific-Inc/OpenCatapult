@@ -88,7 +88,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
                 newExternalService.Id = await _externalServiceService.AddExternalService(dto.Name,
                     dto.Description,
-                    dto.Type,
+                    dto.ExternalServiceTypeId,
                     JsonConvert.SerializeObject(dto.Config),
                     currentUserId);
 
