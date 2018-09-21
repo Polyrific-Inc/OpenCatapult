@@ -31,10 +31,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new DeployTaskConfig()
-            {
-                ProviderName = "FakeDeployProvider"
-            };
+            var config = new DeployTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<IDeployProvider>
@@ -44,6 +41,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeDeployProvider";
 
             var result = await task.RunMainTask();
 
@@ -54,10 +52,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new DeployTaskConfig()
-            {
-                ProviderName = "FakeDeployProvider"
-            };
+            var config = new DeployTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<IDeployProvider>
@@ -67,6 +62,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeDeployProvider";
 
             var result = await task.RunMainTask();
 
@@ -77,14 +73,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new DeployTaskConfig()
-            {
-                ProviderName = "FakeDeployProvider"
-            };
+            var config = new DeployTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new DeployTask(_projectService.Object, _logger.Object);
             task.SetConfig(configString);
+            task.Provider = "FakeDeployProvider";
 
             var result = await task.RunMainTask();
 

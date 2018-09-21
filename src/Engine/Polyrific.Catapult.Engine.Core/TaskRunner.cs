@@ -95,6 +95,7 @@ namespace Polyrific.Catapult.Engine.Core
 
             task.ProjectId = projectId;
             task.JobTaskId = jobTask.Id;
+            task.Provider = jobTask.Provider;
             task.JobQueueCode = queueCode;
             task.SetConfig(JsonConvert.SerializeObject(jobTask.Config));
 

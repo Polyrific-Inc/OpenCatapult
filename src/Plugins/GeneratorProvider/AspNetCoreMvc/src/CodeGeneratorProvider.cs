@@ -24,9 +24,6 @@ namespace AspNetCoreMvc
 
         public async Task<(string outputLocation, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, string outputFolderName, GenerateTaskConfig config)
         {
-            if (config.ProviderName != Name)
-                return ("", "Provider name doesn't match.");
-
             var outputLocation = Path.Combine(config.WorkingLocation, outputFolderName);
 
             var generator = new CodeGenerator(projectName, outputLocation, models);

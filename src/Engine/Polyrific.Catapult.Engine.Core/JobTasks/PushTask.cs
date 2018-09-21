@@ -31,9 +31,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code repository provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             var serviceProperties = GetServiceProperties(provider.RequiredServices);
 
@@ -46,9 +46,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code repository provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             var serviceProperties = GetServiceProperties(provider.RequiredServices);
 
@@ -61,9 +61,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code repository provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             var serviceProperties = GetServiceProperties(provider.RequiredServices);
 

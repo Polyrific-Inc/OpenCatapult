@@ -2,10 +2,14 @@
 
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
-    public partial class JobTaskDefinitionProvider : Migration
+    public partial class AlterJobTaskDefinition : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "ContinueWhenError",
+                table: "JobTaskDefinitions");
+
             migrationBuilder.AddColumn<string>(
                 name: "Provider",
                 table: "JobTaskDefinitions",
@@ -17,6 +21,11 @@ namespace Polyrific.Catapult.Api.Data.Migrations
             migrationBuilder.DropColumn(
                 name: "Provider",
                 table: "JobTaskDefinitions");
+
+            migrationBuilder.AddColumn<bool>(
+                name: "ContinueWhenError",
+                table: "JobTaskDefinitions",
+                nullable: true);
         }
     }
 }

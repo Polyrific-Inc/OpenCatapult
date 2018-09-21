@@ -30,9 +30,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Deploy provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
             var error = await provider.BeforeDeploy(TaskConfig);
             if (!string.IsNullOrEmpty(error))
@@ -43,9 +43,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Deploy provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
             var result = await provider.Deploy(TaskConfig);
             if (!string.IsNullOrEmpty(result.errorMessage))
@@ -56,9 +56,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Deploy provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
             var error = await provider.AfterDeploy(TaskConfig);
             if (!string.IsNullOrEmpty(error))

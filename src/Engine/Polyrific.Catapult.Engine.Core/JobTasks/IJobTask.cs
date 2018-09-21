@@ -22,6 +22,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         int JobTaskId { get; set; }
 
         /// <summary>
+        /// Provider of the job task definition
+        /// </summary>
+        string Provider { get; set; }
+
+        /// <summary>
         /// Code of the job queue
         /// </summary>
         string JobQueueCode { get; set; }

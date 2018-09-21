@@ -10,8 +10,8 @@ using Polyrific.Catapult.Api.Data;
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    [Migration("20180921023147_JobTaskDefinitionProvider")]
-    partial class JobTaskDefinitionProvider
+    [Migration("20180921031621_AlterJobTaskDefinition")]
+    partial class AlterJobTaskDefinition
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -214,8 +214,6 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("ConfigString");
-
-                    b.Property<bool?>("ContinueWhenError");
 
                     b.Property<DateTime>("Created");
 

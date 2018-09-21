@@ -32,9 +32,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
             var error = await provider.BeforeBuild(TaskConfig);
             if (!string.IsNullOrEmpty(error))
@@ -45,9 +45,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
             var result = await provider.Build(Project.Name, JobQueueCode, TaskConfig);
             if (!string.IsNullOrEmpty(result.errorMessage))
@@ -58,9 +58,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
             var error = await provider.AfterBuild(TaskConfig);
             if (!string.IsNullOrEmpty(error))

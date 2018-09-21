@@ -31,10 +31,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new PushTaskConfig()
-            {
-                ProviderName = "FakeCodeRepositoryProvider"
-            };
+            var config = new PushTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeRepositoryProvider>
@@ -44,6 +41,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new PushTask(_projectService.Object, _logger.Object) {CodeRepositoryProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeRepositoryProvider";
 
             var result = await task.RunMainTask();
 
@@ -54,10 +52,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new PushTaskConfig()
-            {
-                ProviderName = "FakeCodeRepositoryProvider"
-            };
+            var config = new PushTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeRepositoryProvider>
@@ -67,6 +62,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new PushTask(_projectService.Object, _logger.Object) {CodeRepositoryProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeRepositoryProvider";
 
             var result = await task.RunMainTask();
 
@@ -77,14 +73,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new PushTaskConfig()
-            {
-                ProviderName = "FakeCodeRepositoryProvider"
-            };
+            var config = new PushTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new PushTask(_projectService.Object, _logger.Object);
             task.SetConfig(configString);
+            task.Provider = "FakeCodeRepositoryProvider";
 
             var result = await task.RunMainTask();
 

@@ -213,8 +213,6 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("ConfigString");
 
-                    b.Property<bool?>("ContinueWhenError");
-
                     b.Property<DateTime>("Created");
 
                     b.Property<int>("JobDefinitionId");

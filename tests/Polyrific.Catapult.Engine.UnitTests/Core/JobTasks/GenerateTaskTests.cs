@@ -41,10 +41,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeGeneratorProvider>
@@ -54,6 +51,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask();
 
@@ -64,10 +62,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeGeneratorProvider>
@@ -77,6 +72,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask();
 
@@ -87,14 +83,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object);
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask();
 

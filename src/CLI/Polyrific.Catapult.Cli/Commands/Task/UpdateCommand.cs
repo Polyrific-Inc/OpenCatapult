@@ -50,6 +50,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
+        [Option("-s|--Sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
+        public int? Sequence { get; set; }
+
         public override string Execute()
         {
             string message = string.Empty;
@@ -72,6 +75,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                             Type = Type ?? task.Type,
                             Provider = Provider ?? task.Provider,
                             Name = Rename ?? task.Name,
+                            Sequence = Sequence ?? task.Sequence,
                             Config = Property?.Length > 0 ? Property.ToDictionary(x => x.Item1, x => x.Item2) : task.Config
                         });
 

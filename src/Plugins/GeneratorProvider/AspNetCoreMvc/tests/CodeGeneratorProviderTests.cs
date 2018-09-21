@@ -1,4 +1,4 @@
-// Copyright (c) Polyrific, Inc 2018. All rights reserved.
+﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
@@ -18,7 +18,6 @@ namespace AspNetCoreMvc.Tests
             var outputFolderName = "20180817.1";
             var config = new GenerateTaskConfig
             {
-                ProviderName = "AspNetCoreMvc",
                 WorkingLocation = Path.Combine(AppContext.BaseDirectory, "working")
             };
 

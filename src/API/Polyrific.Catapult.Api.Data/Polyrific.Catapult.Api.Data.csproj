@@ -43,6 +43,7 @@
     <Compile Remove="Migrations\20180919071803_ExternalServiceType.cs" />
     <Compile Remove="Migrations\20180919081452_ExternalServiceType.cs" />
     <Compile Remove="Migrations\20180919081842_ExternalServiceType.cs" />
+    <Compile Remove="Migrations\20180921023147_JobTaskDefinitionProvider.cs" />
     <Compile Remove="Migrations\EngineDb\20180815061308_testing.cs" />
   </ItemGroup>
 

@@ -5,11 +5,6 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
     public class BaseJobTaskConfig
     {
         /// <summary>
-        /// Name of the provider
-        /// </summary>
-        public string ProviderName { get; set; }
-
-        /// <summary>
         /// Continue to the next task although the current execution is failed.
         /// Default is <see cref="false"/>.
         /// </summary>

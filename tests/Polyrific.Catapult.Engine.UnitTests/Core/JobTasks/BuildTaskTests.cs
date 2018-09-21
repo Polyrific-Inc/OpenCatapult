@@ -31,10 +31,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new BuildTaskConfig
-            {
-                ProviderName = "FakeBuildProvider"
-            };
+            var config = new BuildTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<IBuildProvider>
@@ -44,6 +41,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask();
 
@@ -54,10 +52,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new BuildTaskConfig
-            {
-                ProviderName = "FakeBuildProvider"
-            };
+            var config = new BuildTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<IBuildProvider>
@@ -67,6 +62,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask();
 
@@ -77,14 +73,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new BuildTaskConfig
-            {
-                ProviderName = "FakeBuildProvider"
-            };
+            var config = new BuildTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new BuildTask(_projectService.Object, _logger.Object);
             task.SetConfig(configString);
+            task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask();
 

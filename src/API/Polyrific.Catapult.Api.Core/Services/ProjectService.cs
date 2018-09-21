@@ -96,9 +96,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                     {
                         Name = sourceTask.Name,
                         Type = sourceTask.Type,
+                        Provider = sourceTask.Provider,
                         Sequence = sourceTask.Sequence,
                         ConfigString = sourceTask.ConfigString,
-                        ContinueWhenError = sourceTask.ContinueWhenError,
                         Created = DateTime.UtcNow
                     }).ToList(),
                     Created = DateTime.UtcNow

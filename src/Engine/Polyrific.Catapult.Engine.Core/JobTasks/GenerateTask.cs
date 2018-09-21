@@ -48,9 +48,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code generator provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
 
             var error = await provider.BeforeGenerate(Project.Name, DataModels, JobQueueCode, TaskConfig);
             if (!string.IsNullOrEmpty(error))
@@ -61,9 +61,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code generator provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
             
             var (outputLocation, errorMessage) = await provider.Generate(Project.Name, DataModels, JobQueueCode, TaskConfig);
             if (!string.IsNullOrEmpty(errorMessage))
@@ -74,9 +74,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == TaskConfig.ProviderName);
+            var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Code generator provider \"{TaskConfig.ProviderName}\" could not be found.");
+                return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
 
             var error = await provider.AfterGenerate(Project.Name, DataModels, JobQueueCode, TaskConfig);
             if (!string.IsNullOrEmpty(error))
