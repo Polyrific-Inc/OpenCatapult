@@ -43,7 +43,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [AllowedValues(JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Build,
             JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, IgnoreCase = true)]
         public string Type { get; set; }
-        
+
+        [Option("-prov|--Provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
+        public string Provider { get; set; }
+
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
@@ -67,6 +70,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         {
                             Id = task.Id,
                             Type = Type ?? task.Type,
+                            Provider = Provider ?? task.Provider,
                             Name = Rename ?? task.Name,
                             Config = Property?.Length > 0 ? Property.ToDictionary(x => x.Item1, x => x.Item2) : task.Config
                         });

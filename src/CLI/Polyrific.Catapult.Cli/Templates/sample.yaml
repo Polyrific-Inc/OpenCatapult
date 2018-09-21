@@ -164,11 +164,10 @@ jobs:
   tasks:
   - name: Generate
     type: Generate
-    config:
-      ProviderName: AspNetCoreMvc
+    provider: AspNetCoreMvc
   - name: Push
     type: Generate
+    provider: GitHubRepositoryProvider
     config:
-      ProviderName: GitHubRepositoryProvider
       Branch: master
       GitHubExternalService: github-default

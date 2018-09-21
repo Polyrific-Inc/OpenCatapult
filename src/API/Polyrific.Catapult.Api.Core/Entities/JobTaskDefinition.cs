@@ -25,6 +25,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Type { get; set; }
 
         /// <summary>
+        /// Provider of the job task definition
+        /// </summary>
+        public string Provider { get; set; }
+
+        /// <summary>
         /// Config string of the job task definition
         /// </summary>
         public string ConfigString { get; set; }
