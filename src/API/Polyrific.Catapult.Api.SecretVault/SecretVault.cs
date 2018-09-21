@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Microsoft.AspNetCore.DataProtection;
+using Polyrific.Catapult.Api.Core.Security;
 using Polyrific.Catapult.Shared.Common.Interface;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Shared.SecretVault
+namespace Polyrific.Catapult.Api.SecretVault
 {
     public class SecretVault : ISecretVault
     {

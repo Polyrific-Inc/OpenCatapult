@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Shared.Common.Interface
+namespace Polyrific.Catapult.Api.Core.Security
 {
     public interface ISecretVault
     {

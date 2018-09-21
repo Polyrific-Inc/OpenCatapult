@@ -1,18 +1,16 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Moq;
-using Polyrific.Catapult.Api.Core.Entities;
-using Polyrific.Catapult.Api.Core.Exceptions;
-using Polyrific.Catapult.Api.Core.Repositories;
-using Polyrific.Catapult.Api.Core.Services;
-using Polyrific.Catapult.Api.Core.Specifications;
-using Polyrific.Catapult.Shared.Common.Interface;
-using Polyrific.Catapult.Shared.Dto.Constants;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
+using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
+using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Api.Core.Security;
+using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Core.Specifications;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services

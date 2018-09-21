@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Microsoft.Extensions.DependencyInjection;
-using Polyrific.Catapult.Shared.SecretVault;
+using Polyrific.Catapult.Api.SecretVault;
 using System;
 
 namespace Polyrific.Catapult.Api.Infrastructure

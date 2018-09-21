@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.SecretVault\Polyrific.Catapult.Shared.SecretVault.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj" />
+    <ProjectReference Include="..\Polyrific.Catapult.Api.SecretVault\Polyrific.Catapult.Api.SecretVault.csproj" />
   </ItemGroup>
 
 </Project>

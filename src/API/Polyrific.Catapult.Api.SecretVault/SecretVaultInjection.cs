@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Microsoft.Extensions.DependencyInjection;
-using Polyrific.Catapult.Shared.Common.Interface;
+using Polyrific.Catapult.Api.Core.Security;
 
-namespace Polyrific.Catapult.Shared.SecretVault
+namespace Polyrific.Catapult.Api.SecretVault
 {
     public static class SecretVaultInjection
     {
