@@ -34,14 +34,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var config = new DeployTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
-            var providers = new List<IDeployProvider>
+            var providers = new List<IHostingProvider>
             {
-                new FakeDeployProvider("good-result", "")
+                new FakeHostingProvider("good-result", "")
             };
 
-            var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
+            var task = new DeployTask(_projectService.Object, _logger.Object) {HostingProviders = providers};
             task.SetConfig(configString);
-            task.Provider = "FakeDeployProvider";
+            task.Provider = "FakeHostingProvider";
 
             var result = await task.RunMainTask();
 
@@ -55,14 +55,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var config = new DeployTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
-            var providers = new List<IDeployProvider>
+            var providers = new List<IHostingProvider>
             {
-                new FakeDeployProvider("", "error-message")
+                new FakeHostingProvider("", "error-message")
             };
 
-            var task = new DeployTask(_projectService.Object, _logger.Object) {DeployProviders = providers};
+            var task = new DeployTask(_projectService.Object, _logger.Object) {HostingProviders = providers};
             task.SetConfig(configString);
-            task.Provider = "FakeDeployProvider";
+            task.Provider = "FakeHostingProvider";
 
             var result = await task.RunMainTask();
 
@@ -78,12 +78,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var task = new DeployTask(_projectService.Object, _logger.Object);
             task.SetConfig(configString);
-            task.Provider = "FakeDeployProvider";
+            task.Provider = "FakeHostingProvider";
 
             var result = await task.RunMainTask();
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Deploy provider \"FakeDeployProvider\" could not be found.", result.ErrorMessage);
+            Assert.Equal("Deploy provider \"FakeHostingProvider\" could not be found.", result.ErrorMessage);
         }
     }
 }

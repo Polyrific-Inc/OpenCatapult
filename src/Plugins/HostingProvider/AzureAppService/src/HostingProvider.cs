@@ -9,17 +9,17 @@ using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
 namespace AzureAppService
 {
-    [Export(typeof(IDeployProvider))]
-    public class DeployProvider : IDeployProvider
+    [Export(typeof(IHostingProvider))]
+    public class HostingProvider : IHostingProvider
     {
         private IAzureAutomation _azure;
 
-        public DeployProvider()
+        public HostingProvider()
         {
             
         }
 
-        public DeployProvider(IAzureAutomation azure)
+        public HostingProvider(IAzureAutomation azure)
         {
             _azure = azure;
         }

@@ -1,5 +1,5 @@
 name: 'AzureAppService'
-type: 'DeployProvider'
+type: 'HostingProvider'
 author: 'Polyrific'
 version: '1.0'
 required-services:

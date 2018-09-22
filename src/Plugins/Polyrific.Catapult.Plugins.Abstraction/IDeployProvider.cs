@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
 namespace Polyrific.Catapult.Plugins.Abstraction
 {
-    public interface IDeployProvider
+    public interface IHostingProvider
     {
         /// <summary>
         /// Name of the provider

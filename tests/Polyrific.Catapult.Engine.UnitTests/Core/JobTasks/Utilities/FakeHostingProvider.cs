@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 {
-    public class FakeDeployProvider : IDeployProvider
+    public class FakeHostingProvider : IHostingProvider
     {
         private readonly (string returnValue, string errorMessage) _deployResult;
         private readonly string _preProcessError = "";
@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
         /// </summary>
         /// <param name="returnValue">Fake return value</param>
         /// <param name="errorMessage">Fake error message</param>
-        public FakeDeployProvider(string returnValue, string errorMessage)
+        public FakeHostingProvider(string returnValue, string errorMessage)
         {
             _deployResult = (returnValue, errorMessage);
         }
@@ -31,14 +31,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
         /// <param name="errorMessage">Fake error message</param>
         /// <param name="preProcessError">Fake pre-process error message</param>
         /// <param name="postProcessError">Fake post-process error message</param>
-        public FakeDeployProvider(string returnValue, string errorMessage, string preProcessError, string postProcessError)
+        public FakeHostingProvider(string returnValue, string errorMessage, string preProcessError, string postProcessError)
         {
             _deployResult = (returnValue, errorMessage);
             _preProcessError = preProcessError;
             _postProcessError = postProcessError;
         }
 
-        public string Name => nameof(FakeDeployProvider);
+        public string Name => nameof(FakeHostingProvider);
 
         public string[] RequiredServices => new string[0];
 

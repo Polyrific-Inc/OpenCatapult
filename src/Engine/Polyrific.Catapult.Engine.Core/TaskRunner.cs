@@ -115,7 +115,7 @@ namespace Polyrific.Catapult.Engine.Core
                         providerType = PluginType.BuildProvider;
                         break;
                     case JobTaskDefinitionType.Deploy:
-                        providerType = PluginType.DeployProvider;
+                        providerType = PluginType.HostingProvider;
                         break;
                     case JobTaskDefinitionType.Generate:
                         providerType = PluginType.GeneratorProvider;

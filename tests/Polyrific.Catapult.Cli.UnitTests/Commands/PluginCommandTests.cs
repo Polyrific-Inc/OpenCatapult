@@ -109,7 +109,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var testContent = new NewPluginDto
             {
                 Name = "APlugin01",
-                Type = PluginType.DeployProvider,
+                Type = PluginType.HostingProvider,
                 Author = "Frandi",
                 Version = "1.0"
             };

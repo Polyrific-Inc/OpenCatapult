@@ -26,12 +26,12 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Deploy;
 
-        [ImportMany(typeof(IDeployProvider))]
-        public IEnumerable<IDeployProvider> DeployProviders;
+        [ImportMany(typeof(IHostingProvider))]
+        public IEnumerable<IHostingProvider> HostingProviders;
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = HostingProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = HostingProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
@@ -61,7 +61,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = DeployProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = HostingProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
