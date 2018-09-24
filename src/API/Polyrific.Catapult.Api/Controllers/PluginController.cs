@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
@@ -18,11 +20,13 @@ namespace Polyrific.Catapult.Api.Controllers
     public class PluginController : ControllerBase
     {
         private readonly IPluginService _pluginService;
+        private readonly IPluginAdditionalConfigService _pluginAdditionalConfigService;
         private readonly IMapper _mapper;
 
-        public PluginController(IPluginService pluginService, IMapper mapper)
+        public PluginController(IPluginService pluginService, IPluginAdditionalConfigService pluginAdditionalConfigService, IMapper mapper)
         {
             _pluginService = pluginService;
+            _pluginAdditionalConfigService = pluginAdditionalConfigService;
             _mapper = mapper;
         }
 
@@ -67,7 +71,10 @@ namespace Polyrific.Catapult.Api.Controllers
             if (plugin == null)
                 return NoContent();
 
+            var additionalConfigs = await _pluginAdditionalConfigService.GetByPlugin(pluginId);
+
             var result = _mapper.Map<PluginDto>(plugin);
+            result.AdditionalConfigs = _mapper.Map<PluginAdditionalConfigDto[]>(additionalConfigs);
 
             return Ok(result);
 
@@ -85,7 +92,10 @@ namespace Polyrific.Catapult.Api.Controllers
             if (plugin == null)
                 return NoContent();
 
+            var additionalConfigs = await _pluginAdditionalConfigService.GetByPlugin(plugin.Id);
+
             var result = _mapper.Map<PluginDto>(plugin);
+            result.AdditionalConfigs = _mapper.Map<PluginAdditionalConfigDto[]>(additionalConfigs);
 
             return Ok(result);
 
@@ -103,6 +113,12 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices);
                 var result = _mapper.Map<PluginDto>(plugin);
+
+                if (dto.AdditionalConfigs != null && dto.AdditionalConfigs.Length > 0)
+                {
+                    var additionalConfigs = _mapper.Map<List<PluginAdditionalConfig>>(dto.AdditionalConfigs);
+                    var _ = await _pluginAdditionalConfigService.AddAdditionalConfigs(plugin.Id, additionalConfigs);
+                }
 
                 return CreatedAtRoute("GetPluginById", new { pluginId = plugin.Id }, result);
             }
