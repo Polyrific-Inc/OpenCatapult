@@ -193,7 +193,7 @@ jobs:
   - name: Push
     type: Generate
     provider: GitHubRepositoryProvider
-    config:
+    configs:
       Branch: master
       GitHubExternalService: github-default"
             );
@@ -254,7 +254,7 @@ jobs:
   - name: Push
     type: Generate
     provider: GitHubRepositoryProvider
-    config:
+    configs:
       Branch: master"
             );
 
@@ -286,7 +286,7 @@ jobs:
   - name: Push
     type: Generate
     provider: GitHubRepositoryProvider
-    config:
+    configs:
       Branch: master
       GitHubExternalService: github-default2"
             );
@@ -319,7 +319,7 @@ jobs:
   - name: Push
     type: Generate
     provider: GitHubRepositoryProvider
-    config:
+    configs:
       Branch: master
       GitHubExternalService: azure-default"
             );

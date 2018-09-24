@@ -168,6 +168,6 @@ jobs:
   - name: Push
     type: Generate
     provider: GitHubRepositoryProvider
-    config:
+    configs:
       Branch: master
       GitHubExternalService: github-default

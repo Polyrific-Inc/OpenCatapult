@@ -109,7 +109,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     foreach (var service in plugin.RequiredServices)
                     {
                         var externalServiceKey = $"{service}ExternalService";
-                        var externalServiceName = task.Config.GetValueOrDefault(externalServiceKey);
+                        var externalServiceName = task.Configs.GetValueOrDefault(externalServiceKey);
 
                         if (string.IsNullOrEmpty(externalServiceName))
                         {

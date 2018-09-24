@@ -103,11 +103,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                     var externalServiceKey = $"{service}ExternalService";
                                     var externalServiceName = Console.GetString($"{service} external service name:");
 
-                                    if (task.Provider == Provider && string.IsNullOrEmpty(externalServiceName))
-                                    {
-                                        properties.Add((externalServiceKey, task.Config[externalServiceKey]));
-                                    }
-                                    else
+                                    if (!(task.Provider == Provider && string.IsNullOrEmpty(externalServiceName)))
                                     {
                                         if (string.IsNullOrEmpty(externalServiceName))
                                         {
@@ -147,7 +143,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                             Provider = Provider ?? task.Provider,
                             Name = Rename ?? task.Name,
                             Sequence = Sequence ?? task.Sequence,
-                            Configs = Property?.Length > 0 ? Property.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs
+                            Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs
                         });
 
                         message = $"Task {Name} was updated";
