@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\DeployProvider\AzureAppService\</OutputPath>
+    <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\HostingProvider\AzureAppService\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>

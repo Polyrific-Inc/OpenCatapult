@@ -28,7 +28,7 @@ namespace AzureAppService
             _logger = logger;
         }
 
-        public Task<string> DeployWebsite(string artifactLocation, DeployTaskConfig taskConfig)
+        public Task<string> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, DeployTaskConfig taskConfig)
         {
             var credentials = SdkContext.AzureCredentialsFactory.FromServicePrincipal(_config.ApplicationId,
                 _config.ApplicationKey, _config.TenantId, AzureEnvironment.AzureGlobalCloud);
@@ -36,25 +36,25 @@ namespace AzureAppService
             var azure = Azure.Configure()
                 .WithLogLevel(HttpLoggingDelegatingHandler.Level.BodyAndHeaders)
                 .Authenticate(credentials)
-                .WithSubscription(taskConfig.SubscriptionId);
+                .WithSubscription(subscriptionId);
 
-            var website = GetWebsite(azure, taskConfig.ResourceGroupName, taskConfig.AppServiceName);
+            var website = GetWebsite(azure, resourceGroupName, appServiceName);
             if (website == null)
             {
-                var error = $"Website {taskConfig.AppServiceName} is not found in {taskConfig.ResourceGroupName}";
+                var error = $"Website {appServiceName} is not found in {resourceGroupName}";
                 _logger.LogError(error);
                 return Task.FromResult(error);
             }
             
             _logger.LogDebug("Deploying artifact to Azure App Service.");
 
-            if (!string.IsNullOrEmpty(taskConfig.DeploymentSlot))
+            if (!string.IsNullOrEmpty(deploymentSlot))
             {
-                var slot = GetSlot(website, taskConfig.DeploymentSlot) ?? CreateSlot(website, taskConfig.DeploymentSlot);
+                var slot = GetSlot(website, deploymentSlot) ?? CreateSlot(website, deploymentSlot);
 
                 if (!ExecuteDeployWebsite(ExecuteAzureFunction(() => slot.GetPublishingProfile()), artifactLocation))
                 {
-                    var error = $"Failed to deploy website to {taskConfig.DeploymentSlot}.";
+                    var error = $"Failed to deploy website to {deploymentSlot}.";
                     _logger.LogError(error);
                     return Task.FromResult(error);
                 }
@@ -63,7 +63,7 @@ namespace AzureAppService
             {
                 if (!ExecuteDeployWebsite(ExecuteAzureFunction(() => website.GetPublishingProfile()), artifactLocation))
                 {
-                    var error = $"Failed to deploy website to {taskConfig.DeploymentSlot}.";
+                    var error = $"Failed to deploy website to {deploymentSlot}.";
                     _logger.LogError(error);
                     return Task.FromResult(error);
                 }

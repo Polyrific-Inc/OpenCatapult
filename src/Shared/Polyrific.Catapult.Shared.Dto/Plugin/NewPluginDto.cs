@@ -28,5 +28,10 @@ namespace Polyrific.Catapult.Shared.Dto.Plugin
         /// Required services of the plugin
         /// </summary>
         public string[] RequiredServices { get; set; }
+
+        /// <summary>
+        /// Plugin additional configs
+        /// </summary>
+        public PluginAdditionalConfigDto[] AdditionalConfigs { get; set; }
     }
 }

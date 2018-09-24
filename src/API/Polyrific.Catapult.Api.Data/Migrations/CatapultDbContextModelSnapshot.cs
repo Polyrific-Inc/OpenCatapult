@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
+                .HasAnnotation("ProductVersion", "2.1.3-rtm-32065")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -260,6 +260,38 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Plugins");
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<bool>("IsRequired");
+
+                    b.Property<bool>("IsSecret");
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("PluginId");
+
+                    b.Property<string>("Type");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PluginId");
+
+                    b.ToTable("PluginAdditionalConfigs");
                 });
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Project", b =>
@@ -687,6 +719,14 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasOne("Polyrific.Catapult.Api.Core.Entities.JobDefinition", "JobDefinition")
                         .WithMany("Tasks")
                         .HasForeignKey("JobDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.Plugin", "Plugin")
+                        .WithMany()
+                        .HasForeignKey("PluginId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

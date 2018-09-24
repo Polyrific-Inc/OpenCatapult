@@ -22,57 +22,85 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <summary>
         /// Process to run before executing repository clone
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
         /// <param name="config">Clone task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> BeforeClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties);
+        Task<string> BeforeClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Clone source code from remote repository
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
         /// <param name="config">Clone task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
-        /// <returns>Tuple of (returnValue, errorMessae)</returns>
-        Task<(string returnValue, string errorMessage)> Clone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger);
+        /// <returns>Tuple of (returnValue, errorMessage)</returns>
+        Task<(string returnValue, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing repository clone
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
         /// <param name="config">Clone task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> AfterClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties);
+        Task<string> AfterClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run before pushing code to remote repository
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
-        /// <param name="config"></param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="config">Push task configuration</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> BeforePush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties);
+        Task<string> BeforePush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Push source code to remote repository
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
         /// <param name="config">Push task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
-        /// <param name="logger">Instance <see cref="ILogger"/></param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Tuple of (returnValue, errorMessage)/></returns>
-        Task<(string returnValue, string errorMessage)> Push(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger);
+        Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after pushing code to remote repository
         /// </summary>
-        /// <param name="repositoryFolder">Local repository folder (this is relative to the working folder)</param>
-        /// <param name="config"></param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="config">Push task configuration</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> AfterPush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties);
+        Task<string> AfterPush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+
+        /// <summary>
+        /// Process to run before executing pull request merge
+        /// </summary>
+        /// <param name="prNumber">Pull request number</param>
+        /// <param name="config">Clone task configuration</param>
+        /// <param name="additionalConfigs">Addition configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
+        /// <returns>Error message</returns>
+        Task<string> BeforeMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+
+        /// <summary>
+        /// Merge pull request
+        /// </summary>
+        /// <param name="prNumber">Pull request number</param>
+        /// <param name="config">Clone task configuration</param>
+        /// <param name="additionalConfigs">Addition configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
+        /// <returns>Tuple of (returnValue, errorMessage)</returns>
+        Task<(string returnValue, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+
+        /// <summary>
+        /// Process to run after executing pull request merge
+        /// </summary>
+        /// <param name="prNumber">Pull request number</param>
+        /// <param name="config">Clone task configuration</param>
+        /// <param name="additionalConfigs">Addition configurations for specific provider</param>
+        /// <param name="logger">Instance of <see cref="ILogger"/></param>
+        /// <returns>Error message</returns>
+        Task<string> AfterMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
     }
 }

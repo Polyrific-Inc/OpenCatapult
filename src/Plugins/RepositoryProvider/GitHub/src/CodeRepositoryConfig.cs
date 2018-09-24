@@ -5,9 +5,19 @@ namespace GitHub
     public class CodeRepositoryConfig
     {
         /// <summary>
+        /// Name of the product, the GitHub organization, or the GitHub user name
+        /// </summary>
+        public string ProjectName { get; set; }
+
+        /// <summary>
         /// URL of the remote repository
         /// </summary>
         public string RemoteUrl { get; set; }
+
+        /// <summary>
+        /// Owner of the repository
+        /// </summary>
+        public string RepoOwner { get; set; }
 
         /// <summary>
         /// Credential type to be used to connect to remote repository

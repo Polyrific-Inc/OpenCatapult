@@ -1,24 +1,20 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class BuildTask : BaseJobTask<BuildTaskConfig>, IBuildTask
     {
-        /// <summary>
-        /// Instantiate <see cref="BuildTask"/>
-        /// </summary>
-        /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
-        /// <param name="logger">Logger</param>
+        /// <inheritdoc />
         public BuildTask(IProjectService projectService, ILogger<BuildTask> logger) 
             : base(projectService, logger)
         {
@@ -36,7 +32,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
-            var error = await provider.BeforeBuild(TaskConfig);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
+
+            var error = await provider.BeforeBuild(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -49,7 +47,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
-            var result = await provider.Build(Project.Name, JobQueueCode, TaskConfig);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
+
+            var result = await provider.Build(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
@@ -62,7 +62,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
 
-            var error = await provider.AfterBuild(TaskConfig);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
+
+            var error = await provider.AfterBuild(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
 namespace Polyrific.Catapult.Plugins.Abstraction
 {
-    public interface IDeployProvider
+    public interface IHostingProvider
     {
         /// <summary>
         /// Name of the provider
@@ -23,28 +23,27 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// Process to run before executing deploy
         /// </summary>
         /// <param name="config">Deploy task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger);
+        Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Deploy artifact
         /// </summary>
-        /// <param name="artifactLocation">Location of the artifact package</param>
         /// <param name="config">Deploy task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns></returns>
-        Task<(string returnValue, string errorMessage)> Deploy(string artifactLocation, DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger);
+        Task<(string returnValue, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing deploy
         /// </summary>
         /// <param name="config">Deploy task configuration</param>
-        /// <param name="serviceProperties">Properties from the required services</param>
+        /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger);
+        Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
     }
 }

@@ -80,14 +80,29 @@ namespace Polyrific.Catapult.Engine.Core
                 case JobTaskDefinitionType.Build:
                     task = _jobTaskService.BuildTask;
                     break;
+                case JobTaskDefinitionType.Clone:
+                    task = _jobTaskService.CloneTask;
+                    break;
                 case JobTaskDefinitionType.Deploy:
                     task = _jobTaskService.DeployTask;
+                    break;
+                case JobTaskDefinitionType.DeployDb:
+                    task = _jobTaskService.DeployDbTask;
                     break;
                 case JobTaskDefinitionType.Generate:
                     task = _jobTaskService.GenerateTask;
                     break;
+                case JobTaskDefinitionType.Merge:
+                    task = _jobTaskService.MergeTask;
+                    break;
+                case JobTaskDefinitionType.PublishArtifact:
+                    task = _jobTaskService.PublishArtifactTask;
+                    break;
                 case JobTaskDefinitionType.Push:
                     task = _jobTaskService.PushTask;
+                    break;
+                case JobTaskDefinitionType.Test:
+                    task = _jobTaskService.TestTask;
                     break;
                 default:
                     throw new InvalidJobTaskTypeException(jobTask.Type);
@@ -97,7 +112,10 @@ namespace Polyrific.Catapult.Engine.Core
             task.JobTaskId = jobTask.Id;
             task.Provider = jobTask.Provider;
             task.JobQueueCode = queueCode;
-            task.SetConfig(JsonConvert.SerializeObject(jobTask.Config));
+            task.SetConfig(JsonConvert.SerializeObject(jobTask.Configs));
+            task.AdditionalConfigs = jobTask.AdditionalConfigs;
+
+            // TODO: some tasks (e.g. Merge task) requires input from the output of previous task (e.g. PR Number). We need to assign this value as well here
 
             return task;
         }
@@ -114,14 +132,29 @@ namespace Polyrific.Catapult.Engine.Core
                     case JobTaskDefinitionType.Build:
                         providerType = PluginType.BuildProvider;
                         break;
+                    case JobTaskDefinitionType.Clone:
+                        providerType = PluginType.RepositoryProvider;
+                        break;
                     case JobTaskDefinitionType.Deploy:
-                        providerType = PluginType.DeployProvider;
+                        providerType = PluginType.HostingProvider;
+                        break;
+                    case JobTaskDefinitionType.DeployDb:
+                        providerType = PluginType.DatabaseProvider;
                         break;
                     case JobTaskDefinitionType.Generate:
                         providerType = PluginType.GeneratorProvider;
                         break;
+                    case JobTaskDefinitionType.Merge:
+                        providerType = PluginType.RepositoryProvider;
+                        break;
+                    case JobTaskDefinitionType.PublishArtifact:
+                        providerType = PluginType.StorageProvider;
+                        break;
                     case JobTaskDefinitionType.Push:
                         providerType = PluginType.RepositoryProvider;
+                        break;
+                    case JobTaskDefinitionType.Test:
+                        providerType = PluginType.TestProvider;
                         break;
                     default:
                         providerType = jobTaskType;

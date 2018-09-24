@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
@@ -27,41 +26,40 @@ namespace GitHub
 
         public string Name => "GitHubRepositoryProvider";
 
-        public string[] RequiredServices => new string[] { "GitHub" };
+        public string[] RequiredServices => new[] { "GitHub" };
 
-        public Task<string> BeforeClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> BeforeClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Clone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public async Task<(string returnValue, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var localRepo = Path.Combine(config.WorkingLocation, repositoryFolder);
+            var repoConfig = GetCodeRepositoryConfig(config.CloneLocation, config.Repository, additionalConfigs);
 
             if (_codeRepository == null)
-                _codeRepository = new CodeRepository(GetCodeRepositoryConfig(localRepo, serviceProperties), logger);
+                _codeRepository = new CodeRepository(repoConfig, logger);
 
             var error = await _codeRepository.Clone();
             if (!string.IsNullOrEmpty(error))
                 return ("", error);
 
-            return (localRepo, "");
+            return (config.CloneLocation, "");
         }
 
-        public Task<string> AfterClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> AfterClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public Task<string> BeforePush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> BeforePush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Push(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public async Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var localRepo = Path.Combine(config.WorkingLocation, repositoryFolder);
-            var repoConfig = GetCodeRepositoryConfig(localRepo, serviceProperties);
+            var repoConfig = GetCodeRepositoryConfig(config.SourceLocation, config.Repository, additionalConfigs);
 
             if (_codeRepository == null)
                 _codeRepository = new CodeRepository(repoConfig, logger);
@@ -73,31 +71,54 @@ namespace GitHub
             return (repoConfig.RemoteUrl, "");
         }
 
-        public Task<string> AfterPush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> AfterPush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        private CodeRepositoryConfig GetCodeRepositoryConfig(string localRepository, Dictionary<string, string> serviceProperties)
+        public Task<string> BeforeMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var config = new CodeRepositoryConfig();
+            return Task.FromResult("");
+        }
 
-            config.LocalRepository = localRepository;
+        public async Task<(string returnValue, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        {
+            var repoConfig = GetCodeRepositoryConfig("", config.Repository, additionalConfigs);
 
-            if (serviceProperties.ContainsKey("RemoteUrl"))
-                config.RemoteUrl = serviceProperties["RemoteUrl"];
+            if (_codeRepository == null)
+                _codeRepository = new CodeRepository(repoConfig, logger);
 
-            if (serviceProperties.ContainsKey("RemoteCredentialType"))
-                config.RemoteCredentialType = serviceProperties["RemoteCredentialType"];
+            var success = await _codeRepository.MergePullRequest(prNumber);
+            if (!success)
+                return ("", "Failed to merge pull request.");
 
-            if (serviceProperties.ContainsKey("RemoteUsername"))
-                config.RemoteUsername = serviceProperties["RemoteUsername"];
+            return (config.Repository, "");
+        }
 
-            if (serviceProperties.ContainsKey("RemotePassword"))
-                config.RemotePassword = serviceProperties["RemotePassword"];
+        public Task<string> AfterMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        {
+            return Task.FromResult("");
+        }
 
-            if (serviceProperties.ContainsKey("RepoAuthToken"))
-                config.RepoAuthToken = serviceProperties["RepoAuthToken"];
+        private CodeRepositoryConfig GetCodeRepositoryConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs)
+        {
+            var config = new CodeRepositoryConfig
+            {
+                LocalRepository = localRepository,
+                RemoteUrl = remoteUrl
+            };
+
+            if (additionalConfigs.ContainsKey("RemoteCredentialType"))
+                config.RemoteCredentialType = additionalConfigs["RemoteCredentialType"];
+
+            if (additionalConfigs.ContainsKey("RemoteUsername"))
+                config.RemoteUsername = additionalConfigs["RemoteUsername"];
+
+            if (additionalConfigs.ContainsKey("RemotePassword"))
+                config.RemotePassword = additionalConfigs["RemotePassword"];
+
+            if (additionalConfigs.ContainsKey("RepoAuthToken"))
+                config.RepoAuthToken = additionalConfigs["RepoAuthToken"];
 
             return config;
         }

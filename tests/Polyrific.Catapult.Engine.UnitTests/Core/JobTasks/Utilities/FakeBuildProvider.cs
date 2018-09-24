@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 {
@@ -40,17 +42,17 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string[] RequiredServices => new string[0];
 
-        public Task<string> BeforeBuild(BuildTaskConfig config)
+        public Task<string> BeforeBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Build(string projectName, string jobQueueCode, BuildTaskConfig config)
+        public Task<(string returnValue, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_buildResult);
         }
 
-        public Task<string> AfterBuild(BuildTaskConfig config)
+        public Task<string> AfterBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_postProcessError);
         }

@@ -1,11 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
@@ -55,6 +56,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// </summary>
         protected TTaskConfig TaskConfig { get; private set; }
 
+        /// <summary>
+        /// Additional configurations which are required by specific providers
+        /// </summary>
+        public Dictionary<string, string> AdditionalConfigs { get; set; }
+
         private ProjectDto _project;
         /// <summary>
         /// Project object of the task
@@ -81,7 +87,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         {
             TaskConfig = JsonConvert.DeserializeObject<TTaskConfig>(configString) ?? new TTaskConfig();
         }
-
+        
         /// <summary>
         /// Type of the job task
         /// </summary>
@@ -109,6 +115,16 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         public virtual Task<TaskRunnerResult> RunPostprocessingTask()
         {
             return Task.FromResult(new TaskRunnerResult());
+        }
+
+        protected Task LoadRequiredServicesToAdditionalConfigs(string[] serviceNames)
+        {
+            if (AdditionalConfigs == null)
+                AdditionalConfigs = new Dictionary<string, string>();
+
+            // TODO: load service properties to the configs
+
+            return Task.CompletedTask;
         }
     }
 }

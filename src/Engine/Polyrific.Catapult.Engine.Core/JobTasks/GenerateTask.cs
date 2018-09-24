@@ -1,16 +1,15 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
-using Polyrific.Catapult.Shared.Dto.Constants;
-using Polyrific.Catapult.Shared.Dto.Project;
-using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
-using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Plugins.Abstraction;
+using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
+using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
@@ -33,15 +32,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         public override string Type => JobTaskDefinitionType.Generate;
 
         private List<ProjectDataModelDto> _dataModels;
-        protected List<ProjectDataModelDto> DataModels
-        {
-            get
-            {
-                if (_dataModels == null)
-                    _dataModels = _dataModelService.GetProjectDataModels(ProjectId).Result;
-                return _dataModels;
-            }
-        }
+        protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId).Result);
 
         [ImportMany(typeof(ICodeGeneratorProvider))]
         public IEnumerable<ICodeGeneratorProvider> GeneratorProviders;
@@ -52,7 +43,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
 
-            var error = await provider.BeforeGenerate(Project.Name, DataModels, JobQueueCode, TaskConfig);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
+
+            var error = await provider.BeforeGenerate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -64,8 +57,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             var provider = GeneratorProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
+
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
             
-            var (outputLocation, errorMessage) = await provider.Generate(Project.Name, DataModels, JobQueueCode, TaskConfig);
+            var (outputLocation, errorMessage) = await provider.Generate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(errorMessage))
                 return new TaskRunnerResult(errorMessage, !TaskConfig.ContinueWhenError);
 
@@ -78,7 +73,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Code generator provider \"{Provider}\" could not be found.");
 
-            var error = await provider.AfterGenerate(Project.Name, DataModels, JobQueueCode, TaskConfig);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
+
+            var error = await provider.AfterGenerate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

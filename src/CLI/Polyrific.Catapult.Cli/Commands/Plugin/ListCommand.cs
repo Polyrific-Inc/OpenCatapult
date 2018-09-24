@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
         [AllowedValues(
             "all",
             Shared.Dto.Constants.PluginType.BuildProvider,
-            Shared.Dto.Constants.PluginType.DeployProvider,
+            Shared.Dto.Constants.PluginType.HostingProvider,
             Shared.Dto.Constants.PluginType.GeneratorProvider,
             Shared.Dto.Constants.PluginType.RepositoryProvider)]
         public string PluginType { get; set; }

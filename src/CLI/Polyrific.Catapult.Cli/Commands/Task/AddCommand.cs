@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         Provider = Provider,
                         Type = Type,
                         Sequence = Sequence,
-                        Config = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null
+                        Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null
                     }).Result;
 
                     message = task.ToCliString($"Task {Name} added to job {Job}:");

@@ -20,6 +20,7 @@ namespace Polyrific.Catapult.Api
             services.AddTransient<IExternalServiceService, ExternalServiceService>();
             services.AddTransient<IExternalServiceTypeService, ExternalServiceTypeService>();
             services.AddTransient<IPluginService, PluginService>();
+            services.AddTransient<IPluginAdditionalConfigService, PluginAdditionalConfigService>();
         }
     }
 }

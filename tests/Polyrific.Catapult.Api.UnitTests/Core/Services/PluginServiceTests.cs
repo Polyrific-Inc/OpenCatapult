@@ -66,7 +66,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
-            var results = await service.GetPlugins(PluginType.DeployProvider);
+            var results = await service.GetPlugins(PluginType.HostingProvider);
 
             Assert.Empty(results);
         }
@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
-            var result = await service.GetPluginByName("DeployProvider1");
+            var result = await service.GetPluginByName("HostingProvider1");
 
             Assert.Null(result);
         }
@@ -134,11 +134,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         {
             _pluginRepository.Setup(r => r.Create(It.IsAny<Plugin>(), It.IsAny<CancellationToken>())).ReturnsAsync(4);
             _pluginRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin {Id = id, Name = "DeployProvider1"});
+                .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin {Id = id, Name = "HostingProvider1"});
 
             var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
-            var result = await service.AddPlugin("DeployProvider1", PluginType.DeployProvider, "Frandi", "1.0", null);
+            var result = await service.AddPlugin("HostingProvider1", PluginType.HostingProvider, "Frandi", "1.0", null);
 
             Assert.Equal(4, result.Id);
         }
@@ -148,11 +148,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         {
             _pluginRepository.Setup(r => r.Create(It.IsAny<Plugin>(), It.IsAny<CancellationToken>())).ReturnsAsync(4);
             _pluginRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin { Id = id, Name = "DeployProvider1" });
+                .ReturnsAsync((int id, CancellationToken cancellationToken) => new Plugin { Id = id, Name = "HostingProvider1" });
 
             var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object);
 
-            var exception = Record.ExceptionAsync(() => service.AddPlugin("DeployProvider1", PluginType.DeployProvider, "Frandi", "1.0", new string[] { "Service" }));
+            var exception = Record.ExceptionAsync(() => service.AddPlugin("HostingProvider1", PluginType.HostingProvider, "Frandi", "1.0", new string[] { "Service" }));
 
             Assert.IsType<RequiredServicesNotSupportedException>(exception?.Result);
         }

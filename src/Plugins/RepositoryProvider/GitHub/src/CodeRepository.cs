@@ -146,6 +146,76 @@ namespace GitHub
             return Task.FromResult(errorMessage);
         }
 
+        public async Task<bool> MergePullRequest(string prNumber)
+        {
+            Octokit.GitHubClient client = GetGitHubClient();
+            var currentRepo = await client.Repository.Get(_config.RepoOwner, _config.ProjectName);
+
+            Octokit.MergePullRequest mergedRequest = new Octokit.MergePullRequest();
+
+            if (currentRepo.AllowSquashMerge ?? false) // Use squash merge if allowed
+            {
+                mergedRequest.MergeMethod = Octokit.PullRequestMergeMethod.Squash;
+            }
+            else if (!currentRepo.AllowMergeCommit ?? true) // otherwise, use Merge Commit. But if it does not allowed either, then use Rebase
+            {
+                mergedRequest.MergeMethod = Octokit.PullRequestMergeMethod.Rebase;
+            }
+
+            Octokit.PullRequestMerge mergeResult = null;
+
+            var attempt = 1;           
+
+            while (mergeResult == null && attempt <= MaxAttempt)
+            {
+                // validate is the PR is already merge or not            
+                var pr = await client.PullRequest.Get(_config.RepoOwner, _config.ProjectName, int.Parse(prNumber));
+                if (pr != null)
+                {
+                    if (pr.Merged)
+                    {
+                        return pr.Merged;
+                    }
+                    else if (pr.State == Octokit.ItemState.Closed)
+                    {
+                        _logger.LogInformation($"#PR{prNumber} has already been closed");
+                        return false;
+                    }
+                }
+
+                _logger.LogInformation($"Merge #PR{prNumber} on GitHub repository : {_config.RemoteUrl} #{attempt}.");
+
+                attempt++;
+
+                try
+                {
+                    mergeResult = await client.PullRequest.Merge(_config.RepoOwner, _config.ProjectName, int.Parse(prNumber), mergedRequest);
+
+                    if (mergeResult.Merged)
+                    {
+                        var prBranchRef = $"heads/{pr.Head.Ref}";
+                        var prBranch = client.Git.Reference.Get(_config.RepoOwner, _config.ProjectName, prBranchRef).Result;
+
+                        if (prBranch != null)
+                        {
+                            client.Git.Reference.Delete(_config.RepoOwner, _config.ProjectName, prBranchRef).Wait();
+                        }
+                        
+                        _logger.LogInformation($"The #PR{prNumber} has been successfully merged.");
+
+                        return mergeResult.Merged;
+                    }
+                }
+                catch (Octokit.ApiException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    Thread.Sleep(30000);
+                }
+            }
+
+            return false;
+        }
+
         private bool CloneTransferProgressHandler(TransferProgress progress)
         {
             if (progress.TotalObjects > 0)
@@ -167,5 +237,17 @@ namespace GitHub
 
             return true;
         }
+
+        private Octokit.GitHubClient GetGitHubClient()
+        {
+            Octokit.GitHubClient client = new Octokit.GitHubClient(new Octokit.ProductHeaderValue(_config.ProjectName))
+            {
+                Credentials = _config.RemoteCredentialType == "userPassword"
+                    ? new Octokit.Credentials(_config.RemoteUsername, _config.RemotePassword)
+                    : new Octokit.Credentials(_config.RepoAuthToken)
+            };
+
+            return client;
+        }     
     }
 }
