@@ -126,5 +126,13 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The job task definition entity</returns>
         Task<JobTaskDefinition> GetJobTaskDefinitionByName(int jobDefinitionId, string jobTaskDefinitionName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Validate a task config whether it has satisfy required values
+        /// </summary>
+        /// <param name="jobTaskDefinition">The job task definition object</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task ValidateTaskConfig(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

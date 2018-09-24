@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Linq;
 using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Core.Specifications
@@ -9,6 +10,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public int Id { get; set; }
         public string Name { get; set; }
         public int UserId { get; set; }
+        public string[] Names { get; set; }
 
         public ExternalServiceFilterSpecification(int id, string name)
             : base(m => (id == 0 || m.Id == id) && (name == null || m.Name == name))

@@ -1,5 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
@@ -7,12 +12,6 @@ using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Shared.Dto.Constants;
-using Polyrific.Catapult.Shared.Dto.Project;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -24,13 +23,16 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IProjectDataModelPropertyRepository _projectDataModelPropertyRepository;
         private readonly IMapper _mapper;
+        private readonly IJobDefinitionService _jobDefinitionService;
 
-        public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, IMapper mapper)
+        public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, 
+            IMapper mapper, IJobDefinitionService jobDefinitionService)
         {
             _projectRepository = projectRepository;
             _projectMemberRepository = projectMemberRepository;
             _projectDataModelPropertyRepository = projectDataModelPropertyRepository;
             _mapper = mapper;
+            _jobDefinitionService = jobDefinitionService;
         }
 
         public async Task ArchiveProject(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -186,6 +188,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                         foreach (var task in job.Tasks)
                         {
                             task.Created = DateTime.UtcNow;
+                            await _jobDefinitionService.ValidateTaskConfig(task);
                         }
                     }
                 }
