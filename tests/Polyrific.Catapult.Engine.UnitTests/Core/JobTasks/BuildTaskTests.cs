@@ -36,14 +36,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<IBuildProvider>
             {
-                new FakeBuildProvider("good-result", "")
+                new FakeBuildProvider("good-result", null, "")
             };
 
             var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeBuildProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
             Assert.Equal("good-result", result.ReturnValue);
@@ -57,14 +57,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<IBuildProvider>
             {
-                new FakeBuildProvider("", "error-message")
+                new FakeBuildProvider("", null, "error-message")
             };
 
             var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeBuildProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("error-message", result.ErrorMessage);
@@ -80,7 +80,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             task.SetConfig(configString);
             task.Provider = "FakeBuildProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("Build provider \"FakeBuildProvider\" could not be found.", result.ErrorMessage);

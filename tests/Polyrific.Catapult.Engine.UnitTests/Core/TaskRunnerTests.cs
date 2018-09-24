@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core
@@ -96,10 +96,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         [Fact]
         public async void Run_SuccessAll()
         {
-            _generateTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _pushTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _buildTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _deployTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
             var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
@@ -114,10 +114,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         [Fact]
         public async void Run_FailedOne_SkipTheRests()
         {
-            _generateTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult("Failed"));
-            _pushTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _buildTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _deployTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult("Failed"));
+            _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
             var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
@@ -132,10 +132,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         [Fact]
         public async void Run__SuccessOne_FailedOne_SkipTheRests()
         {
-            _generateTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _pushTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult("Failed"));
-            _buildTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _deployTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult("Failed"));
+            _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
             var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
@@ -150,10 +150,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         [Fact]
         public async void Run__SuccessOne_FailedOneButContinue()
         {
-            _generateTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _pushTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult("Failed", false));
-            _buildTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
-            _deployTask.Setup(t => t.RunMainTask()).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult("Failed", false));
+            _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
             var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));

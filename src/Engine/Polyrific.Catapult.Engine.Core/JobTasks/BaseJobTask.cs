@@ -67,16 +67,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// </summary>
         protected ProjectDto Project
         {
-            get
-            {
-                if (_project == null)
-                    _project = _projectService.GetProject(ProjectId).Result;
-                return _project;
-            }
-            set
-            {
-                _project = value;
-            }
+            get => _project ?? (_project = _projectService.GetProject(ProjectId).Result);
+            set => _project = value;
         }
 
         /// <summary>
@@ -96,8 +88,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Run the main task
         /// </summary>
+        /// <param name="previousTasksOutputValues">Output values from the previous tasks</param>
         /// <returns></returns>
-        public abstract Task<TaskRunnerResult> RunMainTask();
+        public abstract Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues);
 
         /// <summary>
         /// Run the pre-processing task

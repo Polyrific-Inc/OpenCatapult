@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using GitHub.Helpers;
@@ -144,6 +145,63 @@ namespace GitHub
             }
 
             return Task.FromResult(errorMessage);
+        }
+
+        public async Task<int> SubmitPullRequest(string branch, string targetBranch)
+        {
+            if (branch == "master")
+            {
+                return 0;
+            }
+
+            var prTitle = $"PR Branch {branch}";
+            
+            Octokit.GitHubClient client = GetGitHubClient();
+            Octokit.NewPullRequest newPr = new Octokit.NewPullRequest(prTitle, branch, targetBranch);
+            Octokit.PullRequest prResult = null;
+
+            var attempt = 1;           
+
+            while (prResult == null && attempt <= MaxAttempt)
+            {
+                _logger.LogInformation($"Submit pull request from {branch} branch into {targetBranch} branch on GitHub repository : {_config.RemoteUrl} #{attempt}.");
+
+                attempt++;
+
+                try
+                {
+                    // get all submitted PRs
+                    var prList = await client.PullRequest.GetAllForRepository(_config.RepoOwner, _config.ProjectName);
+
+                    // get PR based on branch name
+                    var pr = prList.FirstOrDefault(x => x.Head.Label.Split(':')[1] == branch);
+
+                    // check if the branch already submit PR or not
+                    if (pr != null)
+                    {
+                        // return the PR number
+                        return pr.Number;
+                    }
+
+                    prResult = client.PullRequest.Create(_config.RepoOwner, _config.ProjectName, newPr).Result;
+
+                    if (prResult?.Number > 0)
+                    {   
+                        _logger.LogInformation($"The pull request has been successfully submitted on GitHub repository: {_config.RemoteUrl}");
+
+                        // return pull request number
+                        return prResult.Number;
+                    }
+                }
+                catch (Octokit.ApiException ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                    Thread.Sleep(30000);
+                }
+            }
+
+            // return 0 as default pull request number
+            return 0;
         }
 
         public async Task<bool> MergePullRequest(string prNumber)

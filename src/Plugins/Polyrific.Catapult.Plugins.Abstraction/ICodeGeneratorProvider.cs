@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns></returns>
-        Task<(string outputLocation, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing code generation

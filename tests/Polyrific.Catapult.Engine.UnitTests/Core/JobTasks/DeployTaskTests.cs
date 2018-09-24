@@ -36,14 +36,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<IHostingProvider>
             {
-                new FakeHostingProvider("good-result", "")
+                new FakeHostingProvider("good-result", null, "")
             };
 
             var task = new DeployTask(_projectService.Object, _logger.Object) {HostingProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeHostingProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
             Assert.Equal("good-result", result.ReturnValue);
@@ -57,14 +57,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<IHostingProvider>
             {
-                new FakeHostingProvider("", "error-message")
+                new FakeHostingProvider("", null, "error-message")
             };
 
             var task = new DeployTask(_projectService.Object, _logger.Object) {HostingProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeHostingProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("error-message", result.ErrorMessage);
@@ -80,7 +80,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             task.SetConfig(configString);
             task.Provider = "FakeHostingProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("Deploy provider \"FakeHostingProvider\" could not be found.", result.ErrorMessage);

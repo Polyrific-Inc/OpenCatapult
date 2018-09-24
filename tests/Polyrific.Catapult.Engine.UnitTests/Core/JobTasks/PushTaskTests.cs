@@ -36,14 +36,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<ICodeRepositoryProvider>
             {
-                new FakeCodeRepositoryProvider("good-result", "")
+                new FakeCodeRepositoryProvider("good-result", null, "")
             };
 
             var task = new PushTask(_projectService.Object, _logger.Object) {CodeRepositoryProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeCodeRepositoryProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
             Assert.Equal("good-result", result.ReturnValue);
@@ -57,14 +57,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<ICodeRepositoryProvider>
             {
-                new FakeCodeRepositoryProvider("", "error-message")
+                new FakeCodeRepositoryProvider("", null, "error-message")
             };
 
             var task = new PushTask(_projectService.Object, _logger.Object) {CodeRepositoryProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeCodeRepositoryProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("error-message", result.ErrorMessage);
@@ -80,7 +80,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             task.SetConfig(configString);
             task.Provider = "FakeCodeRepositoryProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("Code repository provider \"FakeCodeRepositoryProvider\" could not be found.", result.ErrorMessage);

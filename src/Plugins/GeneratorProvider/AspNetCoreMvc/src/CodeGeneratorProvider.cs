@@ -22,7 +22,7 @@ namespace AspNetCoreMvc
             return Task.FromResult("");
         }
 
-        public async Task<(string outputLocation, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var generator = new CodeGenerator(projectName, config.OutputLocation, models);
 
@@ -36,7 +36,7 @@ namespace AspNetCoreMvc
 
             await generator.GenerateViews();
             
-            return (config.OutputLocation, "");
+            return (config.OutputLocation, null, "");
         }
 
         public Task<string> AfterGenerate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)

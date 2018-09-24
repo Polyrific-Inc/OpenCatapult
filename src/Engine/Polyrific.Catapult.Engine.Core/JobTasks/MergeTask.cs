@@ -30,33 +30,34 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-
-            // TODO: Find a way to retrieve PR Number from the output of previous task
-            var prNumber = "";
-
-            var error = await provider.BeforeMerge(prNumber, TaskConfig, AdditionalConfigs, Logger);
+            
+            var error = await provider.BeforeMerge("", TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
 
-        public override async Task<TaskRunnerResult> RunMainTask()
+        public override async Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues)
         {
             var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-
-            // TODO: Find a way to retrieve PR Number from the output of previous task
+            
             var prNumber = "";
+            if (previousTasksOutputValues.ContainsKey("PRNumber"))
+                prNumber = previousTasksOutputValues["PRNumber"];
 
-            var (returnValue, errorMessage) = await provider.Merge(prNumber, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(errorMessage))
-                return new TaskRunnerResult(errorMessage, !TaskConfig.ContinueWhenError);
+            if (string.IsNullOrEmpty(prNumber))
+                return new TaskRunnerResult("PR Number was undefined.", !TaskConfig.ContinueWhenError);
+            
+            var result = await provider.Merge(prNumber, TaskConfig, AdditionalConfigs, Logger);
+            if (!string.IsNullOrEmpty(result.errorMessage))
+                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, returnValue);
+            return new TaskRunnerResult(true, result.remoteUrl, result.outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
@@ -66,11 +67,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-
-            // TODO: Find a way to retrieve PR Number from the output of previous task
-            var prNumber = "";
-
-            var error = await provider.AfterMerge(prNumber, TaskConfig, AdditionalConfigs, Logger);
+            
+            var error = await provider.AfterMerge("", TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

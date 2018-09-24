@@ -41,7 +41,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return new TaskRunnerResult(true, "");
         }
 
-        public override async Task<TaskRunnerResult> RunMainTask()
+        public override async Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues)
         {
             var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
@@ -53,7 +53,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.returnValue);
+            return new TaskRunnerResult(true, result.outputLocation, result.outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

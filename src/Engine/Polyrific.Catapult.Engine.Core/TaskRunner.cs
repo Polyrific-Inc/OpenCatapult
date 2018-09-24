@@ -37,10 +37,12 @@ namespace Polyrific.Catapult.Engine.Core
 
             RefreshPlugins(pluginsLocation, orderedJobTasks.Select(t => t.Type).ToArray());
 
+            var outputValues = new Dictionary<string, string>();
             foreach (var jobTask in orderedJobTasks)
             {
                 var taskObj = GetJobTaskInstance(projectId, queueCode, jobTask);
 
+                // pre-processing
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} pre-processing task");
                 var preResult = await taskObj.RunPreprocessingTask();
                 if (!preResult.IsSuccess && preResult.StopTheProcess)
@@ -49,8 +51,9 @@ namespace Polyrific.Catapult.Engine.Core
                     break;
                 }
 
+                // main process
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} task");
-                var result = await taskObj.RunMainTask();
+                var result = await taskObj.RunMainTask(outputValues);
                 results[jobTask.Id] = result;
                 if (!result.IsSuccess && result.StopTheProcess)
                 {
@@ -58,6 +61,19 @@ namespace Polyrific.Catapult.Engine.Core
                     break;
                 }
 
+                // save output values to be used as the input for the next tasks
+                if (result.OutputValues != null)
+                {
+                    foreach (var key in result.OutputValues.Keys)
+                    {
+                        if (outputValues.ContainsKey(key))
+                            outputValues[key] = result.OutputValues[key];
+                        else
+                            outputValues.Add(key, result.OutputValues[key]);
+                    }
+                }
+
+                // post-processing
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} post-processing task");
                 var postResult = await taskObj.RunPostprocessingTask();
                 if (!postResult.IsSuccess && postResult.StopTheProcess)
@@ -114,9 +130,7 @@ namespace Polyrific.Catapult.Engine.Core
             task.JobQueueCode = queueCode;
             task.SetConfig(JsonConvert.SerializeObject(jobTask.Configs));
             task.AdditionalConfigs = jobTask.AdditionalConfigs;
-
-            // TODO: some tasks (e.g. Merge task) requires input from the output of previous task (e.g. PR Number). We need to assign this value as well here
-
+            
             return task;
         }
 

@@ -28,8 +28,10 @@ namespace AzureAppService
             _logger = logger;
         }
 
-        public Task<string> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, DeployTaskConfig taskConfig)
+        public Task<string> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, DeployTaskConfig taskConfig, out string hostLocation)
         {
+            hostLocation = "";
+
             var credentials = SdkContext.AzureCredentialsFactory.FromServicePrincipal(_config.ApplicationId,
                 _config.ApplicationKey, _config.TenantId, AzureEnvironment.AzureGlobalCloud);
 
@@ -51,13 +53,15 @@ namespace AzureAppService
             if (!string.IsNullOrEmpty(deploymentSlot))
             {
                 var slot = GetSlot(website, deploymentSlot) ?? CreateSlot(website, deploymentSlot);
-
+                
                 if (!ExecuteDeployWebsite(ExecuteAzureFunction(() => slot.GetPublishingProfile()), artifactLocation))
                 {
                     var error = $"Failed to deploy website to {deploymentSlot}.";
                     _logger.LogError(error);
                     return Task.FromResult(error);
                 }
+
+                hostLocation = slot.DefaultHostName;
             }
             else
             {
@@ -67,6 +71,8 @@ namespace AzureAppService
                     _logger.LogError(error);
                     return Task.FromResult(error);
                 }
+
+                hostLocation = website.DefaultHostName;
             }
 
             return Task.FromResult("");

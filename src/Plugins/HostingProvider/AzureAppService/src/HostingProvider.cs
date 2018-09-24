@@ -33,7 +33,7 @@ namespace AzureAppService
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             if (_azure == null)
                 _azure = new AzureAutomation(GetAzureAppServiceConfig(additionalConfigs), logger);
@@ -54,11 +54,11 @@ namespace AzureAppService
             if (additionalConfigs.ContainsKey("DeploymentSlot"))
                 deploymentSlot = additionalConfigs["DeploymentSlot"];
 
-            var error = await _azure.DeployWebsite(config.ArtifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, config);
+            var error = await _azure.DeployWebsite(config.ArtifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, config, out var hostLocation);
             if (!string.IsNullOrEmpty(error))
-                return ("", error);
+                return ("", null, error);
 
-            return ("", "");
+            return (hostLocation, null, "");
         }
 
         public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)

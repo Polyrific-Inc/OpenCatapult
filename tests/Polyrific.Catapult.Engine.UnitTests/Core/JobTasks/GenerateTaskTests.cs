@@ -46,14 +46,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<ICodeGeneratorProvider>
             {
-                new FakeCodeGeneratorProvider("good-result", "")
+                new FakeCodeGeneratorProvider("good-result", null, "")
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
             Assert.Equal("good-result", result.ReturnValue);
@@ -67,14 +67,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var providers = new List<ICodeGeneratorProvider>
             {
-                new FakeCodeGeneratorProvider("", "error-message")
+                new FakeCodeGeneratorProvider("", null, "error-message")
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
             task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("error-message", result.ErrorMessage);
@@ -90,7 +90,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             task.SetConfig(configString);
             task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("Code generator provider \"FakeCodeGeneratorProvider\" could not be found.", result.ErrorMessage);

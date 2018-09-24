@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Tuple of (returnValue, errorMessage)</returns>
-        Task<(string returnValue, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing repository clone
@@ -62,7 +62,7 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Tuple of (returnValue, errorMessage)/></returns>
-        Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after pushing code to remote repository
@@ -91,7 +91,7 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="additionalConfigs">Addition configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Tuple of (returnValue, errorMessage)</returns>
-        Task<(string returnValue, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing pull request merge

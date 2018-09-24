@@ -34,7 +34,7 @@ namespace DotNetCore
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var csprojLocation = Path.Combine(config.SourceLocation, $"{projectName}.csproj");
             if (additionalConfigs.ContainsKey("CsprojLocation"))
@@ -55,13 +55,13 @@ namespace DotNetCore
 
             var error = await _builder.Build(csprojLocation, buildOutputLocation);
             if (!string.IsNullOrEmpty(error))
-                return ("", error);
+                return ("", null, error);
             
             error = await _builder.CreateArtifact(buildOutputLocation, artifactLocation);
             if (!string.IsNullOrEmpty(error))
-                return ("", error);
+                return ("", null, error);
 
-            return (artifactLocation, "");
+            return (artifactLocation, null, "");
         }
 
         public Task<string> AfterBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)

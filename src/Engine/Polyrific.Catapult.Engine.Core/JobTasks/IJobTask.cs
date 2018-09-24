@@ -46,8 +46,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Run the main task
         /// </summary>
+        /// <param name="previousTasksOutputValues">Output values from the previous tasks</param>
         /// <returns></returns>
-        Task<TaskRunnerResult> RunMainTask();
+        Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues);
 
         /// <summary>
         /// Run the pre-processing task

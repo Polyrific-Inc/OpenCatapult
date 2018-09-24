@@ -33,7 +33,7 @@ namespace GitHub
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var repoConfig = GetCodeRepositoryConfig(config.CloneLocation, config.Repository, additionalConfigs);
 
@@ -42,9 +42,9 @@ namespace GitHub
 
             var error = await _codeRepository.Clone();
             if (!string.IsNullOrEmpty(error))
-                return ("", error);
+                return ("", null, error);
 
-            return (config.CloneLocation, "");
+            return (config.CloneLocation, null, "");
         }
 
         public Task<string> AfterClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
@@ -57,7 +57,7 @@ namespace GitHub
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var repoConfig = GetCodeRepositoryConfig(config.SourceLocation, config.Repository, additionalConfigs);
 
@@ -66,9 +66,23 @@ namespace GitHub
 
             var error = await _codeRepository.Push(config.Branch);
             if (!string.IsNullOrEmpty(error))
-                return ("", error);
+                return ("", null, error);
 
-            return (repoConfig.RemoteUrl, "");
+            Dictionary<string, string> outputValues = null;
+
+            if (config.CreatePullRequest)
+            {
+                var prNumber = await _codeRepository.SubmitPullRequest(config.Branch, config.PullRequestTargetBranch);
+                if (prNumber > 0)
+                {
+                    outputValues = new Dictionary<string, string>
+                    {
+                        {"PRNumber", prNumber.ToString()}
+                    };
+                }
+            }
+
+            return (repoConfig.RemoteUrl, outputValues, "");
         }
 
         public Task<string> AfterPush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
@@ -81,7 +95,7 @@ namespace GitHub
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var repoConfig = GetCodeRepositoryConfig("", config.Repository, additionalConfigs);
 
@@ -90,9 +104,9 @@ namespace GitHub
 
             var success = await _codeRepository.MergePullRequest(prNumber);
             if (!success)
-                return ("", "Failed to merge pull request.");
+                return ("", null, "Failed to merge pull request.");
 
-            return (config.Repository, "");
+            return (config.Repository, null, "");
         }
 
         public Task<string> AfterMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
