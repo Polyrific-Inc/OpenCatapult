@@ -171,6 +171,22 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 return BadRequest(modEx.Message);
             }
+            catch (ProviderNotInstalledException provEx)
+            {
+                return BadRequest(provEx.Message);
+            }
+            catch (ExternalServiceRequiredException esrEx)
+            {
+                return BadRequest(esrEx.Message);
+            }
+            catch (ExternalServiceNotFoundException esnfEx)
+            {
+                return BadRequest(esnfEx.Message);
+            }
+            catch (IncorrectExternalServiceTypeException iestEx)
+            {
+                return BadRequest(iestEx.Message);
+            }
         }
 
         /// <summary>
@@ -200,6 +216,22 @@ namespace Polyrific.Catapult.Api.Controllers
             catch (JobDefinitionNotFoundException modEx)
             {
                 return BadRequest(modEx.Message);
+            }
+            catch (ProviderNotInstalledException provEx)
+            {
+                return BadRequest(provEx.Message);
+            }
+            catch (ExternalServiceRequiredException esrEx)
+            {
+                return BadRequest(esrEx.Message);
+            }
+            catch (ExternalServiceNotFoundException esnfEx)
+            {
+                return BadRequest(esnfEx.Message);
+            }
+            catch (IncorrectExternalServiceTypeException iestEx)
+            {
+                return BadRequest(iestEx.Message);
             }
         }
 
@@ -258,13 +290,32 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}/task/{taskId}")]
         public async Task<IActionResult> UpdateJobTaskDefinition(int projectId, int jobId, int taskId, UpdateJobTaskDefinitionDto jobTaskDefinition)
         {
-            if (taskId != jobTaskDefinition.Id)
-                return BadRequest("task Id doesn't match.");
+            try
+            {
+                if (taskId != jobTaskDefinition.Id)
+                    return BadRequest("task Id doesn't match.");
 
-            var entity = _mapper.Map<JobTaskDefinition>(jobTaskDefinition);
-            await _jobDefinitionService.UpdateJobTaskDefinition(entity);
+                var entity = _mapper.Map<JobTaskDefinition>(jobTaskDefinition);
+                await _jobDefinitionService.UpdateJobTaskDefinition(entity);
 
-            return Ok();
+                return Ok();
+            }
+            catch (ProviderNotInstalledException provEx)
+            {
+                return BadRequest(provEx.Message);
+            }
+            catch (ExternalServiceRequiredException esrEx)
+            {
+                return BadRequest(esrEx.Message);
+            }
+            catch (ExternalServiceNotFoundException esnfEx)
+            {
+                return BadRequest(esnfEx.Message);
+            }
+            catch (IncorrectExternalServiceTypeException iestEx)
+            {
+                return BadRequest(iestEx.Message);
+            }
         }
 
         /// <summary>
