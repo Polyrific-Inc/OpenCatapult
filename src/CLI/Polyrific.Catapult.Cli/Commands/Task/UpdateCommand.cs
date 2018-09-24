@@ -76,7 +76,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                             Provider = Provider ?? task.Provider,
                             Name = Rename ?? task.Name,
                             Sequence = Sequence ?? task.Sequence,
-                            Config = Property?.Length > 0 ? Property.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs
+                            Configs = Property?.Length > 0 ? Property.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs
                         });
 
                         message = $"Task {Name} was updated";
