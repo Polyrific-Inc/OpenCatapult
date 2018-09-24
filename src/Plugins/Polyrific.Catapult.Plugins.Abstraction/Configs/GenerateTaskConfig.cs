@@ -4,6 +4,9 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
 {
     public class GenerateTaskConfig : BaseJobTaskConfig
     {
-        
+        /// <summary>
+        /// Location of the generated code to be put
+        /// </summary>
+        public string OutputLocation { get; set; }
     }
 }

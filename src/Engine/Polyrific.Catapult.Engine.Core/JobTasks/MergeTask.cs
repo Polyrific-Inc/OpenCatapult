@@ -12,32 +12,29 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
-    public class PushTask : BaseJobTask<PushTaskConfig>, IPushTask
+    public class MergeTask : BaseJobTask<MergeTaskConfig>, IMergeTask
     {
-        /// <summary>
-        /// Instantiate <see cref="PushTask"/>
-        /// </summary>
-        /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
-        /// <param name="logger">Logger</param>
-        public PushTask(IProjectService projectService, ILogger<PushTask> logger) 
-            : base(projectService, logger)
+        public MergeTask(IProjectService projectService, ILogger logger) : base(projectService, logger)
         {
         }
 
-        public override string Type => JobTaskDefinitionType.Push;
+        public override string Type => JobTaskDefinitionType.Merge;
 
         [ImportMany(typeof(ICodeRepositoryProvider))]
-        public IEnumerable<ICodeRepositoryProvider> CodeRepositoryProviders;
+        public IEnumerable<ICodeRepositoryProvider> CodeRepositoryProvider;
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforePush(TaskConfig, AdditionalConfigs, Logger);
+            // TODO: Find a way to retrieve PR Number from the output of previous task
+            var prNumber = "";
+
+            var error = await provider.BeforeMerge(prNumber, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -46,28 +43,34 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.Push(TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
+            // TODO: Find a way to retrieve PR Number from the output of previous task
+            var prNumber = "";
 
-            return new TaskRunnerResult(true, result.returnValue);
+            var (returnValue, errorMessage) = await provider.Merge(prNumber, TaskConfig, AdditionalConfigs, Logger);
+            if (!string.IsNullOrEmpty(errorMessage))
+                return new TaskRunnerResult(errorMessage, !TaskConfig.ContinueWhenError);
+
+            return new TaskRunnerResult(true, returnValue);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterPush(TaskConfig, AdditionalConfigs, Logger);
+            // TODO: Find a way to retrieve PR Number from the output of previous task
+            var prNumber = "";
+
+            var error = await provider.AfterMerge(prNumber, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
@@ -27,17 +29,26 @@ namespace DotNetCore
 
         public string[] RequiredServices => new string[0];
 
-        public Task<string> BeforeBuild(BuildTaskConfig config)
+        public Task<string> BeforeBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Build(string projectName, string jobQueueCode, BuildTaskConfig config)
+        public async Task<(string returnValue, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var csprojLocation = Path.Combine(config.WorkingLocation, config.CsprojLocation);
-            var testCsprojLocation = Path.Combine(config.WorkingLocation, config.TestCsprojLocation);
-            var buildOutputLocation = Path.Combine(config.WorkingLocation, projectName, jobQueueCode, "publish");
-            var artifactLocation = Path.Combine(config.WorkingLocation, projectName, jobQueueCode, "artifact");
+            var csprojLocation = Path.Combine(config.SourceLocation, $"{projectName}.csproj");
+            if (additionalConfigs.ContainsKey("CsprojLocation"))
+                csprojLocation = additionalConfigs["CsprojLocation"];
+
+            var buildConfiguration = "Release";
+            if (additionalConfigs.ContainsKey("Configuration"))
+                buildConfiguration = additionalConfigs["Configuration"];
+
+            var buildOutputLocation = Path.Combine(csprojLocation, $"bin/{buildConfiguration}");
+
+            var artifactLocation = Path.Combine(csprojLocation, $"bin/{buildConfiguration}", "artifact");
+            if (!string.IsNullOrEmpty(config.OutputArtifactLocation))
+                artifactLocation = config.OutputArtifactLocation;
 
             if (_builder == null)
                 _builder = new Builder();
@@ -45,14 +56,7 @@ namespace DotNetCore
             var error = await _builder.Build(csprojLocation, buildOutputLocation);
             if (!string.IsNullOrEmpty(error))
                 return ("", error);
-
-            if (!string.IsNullOrEmpty(testCsprojLocation))
-            {
-                error = await _builder.Test(testCsprojLocation);
-                if (!string.IsNullOrEmpty(error))
-                    return ("", error);
-            }
-
+            
             error = await _builder.CreateArtifact(buildOutputLocation, artifactLocation);
             if (!string.IsNullOrEmpty(error))
                 return ("", error);
@@ -60,7 +64,7 @@ namespace DotNetCore
             return (artifactLocation, "");
         }
 
-        public Task<string> AfterBuild(BuildTaskConfig config)
+        public Task<string> AfterBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }

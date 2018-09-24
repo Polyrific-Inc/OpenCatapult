@@ -12,19 +12,13 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
-    public class PushTask : BaseJobTask<PushTaskConfig>, IPushTask
+    public class CloneTask : BaseJobTask<CloneTaskConfig>, ICloneTask
     {
-        /// <summary>
-        /// Instantiate <see cref="PushTask"/>
-        /// </summary>
-        /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
-        /// <param name="logger">Logger</param>
-        public PushTask(IProjectService projectService, ILogger<PushTask> logger) 
-            : base(projectService, logger)
+        public CloneTask(IProjectService projectService, ILogger logger) : base(projectService, logger)
         {
         }
 
-        public override string Type => JobTaskDefinitionType.Push;
+        public override string Type => JobTaskDefinitionType.Clone;
 
         [ImportMany(typeof(ICodeRepositoryProvider))]
         public IEnumerable<ICodeRepositoryProvider> CodeRepositoryProviders;
@@ -37,7 +31,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforePush(TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.BeforeClone(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -52,11 +46,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.Push(TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
+            var (returnValue, errorMessage) = await provider.Clone(TaskConfig, AdditionalConfigs, Logger);
+            if (!string.IsNullOrEmpty(errorMessage))
+                return new TaskRunnerResult(errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.returnValue);
+            return new TaskRunnerResult(true, returnValue);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
@@ -67,7 +61,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterPush(TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.AfterClone(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

@@ -60,6 +60,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAppService", "src\Plug
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAppService.Tests", "src\Plugins\HostingProvider\AzureAppService\tests\AzureAppService.Tests.csproj", "{95869A9D-C53B-4635-B12F-3FF0EB19BA11}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StorageProvider", "StorageProvider", "{91EC06FE-7CAA-4F04-9207-F777C68FE35A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -303,6 +305,7 @@ Global
 		{65CBE186-4D57-4134-BBDA-6817C4E1E2C3} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
 		{FBA4690D-E290-4D39-96CF-F886231F9677} = {0B88C471-7296-408B-85A8-0014B34C1B62}
 		{95869A9D-C53B-4635-B12F-3FF0EB19BA11} = {FF9F631E-2EAA-40A8-B388-04A7C40B4821}
+		{91EC06FE-7CAA-4F04-9207-F777C68FE35A} = {531811D2-AA96-456D-B1FA-B2820DF16D63}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5C87EB-EEBD-4A9B-A955-07A34F904FF1}

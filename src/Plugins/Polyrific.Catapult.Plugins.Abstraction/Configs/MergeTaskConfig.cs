@@ -2,11 +2,11 @@
 
 namespace Polyrific.Catapult.Plugins.Abstraction.Configs
 {
-    public class DeployTaskConfig : BaseJobTaskConfig
+    public class MergeTaskConfig : BaseJobTaskConfig
     {
         /// <summary>
-        /// Location of the artifact to deploy
+        /// Remote repository
         /// </summary>
-        public string ArtifactLocation { get; set; }
+        public string Repository { get; set; }
     }
 }

@@ -28,40 +28,56 @@ namespace AzureAppService
 
         public string[] RequiredServices => new[] {"AzureAppService"};
 
-        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public async Task<(string returnValue, string errorMessage)> Deploy(string artifactLocation, DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public async Task<(string returnValue, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             if (_azure == null)
-                _azure = new AzureAutomation(GetAzureAppServiceConfig(serviceProperties), logger);
+                _azure = new AzureAutomation(GetAzureAppServiceConfig(additionalConfigs), logger);
 
-            var error = await _azure.DeployWebsite(artifactLocation, config);
+            var subscriptionId = "";
+            if (additionalConfigs.ContainsKey("SubscriptionId"))
+                subscriptionId = additionalConfigs["SubscriptionId"];
+
+            var resourceGroupName = "";
+            if (additionalConfigs.ContainsKey("ResourceGroupName"))
+                resourceGroupName = additionalConfigs["ResourceGroupName"];
+
+            var appServiceName = "";
+            if (additionalConfigs.ContainsKey("AppServiceName"))
+                appServiceName = additionalConfigs["AppServiceName"];
+
+            var deploymentSlot = "";
+            if (additionalConfigs.ContainsKey("DeploymentSlot"))
+                deploymentSlot = additionalConfigs["DeploymentSlot"];
+
+            var error = await _azure.DeployWebsite(config.ArtifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, config);
             if (!string.IsNullOrEmpty(error))
                 return ("", error);
 
             return ("", "");
         }
 
-        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        private AzureAppServiceConfig GetAzureAppServiceConfig(Dictionary<string, string> serviceProperties)
+        private AzureAppServiceConfig GetAzureAppServiceConfig(Dictionary<string, string> additionalConfigs)
         {
             var config = new AzureAppServiceConfig();
 
-            if (serviceProperties.ContainsKey("ApplicationId"))
-                config.ApplicationId = serviceProperties["ApplicationId"];
+            if (additionalConfigs.ContainsKey("AzureAppService.ApplicationId"))
+                config.ApplicationId = additionalConfigs["AzureAppService.ApplicationId"];
 
-            if (serviceProperties.ContainsKey("ApplicationKey"))
-                config.ApplicationKey = serviceProperties["ApplicationKey"];
+            if (additionalConfigs.ContainsKey("AzureAppService.ApplicationKey"))
+                config.ApplicationKey = additionalConfigs["AzureAppService.ApplicationKey"];
 
-            if (serviceProperties.ContainsKey("TenantId"))
-                config.TenantId = serviceProperties["TenantId"];
+            if (additionalConfigs.ContainsKey("AzureAppService.TenantId"))
+                config.TenantId = additionalConfigs["AzureAppService.TenantId"];
 
             return config;
         }

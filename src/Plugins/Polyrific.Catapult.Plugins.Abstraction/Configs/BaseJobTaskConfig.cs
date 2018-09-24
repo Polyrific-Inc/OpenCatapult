@@ -5,20 +5,25 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
     public class BaseJobTaskConfig
     {
         /// <summary>
+        /// Required external service connections
+        /// </summary>
+        public string[] RequiredServices { get; set; }
+
+        /// <summary>
         /// Continue to the next task although the current execution is failed.
-        /// Default is <see cref="false"/>.
+        /// Default is <value>false</value>.
         /// </summary>
         public bool ContinueWhenError { get; set; } = false;
 
         /// <summary>
         /// Does the pre-process needs to be success before executing the main task?
-        /// Default is <see cref="true"/>
+        /// Default is <value>false</value>.
         /// </summary>
         public bool PreProcessMustSucceed { get; set; } = true;
 
         /// <summary>
         /// Does the post-process needs to be success to complete the task?
-        /// Default is <see cref="false"/>
+        /// Default is <value>false</value>.
         /// </summary>
         public bool PostProcessMustSucceed { get; set; } = false;
 

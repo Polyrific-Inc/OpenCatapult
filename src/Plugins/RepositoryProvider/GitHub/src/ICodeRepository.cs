@@ -17,5 +17,12 @@ namespace GitHub
         /// </summary>
         /// <returns></returns>
         Task<string> Push(string branch);
+
+        /// <summary>
+        /// Merge pull request in remote repository
+        /// </summary>
+        /// <param name="prNumber">Pull Request number</param>
+        /// <returns></returns>
+        Task<bool> MergePullRequest(string prNumber);
     }
 }

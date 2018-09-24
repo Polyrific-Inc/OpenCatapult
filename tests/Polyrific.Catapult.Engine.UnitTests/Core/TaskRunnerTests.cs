@@ -17,9 +17,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
     {
         private readonly Mock<ILogger<TaskRunner>> _logger;
         private readonly Mock<IBuildTask> _buildTask;
+        private readonly Mock<ICloneTask> _cloneTask;
         private readonly Mock<IDeployTask> _deployTask;
+        private readonly Mock<IDeployDbTask> _deployDbTask;
         private readonly Mock<IGenerateTask> _generateTask;
+        private readonly Mock<IMergeTask> _mergeTask;
+        private readonly Mock<IPublishArtifactTask> _publishArtifactTask;
         private readonly Mock<IPushTask> _pushTask;
+        private readonly Mock<ITestTask> _testTask;
         private readonly JobTaskService _jobTaskService;
         private readonly List<JobTaskDefinitionDto> _data;
 
@@ -51,19 +56,41 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _buildTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
+            _cloneTask = new Mock<ICloneTask>();
+            _cloneTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+            _cloneTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+
             _deployTask = new Mock<IDeployTask>();
             _deployTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _deployTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+
+            _deployDbTask = new Mock<IDeployDbTask>();
+            _deployDbTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+            _deployDbTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
             _generateTask = new Mock<IGenerateTask>();
             _generateTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _generateTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
+            _mergeTask = new Mock<IMergeTask>();
+            _mergeTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+            _mergeTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+
+            _publishArtifactTask = new Mock<IPublishArtifactTask>();
+            _publishArtifactTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+            _publishArtifactTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+
             _pushTask = new Mock<IPushTask>();
             _pushTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _pushTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
-            _jobTaskService = new JobTaskService(_buildTask.Object, _deployTask.Object, _generateTask.Object, _pushTask.Object);
+            _testTask = new Mock<ITestTask>();
+            _testTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+            _testTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
+
+            _jobTaskService = new JobTaskService(_buildTask.Object, _cloneTask.Object, _deployTask.Object,
+                _deployDbTask.Object, _generateTask.Object, _mergeTask.Object, _publishArtifactTask.Object,
+                _pushTask.Object, _testTask.Object);
         }
 
         [Fact]

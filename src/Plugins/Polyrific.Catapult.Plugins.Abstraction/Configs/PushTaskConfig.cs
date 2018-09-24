@@ -5,8 +5,28 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
     public class PushTaskConfig : BaseJobTaskConfig
     {
         /// <summary>
-        /// Repository branch to push
+        /// Location of the source code to push
+        /// </summary>
+        public string SourceLocation { get; set; }
+
+        /// <summary>
+        /// Remote repository
+        /// </summary>
+        public string Repository { get; set; }
+
+        /// <summary>
+        /// Remote branch
         /// </summary>
         public string Branch { get; set; }
+
+        /// <summary>
+        /// Whether to create pull request as well after pushing the code
+        /// </summary>
+        public bool CreatePullRequest { get; set; }
+
+        /// <summary>
+        /// Branch which will be the target of the pull request
+        /// </summary>
+        public string PullRequestTargetBranch { get; set; }
     }
 }

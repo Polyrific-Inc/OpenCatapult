@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 {
@@ -42,32 +42,47 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string[] RequiredServices => new string[0];
 
-        public Task<string> BeforeClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> BeforeClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Clone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<(string returnValue, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_actionResult);
         }
 
-        public Task<string> AfterClone(string repositoryFolder, CloneTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> AfterClone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_postProcessError);
         }
 
-        public Task<string> BeforePush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> BeforePush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Push(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<(string returnValue, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_actionResult);
         }
 
-        public Task<string> AfterPush(string repositoryFolder, PushTaskConfig config, Dictionary<string, string> serviceProperties)
+        public Task<string> AfterPush(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        {
+            return Task.FromResult(_postProcessError);
+        }
+
+        public Task<string> BeforeMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        {
+            return Task.FromResult(_preProcessError);
+        }
+
+        public Task<(string returnValue, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        {
+            return Task.FromResult(_actionResult);
+        }
+
+        public Task<string> AfterMerge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_postProcessError);
         }

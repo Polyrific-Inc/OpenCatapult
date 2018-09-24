@@ -35,9 +35,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
-            var serviceProperties = GetServiceProperties(provider.RequiredServices);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforeDeploy(TaskConfig, serviceProperties, Logger);
+            var error = await provider.BeforeDeploy(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -50,9 +50,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
-            var serviceProperties = GetServiceProperties(provider.RequiredServices);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.Deploy("artifact", TaskConfig, serviceProperties, Logger);
+            var result = await provider.Deploy(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
@@ -65,19 +65,13 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (provider == null)
                 return new TaskRunnerResult($"Deploy provider \"{Provider}\" could not be found.");
 
-            var serviceProperties = GetServiceProperties(provider.RequiredServices);
+            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterDeploy(TaskConfig, serviceProperties, Logger);
+            var error = await provider.AfterDeploy(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
-        }
-
-        private Dictionary<string, string> GetServiceProperties(string[] serviceNames)
-        {
-            //TODO: retrieve properties from service manager
-            return new Dictionary<string, string>();
         }
     }
 }

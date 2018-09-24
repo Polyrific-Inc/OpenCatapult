@@ -12,29 +12,26 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
-    public class BuildTask : BaseJobTask<BuildTaskConfig>, IBuildTask
+    public class DeployDbTask : BaseJobTask<DeployDbTaskConfig>, IDeployDbTask
     {
-        /// <inheritdoc />
-        public BuildTask(IProjectService projectService, ILogger<BuildTask> logger) 
-            : base(projectService, logger)
+        public DeployDbTask(IProjectService projectService, ILogger logger) : base(projectService, logger)
         {
-            
         }
 
-        public override string Type => JobTaskDefinitionType.Build;
+        public override string Type => JobTaskDefinitionType.DeployDb;
 
-        [ImportMany(typeof(IBuildProvider))]
-        public IEnumerable<IBuildProvider> BuildProviders;
+        [ImportMany(typeof(IDatabaseProvider))]
+        public IEnumerable<IDatabaseProvider> DatabaseProviders;
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = DatabaseProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
+                return new TaskRunnerResult($"Database provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforeBuild(Project.Name, TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.BeforeDeployDatabase(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -43,28 +40,28 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override async Task<TaskRunnerResult> RunMainTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = DatabaseProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
+                return new TaskRunnerResult($"Database provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.Build(Project.Name, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
+            var (returnValue, errorMessage) = await provider.DeployDatabase(TaskConfig, AdditionalConfigs, Logger);
+            if (!string.IsNullOrEmpty(errorMessage))
+                return new TaskRunnerResult(errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.returnValue);
+            return new TaskRunnerResult(true, returnValue);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = BuildProviders?.FirstOrDefault(p => p.Name == Provider);
+            var provider = DatabaseProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
-                return new TaskRunnerResult($"Build provider \"{Provider}\" could not be found.");
+                return new TaskRunnerResult($"Database provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterBuild(Project.Name, TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.AfterDeployDatabase(TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 

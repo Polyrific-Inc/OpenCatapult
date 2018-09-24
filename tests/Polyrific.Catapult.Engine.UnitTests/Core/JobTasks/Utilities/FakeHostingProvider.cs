@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Plugins.Abstraction;
+using Polyrific.Catapult.Plugins.Abstraction.Configs;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 {
@@ -42,17 +42,17 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string[] RequiredServices => new string[0];
 
-        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string returnValue, string errorMessage)> Deploy(string artifactLocation, DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<(string returnValue, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_deployResult);
         }
 
-        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> serviceProperties, ILogger logger)
+        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_postProcessError);
         }

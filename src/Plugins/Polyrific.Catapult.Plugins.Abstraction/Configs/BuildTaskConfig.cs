@@ -5,13 +5,13 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
     public class BuildTaskConfig : BaseJobTaskConfig
     {
         /// <summary>
-        /// Location of the csproj file, relative to the working location
+        /// Location of the source code
         /// </summary>
-        public string CsprojLocation { get; set; }
+        public string SourceLocation { get; set; }
 
         /// <summary>
-        /// Location of the test csproj file, relative to the working location
+        /// Location of the output artifact
         /// </summary>
-        public string TestCsprojLocation { get; set; }
+        public string OutputArtifactLocation { get; set; }
     }
 }

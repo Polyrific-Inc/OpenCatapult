@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string GeneratorProvider = "GeneratorProvider";
         public const string HostingProvider = "HostingProvider";
         public const string RepositoryProvider = "RepositoryProvider";
+        public const string StorageProvider = "StorageProvider";
         public const string TestProvider = "TestProvider";
     }
 }
