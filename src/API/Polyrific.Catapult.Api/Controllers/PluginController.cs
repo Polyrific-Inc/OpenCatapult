@@ -16,7 +16,6 @@ namespace Polyrific.Catapult.Api.Controllers
 {
     [Route("plugin")]
     [ApiController]
-    [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
     public class PluginController : ControllerBase
     {
         private readonly IPluginService _pluginService;
@@ -35,6 +34,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetPlugins()
         {
             var plugins = await _pluginService.GetPlugins();
@@ -50,6 +50,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="pluginType">Type of the plugin</param>
         /// <returns></returns>
         [HttpGet("type/{pluginType}")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetPluginsByType(string pluginType)
         {
             var plugins = await _pluginService.GetPlugins(pluginType);
@@ -65,6 +66,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="pluginId">Id of the plugin</param>
         /// <returns></returns>
         [HttpGet("{pluginId}", Name = "GetPluginById")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetPluginById(int pluginId)
         {
             var plugin = await _pluginService.GetPluginById(pluginId);
@@ -86,6 +88,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="pluginName">Name of the plugin</param>
         /// <returns></returns>
         [HttpGet("name/{pluginName}", Name = "GetPluginByName")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetPluginByName(string pluginName)
         {
             var plugin = await _pluginService.GetPluginByName(pluginName);
@@ -107,6 +110,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="dto"><see cref="NewPluginDto"/> object</param>
         /// <returns></returns>
         [HttpPost]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterPlugin(NewPluginDto dto)
         {
             try
@@ -134,11 +138,29 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="pluginId">Id of the plugin</param>
         /// <returns></returns>
         [HttpDelete("{pluginId}")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> DeletePluginById(int pluginId)
         {
             await _pluginService.DeletePlugin(pluginId);
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Get list of additional configs of a plugin
+        /// </summary>
+        /// <param name="pluginName">Name of the plugin</param>
+        /// <returns></returns>
+        [HttpGet("name/{pluginName}/config")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
+        public async Task<IActionResult> GetPluginAdditionalConfigsByPluginName(string pluginName)
+        {
+            var additionalConfigs = await _pluginAdditionalConfigService.GetByPluginName(pluginName);
+
+            var result = _mapper.Map<List<PluginAdditionalConfigDto>>(additionalConfigs);
+
+            return Ok(result);
+        }
+
     }
 }

@@ -16,16 +16,18 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     [Command(Description = "Update a job task definition")]
     public class UpdateCommand : BaseCommand
     {
+        private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
         private readonly IPluginService _pluginService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
 
-        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger,
+        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IConsoleReader consoleReader,
             IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService,
             IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
+            _consoleReader = consoleReader;
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
             _pluginService = pluginService;
@@ -79,21 +81,22 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     if (task != null)
                     {
                         var properties = new List<(string, string)>();
-                        if (!string.IsNullOrEmpty(Provider))
+                        var provider = !string.IsNullOrEmpty(Provider) ? Provider : task.Provider;
+                        if (!string.IsNullOrEmpty(provider))
                         {
-                            var plugin = _pluginService.GetPluginByName(Provider).Result;
+                            var plugin = _pluginService.GetPluginByName(provider).Result;
 
                             if (plugin == null)
                             {
-                                message = $"The provider \"{Provider}\" is not installed";
+                                message = $"The provider \"{provider}\" is not installed";
                                 return message;
                             }
 
                             if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
                             {
-                                Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
+                                Console.WriteLine($"The provider \"{provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
 
-                                if (task.Provider == Provider)
+                                if (task.Provider == provider)
                                 {
                                     Console.WriteLine("Leave blank if no changes for the external service");
                                 }
@@ -103,11 +106,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                     var externalServiceKey = $"{service}ExternalService";
                                     var externalServiceName = Console.GetString($"{service} external service name:");
 
-                                    if (!(task.Provider == Provider && string.IsNullOrEmpty(externalServiceName)))
+                                    if (!(task.Provider == provider && string.IsNullOrEmpty(externalServiceName)))
                                     {
                                         if (string.IsNullOrEmpty(externalServiceName))
                                         {
-                                            message = $"The {service} external service is required for the provider {Provider}. If you do not have it in the system, please add them using \"service add\" command";
+                                            message = $"The {service} external service is required for the provider {provider}. If you do not have it in the system, please add them using \"service add\" command";
                                             return message;
                                         }
 
@@ -129,6 +132,38 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                     }                                    
                                 }
                             }
+                            
+                            if (task.Provider != provider)
+                            {
+                                task.AdditionalConfigs = new Dictionary<string, string>();
+                            }
+
+                            if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                            {
+                                Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
+                                foreach (var additionalConfig in plugin.AdditionalConfigs)
+                                {
+                                    string input = null;
+                                    string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}:";
+
+                                    do
+                                    {
+
+                                        if (additionalConfig.IsSecret)
+                                            input = _consoleReader.GetPassword(prompt);
+                                        else
+                                            input = Console.GetString(prompt);
+
+                                        if (!string.IsNullOrEmpty(input))
+                                        {
+                                            if (task.Provider == provider)
+                                                task.AdditionalConfigs[additionalConfig.Name] = input;
+                                            else
+                                                task.AdditionalConfigs.Add(additionalConfig.Name, input);
+                                        }
+                                    } while (additionalConfig.IsRequired && task.AdditionalConfigs.GetValueOrDefault(additionalConfig.Name) == null);
+                                }
+                            }
                         }
 
                         if (Property != null)
@@ -140,10 +175,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         {
                             Id = task.Id,
                             Type = Type ?? task.Type,
-                            Provider = Provider ?? task.Provider,
+                            Provider = provider,
                             Name = Rename ?? task.Name,
                             Sequence = Sequence ?? task.Sequence,
-                            Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs
+                            Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs,
+                            AdditionalConfigs = task.AdditionalConfigs
                         });
 
                         message = $"Task {Name} was updated";

@@ -42,5 +42,12 @@ namespace Polyrific.Catapult.Shared.Service
         /// <param name="name">Name of the plugin</param>
         /// <returns></returns>
         Task<PluginDto> GetPluginByName(string name);
+
+        /// <summary>
+        /// Get plugin additional configs by plugin name
+        /// </summary>
+        /// <param name="pluginName">Name of the plugin</param>
+        /// <returns></returns>
+        Task<List<PluginAdditionalConfigDto>> GetPluginAdditionalConfigByPluginName(string pluginName);
     }
 }

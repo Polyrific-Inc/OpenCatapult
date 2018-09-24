@@ -20,18 +20,21 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IPluginRepository _pluginRepository;
         private readonly IExternalServiceRepository _externalServiceRepository;
+        private readonly IPluginAdditionalConfigRepository _pluginAdditionalConfigRepository;
 
         public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
             IProjectRepository projectRepository,
             IPluginRepository pluginRepository,
-            IExternalServiceRepository externalServiceRepository)
+            IExternalServiceRepository externalServiceRepository,
+            IPluginAdditionalConfigRepository pluginAdditionalConfigRepository)
         {
             _jobDefinitionRepository = dataModelRepository;
             _jobTaskDefinitionRepository = jobTaskDefinitionRepository;
             _projectRepository = projectRepository;
             _pluginRepository = pluginRepository;
             _externalServiceRepository = externalServiceRepository;
+            _pluginAdditionalConfigRepository = pluginAdditionalConfigRepository;
         }
 
         public async Task<int> AddJobDefinition(int projectId, string name, CancellationToken cancellationToken = default(CancellationToken))
@@ -156,6 +159,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 jobTaskDefinition.Type = editedJobTaskDefinition.Type;
                 jobTaskDefinition.Provider = editedJobTaskDefinition.Provider;
                 jobTaskDefinition.ConfigString = editedJobTaskDefinition.ConfigString;
+                jobTaskDefinition.AdditionalConfigString = editedJobTaskDefinition.AdditionalConfigString;
                 jobTaskDefinition.Sequence = editedJobTaskDefinition.Sequence;
                 
                 await ValidateTaskConfig(jobTaskDefinition, cancellationToken);
@@ -253,6 +257,27 @@ namespace Polyrific.Catapult.Api.Core.Services
                         if (service.ExternalServiceType.Name != requiredService)
                         {
                             throw new IncorrectExternalServiceTypeException(serviceName, requiredService);
+                        }
+                    }
+                }
+
+                var additionalConfigSpec = new PluginAdditionalConfigFilterSpecification(plugin.Id);
+                var additionalConfigs = await _pluginAdditionalConfigRepository.GetBySpec(additionalConfigSpec, cancellationToken);
+                var requiredConfigs = additionalConfigs.Where(c => c.IsRequired).Select(c => c.Name).ToList();
+                if (requiredConfigs.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString))
+                    {
+                        throw new PluginAdditionalConfigRequiredException(requiredConfigs[0], plugin.Name);
+                    }
+                    
+                    var additionalConfig = JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString);
+                    
+                    foreach (var requiredConfig in requiredConfigs)
+                    {
+                        if (additionalConfig.GetValueOrDefault(requiredConfig) == null)
+                        {
+                            throw new PluginAdditionalConfigRequiredException(requiredConfig, plugin.Name);
                         }
                     }
                 }

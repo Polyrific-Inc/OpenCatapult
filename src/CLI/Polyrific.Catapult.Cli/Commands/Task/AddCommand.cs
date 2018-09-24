@@ -15,16 +15,18 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     [Command(Description = "Add task to a job definition")]
     public class AddCommand : BaseCommand
     {
+        private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
         private readonly IPluginService _pluginService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
 
-        public AddCommand(IConsole console, ILogger<AddCommand> logger,
+        public AddCommand(IConsole console, ILogger<AddCommand> logger, IConsoleReader consoleReader,
             IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService, 
             IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
+            _consoleReader = consoleReader;
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
             _pluginService = pluginService;
@@ -71,6 +73,8 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                 if (job != null)
                 {
                     var properties = new List<(string, string)>();
+                    var secretProperties = new List<string>();
+                    Dictionary<string, string> additionalConfigs = null;
                     if (!string.IsNullOrEmpty(Provider))
                     {
                         var plugin = _pluginService.GetPluginByName(Provider).Result;
@@ -111,6 +115,31 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 properties.Add(($"{service}ExternalService", externalServiceName));
                             }
                         }
+
+                        if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                        {
+                            additionalConfigs = new Dictionary<string, string>();
+                            Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
+                            foreach (var additionalConfig in plugin.AdditionalConfigs)
+                            {
+                                string input = string.Empty;
+                                string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : ":")}";
+
+                                do
+                                {
+                                    if (additionalConfig.IsSecret)
+                                        input = _consoleReader.GetPassword(prompt);
+                                    else
+                                        input = Console.GetString(prompt);
+
+                                } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
+
+                                additionalConfigs.Add(additionalConfig.Name, input);
+
+                                if (additionalConfig.IsSecret)
+                                    secretProperties.Add(additionalConfig.Name);
+                            }
+                        }
                     }
 
                     if (Property != null)
@@ -124,10 +153,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         Provider = Provider,
                         Type = Type,
                         Sequence = Sequence,
-                        Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null
+                        Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null,
+                        AdditionalConfigs = additionalConfigs
                     }).Result;
 
-                    message = task.ToCliString($"Task {Name} added to job {Job}:");
+                    message = task.ToCliString($"Task {Name} added to job {Job}:", secretProperties.ToArray());
                     Logger.LogInformation(message);
                     return message;
                 }

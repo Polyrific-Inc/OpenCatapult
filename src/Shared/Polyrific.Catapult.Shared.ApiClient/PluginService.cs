@@ -27,6 +27,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             await Api.Delete(path);
         }
 
+        public async Task<List<PluginAdditionalConfigDto>> GetPluginAdditionalConfigByPluginName(string pluginName)
+        {
+            var path = $"plugin/name/{pluginName}/config";
+
+            return await Api.Get<List<PluginAdditionalConfigDto>>(path);
+        }
+
         public async Task<PluginDto> GetPluginById(int id)
         {
             var path = $"plugin/{id}";

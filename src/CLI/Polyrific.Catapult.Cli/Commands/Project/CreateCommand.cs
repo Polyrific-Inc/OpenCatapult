@@ -19,13 +19,15 @@ namespace Polyrific.Catapult.Cli.Commands.Project
     [Command(Description = "Create a project")]
     public class CreateCommand : BaseCommand
     {
+        private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
         private readonly IPluginService _pluginService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly ITemplateWriter _templateWriter;
 
-        public CreateCommand(IConsole console, ILogger<CreateCommand> logger, IProjectService projectService, IPluginService pluginService, IExternalServiceService externalServiceService, ITemplateWriter templateWriter) : base(console, logger)
+        public CreateCommand(IConsole console, ILogger<CreateCommand> logger, IConsoleReader consoleReader, IProjectService projectService, IPluginService pluginService, IExternalServiceService externalServiceService, ITemplateWriter templateWriter) : base(console, logger)
         {
+            _consoleReader = consoleReader;
             _projectService = projectService;
             _pluginService = pluginService;
             _externalServiceService = externalServiceService;
@@ -130,6 +132,28 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                             message = $"The external service {externalServiceName} is not a {service} service";
                             return message;
                         }
+                    }
+                }
+
+                if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                {
+                    task.AdditionalConfigs = new Dictionary<string, string>();
+                    Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
+                    foreach (var additionalConfig in plugin.AdditionalConfigs)
+                    {
+                        string input = string.Empty;
+                        string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : ":")}";
+
+                        do
+                        {
+                            if (additionalConfig.IsSecret)
+                                input = _consoleReader.GetPassword(prompt);
+                            else
+                                input = Console.GetString(prompt);
+
+                        } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
+
+                        task.AdditionalConfigs.Add(additionalConfig.Name, input);
                     }
                 }
             }

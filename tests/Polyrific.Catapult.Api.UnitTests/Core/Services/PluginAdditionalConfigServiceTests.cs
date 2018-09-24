@@ -57,6 +57,39 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public async void GetByPluginName_ReturnItems()
+        {
+            _pluginAdditionalConfigRepository
+                .Setup(r => r.GetBySpec(It.IsAny<PluginAdditionalConfigFilterSpecification>(),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(new List<PluginAdditionalConfig>
+                {
+                    new PluginAdditionalConfig {Id = 1, PluginId = 1, Plugin = new Plugin { Name = "Plugin1" }, Name = "Config1"}
+                });
+
+            var service =
+                new PluginAdditionalConfigService(_pluginRepository.Object, _pluginAdditionalConfigRepository.Object);
+
+            var configs = await service.GetByPluginName("Plugin1");
+
+            Assert.NotEmpty(configs);
+        }
+
+        [Fact]
+        public async void GetByPluginName_ReturnEmpty()
+        {
+            _pluginAdditionalConfigRepository
+                .Setup(r => r.GetBySpec(It.IsAny<PluginAdditionalConfigFilterSpecification>(),
+                    It.IsAny<CancellationToken>())).ReturnsAsync(new List<PluginAdditionalConfig>());
+
+            var service =
+                new PluginAdditionalConfigService(_pluginRepository.Object, _pluginAdditionalConfigRepository.Object);
+
+            var configs = await service.GetByPluginName("Plugin1");
+
+            Assert.Empty(configs);
+        }
+
+        [Fact]
         public async void AddAdditionalConfigs_Success()
         {
             _pluginRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))

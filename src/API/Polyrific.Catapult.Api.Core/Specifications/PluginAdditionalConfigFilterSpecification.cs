@@ -14,5 +14,14 @@ namespace Polyrific.Catapult.Api.Core.Specifications
             : base(m => m.PluginId == pluginId)
         {
         }
+
+        /// <summary>
+        /// Filter Plugin additional configs by plugin name
+        /// </summary>
+        /// <param name="pluginId"></param>
+        public PluginAdditionalConfigFilterSpecification(string pluginName)
+            : base(m => m.Plugin.Name == pluginName)
+        {
+        }
     }
 }

@@ -35,6 +35,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string ConfigString { get; set; }
 
         /// <summary>
+        /// Additional configurations which are required by specific providers in json string format
+        /// </summary>
+        public string AdditionalConfigString { get; set; }
+
+        /// <summary>
         /// Sequence of the job task definition
         /// </summary>
         public int? Sequence { get; set; }

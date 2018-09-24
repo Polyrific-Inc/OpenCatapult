@@ -16,11 +16,17 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
                 .ForMember(
                     dest => dest.Configs, 
                     opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString))
+                )
+                .ForMember(
+                    dest => dest.AdditionalConfigs,
+                    opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.AdditionalConfigString))
                 );
             CreateMap<CreateJobTaskDefinitionDto, JobTaskDefinition>()
-                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)));
+                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)))
+                .ForMember(dest => dest.AdditionalConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs)));
             CreateMap<UpdateJobTaskDefinitionDto, JobTaskDefinition>()
-                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)));;
+                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)))
+                .ForMember(dest => dest.AdditionalConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs)));
         }
         
     }

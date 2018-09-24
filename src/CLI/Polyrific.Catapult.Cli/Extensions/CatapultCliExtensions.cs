@@ -51,7 +51,7 @@ namespace Polyrific.Catapult.Cli.Extensions
             return sb.ToString();
         }
 
-        public static string ToListCliString(this IEnumerable list, string openingLine = "")
+        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null)
         {
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -60,7 +60,7 @@ namespace Polyrific.Catapult.Cli.Extensions
             foreach (var listitem in list)
             {
                 empty = false;
-                sb.Append(listitem.ToCliString());
+                sb.Append(listitem.ToCliString("", obfuscatedFields));
             }
 
             if (empty)

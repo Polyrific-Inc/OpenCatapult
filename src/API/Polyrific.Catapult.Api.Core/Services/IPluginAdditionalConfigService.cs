@@ -18,6 +18,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         Task<List<PluginAdditionalConfig>> GetByPlugin(int pluginId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Get additional configs by plugin name
+        /// </summary>
+        /// <param name="pluginName">Name of the plugin</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns>Collection of the Plugin additional configs</returns>
+        Task<List<PluginAdditionalConfig>> GetByPluginName(string pluginName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Add range of additional configs to plugin
         /// </summary>
         /// <param name="pluginId">Id of the plugin</param>

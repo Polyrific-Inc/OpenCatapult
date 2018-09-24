@@ -44,5 +44,13 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             return result.ToList();
         }
+
+        public async Task<List<PluginAdditionalConfig>> GetByPluginName(string pluginName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var spec = new PluginAdditionalConfigFilterSpecification(pluginName);
+            var result = await _pluginAdditionalConfigRepository.GetBySpec(spec, cancellationToken);
+
+            return result.ToList();
+        }
     }
 }

@@ -4,6 +4,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Project;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
 using Polyrific.Catapult.Shared.Dto.Plugin;
 using Polyrific.Catapult.Shared.Dto.Project;
@@ -13,19 +14,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class ProjectCommandTests
     {
+        private readonly ITestOutputHelper _output;
         private readonly Mock<IConsole> _console;
+        private readonly Mock<IConsoleReader> _consoleReader;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IPluginService> _pluginService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<ITemplateWriter> _templateWriter;
 
-        public ProjectCommandTests()
+        public ProjectCommandTests(ITestOutputHelper output)
         {
+            _output = output;
             var projects = new List<ProjectDto>
             {
                 new ProjectDto
@@ -47,6 +52,30 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                     Id = 2,
                     Name = "GitHubRepositoryProvider",
                     RequiredServices = new string[] { "GitHub" }
+                },
+                new PluginDto
+                {
+                    Id = 3,
+                    Name = "AzureAppService",
+                    AdditionalConfigs = new PluginAdditionalConfigDto[]
+                    {
+                        new PluginAdditionalConfigDto
+                        {
+                            Name = "SubscriptionId",
+                            Label = "Subscription Id",
+                            Type = "string",
+                            IsRequired = true,
+                            IsSecret = false
+                        },
+                        new PluginAdditionalConfigDto
+                        {
+                            Name = "AppKey",
+                            Label = "AppKey Id",
+                            Type = "string",
+                            IsRequired = true,
+                            IsSecret = true
+                        }
+                    }
                 }
             };
 
@@ -73,6 +102,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             };
 
             _console = new Mock<IConsole>();
+            _consoleReader = new Mock<IConsoleReader>();
 
             _projectService = new Mock<IProjectService>();
             _projectService.Setup(p => p.GetProjects(It.IsAny<string>())).ReturnsAsync(projects);
@@ -166,7 +196,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProjectCreate_Execute_ReturnsSuccessMessage()
         {
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -195,10 +225,18 @@ jobs:
     provider: GitHubRepositoryProvider
     configs:
       Branch: master
-      GitHubExternalService: github-default"
+      GitHubExternalService: github-default
+  - name: Deploy
+    type: Deploy
+    provider: AzureAppService
+    configs:
+      AzureAppServiceExternalService: azure-default"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
+
+            var console = new TestConsole(_output, "test");
+            var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -226,7 +264,7 @@ jobs:
     provider: AspNetCoreMvc2"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -258,7 +296,7 @@ jobs:
       Branch: master"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -291,7 +329,7 @@ jobs:
       GitHubExternalService: github-default2"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -324,7 +362,7 @@ jobs:
       GitHubExternalService: azure-default"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
