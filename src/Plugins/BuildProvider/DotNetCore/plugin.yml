@@ -1,4 +1,4 @@
-name: 'DotNetCore'
+name: 'DotNetCoreBuildProvider'
 type: 'BuildProvider'
 author: 'Polyrific'
 version: '1.0'

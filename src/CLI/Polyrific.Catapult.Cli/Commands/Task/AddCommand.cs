@@ -6,6 +6,7 @@ using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Service;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -16,12 +17,19 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     {
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IPluginService _pluginService;
+        private readonly IExternalServiceService _externalServiceService;
+        private readonly IExternalServiceTypeService _externalServiceTypeService;
 
         public AddCommand(IConsole console, ILogger<AddCommand> logger,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService) : base(console, logger)
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService, 
+            IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
+            _pluginService = pluginService;
+            _externalServiceService = externalServiceService;
+            _externalServiceTypeService = externalServiceTypeService;
         }
 
         [Required]
@@ -62,13 +70,61 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                 if (job != null)
                 {
+                    var properties = new List<(string, string)>();
+                    if (!string.IsNullOrEmpty(Provider))
+                    {
+                        var plugin = _pluginService.GetPluginByName(Provider).Result;
+
+                        if (plugin == null)
+                        {
+                            message = $"The provider \"{Provider}\" is not installed";
+                            return message;
+                        }
+
+                        if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                        {
+                            Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
+                            foreach (var service in plugin.RequiredServices)
+                            {
+                                var externalServiceName = Console.GetString($"{service} external service name:");
+
+                                if (string.IsNullOrEmpty(externalServiceName))
+                                {
+                                    message = $"The {service} external service is required for the provider {Provider}. If you do not have it in the system, please add them using \"service add\" command";
+                                    return message;
+                                }
+
+                                var externalService = _externalServiceService.GetExternalServiceByName(externalServiceName).Result;
+
+                                if (externalService == null)
+                                {
+                                    message = $"The external service {externalServiceName} is not found.";
+                                    return message;
+                                }
+
+                                if (externalService.ExternalServiceTypeName != service)
+                                {
+                                    message = $"The entered external service is not a {service} service";
+                                    return message;
+                                }
+
+                                properties.Add(($"{service}ExternalService", externalServiceName));
+                            }
+                        }
+                    }
+
+                    if (Property != null)
+                    {
+                        properties.InsertRange(0, Property);
+                    }
+
                     var task = _jobDefinitionService.CreateJobTaskDefinition(project.Id, job.Id, new CreateJobTaskDefinitionDto
                     {
                         Name = Name,
                         Provider = Provider,
                         Type = Type,
                         Sequence = Sequence,
-                        Config = Property?.ToDictionary(x => x.Item1, x => x.Item2)
+                        Config = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null
                     }).Result;
 
                     message = task.ToCliString($"Task {Name} added to job {Job}:");

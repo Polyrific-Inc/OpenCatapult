@@ -3,9 +3,11 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Service;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -16,12 +18,19 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     {
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IPluginService _pluginService;
+        private readonly IExternalServiceService _externalServiceService;
+        private readonly IExternalServiceTypeService _externalServiceTypeService;
 
         public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService) : base(console, logger)
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService,
+            IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
+            _pluginService = pluginService;
+            _externalServiceService = externalServiceService;
+            _externalServiceTypeService = externalServiceTypeService;
         }
 
         [Required]
@@ -69,6 +78,68 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                     if (task != null)
                     {
+                        var properties = new List<(string, string)>();
+                        if (!string.IsNullOrEmpty(Provider))
+                        {
+                            var plugin = _pluginService.GetPluginByName(Provider).Result;
+
+                            if (plugin == null)
+                            {
+                                message = $"The provider \"{Provider}\" is not installed";
+                                return message;
+                            }
+
+                            if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                            {
+                                Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
+
+                                if (task.Provider == Provider)
+                                {
+                                    Console.WriteLine("Leave blank if no changes for the external service");
+                                }
+
+                                foreach (var service in plugin.RequiredServices)
+                                {
+                                    var externalServiceKey = $"{service}ExternalService";
+                                    var externalServiceName = Console.GetString($"{service} external service name:");
+
+                                    if (task.Provider == Provider && string.IsNullOrEmpty(externalServiceName))
+                                    {
+                                        properties.Add((externalServiceKey, task.Config[externalServiceKey]));
+                                    }
+                                    else
+                                    {
+                                        if (string.IsNullOrEmpty(externalServiceName))
+                                        {
+                                            message = $"The {service} external service is required for the provider {Provider}. If you do not have it in the system, please add them using \"service add\" command";
+                                            return message;
+                                        }
+
+                                        var externalService = _externalServiceService.GetExternalServiceByName(externalServiceName).Result;
+
+                                        if (externalService == null)
+                                        {
+                                            message = $"The external service {externalServiceName} is not found.";
+                                            return message;
+                                        }
+
+                                        if (externalService.ExternalServiceTypeName != service)
+                                        {
+                                            message = $"The entered external service is not a {service} service";
+                                            return message;
+                                        }
+
+                                        properties.Add(($"{service}ExternalService", externalServiceName));
+                                    }                                    
+                                }
+                            }
+                        }
+
+                        if (Property != null)
+                        {
+                            properties.InsertRange(0, Property);
+                        }
+
                         _jobDefinitionService.UpdateJobTaskDefinition(project.Id, job.Id, task.Id, new UpdateJobTaskDefinitionDto
                         {
                             Id = task.Id,

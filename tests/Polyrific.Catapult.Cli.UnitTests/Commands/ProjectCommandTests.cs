@@ -4,6 +4,8 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Project;
+using Polyrific.Catapult.Shared.Dto.ExternalService;
+using Polyrific.Catapult.Shared.Dto.Plugin;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 using System;
@@ -18,6 +20,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     {
         private readonly Mock<IConsole> _console;
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<IPluginService> _pluginService;
+        private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<ITemplateWriter> _templateWriter;
 
         public ProjectCommandTests()
@@ -28,6 +32,43 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 {
                     Id = 1,
                     Name = "Project 1"
+                }
+            };
+
+            var plugins = new List<PluginDto>
+            {
+                new PluginDto
+                {
+                    Id = 1,
+                    Name = "AspNetCoreMvc"
+                },
+                new PluginDto
+                {
+                    Id = 2,
+                    Name = "GitHubRepositoryProvider",
+                    RequiredServices = new string[] { "GitHub" }
+                }
+            };
+
+            var services = new List<ExternalServiceDto>
+            {
+                new ExternalServiceDto
+                {
+                    Id = 1,
+                    ExternalServiceTypeId = 1,
+                    ExternalServiceTypeName = "GitHub",
+                    Name = "github-default",
+                    Description = "Default github service",
+                    Config = new Dictionary<string, string> { { "user", "test" } }
+                },
+                new ExternalServiceDto
+                {
+                    Id = 2,
+                    ExternalServiceTypeId = 2,
+                    ExternalServiceTypeName = "AzureAppService",
+                    Name = "azure-default",
+                    Description = "Default azure service",
+                    Config = new Dictionary<string, string> { { "user", "test" } }
                 }
             };
 
@@ -48,12 +89,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 Name = dto.NewProjectName
             });
 
+            _pluginService = new Mock<IPluginService>();
+            _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
+                .ReturnsAsync((string pluginName) => plugins.FirstOrDefault(x => x.Name == pluginName));
+
+            _externalServiceService = new Mock<IExternalServiceService>();
+            _externalServiceService.Setup(s => s.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => services.FirstOrDefault(u => u.Name == name));
+
             _templateWriter = new Mock<ITemplateWriter>();
-            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
-@"name: Project 2
-models:
-- name: Product"
-            );
             _templateWriter.Setup(t => t.Write(It.IsAny<string>(), It.IsAny<string>())).Returns((string filePath, string content) => filePath);
         }
 
@@ -123,7 +166,7 @@ models:
         [Fact]
         public void ProjectCreate_Execute_ReturnsSuccessMessage()
         {
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -137,7 +180,25 @@ models:
         [Fact]
         public void ProjectCreate_Execute_WithTemplateReturnsSuccessMessage()
         {
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _templateWriter.Object)
+            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
+@"name: Project 2
+models:
+    - name: Product
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: AspNetCoreMvc
+  - name: Push
+    type: Generate
+    provider: GitHubRepositoryProvider
+    config:
+      Branch: master
+      GitHubExternalService: github-default"
+            );
+
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -148,6 +209,131 @@ models:
 
             Assert.StartsWith("Project created:", resultMessage);
             _projectService.Verify(s => s.CreateProject(It.Is<NewProjectDto>(p => p.Models.Count > 0)), Times.Once);
+        }
+
+        [Fact]
+        public void ProjectCreate_Execute_WithTemplateReturnsProviderNotInstalled()
+        {
+            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
+@"name: Project 2
+models:
+    - name: Product
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: AspNetCoreMvc2"
+            );
+
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            {
+                Name = "Project 2",
+                Client = "Company",
+                Template = "Test"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("The provider \"AspNetCoreMvc2\" is not installed", resultMessage);
+        }
+
+        [Fact]
+        public void ProjectCreate_Execute_WithTemplateReturnsExternalServiceRequired()
+        {
+            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
+@"name: Project 2
+models:
+    - name: Product
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: AspNetCoreMvc
+  - name: Push
+    type: Generate
+    provider: GitHubRepositoryProvider
+    config:
+      Branch: master"
+            );
+
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            {
+                Name = "Project 2",
+                Client = "Company",
+                Template = "Test"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("The GitHub external service is required for the provider GitHubRepositoryProvider. Please check the template file", resultMessage);
+        }
+
+        [Fact]
+        public void ProjectCreate_Execute_WithTemplateReturnsExternalServiceNotFound()
+        {
+            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
+@"name: Project 2
+models:
+    - name: Product
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: AspNetCoreMvc
+  - name: Push
+    type: Generate
+    provider: GitHubRepositoryProvider
+    config:
+      Branch: master
+      GitHubExternalService: github-default2"
+            );
+
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            {
+                Name = "Project 2",
+                Client = "Company",
+                Template = "Test"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("The external service github-default2 is not found. Please add them using \"service add\" command", resultMessage);
+        }
+
+        [Fact]
+        public void ProjectCreate_Execute_WithTemplateReturnsIncorrectType()
+        {
+            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
+@"name: Project 2
+models:
+    - name: Product
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: AspNetCoreMvc
+  - name: Push
+    type: Generate
+    provider: GitHubRepositoryProvider
+    config:
+      Branch: master
+      GitHubExternalService: azure-default"
+            );
+
+            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            {
+                Name = "Project 2",
+                Client = "Company",
+                Template = "Test"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("The external service azure-default is not a GitHub service", resultMessage);
         }
 
         [Fact]
