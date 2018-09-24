@@ -26,7 +26,7 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         /// <summary>
         /// Config of the job task definition
         /// </summary>
-        public Dictionary<string, string> Config { get; set; }
+        public Dictionary<string, string> Configs { get; set; }
 
         /// <summary>
         /// Sequence of the job task definition

@@ -14,13 +14,13 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
         {
             CreateMap<JobTaskDefinition, JobTaskDefinitionDto>()
                 .ForMember(
-                    dest => dest.Config, 
+                    dest => dest.Configs, 
                     opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString))
                 );
             CreateMap<CreateJobTaskDefinitionDto, JobTaskDefinition>()
-                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Config)));
+                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)));
             CreateMap<UpdateJobTaskDefinitionDto, JobTaskDefinition>()
-                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Config)));;
+                .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)));;
         }
         
     }
