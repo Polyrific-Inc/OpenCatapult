@@ -37,11 +37,6 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-n|--name <NAME>", "Name of the job task definition", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
-        [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
-        [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build,
-            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test, IgnoreCase = true)]
-        public string Type { get; set; } = JobTaskDefinitionType.Generate;
-
         public override string Execute()
         {
             string message = string.Empty;
