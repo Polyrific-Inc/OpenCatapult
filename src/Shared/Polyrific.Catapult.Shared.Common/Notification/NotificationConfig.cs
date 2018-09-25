@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
         public async Task Load()
         {
-            var obj = JObject.Parse(await File.ReadAllTextAsync(NotificationConfigFile));
+            var obj = JObject.Parse(await FileHelper.ReadAllTextAsync(NotificationConfigFile));
             _configs = obj["NotificationConfig"].ToObject<Dictionary<string, string>>();
 
             // check against default config
@@ -60,7 +60,7 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
             if (!File.Exists(NotificationConfigFile))
             {
-                await File.WriteAllTextAsync(NotificationConfigFile, JsonConvert.SerializeObject(new { NotificationConfig = GetDefaultConfigs() }));
+                await FileHelper.WriteAllTextAsync(NotificationConfigFile, JsonConvert.SerializeObject(new { NotificationConfig = GetDefaultConfigs() }));
             }
         }
 
