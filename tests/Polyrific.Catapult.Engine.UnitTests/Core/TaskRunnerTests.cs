@@ -102,7 +102,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
+            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -120,7 +120,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
+            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.False(results[1].IsSuccess);
@@ -138,7 +138,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
+            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -156,7 +156,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
             var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"));
+            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);

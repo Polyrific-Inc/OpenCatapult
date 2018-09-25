@@ -11,16 +11,17 @@ namespace DotNetCore
         /// </summary>
         /// <param name="csprojLocation">Location of the csproj file</param>
         /// <param name="buildOutputLocation">Location of the build output</param>
+        /// <param name="configuration">Build configuration (default is Debug)</param>
         /// <returns>Error message</returns>
-        Task<string> Build(string csprojLocation, string buildOutputLocation);
+        Task<string> Build(string csprojLocation, string buildOutputLocation, string configuration = "Debug");
 
         /// <summary>
         /// Create build artifact
         /// </summary>
         /// <param name="buildOutputLocation">Location of the build output</param>
-        /// <param name="artifactLocation">Location of the artifact output</param>
-        /// <returns></returns>
-        Task<string> CreateArtifact(string buildOutputLocation, string artifactLocation);
+        /// <param name="destinationArtifact">Name of the artifact package, including the complete location</param>
+        /// <returns>Error message</returns>
+        Task<string> CreateArtifact(string buildOutputLocation, string destinationArtifact);
 
         /// <summary>
         /// Restore the NuGet packages

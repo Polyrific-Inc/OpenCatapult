@@ -1,9 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.Core
 {
@@ -43,7 +44,8 @@ namespace Polyrific.Catapult.Engine.Core
             
             var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
             
-            await _taskRunner.Run(jobQueue.ProjectId, jobQueue.Code, jobTasks, _engineConfig.PluginsLocation);
+            var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
+            await _taskRunner.Run(jobQueue.ProjectId, jobQueue.Code, jobTasks, _engineConfig.PluginsLocation, workingLocation);
         }
 
         public async Task<JobDto> GetJobInQueue()

@@ -1,17 +1,18 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DotNetCore.Helpers
 {
     public class CommandHelper
     {
-        public static Task<string> Execute(string fileName, string args, ILogger logger = null)
+        public static async Task<(string output, string error)> Execute(string fileName, string args, ILogger logger = null)
         {
-            var returnValue = new StringBuilder();
+            var outputBuilder = new StringBuilder();
+            var error = "";
 
             var info = new ProcessStartInfo(fileName)
             {
@@ -19,6 +20,7 @@ namespace DotNetCore.Helpers
                 Arguments = args,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 CreateNoWindow = true
             };
 
@@ -29,16 +31,18 @@ namespace DotNetCore.Helpers
                     var reader = process.StandardOutput;
                     while (!reader.EndOfStream)
                     {
-                        var line = reader.ReadLine();
+                        var line = await reader.ReadLineAsync();
 
                         logger?.LogDebug(line);
 
-                        returnValue.AppendLine(line);
+                        outputBuilder.AppendLine(line);
                     }
+
+                    error = await process.StandardError.ReadToEndAsync();
                 }
             }
 
-            return Task.FromResult(returnValue.ToString());
+            return (outputBuilder.ToString(), error);
         }
     }
 }

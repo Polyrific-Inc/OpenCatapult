@@ -1,12 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core
@@ -23,6 +25,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         public CatapultEngineTests()
         {
             _engineConfig = new Mock<ICatapultEngineConfig>();
+            _engineConfig.Setup(c => c.WorkingLocation).Returns(Path.Combine(AppContext.BaseDirectory, "working"));
+
             _taskRunner = new Mock<ITaskRunner>();
             _healthService = new Mock<IHealthService>();
             _jobQueueService = new Mock<IJobQueueService>();
@@ -68,7 +72,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             await engine.ExecuteJob(new JobDto{ProjectId = 1, Code = "20180817.1"});
 
-            _taskRunner.Verify(tr => tr.Run(1, "20180817.1", It.IsAny<List<JobTaskDefinitionDto>>(), It.IsAny<string>()), Times.Once);
+            _taskRunner.Verify(tr => tr.Run(1, "20180817.1", It.IsAny<List<JobTaskDefinitionDto>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

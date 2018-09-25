@@ -53,7 +53,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.outputLocation, result.outputValues);
+            return new TaskRunnerResult(true, result.outputArtifact, result.outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

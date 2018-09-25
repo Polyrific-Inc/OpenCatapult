@@ -34,6 +34,11 @@ namespace Polyrific.Catapult.Engine.Core
         string PluginsLocation { get; }
 
         /// <summary>
+        /// Location of working directory when engine executing job tasks
+        /// </summary>
+        string WorkingLocation { get; }
+
+        /// <summary>
         /// Get available configs
         /// </summary>
         Dictionary<string, string> Configs { get; }

@@ -75,9 +75,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Set job task configuration
         /// </summary>
         /// <param name="configString">Serialized configuration</param>
-        public void SetConfig(string configString)
+        /// <param name="workingLocation">Location of the working directory</param>
+        public void SetConfig(string configString, string workingLocation)
         {
             TaskConfig = JsonConvert.DeserializeObject<TTaskConfig>(configString) ?? new TTaskConfig();
+            TaskConfig.WorkingLocation = workingLocation;
         }
         
         /// <summary>
