@@ -24,7 +24,10 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             Shared.Dto.Constants.PluginType.BuildProvider,
             Shared.Dto.Constants.PluginType.HostingProvider,
             Shared.Dto.Constants.PluginType.GeneratorProvider,
-            Shared.Dto.Constants.PluginType.RepositoryProvider)]
+            Shared.Dto.Constants.PluginType.RepositoryProvider,
+            Shared.Dto.Constants.PluginType.DatabaseProvider,
+            Shared.Dto.Constants.PluginType.StorageProvider,
+            Shared.Dto.Constants.PluginType.TestProvider)]
         public string PluginType { get; set; }
 
         public override string Execute()
