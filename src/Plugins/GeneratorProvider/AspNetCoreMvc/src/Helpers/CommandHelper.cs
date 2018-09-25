@@ -40,5 +40,10 @@ namespace AspNetCoreMvc.Helpers
 
             return Task.FromResult(returnValue.ToString());
         }
+        
+        public static Task<string> RunDotnet(string args, ILogger logger = null)
+        {
+            return Execute("dotnet", args, logger);
+        }
     }
 }

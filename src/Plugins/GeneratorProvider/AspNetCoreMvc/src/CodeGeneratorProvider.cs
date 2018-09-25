@@ -26,7 +26,9 @@ namespace AspNetCoreMvc
         {
             var generator = new CodeGenerator(projectName, config.OutputLocation, models);
 
-            await generator.InitProject();
+            await generator.InitSolution();
+
+            await generator.InitProjects();
 
             await generator.GenerateModels();
 
