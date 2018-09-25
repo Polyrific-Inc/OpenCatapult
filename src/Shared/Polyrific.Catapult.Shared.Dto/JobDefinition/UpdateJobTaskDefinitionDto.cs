@@ -25,14 +25,19 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         public string Type { get; set; }
 
         /// <summary>
-        /// Config of the job task definition
+        /// Provider of the job task definition
         /// </summary>
-        public Dictionary<string, string> Config { get; set; }
+        public string Provider { get; set; }
 
         /// <summary>
-        /// Continue job task definition when error occured?
+        /// Config of the job task definition
         /// </summary>
-        public bool? ContinueWhenError { get; set; }
+        public Dictionary<string, string> Configs { get; set; }
+
+        /// <summary>
+        /// Additional configurations which are required by specific providers
+        /// </summary>
+        public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
         /// Sequence of the job task definition

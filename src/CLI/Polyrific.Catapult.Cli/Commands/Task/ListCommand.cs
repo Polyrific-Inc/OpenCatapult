@@ -4,7 +4,9 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
@@ -13,12 +15,14 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     {
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IPluginService _pluginService;
 
         public ListCommand(IConsole console, ILogger<ListCommand> logger,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService) : base(console, logger)
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService) : base(console, logger)
         {
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
+            _pluginService = pluginService;
         }
 
         [Required]
@@ -42,7 +46,15 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                 if (job != null)
                 {
                     var tasks = _jobDefinitionService.GetJobTaskDefinitions(project.Id, job.Id).Result;
-                    message = tasks.ToListCliString($"Job task definitions in job {Job}:");
+
+                    var secretConfig = new List<string>();
+                    foreach (var task in tasks)
+                    {
+                        var configs = _pluginService.GetPluginAdditionalConfigByPluginName(task.Provider).Result;
+                        secretConfig.AddRange(configs.Where(c => c.IsSecret).Select(c => c.Name));
+                    }
+
+                    message = tasks.ToListCliString($"Job task definitions in job {Job}:", secretConfig.ToArray());
                     return message;
                 }
             }

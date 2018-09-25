@@ -34,7 +34,7 @@ namespace Polyrific.Catapult.Shared.Common
             {
                 var filePath = Path.Combine(folderPath, fileName);
 
-                return await File.ReadAllTextAsync(filePath);
+                return await FileHelper.ReadAllTextAsync(filePath);
             }
             else
             {
@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Shared.Common
                 var sb = new StringBuilder();
                 foreach (var filePath in orderedFiles)
                 {
-                    sb.AppendLine(await File.ReadAllTextAsync(filePath));
+                    sb.AppendLine(await FileHelper.ReadAllTextAsync(filePath));
                 }
 
                 return sb.ToString();
@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Shared.Common
                 message = Environment.NewLine + message;
             }
 
-            await File.AppendAllTextAsync(filePath, message);
+            await FileHelper.AppendAllTextAsync(filePath, message);
         }
 
         private string GetFolderPath(string folderName)

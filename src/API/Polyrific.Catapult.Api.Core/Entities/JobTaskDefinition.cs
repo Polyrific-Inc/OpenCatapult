@@ -25,14 +25,19 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Type { get; set; }
 
         /// <summary>
+        /// Provider of the job task definition
+        /// </summary>
+        public string Provider { get; set; }
+
+        /// <summary>
         /// Config string of the job task definition
         /// </summary>
         public string ConfigString { get; set; }
 
         /// <summary>
-        /// Continue job task definition when error occured?
+        /// Additional configurations which are required by specific providers in json string format
         /// </summary>
-        public bool? ContinueWhenError { get; set; }
+        public string AdditionalConfigString { get; set; }
 
         /// <summary>
         /// Sequence of the job task definition

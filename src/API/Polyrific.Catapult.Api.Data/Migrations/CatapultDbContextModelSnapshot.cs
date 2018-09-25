@@ -32,10 +32,10 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int?>("ExternalServiceTypeId");
+
                     b.Property<string>("Name")
                         .IsRequired();
-
-                    b.Property<string>("Type");
 
                     b.Property<DateTime?>("Updated");
 
@@ -43,7 +43,75 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ExternalServiceTypeId");
+
                     b.ToTable("ExternalServices");
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalServiceProperty", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AllowedValues");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Description");
+
+                    b.Property<int?>("ExternalServiceTypeId");
+
+                    b.Property<bool>("IsRequired");
+
+                    b.Property<bool>("IsSecret");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExternalServiceTypeId");
+
+                    b.ToTable("ExternalServiceProperties");
+
+                    b.HasData(
+                        new { Id = 1, ConcurrencyStamp = "bb36270b-654f-42bc-8508-c8bd0acafb5b", Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc), Description = "Remote Url", ExternalServiceTypeId = 1, IsRequired = true, IsSecret = false, Name = "RemoteUrl" },
+                        new { Id = 2, AllowedValues = "userPassword,authToken", ConcurrencyStamp = "504200ee-f48a-4efa-be48-e09d16ee8d65", Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc), Description = "Remote Credential Type (\"userPassword\" or \"authToken\")", ExternalServiceTypeId = 1, IsRequired = true, IsSecret = false, Name = "RemoteCredentialType" },
+                        new { Id = 3, ConcurrencyStamp = "4bd86c55-ffc1-4c49-a4e4-c1ee809f311d", Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc), Description = "Remote Username", ExternalServiceTypeId = 1, IsRequired = false, IsSecret = false, Name = "RemoteUsername" },
+                        new { Id = 4, ConcurrencyStamp = "c1eeaa4b-bdc2-4ef9-a52d-393fe9dca59a", Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc), Description = "Remote Password", ExternalServiceTypeId = 1, IsRequired = false, IsSecret = true, Name = "RemotePassword" },
+                        new { Id = 5, ConcurrencyStamp = "416fcf67-35cf-4ea3-b534-dade4a81da88", Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc), Description = "Repository Auth Token", ExternalServiceTypeId = 1, IsRequired = false, IsSecret = true, Name = "RepoAuthToken" }
+                    );
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalServiceType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExternalServiceTypes");
+
+                    b.HasData(
+                        new { Id = 1, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce96", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "GitHub" }
+                    );
                 });
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobCounter", b =>
@@ -140,18 +208,20 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("AdditionalConfigString");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
                     b.Property<string>("ConfigString");
-
-                    b.Property<bool?>("ContinueWhenError");
 
                     b.Property<DateTime>("Created");
 
                     b.Property<int>("JobDefinitionId");
 
                     b.Property<string>("Name");
+
+                    b.Property<string>("Provider");
 
                     b.Property<int?>("Sequence");
 
@@ -181,6 +251,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("RequiredServicesString");
+
                     b.Property<string>("Type");
 
                     b.Property<DateTime?>("Updated");
@@ -190,6 +262,38 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Plugins");
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<bool>("IsRequired");
+
+                    b.Property<bool>("IsSecret");
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("PluginId");
+
+                    b.Property<string>("Type");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PluginId");
+
+                    b.ToTable("PluginAdditionalConfigs");
                 });
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Project", b =>
@@ -582,6 +686,20 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     );
                 });
 
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalService", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.ExternalServiceType", "ExternalServiceType")
+                        .WithMany()
+                        .HasForeignKey("ExternalServiceTypeId");
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalServiceProperty", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.ExternalServiceType")
+                        .WithMany("ExternalServiceProperties")
+                        .HasForeignKey("ExternalServiceTypeId");
+                });
+
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobDefinition", b =>
                 {
                     b.HasOne("Polyrific.Catapult.Api.Core.Entities.Project", "Project")
@@ -603,6 +721,14 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasOne("Polyrific.Catapult.Api.Core.Entities.JobDefinition", "JobDefinition")
                         .WithMany("Tasks")
                         .HasForeignKey("JobDefinitionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.Plugin", "Plugin")
+                        .WithMany()
+                        .HasForeignKey("PluginId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

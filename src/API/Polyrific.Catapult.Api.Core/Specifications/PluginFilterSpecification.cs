@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Linq;
 using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Core.Specifications
@@ -17,6 +18,11 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public string PluginType { get; set; }
 
         /// <summary>
+        /// Id of the plugin
+        /// </summary>
+        public int PluginId { get; set; }
+
+        /// <summary>
         /// Filter plugins by Name and Type
         /// </summary>
         /// <param name="name">Name of the plugin (set null if you don't want to search by Name)</param>
@@ -26,6 +32,16 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         {
             PluginName = name;
             PluginType = type;
+        }
+
+        /// <summary>
+        /// Filter plugins by id
+        /// </summary>
+        /// <param name="id">Id of the plugin</param>
+        public PluginFilterSpecification(int id)
+            : base(m => m.Id == id)
+        {
+            PluginId = id;
         }
     }
 }

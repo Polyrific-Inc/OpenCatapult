@@ -21,6 +21,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Templates\sample.yaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Templates\sample.yaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.2.5" />
     <PackageReference Include="microsoft.aspnetcore.signalr.client" Version="1.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.1.1" />

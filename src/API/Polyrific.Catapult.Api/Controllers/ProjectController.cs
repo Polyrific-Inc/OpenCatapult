@@ -108,6 +108,26 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 return BadRequest(dupEx.Message);
             }
+            catch (ProjectDataModelNotFoundException modelEx)
+            {
+                return BadRequest(modelEx.Message);
+            }
+            catch (ProviderNotInstalledException provEx)
+            {
+                return BadRequest(provEx.Message);
+            }
+            catch (ExternalServiceRequiredException esrEx)
+            {
+                return BadRequest(esrEx.Message);
+            }
+            catch (ExternalServiceNotFoundException esnfEx)
+            {
+                return BadRequest(esnfEx.Message);
+            }
+            catch (IncorrectExternalServiceTypeException iestEx)
+            {
+                return BadRequest(iestEx.Message);
+            }
         }
 
         /// <summary>

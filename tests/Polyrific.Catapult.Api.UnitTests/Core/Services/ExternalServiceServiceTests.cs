@@ -1,18 +1,16 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Moq;
-using Polyrific.Catapult.Api.Core.Entities;
-using Polyrific.Catapult.Api.Core.Exceptions;
-using Polyrific.Catapult.Api.Core.Repositories;
-using Polyrific.Catapult.Api.Core.Services;
-using Polyrific.Catapult.Api.Core.Specifications;
-using Polyrific.Catapult.Shared.Common.Interface;
-using Polyrific.Catapult.Shared.Dto.Constants;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
+using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
+using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Api.Core.Security;
+using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Core.Specifications;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services
@@ -32,7 +30,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Id = 1,
                     Name = "Github-Default",
                     Description = "The default github service",
-                    Type = "Github",
+                    ExternalServiceTypeId = 1,
                     UserId = 1
                 }
             };
@@ -83,7 +81,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddExternalService_ValidItem()
         {
             var externalServiceService = new ExternalServiceService(_externalServiceRepository.Object, _secretVault.Object);
-            int newId = await externalServiceService.AddExternalService("vstsBuild", null, null, "config", 1);
+            int newId = await externalServiceService.AddExternalService("vstsBuild", null, 1, "config", 1);
 
             Assert.True(newId > 1);
             Assert.True(_data.Count > 1);
@@ -94,7 +92,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddExternalService_InvalidProject()
         {
             var externalServiceService = new ExternalServiceService(_externalServiceRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => externalServiceService.AddExternalService("Github-Default", null, null, "config", 1));
+            var exception = Record.ExceptionAsync(() => externalServiceService.AddExternalService("Github-Default", null, 1, "config", 1));
 
             Assert.IsType<DuplicateExternalServiceException>(exception?.Result);
         }

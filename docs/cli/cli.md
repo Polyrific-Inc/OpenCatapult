@@ -6,15 +6,12 @@ Opencatapult provide a command line interface to interact with the API
 Login to catapult
 
 Usage:
-`dotnet pc.dll login --user [user] --password [password]`
+`dotnet pc.dll login --user [user]`
 
 **Options:**
 * user (mandatory)
     * The user email used for login
     * Usage: `--user` (alias: `-u`)
-* password (mandatory)
-    * The password of the user
-    * Usage: `--password` (alias: `-p`)
 
 ## Logout
 Logout from catapult

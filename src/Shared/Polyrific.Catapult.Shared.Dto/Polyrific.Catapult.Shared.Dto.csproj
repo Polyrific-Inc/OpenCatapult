@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>Polyrific.Catapult.Shared.Dto</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PackageId>Polyrific.Catapult.Shared.Dto</PackageId>
@@ -14,5 +14,9 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/Polyrific-Inc/OpenCatapult/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />
+  </ItemGroup>
 
 </Project>

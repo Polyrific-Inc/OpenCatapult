@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Polyrific.Catapult.Api.Core.Entities;
-using Polyrific.Catapult.Api.Core.Exceptions;
-using Polyrific.Catapult.Api.Core.Repositories;
-using Polyrific.Catapult.Api.Core.Specifications;
-using Polyrific.Catapult.Shared.Common.Interface;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
+using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Api.Core.Security;
+using Polyrific.Catapult.Api.Core.Specifications;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {
@@ -23,9 +23,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             _secretVault = secretVault;
         }
 
-        public async Task<int> AddExternalService(string name, string description, string type, string configString, int userId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddExternalService(string name, string description, int typeId, string configString, int userId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var externalServiceByNameSpec = new ExternalServiceFilterSpecification(name);
+            var externalServiceByNameSpec = new ExternalServiceFilterSpecification(0, name);
             if (await _repository.CountBySpec(externalServiceByNameSpec, cancellationToken) > 0)
             {
                 throw new DuplicateExternalServiceException(name);
@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 Name = name,
                 Description = description,
-                Type = type,
+                ExternalServiceTypeId = typeId,
                 UserId = userId
             };
 
@@ -57,7 +57,9 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<ExternalService> GetExternalService(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var externalService = await _repository.GetById(id);
+            var externalServiceByNameSpec = new ExternalServiceFilterSpecification(id, null);
+            externalServiceByNameSpec.Includes.Add(x => x.ExternalServiceType);
+            var externalService = await _repository.GetSingleBySpec(externalServiceByNameSpec, cancellationToken);
 
             if (externalService != null)
                 externalService.ConfigString = await _secretVault.Get(externalService.Name, cancellationToken);
@@ -67,7 +69,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<ExternalService> GetExternalServiceByName(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var externalServiceByNameSpec = new ExternalServiceFilterSpecification(name);
+            var externalServiceByNameSpec = new ExternalServiceFilterSpecification(0, name);
+            externalServiceByNameSpec.Includes.Add(x => x.ExternalServiceType);
             var externalService = await _repository.GetSingleBySpec(externalServiceByNameSpec, cancellationToken);
 
             if (externalService != null)
@@ -79,6 +82,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         public async Task<List<ExternalService>> GetExternalServices(int userId, CancellationToken cancellationToken = default(CancellationToken))
         {
             var externalServiceByUserSpec = new ExternalServiceFilterSpecification(userId);
+            externalServiceByUserSpec.Includes.Add(x => x.ExternalServiceType);
             var result = await _repository.GetBySpec(externalServiceByUserSpec, cancellationToken);
 
             return result.ToList();
@@ -90,7 +94,6 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (entity != null)
             {
-                entity.Type = externalService.Type;
                 entity.Description = externalService.Description;
 
                 if (!string.IsNullOrEmpty(externalService.ConfigString))

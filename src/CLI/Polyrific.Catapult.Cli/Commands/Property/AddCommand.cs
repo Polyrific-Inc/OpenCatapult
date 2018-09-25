@@ -45,7 +45,7 @@ namespace Polyrific.Catapult.Cli.Commands.Property
 
         [Option("-ct|--controltype <CONTROLTYPE>", "Control type", CommandOptionType.SingleValue)]
         [AllowedValues(PropertyControlType.InputText, PropertyControlType.InputNumber, PropertyControlType.InputFile, PropertyControlType.Textarea, PropertyControlType.Checkbox,
-            PropertyControlType.Select, PropertyControlType.Radio, PropertyControlType.Calendar, PropertyControlType.Image)]
+            PropertyControlType.CheckboxList, PropertyControlType.Select, PropertyControlType.Radio, PropertyControlType.Calendar, PropertyControlType.Image)]
         public string ControlType { get; set; } = PropertyControlType.InputText;
 
         [Option("-r|--relational <RELATIONAL>", "Relational property", CommandOptionType.SingleValue)]

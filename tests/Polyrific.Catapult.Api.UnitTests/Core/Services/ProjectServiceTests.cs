@@ -22,6 +22,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         private readonly List<ProjectMember> _dataMember;
         private readonly Mock<IProjectRepository> _projectRepository;
         private readonly Mock<IProjectMemberRepository> _projectMemberRepository;
+        private readonly Mock<IProjectDataModelPropertyRepository> _projectDataModelPropertyRepository;
+        private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly IMapper _mapper;
 
         public ProjectServiceTests()
@@ -94,6 +96,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     _dataMember.Add(entity);
                 });
 
+            _projectDataModelPropertyRepository = new Mock<IProjectDataModelPropertyRepository>();
+
+            _jobDefinitionService = new Mock<IJobDefinitionService>();
+
             Mapper.Reset();
             Mapper.Initialize(cfg =>
             {
@@ -105,7 +111,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void ArchiveProject_ValidItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.ArchiveProject(1);
             
             Assert.True(_data.First(p => p.Id == 1).IsArchived);
@@ -114,7 +120,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void ArchiveProject_ItemNotExist()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.ArchiveProject(2));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -123,7 +129,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void RestoreProject_ValidItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.RestoreProject(1);
 
             Assert.False(_data.First(p => p.Id == 1).IsArchived);
@@ -132,7 +138,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void RestoreProject_ItemNotExist()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.RestoreProject(2));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -141,7 +147,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateProject_ValidItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.UpdateProject(new Project
             {
                 Id = 1,
@@ -160,7 +166,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Name = "existing"
             });
 
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.UpdateProject(new Project
             {
                 Id = 1,
@@ -173,7 +179,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void CloneProject_ValidSource()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var newProject = await projectService.CloneProject(1, "Project B");
             
             Assert.True(_data.Count > 1);
@@ -184,7 +190,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void CloneProject_SourceNotExist()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.CloneProject(2, "Project B"));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -193,7 +199,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void CreateProject_ValidItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var newProject = await projectService.CreateProject("Project B", "Client B", null, null, null, null, 1);
 
             Assert.True(_data.Count > 1);
@@ -204,7 +210,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void CreateProject_WithMembers()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var newProject = await projectService.CreateProject("Project B", "Client B", new List<(int, int)>{ (100, 1) }, null, null, null, 1);
 
             Assert.True(newProject.Members.Count > 0);
@@ -213,7 +219,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void CreateProject_DuplicateItemName()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.CreateProject("Project A", "Client A", null, null, null, null, 1));
 
             Assert.IsType<DuplicateProjectException>(exception?.Result);
@@ -222,7 +228,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void DeleteProject_ValidItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.DeleteProject(1);
 
             Assert.Empty(_data);
@@ -231,7 +237,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectById_ReturnItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var project = await projectService.GetProjectById(1);
 
             Assert.NotNull(project);
@@ -241,7 +247,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectById_ReturnNull()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var project = await projectService.GetProjectById(2);
 
             Assert.Null(project);
@@ -250,7 +256,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectByName_ReturnItem()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var project = await projectService.GetProjectByName("Project A");
 
             Assert.NotNull(project);
@@ -260,7 +266,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectByName_ReturnNull()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var project = await projectService.GetProjectByName("Project B");
 
             Assert.Null(project);
@@ -269,7 +275,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectsByUser_ReturnItems()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var projects = await projectService.GetProjectsByUser(100);
 
             Assert.NotEmpty(projects);
@@ -278,7 +284,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void GetProjectsByUser_FilterTypeNotFound()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var exception = Record.ExceptionAsync(() => projectService.GetProjectsByUser(100, "test"));
 
             Assert.IsType<FilterTypeNotFoundException>(exception?.Result);
@@ -287,7 +293,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectsByUser_ReturnEmpty()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var projects = await projectService.GetProjectsByUser(200);
 
             Assert.Empty(projects);
@@ -296,7 +302,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void ExportProject_ReturnYaml()
         {
-            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _mapper);
+            var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             var projectYaml = await projectService.ExportProject(1);
             Assert.NotNull(projectYaml);
         }

@@ -13,20 +13,18 @@ namespace Polyrific.Catapult.Cli.Commands.Account
     public class RegisterCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
+        private readonly IConsoleReader _consoleReader;
 
-        public RegisterCommand(IConsole console, ILogger<RegisterCommand> logger, IAccountService accountService) : base(console, logger)
+        public RegisterCommand(IConsole console, ILogger<RegisterCommand> logger, IAccountService accountService, IConsoleReader consoleReader) : base(console, logger)
         {
             _accountService = accountService;
+            _consoleReader = consoleReader;
         }
 
         [Required]
         [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
         public string Email { get; set; }
-
-        [Required]
-        [Option("-p|--password <PASSWORD>", "Password  of the user", CommandOptionType.SingleValue)]
-        public string Password { get; set; }
-
+        
         [Option("-fn|--firstname <FIRSTNAME>", "First name  of the user", CommandOptionType.SingleValue)]
         public string FirstName { get; set; }
 
@@ -36,11 +34,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         public override string Execute()
         {
             string message = string.Empty;
+                       
             var user = _accountService.RegisterUser(new RegisterUserDto
             {
                 Email = Email,
-                Password = Password,
-                ConfirmPassword = Password,
+                Password = _consoleReader.GetPassword("Enter password:"),
+                ConfirmPassword = _consoleReader.GetPassword("Re-enter password:"),
                 FirstName = FirstName,
                 LastName = LastName
             }).Result;

@@ -16,7 +16,8 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
                 .ForMember(
                     dest => dest.Config,
                     opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString))
-                );
+                )
+                .ForMember(dest => dest.ExternalServiceTypeName, opt => opt.MapFrom(src => src.ExternalServiceType.Name));
             CreateMap<CreateExternalServiceDto, ExternalServiceDto>();
             CreateMap<UpdateExternalServiceDto, ExternalService>()
                 .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Config)));

@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+
 namespace Polyrific.Catapult.Engine.Core
 {
     public class TaskRunnerResult
@@ -21,6 +23,20 @@ namespace Polyrific.Catapult.Engine.Core
             IsProcessed = true;
             IsSuccess = isSuccess;
             ReturnValue = returnValue;
+        }
+
+        /// <summary>
+        /// Instantiate <see cref="TaskRunnerResult"/>
+        /// </summary>
+        /// <param name="isSuccess">Is the process success?</param>
+        /// <param name="returnValue">Value to return</param>
+        /// <param name="outputValues">Output values to be used by the next task</param>
+        public TaskRunnerResult(bool isSuccess, string returnValue, Dictionary<string, string> outputValues)
+        {
+            IsProcessed = true;
+            IsSuccess = isSuccess;
+            ReturnValue = returnValue;
+            OutputValues = outputValues;
         }
 
         /// <summary>
@@ -50,6 +66,11 @@ namespace Polyrific.Catapult.Engine.Core
         /// Value to return
         /// </summary>
         public string ReturnValue { get; set; }
+
+        /// <summary>
+        /// Output values to be used by the next task
+        /// </summary>
+        public Dictionary<string, string> OutputValues { get; set; }
 
         /// <summary>
         /// Error message

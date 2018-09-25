@@ -51,5 +51,27 @@ dotnet .\src\CLI\Polyrific.Catapult.Cli\bin\Release\PC.dll config set -n ApiUrl 
 dotnet .\src\CLI\Polyrific.Catapult.Cli\bin\Release\PC.dll --help
 ```
 
+You are now ready to create your first catapult project.
+
 ## Create your first project
 
+To make further command shorter, go to the release folder of the catapult CLI:
+```sh
+cd src\CLI\Polyrific.Catapult.Cli\bin\Release
+```
+
+The first thing to do is to login into the API. During instalation above, a default admin user is created in the database:
+```sh
+dotnet PC.dll login --user admin@opencatapult.net
+```
+Then enter the password: `opencatapult`
+
+We strongly advise you to change your password using the `account updateuser` command:
+```sh
+dotnet PC.dll account updateuser --email admin@opencatapult.net
+```
+
+You can then create your first project using the `project create` command
+```sh
+dotnet PC.dll project create --name my-project --client Polyrific
+```

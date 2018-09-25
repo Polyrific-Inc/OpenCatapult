@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
@@ -22,9 +23,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         int JobTaskId { get; set; }
 
         /// <summary>
+        /// Provider of the job task definition
+        /// </summary>
+        string Provider { get; set; }
+
+        /// <summary>
         /// Code of the job queue
         /// </summary>
         string JobQueueCode { get; set; }
+
+        /// <summary>
+        /// Additional configurations which are required by specific providers
+        /// </summary>
+        Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
         /// Set job task configuration
@@ -35,8 +46,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Run the main task
         /// </summary>
+        /// <param name="previousTasksOutputValues">Output values from the previous tasks</param>
         /// <returns></returns>
-        Task<TaskRunnerResult> RunMainTask();
+        Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues);
 
         /// <summary>
         /// Run the pre-processing task

@@ -37,22 +37,50 @@ namespace Polyrific.Catapult.Engine.Core
 
             RefreshPlugins(pluginsLocation, orderedJobTasks.Select(t => t.Type).ToArray());
 
+            var outputValues = new Dictionary<string, string>();
             foreach (var jobTask in orderedJobTasks)
             {
                 var taskObj = GetJobTaskInstance(projectId, queueCode, jobTask);
 
+                // pre-processing
                 _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} pre-processing task");
-                await taskObj.RunPreprocessingTask();
-
-                _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} task");
-                var result = await taskObj.RunMainTask();
-                results[jobTask.Id] = result;
-
-                _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} post-processing task");
-                await taskObj.RunPostprocessingTask();
-                
-                if (!result.IsSuccess && result.StopTheProcess)
+                var preResult = await taskObj.RunPreprocessingTask();
+                if (!preResult.IsSuccess && preResult.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
                     break;
+                }
+
+                // main process
+                _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} task");
+                var result = await taskObj.RunMainTask(outputValues);
+                results[jobTask.Id] = result;
+                if (!result.IsSuccess && result.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
+                    break;
+                }
+
+                // save output values to be used as the input for the next tasks
+                if (result.OutputValues != null)
+                {
+                    foreach (var key in result.OutputValues.Keys)
+                    {
+                        if (outputValues.ContainsKey(key))
+                            outputValues[key] = result.OutputValues[key];
+                        else
+                            outputValues.Add(key, result.OutputValues[key]);
+                    }
+                }
+
+                // post-processing
+                _logger.LogInformation($"[Queue \"{queueCode}\"] Running {jobTask.Type} post-processing task");
+                var postResult = await taskObj.RunPostprocessingTask();
+                if (!postResult.IsSuccess && postResult.StopTheProcess)
+                {
+                    _logger.LogError($"[Queue \"{queueCode}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
+                    break;
+                }
             }
 
             _logger.LogInformation($"[Queue \"{queueCode}\"] Job tasks execution complete with the following result: {results}");
@@ -68,14 +96,29 @@ namespace Polyrific.Catapult.Engine.Core
                 case JobTaskDefinitionType.Build:
                     task = _jobTaskService.BuildTask;
                     break;
+                case JobTaskDefinitionType.Clone:
+                    task = _jobTaskService.CloneTask;
+                    break;
                 case JobTaskDefinitionType.Deploy:
                     task = _jobTaskService.DeployTask;
+                    break;
+                case JobTaskDefinitionType.DeployDb:
+                    task = _jobTaskService.DeployDbTask;
                     break;
                 case JobTaskDefinitionType.Generate:
                     task = _jobTaskService.GenerateTask;
                     break;
+                case JobTaskDefinitionType.Merge:
+                    task = _jobTaskService.MergeTask;
+                    break;
+                case JobTaskDefinitionType.PublishArtifact:
+                    task = _jobTaskService.PublishArtifactTask;
+                    break;
                 case JobTaskDefinitionType.Push:
                     task = _jobTaskService.PushTask;
+                    break;
+                case JobTaskDefinitionType.Test:
+                    task = _jobTaskService.TestTask;
                     break;
                 default:
                     throw new InvalidJobTaskTypeException(jobTask.Type);
@@ -83,9 +126,11 @@ namespace Polyrific.Catapult.Engine.Core
 
             task.ProjectId = projectId;
             task.JobTaskId = jobTask.Id;
+            task.Provider = jobTask.Provider;
             task.JobQueueCode = queueCode;
-            task.SetConfig(JsonConvert.SerializeObject(jobTask.Config));
-
+            task.SetConfig(JsonConvert.SerializeObject(jobTask.Configs));
+            task.AdditionalConfigs = jobTask.AdditionalConfigs;
+            
             return task;
         }
 
@@ -101,14 +146,29 @@ namespace Polyrific.Catapult.Engine.Core
                     case JobTaskDefinitionType.Build:
                         providerType = PluginType.BuildProvider;
                         break;
+                    case JobTaskDefinitionType.Clone:
+                        providerType = PluginType.RepositoryProvider;
+                        break;
                     case JobTaskDefinitionType.Deploy:
-                        providerType = PluginType.DeployProvider;
+                        providerType = PluginType.HostingProvider;
+                        break;
+                    case JobTaskDefinitionType.DeployDb:
+                        providerType = PluginType.DatabaseProvider;
                         break;
                     case JobTaskDefinitionType.Generate:
                         providerType = PluginType.GeneratorProvider;
                         break;
+                    case JobTaskDefinitionType.Merge:
+                        providerType = PluginType.RepositoryProvider;
+                        break;
+                    case JobTaskDefinitionType.PublishArtifact:
+                        providerType = PluginType.StorageProvider;
+                        break;
                     case JobTaskDefinitionType.Push:
                         providerType = PluginType.RepositoryProvider;
+                        break;
+                    case JobTaskDefinitionType.Test:
+                        providerType = PluginType.TestProvider;
                         break;
                     default:
                         providerType = jobTaskType;

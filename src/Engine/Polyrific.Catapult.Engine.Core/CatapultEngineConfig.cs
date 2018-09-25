@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Polyrific.Catapult.Engine.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Polyrific.Catapult.Engine.Core.Exceptions;
+using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Engine.Core
 {
@@ -47,7 +48,7 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task Load()
         {
-            var obj = JObject.Parse(await File.ReadAllTextAsync(EngineConfigFile));
+            var obj = JObject.Parse(await FileHelper.ReadAllTextAsync(EngineConfigFile));
             _configs = obj["EngineConfig"].ToObject<Dictionary<string, string>>();
 
             // check against default config
@@ -62,7 +63,7 @@ namespace Polyrific.Catapult.Engine.Core
         public async Task Save()
         {
             _logger.LogInformation("Saving configs into config file..");
-            await File.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = _configs}));
+            await FileHelper.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = _configs}));
         }
 
         public string GetValue(string configName)
@@ -113,7 +114,7 @@ namespace Polyrific.Catapult.Engine.Core
             if (!File.Exists(EngineConfigFile))
             {
                 logger?.LogInformation($"The config file \"{EngineConfigFile}\" doesn't exist. Creating one..");
-                await File.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = GetDefaultConfigs() }));
+                await FileHelper.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = GetDefaultConfigs() }));
             }
         }
 
@@ -125,7 +126,7 @@ namespace Polyrific.Catapult.Engine.Core
         private string GetConfigValue(string key)
         {
             if (_configs.ContainsKey(key))
-                return _configs.GetValueOrDefault(key);
+                return _configs[key];
 
             throw new InvalidEngineConfigNameException(key);
         }

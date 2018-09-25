@@ -4,6 +4,14 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
 {
     public class BuildTaskConfig : BaseJobTaskConfig
     {
-        
+        /// <summary>
+        /// Location of the source code
+        /// </summary>
+        public string SourceLocation { get; set; }
+
+        /// <summary>
+        /// Location of the output artifact
+        /// </summary>
+        public string OutputArtifactLocation { get; set; }
     }
 }

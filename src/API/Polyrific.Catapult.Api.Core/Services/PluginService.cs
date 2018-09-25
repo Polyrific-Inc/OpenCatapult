@@ -5,30 +5,51 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {
     public class PluginService : IPluginService
     {
         private readonly IPluginRepository _pluginRepository;
+        private readonly IExternalServiceTypeRepository _externalServiceTypeRepository;
 
-        public PluginService(IPluginRepository pluginRepository)
+        public PluginService(IPluginRepository pluginRepository, IExternalServiceTypeRepository externalServiceTypeRepository)
         {
             _pluginRepository = pluginRepository;
+            _externalServiceTypeRepository = externalServiceTypeRepository;
         }
 
-        public async Task<Plugin> AddPlugin(string name, string type, string author, string version, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Plugin> AddPlugin(string name, string type, string author, string version, string[] requiredServices, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            List<ExternalServiceType> serviceTypes = null;
+            string requiredServicesString = null;
+            if (requiredServices != null && requiredServices.Length > 0)
+            {
+                requiredServicesString = string.Join(DataDelimiter.Comma, requiredServices);
+                var serviceTypeSpec = new ExternalServiceTypeFilterSpecification(requiredServices);
+                serviceTypes = (await _externalServiceTypeRepository.GetBySpec(serviceTypeSpec, cancellationToken)).ToList();
+
+                var notSupportedServices = requiredServices.Where(s => !serviceTypes.Any(t => t.Name == s)).ToArray();
+
+                if (notSupportedServices.Length > 0)
+                {
+                    throw new RequiredServicesNotSupportedException(notSupportedServices);
+                }
+            }
 
             var plugin = new Plugin
             {
                 Name = name,
                 Type = type,
                 Author = author,
-                Version = version
+                Version = version,
+                RequiredServicesString = requiredServicesString
             };
 
             var id = await _pluginRepository.Create(plugin, cancellationToken);

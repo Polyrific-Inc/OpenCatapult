@@ -4,14 +4,21 @@
 
 Register a new user by specifying the email and password:
 ```sh
-dotnet pc.dll account register --email john.smith@opencatapult.net --password securepassword
+dotnet pc.dll account register --email john.smith@opencatapult.net
 ```
 
 ## Update user
 
-Update a user by specifying the email and password. Then specify other options to update
+Update a user by specifying the email. Then specify other options to update
 ```sh
-dotnet pc.dll account update --email john.smith@opencatapult.net --password securepassword --firstname John --lastname Smith
+dotnet pc.dll account update --email john.smith@opencatapult.net --firstname John --lastname Smith
+```
+
+## Update password
+
+Update user password by specifying the email. Then you will be prompt to enter the old and new password.
+```sh
+dotnet pc.dll account updatepassword --email john.smith@opencatapult.net
 ```
 
 ## Remove user

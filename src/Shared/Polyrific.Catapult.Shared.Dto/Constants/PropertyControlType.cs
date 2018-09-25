@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string InputFile = "input-file";
         public const string Textarea = "textarea";
         public const string Checkbox = "checkbox";
+        public const string CheckboxList = "checkboxlist";
         public const string Select = "select";
         public const string Radio = "radio";
         public const string Calendar = "calendar";

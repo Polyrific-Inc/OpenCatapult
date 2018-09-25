@@ -41,21 +41,19 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeGeneratorProvider>
             {
-                new FakeCodeGeneratorProvider("good-result", "")
+                new FakeCodeGeneratorProvider("good-result", null, "")
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
             Assert.Equal("good-result", result.ReturnValue);
@@ -64,21 +62,19 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var providers = new List<ICodeGeneratorProvider>
             {
-                new FakeCodeGeneratorProvider("", "error-message")
+                new FakeCodeGeneratorProvider("", null, "error-message")
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("error-message", result.ErrorMessage);
@@ -87,16 +83,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new GenerateTaskConfig
-            {
-                ProviderName = "FakeCodeGeneratorProvider"
-            };
+            var config = new GenerateTaskConfig();
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object);
             task.SetConfig(configString);
+            task.Provider = "FakeCodeGeneratorProvider";
 
-            var result = await task.RunMainTask();
+            var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
             Assert.Equal("Code generator provider \"FakeCodeGeneratorProvider\" could not be found.", result.ErrorMessage);

@@ -5,6 +5,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,14 +18,23 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IJobDefinitionRepository _jobDefinitionRepository;
         private readonly IJobTaskDefinitionRepository _jobTaskDefinitionRepository;
         private readonly IProjectRepository _projectRepository;
+        private readonly IPluginRepository _pluginRepository;
+        private readonly IExternalServiceRepository _externalServiceRepository;
+        private readonly IPluginAdditionalConfigRepository _pluginAdditionalConfigRepository;
 
         public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
-            IProjectRepository projectRepository)
+            IProjectRepository projectRepository,
+            IPluginRepository pluginRepository,
+            IExternalServiceRepository externalServiceRepository,
+            IPluginAdditionalConfigRepository pluginAdditionalConfigRepository)
         {
             _jobDefinitionRepository = dataModelRepository;
             _jobTaskDefinitionRepository = jobTaskDefinitionRepository;
             _projectRepository = projectRepository;
+            _pluginRepository = pluginRepository;
+            _externalServiceRepository = externalServiceRepository;
+            _pluginAdditionalConfigRepository = pluginAdditionalConfigRepository;
         }
 
         public async Task<int> AddJobDefinition(int projectId, string name, CancellationToken cancellationToken = default(CancellationToken))
@@ -42,7 +52,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 throw new DuplicateJobDefinitionException(name);
             }
-
 
             var newJobDefinition = new JobDefinition { ProjectId = projectId, Name = name };
             return await _jobDefinitionRepository.Create(newJobDefinition, cancellationToken);
@@ -105,7 +114,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 await _jobDefinitionRepository.Update(dataModel, cancellationToken);
             }
         }
-        
+
         public async Task<int> AddJobTaskDefinition(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -115,6 +124,8 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 throw new JobDefinitionNotFoundException(jobTaskDefinition.JobDefinitionId);
             }
+
+            await ValidateTaskConfig(jobTaskDefinition, cancellationToken);
 
             return await _jobTaskDefinitionRepository.Create(jobTaskDefinition, cancellationToken);
         }
@@ -128,7 +139,10 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 throw new JobDefinitionNotFoundException(jobDefinitionId);
             }
-            
+
+            foreach (var task in jobTaskDefinitions)
+                await ValidateTaskConfig(task, cancellationToken);
+
             jobTaskDefinitions.ForEach(j => j.JobDefinitionId = jobDefinitionId);
 
             return await _jobTaskDefinitionRepository.CreateRange(jobTaskDefinitions, cancellationToken);
@@ -143,9 +157,13 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (jobTaskDefinition != null)
             {
                 jobTaskDefinition.Type = editedJobTaskDefinition.Type;
+                jobTaskDefinition.Provider = editedJobTaskDefinition.Provider;
                 jobTaskDefinition.ConfigString = editedJobTaskDefinition.ConfigString;
-                jobTaskDefinition.ContinueWhenError = editedJobTaskDefinition.ContinueWhenError;
+                jobTaskDefinition.AdditionalConfigString = editedJobTaskDefinition.AdditionalConfigString;
                 jobTaskDefinition.Sequence = editedJobTaskDefinition.Sequence;
+                
+                await ValidateTaskConfig(jobTaskDefinition, cancellationToken);
+
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
         }
@@ -159,7 +177,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (jobTaskDefinition != null)
             {
                 jobTaskDefinition.ConfigString = JsonConvert.SerializeObject(jobTaskConfig);
-                
+
+                await ValidateTaskConfig(jobTaskDefinition, cancellationToken);
+
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
         }
@@ -193,6 +213,80 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _jobTaskDefinitionRepository.GetSingleBySpec(new JobTaskDefinitionFilterSpecification(jobDefinitionId, jobTaskDefinitionName), cancellationToken);
+        }
+
+        public async Task ValidateTaskConfig(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            if (!string.IsNullOrEmpty(jobTaskDefinition.Provider))
+            {
+                var pluginSpec = new PluginFilterSpecification(jobTaskDefinition.Provider, null);
+                var plugin = await _pluginRepository.GetSingleBySpec(pluginSpec, cancellationToken);
+
+                if (plugin == null)
+                {
+                    throw new ProviderNotInstalledException(jobTaskDefinition.Provider);
+                }
+
+                if (!string.IsNullOrEmpty(plugin.RequiredServicesString))
+                {
+                    var requiredServices = plugin.RequiredServicesString.Split(DataDelimiter.Comma);
+                    if (string.IsNullOrEmpty(jobTaskDefinition.ConfigString))
+                    {
+                        throw new ExternalServiceRequiredException(requiredServices[0], plugin.Name);
+                    }
+
+                    var config = JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.ConfigString);
+                    foreach (var requiredService in requiredServices)
+                    {
+                        var serviceName = config.GetValueOrDefault(GetServiceTaskConfigKey(requiredService));
+
+                        if (string.IsNullOrEmpty(serviceName))
+                        {
+                            throw new ExternalServiceRequiredException(requiredService, plugin.Name);
+                        }
+
+                        var serviceSpec = new ExternalServiceFilterSpecification(0, serviceName);
+                        serviceSpec.Includes.Add(x => x.ExternalServiceType);
+                        var service = await _externalServiceRepository.GetSingleBySpec(serviceSpec, cancellationToken);
+
+                        if (service == null)
+                        {
+                            throw new ExternalServiceNotFoundException(serviceName);
+                        }
+
+                        if (service.ExternalServiceType.Name != requiredService)
+                        {
+                            throw new IncorrectExternalServiceTypeException(serviceName, requiredService);
+                        }
+                    }
+                }
+
+                var additionalConfigSpec = new PluginAdditionalConfigFilterSpecification(plugin.Id);
+                var additionalConfigs = await _pluginAdditionalConfigRepository.GetBySpec(additionalConfigSpec, cancellationToken);
+                var requiredConfigs = additionalConfigs.Where(c => c.IsRequired).Select(c => c.Name).ToList();
+                if (requiredConfigs.Count > 0)
+                {
+                    if (string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString))
+                    {
+                        throw new PluginAdditionalConfigRequiredException(requiredConfigs[0], plugin.Name);
+                    }
+                    
+                    var additionalConfig = JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString);
+                    
+                    foreach (var requiredConfig in requiredConfigs)
+                    {
+                        if (additionalConfig.GetValueOrDefault(requiredConfig) == null)
+                        {
+                            throw new PluginAdditionalConfigRequiredException(requiredConfig, plugin.Name);
+                        }
+                    }
+                }
+            }
+        }
+
+        public static string GetServiceTaskConfigKey(string serviceTypeName)
+        {
+            return $"{serviceTypeName}ExternalService";
         }
     }
 }
