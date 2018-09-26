@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Xunit;
 
@@ -64,8 +65,15 @@ namespace AspNetCoreMvc.Tests
                         {
                             Name = "Title",
                             Label = "Title",
-                            DataType = "string",
-                            ControlType = "input-string"
+                            DataType = PropertyDataType.String,
+                            ControlType = PropertyControlType.InputText
+                        },
+                        new ProjectDataModelPropertyDto
+                        {
+                            Name = "Price",
+                            Label = "Price",
+                            DataType = PropertyDataType.Integer,
+                            ControlType = PropertyControlType.InputNumber
                         }
                     }
                 }

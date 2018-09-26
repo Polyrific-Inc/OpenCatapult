@@ -56,6 +56,12 @@ namespace AspNetCoreMvc.Helpers
             File.WriteAllText(file.FullName, contents);
         }
 
+        public void CopyFileToProject(string projectName, string sourceFile, string targetFile)
+        {
+            var targetFilePath = Path.Combine(_outputLocation, projectName, targetFile);
+            File.Copy(sourceFile, targetFilePath);
+        }
+
         public void DeleteFileToProject(string projectName, string filePath)
         {
             var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);

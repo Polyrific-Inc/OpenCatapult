@@ -244,10 +244,13 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"            return await _{camelizedName}Repository.Create(entity, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public async Task Update{model.Name}({model.Name} entity, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine($"        public async Task Update{model.Name}({model.Name} updatedEntity, CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
             sb.AppendLine($"            cancellationToken.ThrowIfCancellationRequested();");
             sb.AppendLine();
+            sb.AppendLine($"            var entity = await _{camelizedName}Repository.GetById(updatedEntity.Id, cancellationToken);");
+            foreach (var property in model.Properties)
+                sb.AppendLine($"            entity.{property.Name} = updatedEntity.{property.Name};");
             sb.AppendLine($"            await _{camelizedName}Repository.Update(entity, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();

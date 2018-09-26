@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -42,13 +43,15 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
             AddConnectionString();
+            AddLogo();
+            ModifyHomePage();
 
             return message;
         }
 
         public async Task<string> UpdateMigrationScript()
         {
-            var args = $"ef migrations add {System.DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s {_projectHelper.GetProjectFullPath(Name)} -p {_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}")}";
+            var args = $"ef migrations add {DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s {_projectHelper.GetProjectFullPath(Name)} -p {_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}")}";
             return await CommandHelper.RunDotnet(args);
         }
 
@@ -82,6 +85,37 @@ namespace AspNetCoreMvc.ProjectGenerators
             {
                 writer.Write(updatedContent.ToString());
             }
+        }
+
+        private void AddLogo()
+        {
+            var logoFile = Path.Combine(AppContext.BaseDirectory, "Resources/Images/logo.png");
+            _projectHelper.CopyFileToProject(Name, logoFile, "wwwroot/images/logo.png");
+        }
+
+        private void ModifyHomePage()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@{");
+            sb.AppendLine("    ViewData[\"Title\"] = \"Home Page\";");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            sb.AppendLine("<div class=\"jumbotron\">");
+            sb.AppendLine("    <h1>Home Page</h1>");
+            sb.AppendLine("    <h3>This project has been <span>CATAPULTED</span> for  by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a>.</h3>");
+            sb.AppendLine("</div>");
+            sb.AppendLine();
+            sb.AppendLine("<p class=\"text-center\">");
+            sb.AppendLine("    <img class=\"logo\" src=\"/images/logo.png\" />");
+            sb.AppendLine("</p>");
+            sb.AppendLine();
+            sb.AppendLine("<div class=\"row\">");
+            sb.AppendLine("    <div class=\"col-lg-12 text-center\">");
+            sb.AppendLine("        <h1>Insert home page content here</h1>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("</div>");
+
+            _projectHelper.AddFileToProject(Name, $"Views/Home/Index.cshtml", sb.ToString(), true);
         }
 
         #region view models
@@ -303,7 +337,7 @@ namespace AspNetCoreMvc.ProjectGenerators
                 GenerateDeleteView(model);
             }
 
-            UpdateMenu();
+            UpdateMenuAndFooter();
 
             return Task.FromResult($"{_models.Count} view(s) generated");
         }
@@ -316,6 +350,10 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"    ViewData[\"Title\"] = \"View {model.Label}\";");
             sb.AppendLine("}");
             sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("<div>");
+            sb.AppendLine($"    <a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Create\" class=\"btn btn-default\">Create</a>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("<div>&nbsp;</div>");
             sb.AppendLine("<table class=\"table\">");
             sb.AppendLine("    <tr>");
 
@@ -358,7 +396,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("{");
             sb.AppendLine("    @Html.AntiForgeryToken()");
             sb.AppendLine(GenerateHtmlForm(model));
-            sb.AppendLine("     <input type=\"submit\" value=\"Create\" class=\"btn btn-default\" />");
+            sb.AppendLine("     <input type=\"submit\" value=\"Save\" class=\"btn btn-primary\" />");
             sb.AppendLine("}");
             sb.Append("<div>");
             sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
@@ -378,7 +416,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("{");
             sb.AppendLine("    @Html.AntiForgeryToken()");
             sb.AppendLine(GenerateHtmlForm(model));
-            sb.AppendLine("     <input type=\"submit\" value=\"Edit\" class=\"btn btn-default\" />");
+            sb.AppendLine("     <input type=\"submit\" value=\"Save\" class=\"btn btn-primary\" />");
             sb.AppendLine("}");
             sb.Append("<div>");
             sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
@@ -407,10 +445,11 @@ namespace AspNetCoreMvc.ProjectGenerators
             _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Delete.cshtml", sb.ToString());
         }
 
-        private void UpdateMenu()
+        private void UpdateMenuAndFooter()
         {
             string line = null;
             bool isNavBlock = false;
+            bool isFooterBlock = false;
             var layoutFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "Views\\Shared\\_Layout.cshtml");
             var updatedContent = new StringBuilder();
             using (var reader = new StreamReader(layoutFile))
@@ -431,8 +470,18 @@ namespace AspNetCoreMvc.ProjectGenerators
 
                             updatedContent.AppendLine(line);
                             break;
+                        case "<footer>":
+                            isFooterBlock = true;
+                            updatedContent.AppendLine(line);
+                            break;
+                        case "</footer>":
+                            isFooterBlock = false;
+                            updatedContent.AppendLine($"<p class=\"pull-left\">&copy; {DateTime.Today.Year} - {_projectName}</p>");
+                            updatedContent.AppendLine($"<p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+                            updatedContent.AppendLine(line);
+                            break;
                         default:
-                            if (!isNavBlock)
+                            if (!isNavBlock && !isFooterBlock)
                                 updatedContent.AppendLine(line);
                             break;
                     }
