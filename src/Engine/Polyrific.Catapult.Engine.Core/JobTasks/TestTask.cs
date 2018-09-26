@@ -14,7 +14,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class TestTask : BaseJobTask<TestTaskConfig>, ITestTask
     {
-        public TestTask(IProjectService projectService, ILogger logger) : base(projectService, logger)
+        public TestTask(IProjectService projectService, ILogger<TestTask> logger) : base(projectService, logger)
         {
         }
 

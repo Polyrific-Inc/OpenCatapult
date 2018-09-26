@@ -14,7 +14,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class MergeTask : BaseJobTask<MergeTaskConfig>, IMergeTask
     {
-        public MergeTask(IProjectService projectService, ILogger logger) : base(projectService, logger)
+        public MergeTask(IProjectService projectService, ILogger<MergeTask> logger) : base(projectService, logger)
         {
         }
 

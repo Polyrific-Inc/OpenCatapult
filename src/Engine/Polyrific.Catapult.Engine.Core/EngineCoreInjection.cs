@@ -14,9 +14,14 @@ namespace Polyrific.Catapult.Engine.Core
             services.AddTransient<ITaskRunner, TaskRunner>();
 
             services.AddTransient<IBuildTask, BuildTask>();
+            services.AddTransient<ICloneTask, CloneTask>();
             services.AddTransient<IDeployTask, DeployTask>();
+            services.AddTransient<IDeployDbTask, DeployDbTask>();
             services.AddTransient<IGenerateTask, GenerateTask>();
+            services.AddTransient<IMergeTask, MergeTask>();
+            services.AddTransient<IPublishArtifactTask, PublishArtifactTask>();
             services.AddTransient<IPushTask, PushTask>();
+            services.AddTransient<ITestTask, TestTask>();
             services.AddTransient<JobTaskService, JobTaskService>();
         }
     }
