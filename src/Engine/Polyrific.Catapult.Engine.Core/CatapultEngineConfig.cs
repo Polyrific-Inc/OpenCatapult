@@ -43,6 +43,9 @@ namespace Polyrific.Catapult.Engine.Core
 
         public const string PluginsLocationKey = "PluginsLocation";
         public string PluginsLocation => GetConfigValue(PluginsLocationKey, Path.Combine(AppContext.BaseDirectory, "plugins"));
+
+        public const string WorkingLocationKey = "WorkingLocation";
+        public string WorkingLocation => GetConfigValue(WorkingLocationKey, Path.Combine(AppContext.BaseDirectory, "working"));
         
         public Dictionary<string, string> Configs => _configs;
 
@@ -189,7 +192,8 @@ namespace Polyrific.Catapult.Engine.Core
                 {ApiRequestTimeoutKey, "00:01:00"},
                 {AuthorizationTokenKey, ""},
                 {JobCheckingIntervalKey, "30"},
-                {PluginsLocationKey, Path.Combine(AppContext.BaseDirectory, "plugins")}
+                {PluginsLocationKey, Path.Combine(AppContext.BaseDirectory, "plugins")},
+                {WorkingLocationKey, Path.Combine(AppContext.BaseDirectory, "working")}
             };
 
             return configs;

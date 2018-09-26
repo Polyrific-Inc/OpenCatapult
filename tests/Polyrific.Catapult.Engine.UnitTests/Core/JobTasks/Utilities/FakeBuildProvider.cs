@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_buildResult);
         }

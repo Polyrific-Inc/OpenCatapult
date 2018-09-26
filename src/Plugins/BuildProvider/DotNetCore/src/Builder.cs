@@ -1,6 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.IO;
 using System.IO.Compression;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using DotNetCore.Helpers;
 
@@ -8,17 +11,36 @@ namespace DotNetCore
 {
     public class Builder : IBuilder
     {
-        public async Task<string> Build(string csprojLocation, string buildOutputLocation)
+        public async Task<string> Build(string csprojLocation, string buildOutputLocation, string configuration = "Debug")
         {
-            var args = $"publish {csprojLocation} --output {buildOutputLocation}";
+            var args = $"publish {csprojLocation} --output {buildOutputLocation} --configuration {configuration}";
             return await RunDotnet(args);
         }
 
-        public async Task<string> CreateArtifact(string buildOutputLocation, string artifactLocation)
+        public Task<string> CreateArtifact(string buildOutputLocation, string destinationArtifact)
         {
-            await Task.Run(() => ZipFile.CreateFromDirectory(buildOutputLocation, artifactLocation));
+            var errorMessage = "";
 
-            return "";
+            var extension = Path.GetExtension(destinationArtifact);
+            if (string.IsNullOrEmpty(extension) || !extension.Equals(".zip", StringComparison.InvariantCultureIgnoreCase))
+                destinationArtifact = Path.ChangeExtension(destinationArtifact, "zip");
+
+            var dir = Path.GetDirectoryName(destinationArtifact);
+            if (dir != null && !Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            try
+            {
+                ZipFile.CreateFromDirectory(buildOutputLocation, destinationArtifact, CompressionLevel.Fastest, false);
+            }
+            catch (Exception e)
+            {
+                errorMessage = e.Message;
+            }
+            
+            return Task.FromResult(errorMessage);
         }
 
         public async Task<string> Restore(string csprojLocation)
@@ -35,7 +57,9 @@ namespace DotNetCore
 
         private async Task<string> RunDotnet(string args)
         {
-            return await CommandHelper.Execute("dotnet", args);
+            var result = await CommandHelper.Execute("dotnet", args);
+
+            return result.error;
         }
     }
 }

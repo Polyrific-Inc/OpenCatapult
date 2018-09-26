@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns></returns>
-        Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing build

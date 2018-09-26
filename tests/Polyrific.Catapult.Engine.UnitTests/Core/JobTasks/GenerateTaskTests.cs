@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Newtonsoft.Json;
@@ -10,7 +11,6 @@ using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
 using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
-            task.SetConfig(configString);
+            task.SetConfig(configString, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -71,7 +71,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             };
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
-            task.SetConfig(configString);
+            task.SetConfig(configString, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -87,7 +87,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var configString = JsonConvert.SerializeObject(config);
 
             var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object);
-            task.SetConfig(configString);
+            task.SetConfig(configString, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());

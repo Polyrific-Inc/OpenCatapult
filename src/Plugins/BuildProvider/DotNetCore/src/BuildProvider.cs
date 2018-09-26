@@ -34,34 +34,39 @@ namespace DotNetCore
             return Task.FromResult("");
         }
 
-        public async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var csprojLocation = Path.Combine(config.SourceLocation, $"{projectName}.csproj");
-            if (additionalConfigs.ContainsKey("CsprojLocation"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("CsprojLocation"))
                 csprojLocation = additionalConfigs["CsprojLocation"];
+            if (!Path.IsPathRooted(csprojLocation))
+                csprojLocation = Path.Combine(config.WorkingLocation, csprojLocation);
 
             var buildConfiguration = "Release";
-            if (additionalConfigs.ContainsKey("Configuration"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration"))
                 buildConfiguration = additionalConfigs["Configuration"];
 
-            var buildOutputLocation = Path.Combine(csprojLocation, $"bin/{buildConfiguration}");
+            var buildOutputLocation = Path.Combine(config.WorkingLocation, "publish");
 
-            var artifactLocation = Path.Combine(csprojLocation, $"bin/{buildConfiguration}", "artifact");
+            var artifactLocation = "artifact";
             if (!string.IsNullOrEmpty(config.OutputArtifactLocation))
                 artifactLocation = config.OutputArtifactLocation;
+            if (!Path.IsPathRooted(artifactLocation))
+                artifactLocation = Path.Combine(config.WorkingLocation, artifactLocation);
 
             if (_builder == null)
                 _builder = new Builder();
 
-            var error = await _builder.Build(csprojLocation, buildOutputLocation);
-            if (!string.IsNullOrEmpty(error))
-                return ("", null, error);
-            
-            error = await _builder.CreateArtifact(buildOutputLocation, artifactLocation);
+            var error = await _builder.Build(csprojLocation, buildOutputLocation, buildConfiguration);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
-            return (artifactLocation, null, "");
+            var destinationArtifact = Path.Combine(artifactLocation, $"{projectName}.zip");
+            error = await _builder.CreateArtifact(buildOutputLocation, destinationArtifact);
+            if (!string.IsNullOrEmpty(error))
+                return ("", null, error);
+
+            return (destinationArtifact, null, "");
         }
 
         public Task<string> AfterBuild(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
