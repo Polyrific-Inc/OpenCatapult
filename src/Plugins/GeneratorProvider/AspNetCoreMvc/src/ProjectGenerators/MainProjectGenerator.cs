@@ -1,9 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc.ProjectGenerators
@@ -30,19 +32,413 @@ namespace AspNetCoreMvc.ProjectGenerators
                 _projectHelper.GetProjectFullPath($"{_projectName}.{CoreProjectGenerator.CoreProject}"),
                 _projectHelper.GetProjectFullPath($"{_projectName}.{InfrastructureProjectGenerator.InfrastructureProject}")
             };
-            return await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences);
+            var mainProjectPackages = new (string, string)[]
+            {
+                ("AutoMapper", "7.0.1"),
+                ("AutoMapper.Extensions.Microsoft.DependencyInjection", "5.0.1")
+            };
+
+            return await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
         }
 
+        #region view models
+        public Task<string> GenerateViewModels()
+        {
+            GenerateBaseViewModel();
+
+            foreach (var model in _models)
+            {
+                GenerateViewModel(model);
+                GenerateAutoMapperProfile(model);
+            }                
+
+            return Task.FromResult($"{_models.Count} view model(s) generated");
+        }
+
+        private void GenerateBaseViewModel()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Models");
+            sb.AppendLine("{");
+            sb.AppendLine("    public abstract class BaseViewModel");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public int Id { get; set; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, $"Models/BaseViewModel.cs", sb.ToString());
+        }
+
+        private void GenerateViewModel(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Models");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}ViewModel : BaseViewModel");
+            sb.AppendLine("    {");
+
+            foreach (var property in model.Properties)
+            {
+                if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                {
+                    if (property.RelationalType == PropertyRelationalType.OneToOne)
+                    {
+                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                    }
+                    else if (property.RelationalType == PropertyRelationalType.OneToMany)
+                    {
+                        sb.AppendLine($"        public List<int> {property.Name}Ids {{ get; set; }}");
+                    }
+                    else if (property.RelationalType == PropertyRelationalType.ManyToMany)
+                    {
+                        // TODO: Implement this later as many-to-many relationship in ef core is not straightforward
+                    }
+                }
+                else
+                {
+                    sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                }
+            }
+
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Models/{model.Name}ViewModel.cs", sb.ToString(), true);
+        }
+
+        private void GenerateAutoMapperProfile(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using AutoMapper;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {Name}.Models;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.AutoMapperProfiles");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}AutoMapperProfile : Profile");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {model.Name}AutoMapperProfile()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            CreateMap<{model.Name}, {model.Name}ViewModel>();");
+            sb.AppendLine();
+            sb.AppendLine($"            CreateMap<{model.Name}ViewModel, {model.Name}>();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), true);
+        }
+        #endregion
+
+        #region controllers
         public Task<string> GenerateControllers()
         {
-            return Task.FromResult("");
+            foreach (var model in _models)
+                GenerateController(model);
+
+            return Task.FromResult($"{_models.Count} controller(s) generated");
         }
 
+        private void GenerateController(ProjectDataModelDto model)
+        {
+            var camelModelName = TextHelper.Camelize(model.Name);
+            var sb = new StringBuilder();
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("using AutoMapper;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Services;");
+            sb.AppendLine($"using {Name}.Models;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Controllers");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}Controller : Controller");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        private readonly I{model.Name}Service _{camelModelName}Service;");
+            sb.AppendLine("        private readonly IMapper _mapper;");
+            sb.AppendLine();
+            sb.AppendLine($"        public {model.Name}Controller(I{model.Name}Service {camelModelName}Service, IMapper mapper)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            _{camelModelName}Service = {camelModelName}Service;");
+            sb.AppendLine($"            _mapper = mapper;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<IActionResult> Index()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            var data = await _{camelModelName}Service.Get{TextHelper.Pluralize(model.Name)}();");
+            sb.AppendLine($"            var models = _mapper.Map<List<{model.Name}ViewModel>>(data);");
+            sb.AppendLine("            return View(models);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public IActionResult Create()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            return View(new {model.Name}ViewModel());");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        [HttpPost]");
+            sb.AppendLine("        [ValidateAntiForgeryToken]");
+            sb.AppendLine($"        public async Task<IActionResult> Create(int id, {model.Name}ViewModel model)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            try");
+            sb.AppendLine("            {");
+            sb.AppendLine($"                var entity = _mapper.Map<{model.Name}>(model);");
+            sb.AppendLine($"                await _{camelModelName}Service.Create{model.Name}(entity);");
+            sb.AppendLine("                return RedirectToAction(nameof(Index));");
+            sb.AppendLine("            }");
+            sb.AppendLine("            catch");
+            sb.AppendLine("            {");
+            sb.AppendLine("                return View(model);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<IActionResult> Edit(int id)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            var data = await _{camelModelName}Service.Get{model.Name}ById(id);");
+            sb.AppendLine($"            var model = _mapper.Map<{model.Name}ViewModel>(data);");
+            sb.AppendLine("            return View(model);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        [HttpPost]");
+            sb.AppendLine("        [ValidateAntiForgeryToken]");
+            sb.AppendLine($"        public async Task<IActionResult> Edit(int id, {model.Name}ViewModel model)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            try");
+            sb.AppendLine("            {");
+            sb.AppendLine($"                var entity = _mapper.Map<{model.Name}>(model);");
+            sb.AppendLine($"                await _{camelModelName}Service.Update{model.Name}(entity);");
+            sb.AppendLine("                return RedirectToAction(nameof(Index));");
+            sb.AppendLine("            }");
+            sb.AppendLine("            catch");
+            sb.AppendLine("            {");
+            sb.AppendLine("                return View(model);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public IActionResult Delete(int id)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            ViewData[\"Id\"] = id;");
+            sb.AppendLine("            return View();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        [HttpPost]");
+            sb.AppendLine("        [ValidateAntiForgeryToken]");
+            sb.AppendLine($"        public async Task<IActionResult> Delete(int id, {model.Name}ViewModel model)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            try");
+            sb.AppendLine("            {");
+            sb.AppendLine($"                await _{camelModelName}Service.Delete{model.Name}(id);");
+            sb.AppendLine("                return RedirectToAction(nameof(Index));");
+            sb.AppendLine("            }");
+            sb.AppendLine("            catch");
+            sb.AppendLine("            {");
+            sb.AppendLine("                ViewData[\"Id\"] = id;");
+            sb.AppendLine("                return View();");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Controllers/{model.Name}Controller.cs", sb.ToString());
+        }
+        #endregion
+
+        #region views
         public Task<string> GenerateViews()
         {
-            return Task.FromResult("");
+            foreach (var model in _models)
+            {
+                GenerateIndexView(model);
+                GenerateCreateView(model);
+                GenerateEditView(model);
+                GenerateDeleteView(model);
+            }
+
+            UpdateMenu();
+
+            return Task.FromResult($"{_models.Count} view(s) generated");
         }
 
+        private void GenerateIndexView(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@model List<{Name}.Models.{model.Name}ViewModel>");
+            sb.AppendLine("@{");
+            sb.AppendLine($"    ViewData[\"Title\"] = \"View {model.Label}\";");
+            sb.AppendLine("}");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("<table class=\"table\">");
+            sb.AppendLine("    <tr>");
+
+            foreach (var property in model.Properties)
+                if (string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                    sb.AppendLine($"        <th>{property.Label}</th>");
+
+            sb.AppendLine($"        <th></th>");
+
+            sb.AppendLine("    </tr>");
+            sb.AppendLine("@foreach (var item in Model)");
+            sb.AppendLine("{");
+            sb.AppendLine("    <tr>");
+
+            foreach (var property in model.Properties)
+                if (string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                    sb.AppendLine($"        <td>@item.{property.Name}</td>");
+
+            sb.AppendLine("        <td>");
+            sb.AppendLine("            @Html.ActionLink(\"Edit\", \"Edit\", new { id = item.Id }) |");
+            sb.AppendLine("            @Html.ActionLink(\"Delete\", \"Delete\", new { id = item.Id }) |");
+            sb.AppendLine("        </td>");
+
+            sb.AppendLine("    </tr>");
+            sb.AppendLine("}");
+            sb.AppendLine("</table>");
+
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Index.cshtml", sb.ToString());
+        }
+
+        private void GenerateCreateView(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine("@{");
+            sb.AppendLine($"    ViewData[\"Title\"] = \"Create {model.Label}\";");
+            sb.AppendLine("}");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("@using (Html.BeginForm())");
+            sb.AppendLine("{");
+            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine(GenerateHtmlForm(model));
+            sb.AppendLine("     <input type=\"submit\" value=\"Create\" class=\"btn btn-default\" />");
+            sb.AppendLine("}");
+            sb.Append("<div>");
+            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
+            sb.Append("</div>");
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Create.cshtml", sb.ToString());
+        }
+
+        private void GenerateEditView(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine("@{");
+            sb.AppendLine($"    ViewData[\"Title\"] = \"Edit {model.Label}\";");
+            sb.AppendLine("}");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("@using (Html.BeginForm())");
+            sb.AppendLine("{");
+            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine(GenerateHtmlForm(model));
+            sb.AppendLine("     <input type=\"submit\" value=\"Edit\" class=\"btn btn-default\" />");
+            sb.AppendLine("}");
+            sb.Append("<div>");
+            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
+            sb.Append("</div>");
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Edit.cshtml", sb.ToString());
+        }
+
+        private void GenerateDeleteView(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine("@{");
+            sb.AppendLine($"    ViewData[\"Title\"] = \"Edit {model.Label}\";");
+            sb.AppendLine("}");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("@using (Html.BeginForm(routeValues: new { id = ViewData[\"Id\"] }))");
+            sb.AppendLine("{");
+            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine($"    <h3>Confirm delete {model.Label}?</h3>");
+            sb.AppendLine("     <input type=\"submit\" value=\"Delete\" class=\"btn btn-danger\" />");
+            sb.AppendLine("");
+            sb.AppendLine("}");
+            sb.Append("<div>");
+            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
+            sb.Append("</div>");
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Delete.cshtml", sb.ToString());
+        }
+
+        private void UpdateMenu()
+        {
+            string line = null;
+            bool isNavBlock = false;
+            var layoutFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "Views\\Shared\\_Layout.cshtml");
+            var updatedContent = new StringBuilder();
+            using (var reader = new StreamReader(layoutFile))
+            {
+                while ((line = reader.ReadLine()) != null)
+                {
+                    switch (line.Trim())
+                    {
+                        case "<ul class=\"nav navbar-nav\">":
+                            isNavBlock = true;
+                            updatedContent.AppendLine(line);
+                            break;
+                        case "</ul>":
+                            isNavBlock = false;
+                            updatedContent.AppendLine("                    <li><a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a></li>");
+                            foreach (var model in _models)
+                                updatedContent.AppendLine($"                    <li><a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
+
+                            updatedContent.AppendLine(line);
+                            break;
+                        default:
+                            if (!isNavBlock)
+                                updatedContent.AppendLine(line);
+                            break;
+                    }
+                }
+            }
+
+            using (var writer = new StreamWriter(layoutFile))
+            {
+                writer.Write(updatedContent.ToString());
+            }
+        }
+
+        private string GenerateHtmlForm(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            foreach (var property in model.Properties)
+            {
+                var propertyName = string.IsNullOrEmpty(property.RelatedProjectDataModelName) ? property.Name : $"{property.Name}Id";
+                sb.AppendLine("    <div class=\"form-group row\">");
+                sb.AppendLine($"        @Html.LabelFor(model => model.{propertyName}, htmlAttributes: new {{ @class = \"col-form-label col-md-2\" }})");
+                sb.AppendLine("        <div class=\"col-md-10\">");
+                switch (property.ControlType)
+                {
+                    case PropertyControlType.InputText:
+                    case PropertyControlType.InputNumber:
+                    case PropertyControlType.Calendar:
+                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        break;
+                    case PropertyControlType.InputFile:
+                    case PropertyControlType.Image:
+                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ type = \"file\" htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        break;
+                    case PropertyControlType.Textarea:
+                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        break;
+                    case PropertyControlType.Checkbox:
+                        sb.AppendLine($"            @Html.CheckBoxFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        break;
+                }
+                sb.AppendLine($"            @Html.ValidationMessageFor(model => model.{propertyName}, \"\", new {{ @class = \"text-danger\" }})");
+                sb.AppendLine("        </div>");
+                sb.AppendLine("    </div>");
+            }
+
+            return sb.ToString();
+        }
+        #endregion
+
+        #region startup
         public Task<string> GenerateServiceInjection()
         {
             var sb = new StringBuilder();
@@ -69,6 +465,7 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateStartupClass()
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using AutoMapper;");
             sb.AppendLine("using Microsoft.AspNetCore.Builder;");
             sb.AppendLine("using Microsoft.AspNetCore.Hosting;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
@@ -101,6 +498,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            services.RegisterServices();");
             sb.AppendLine();
             sb.AppendLine("            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);");
+            sb.AppendLine("            services.AddAutoMapper();");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.");
@@ -122,7 +520,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            app.UseMvc(routes =>");
             sb.AppendLine("            {");
             sb.AppendLine("                routes.MapRoute(");
-            sb.AppendLine("                    name: \"default\"");
+            sb.AppendLine("                    name: \"default\",");
             sb.AppendLine("                    template: \"{controller=Home}/{action=Index}/{id?}\");");
             sb.AppendLine("            });");
             sb.AppendLine("        }");
@@ -172,10 +570,6 @@ namespace AspNetCoreMvc.ProjectGenerators
             _projectHelper.AddFileToProject(Name, $"Program.cs", sb.ToString(), true);
             return Task.FromResult("Program class generated");
         }
-
-        public Task<string> GenerateRepositoryInjection()
-        {
-            return Task.FromResult("");
-        }
+        #endregion
     }
 }

@@ -25,6 +25,7 @@ namespace AspNetCoreMvc.Helpers
             var args = $"new {template} -n {projectName} -o {projectFolder}";
 
             var message = await CommandHelper.RunDotnet(args);
+            DeleteFileToProject(projectName, "Class1.cs");
 
             var projectFile = GetProjectFullPath(projectName);
 
@@ -55,6 +56,15 @@ namespace AspNetCoreMvc.Helpers
             File.WriteAllText(file.FullName, contents);
         }
 
+        public void DeleteFileToProject(string projectName, string filePath)
+        {
+            var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);
+            var file = new FileInfo(fullFilePath);
+
+            if (file.Exists)
+                file.Delete();
+        }
+
         public bool IsFileExistInProject(string projectName, string filePath)
         {
             var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);
@@ -64,6 +74,11 @@ namespace AspNetCoreMvc.Helpers
         public string GetProjectFullPath(string projectName)
         {
             return Path.Combine(_outputLocation, $"{projectName}", $"{projectName}.csproj");
+        }
+
+        public string GetProjectFolder(string projectName)
+        {
+            return Path.Combine(_outputLocation, $"{projectName}");
         }
     }
 }

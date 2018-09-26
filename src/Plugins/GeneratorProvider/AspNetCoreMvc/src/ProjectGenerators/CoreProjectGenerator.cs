@@ -190,7 +190,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"    public interface I{model.Name}Service");
             sb.AppendLine("    {");
             sb.AppendLine($"        Task<{model.Name}> Get{model.Name}ById(int id, CancellationToken cancellationToken = default(CancellationToken));");
-            sb.AppendLine($"        Task<List<{model.Name}>> Get{model.Name}s(CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine($"        Task<List<{model.Name}>> Get{TextHelper.Pluralize(model.Name)}(CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine($"        Task<int> Create{model.Name}({model.Name} entity, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine($"        Task Update{model.Name}({model.Name} entity, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine($"        Task Delete{model.Name}(int id, CancellationToken cancellationToken = default(CancellationToken));");
@@ -230,7 +230,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"            return await _{camelizedName}Repository.GetById(id, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine($"        public async Task<List<{model.Name}>> Get{model.Name}s(CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine($"        public async Task<List<{model.Name}>> Get{TextHelper.Pluralize(model.Name)}(CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
             sb.AppendLine($"            cancellationToken.ThrowIfCancellationRequested();");
             sb.AppendLine();
@@ -294,11 +294,12 @@ namespace AspNetCoreMvc.ProjectGenerators
                 {
                     if (property.RelationalType == PropertyRelationalType.OneToOne)
                     {
+                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
                         sb.AppendLine($"        public {property.RelatedProjectDataModelName} {property.Name} {{ get; set; }}");
                     }
                     else if (property.RelationalType == PropertyRelationalType.OneToMany)
                     {
-                        sb.AppendLine($"        public List<{property.RelatedProjectDataModelName}> {TextHelper.Pluralize(property.Name)} {{ get; set; }}");
+                        sb.AppendLine($"        public ICollection<{property.RelatedProjectDataModelName}> {property.Name} {{ get; set; }}");
                     }
                     else if (property.RelationalType == PropertyRelationalType.ManyToMany)
                     {

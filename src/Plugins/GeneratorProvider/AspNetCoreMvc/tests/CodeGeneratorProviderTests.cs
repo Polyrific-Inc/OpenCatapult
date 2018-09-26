@@ -58,6 +58,7 @@ namespace AspNetCoreMvc.Tests
                         new ProjectDataModelPropertyDto
                         {
                             Name = "Title",
+                            Label = "Title",
                             DataType = "string",
                             ControlType = "input-string"
                         }

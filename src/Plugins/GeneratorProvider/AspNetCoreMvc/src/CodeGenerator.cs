@@ -50,9 +50,14 @@ namespace AspNetCoreMvc
             return sb.ToString();
         }
 
-        public Task<string> GenerateModels()
+        public async Task<string> GenerateModels()
         {
-            return _coreProjectGenerator.GenerateModels();
+            var sb = new StringBuilder();
+
+            sb.AppendLine(await _coreProjectGenerator.GenerateModels());
+            sb.AppendLine(await _mainProjectGenerator.GenerateViewModels());
+
+            return sb.ToString();
         }
 
         public async Task<string> GenerateDbContext()
