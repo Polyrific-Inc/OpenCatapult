@@ -9,6 +9,7 @@ only_commits:
   files:
     - appveyor/plugin-aspnetcoremvc.appveyor.yml
     - src/Plugins/GeneratorProvider/AspNetCoreMvc/
+    - src/Plugins/Polyrific.Catapult.Plugins.Abstraction/
 configuration: Release
 dotnet_csproj:
   patch: true
