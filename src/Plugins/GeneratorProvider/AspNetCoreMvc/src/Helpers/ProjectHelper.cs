@@ -43,6 +43,24 @@ namespace AspNetCoreMvc.Helpers
             return message;
         }
 
+        public void AddFileToProject(string projectName, string filePath, string contents, bool overwrite = false)
+        {
+            var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);
+            var file = new FileInfo(fullFilePath);
+
+            if (file.Exists && !overwrite)
+                return;
+
+            file.Directory.Create();
+            File.WriteAllText(file.FullName, contents);
+        }
+
+        public bool IsFileExistInProject(string projectName, string filePath)
+        {
+            var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);
+            return File.Exists(fullFilePath);
+        }
+
         public string GetProjectFullPath(string projectName)
         {
             return Path.Combine(_outputLocation, $"{projectName}", $"{projectName}.csproj");

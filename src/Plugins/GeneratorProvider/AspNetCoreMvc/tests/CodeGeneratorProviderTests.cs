@@ -46,7 +46,24 @@ namespace AspNetCoreMvc.Tests
 
         private List<ProjectDataModelDto> GetSampleDataModels()
         {
-            var models = new List<ProjectDataModelDto>();
+            var models = new List<ProjectDataModelDto>
+            {
+                new ProjectDataModelDto
+                {
+                    Name = "Product",
+                    Description = "Product",
+                    Label = "Product",
+                    Properties = new List<ProjectDataModelPropertyDto>
+                    {
+                        new ProjectDataModelPropertyDto
+                        {
+                            Name = "Title",
+                            DataType = "string",
+                            ControlType = "input-string"
+                        }
+                    }
+                }
+            };
 
             return models;
         }

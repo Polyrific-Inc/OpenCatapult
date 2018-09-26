@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
@@ -56,21 +55,11 @@ namespace AspNetCoreMvc
             return _coreProjectGenerator.GenerateModels();
         }
 
-        public async Task<string> GenerateServices()
-        {
-            var sb = new StringBuilder();
-
-            sb.AppendLine(await _coreProjectGenerator.GenerateServiceInterface());
-            sb.AppendLine(await _coreProjectGenerator.GenerateServiceClass());
-            sb.AppendLine(await _mainProjectGenerator.GenerateServiceInjection());
-
-            return sb.ToString();
-        }
-
         public async Task<string> GenerateDbContext()
         {
             var sb = new StringBuilder();
 
+            sb.AppendLine(await _dataProjectGenerator.GenerateEntityConfigs());
             sb.AppendLine(await _dataProjectGenerator.GenerateDbContext());
             sb.AppendLine(await _infrastructureProjectGenerator.GenerateDbContextInjection());
 
@@ -84,14 +73,25 @@ namespace AspNetCoreMvc
             sb.AppendLine(await _coreProjectGenerator.GenerateRepositoryInterface());
             sb.AppendLine(await _dataProjectGenerator.GenerateRepositoryClass());
             sb.AppendLine(await _infrastructureProjectGenerator.GenerateRepositoryInjection());
-            sb.AppendLine(await _mainProjectGenerator.GenerateRepositoryInjection());
+
+            return sb.ToString();
+        }
+
+        public async Task<string> GenerateServices()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine(await _coreProjectGenerator.GenerateServices());
+            sb.AppendLine(await _mainProjectGenerator.GenerateServiceInjection());
+            sb.AppendLine(await _mainProjectGenerator.GenerateStartupClass());
+            sb.AppendLine(await _mainProjectGenerator.GenerateProgramClass());
 
             return sb.ToString();
         }
 
         public Task<string> GenerateControllers()
         {
-            return _mainProjectGenerator.GenerateViews();
+            return _mainProjectGenerator.GenerateControllers();
         }
 
         public Task<string> GenerateViews()

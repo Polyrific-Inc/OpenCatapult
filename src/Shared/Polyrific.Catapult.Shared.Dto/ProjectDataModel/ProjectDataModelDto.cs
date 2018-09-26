@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+
 namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
 {
     public class ProjectDataModelDto
@@ -28,5 +30,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         /// Label of the data model
         /// </summary>
         public string Label { get; set; }
+
+        /// <summary>
+        /// Properties of the data model
+        /// </summary>
+        public List<ProjectDataModelPropertyDto> Properties { get; set; }
     }
 }

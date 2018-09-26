@@ -34,6 +34,10 @@ namespace AspNetCoreMvc
 
             await generator.GenerateDbContext();
 
+            await generator.GenerateRepositories();
+
+            await generator.GenerateServices();
+
             await generator.GenerateControllers();
 
             await generator.GenerateViews();
