@@ -2,7 +2,7 @@
 
 namespace GitHub
 {
-    public class CodeRepositoryConfig
+    public class GitAutomationConfig
     {
         /// <summary>
         /// Name of the product, the GitHub organization, or the GitHub user name

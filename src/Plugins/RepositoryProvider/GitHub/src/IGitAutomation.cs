@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace GitHub
 {
-    public interface ICodeRepository
+    public interface IGitAutomation
     {
         /// <summary>
         /// Clone remote repository to local
