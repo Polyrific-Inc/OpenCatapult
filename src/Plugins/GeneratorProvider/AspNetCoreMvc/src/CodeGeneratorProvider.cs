@@ -24,7 +24,9 @@ namespace AspNetCoreMvc
 
         public async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var generator = new CodeGenerator(projectName, config.OutputLocation, models);
+            additionalConfigs.TryGetValue("ConnectionString", out var connectionString);
+
+            var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString);
 
             await generator.InitSolution();
 
@@ -41,7 +43,9 @@ namespace AspNetCoreMvc
             await generator.GenerateControllers();
 
             await generator.GenerateViews();
-            
+
+            await generator.UpdateMigrationScript();
+
             return (config.OutputLocation, null, "");
         }
 

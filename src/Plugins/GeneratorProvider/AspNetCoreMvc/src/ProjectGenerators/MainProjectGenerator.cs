@@ -15,14 +15,16 @@ namespace AspNetCoreMvc.ProjectGenerators
         private string _projectName;
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
+        private readonly string _connectionString;
 
         private string Name => $"{_projectName}";
 
-        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models)
+        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string connectionString)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
+            _connectionString = connectionString;
         }
 
         public async Task<string> Initialize()
@@ -38,7 +40,48 @@ namespace AspNetCoreMvc.ProjectGenerators
                 ("AutoMapper.Extensions.Microsoft.DependencyInjection", "5.0.1")
             };
 
-            return await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
+            var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
+            AddConnectionString();
+
+            return message;
+        }
+
+        public async Task<string> UpdateMigrationScript()
+        {
+            var args = $"ef migrations add {System.DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s {_projectHelper.GetProjectFullPath(Name)} -p {_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}")}";
+            return await CommandHelper.RunDotnet(args);
+        }
+
+        private void AddConnectionString()
+        {
+            string line = null;
+            var appSettingFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "appsettings.json");
+            var updatedContent = new StringBuilder();
+            using (var reader = new StreamReader(appSettingFile))
+            {
+                int lineNo = 0;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    lineNo++;
+
+                    if (lineNo == 1)
+                    {
+                        updatedContent.AppendLine(line);
+                        updatedContent.AppendLine("  \"ConnectionStrings\": {");
+                        updatedContent.AppendLine($"    \"DefaultConnection\": \"{_connectionString}\"");
+                        updatedContent.AppendLine("  },");
+                    }
+                    else
+                    {
+                        updatedContent.AppendLine(line);
+                    }
+                }
+            }
+
+            using (var writer = new StreamWriter(appSettingFile))
+            {
+                writer.Write(updatedContent.ToString());
+            }
         }
 
         #region view models

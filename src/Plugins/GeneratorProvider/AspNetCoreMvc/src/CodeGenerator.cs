@@ -20,7 +20,7 @@ namespace AspNetCoreMvc
         private readonly InfrastructureProjectGenerator _infrastructureProjectGenerator;
         private readonly MainProjectGenerator _mainProjectGenerator;
         
-        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models)
+        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models, string connectionString)
         {
             _projectName = projectName;
             _outputLocation = outputLocation;
@@ -29,7 +29,7 @@ namespace AspNetCoreMvc
             _coreProjectGenerator = new CoreProjectGenerator(projectName, _projectHelper, models);
             _dataProjectGenerator = new DataProjectGenerator(projectName, _projectHelper, models);
             _infrastructureProjectGenerator = new InfrastructureProjectGenerator(projectName, _projectHelper, models);
-            _mainProjectGenerator = new MainProjectGenerator(projectName, _projectHelper, models);
+            _mainProjectGenerator = new MainProjectGenerator(projectName, _projectHelper, models, connectionString);
         }
 
         public async Task<string> InitSolution()
@@ -102,6 +102,11 @@ namespace AspNetCoreMvc
         public Task<string> GenerateViews()
         {
             return _mainProjectGenerator.GenerateViews();
+        }
+
+        public Task<string> UpdateMigrationScript()
+        {
+            return _mainProjectGenerator.UpdateMigrationScript();
         }
     }
 }

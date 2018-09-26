@@ -33,12 +33,17 @@ namespace AspNetCoreMvc.Tests
                 WorkingLocation = workingLocation,
                 OutputLocation = outputLocation
             };
+
+            var additionalConfig = new Dictionary<string, string>
+            {
+                { "ConnectionString", "Server=localhost;Database=generated.db;User ID=sa;Password=samprod;" }
+            };
             
             if (Directory.Exists(outputLocation))
                 Directory.Delete(outputLocation, true);
 
             var provider = new CodeGeneratorProvider();
-            var result = await provider.Generate("MyProject", models, config, new Dictionary<string, string>(), _logger.Object);
+            var result = await provider.Generate("MyProject", models, config, additionalConfig, _logger.Object);
 
             Assert.Equal(outputLocation, result.outputLocation);
             Assert.True(Directory.Exists(outputLocation));
