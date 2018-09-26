@@ -102,7 +102,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine("<div class=\"jumbotron\">");
             sb.AppendLine("    <h1>Home Page</h1>");
-            sb.AppendLine("    <h3>This project has been <span>CATAPULTED</span> for  by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a>.</h3>");
+            sb.AppendLine("    <h3>This project has been <span>CATAPULTED</span> by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a>.</h3>");
             sb.AppendLine("</div>");
             sb.AppendLine();
             sb.AppendLine("<p class=\"text-center\">");
