@@ -7,13 +7,13 @@ branches:
     - master
 only_commits:
   files:
-    - appveyor/plugin-dotnetcore.appveyor.yml
-    - src/Plugins/BuildProvider/DotNetCore/
+    - appveyor/plugin-github.appveyor.yml
+    - src/Plugins/RepositoryProvider/GitHub/
     - src/Plugins/Polyrific.Catapult.Plugins.Abstraction/
 configuration: Release
 dotnet_csproj:
   patch: true
-  file: '**\DotNetCore.csproj'
+  file: '**\GitHub.csproj'
   version: '{version}'
   package_version: '{version}'
   assembly_version: '{version}'
@@ -21,13 +21,13 @@ dotnet_csproj:
   informational_version: '{version}'
 before_build:
   - cmd: dotnet --version
-  - cmd: dotnet restore ./src/Plugins/BuildProvider/DotNetCore/src/DotNetCore.csproj
+  - cmd: dotnet restore ./src/Plugins/RepositoryProvider/GitHub/src/GitHub.csproj
 build_script:
-  - cmd: dotnet publish ./src/Plugins/BuildProvider/DotNetCore/src/DotNetCore.csproj -o ../publish
+  - cmd: dotnet publish ./src/Plugins/RepositoryProvider/GitHub/src/GitHub.csproj -o ../publish
 test_script:
-  - cmd: dotnet test ./src/Plugins/BuildProvider/DotNetCore/tests/DotNetCore.Tests.csproj
+  - cmd: dotnet test ./src/Plugins/RepositoryProvider/GitHub/tests/GitHub.Tests.csproj
 artifacts:
-  - path: 'src/Plugins/BuildProvider/DotNetCore/publish/'
-    name: BuildProvider-DotNetCore
+  - path: 'src/Plugins/RepositoryProvider/GitHub/publish/'
+    name: RepositoryProvider-GitHub
     type: zip
 deploy: off

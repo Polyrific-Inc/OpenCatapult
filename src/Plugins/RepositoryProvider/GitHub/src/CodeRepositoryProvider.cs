@@ -12,16 +12,22 @@ namespace GitHub
     [Export(typeof(ICodeRepositoryProvider))]
     public class CodeRepositoryProvider : ICodeRepositoryProvider
     {
-        private ICodeRepository _codeRepository;
+        private IGitAutomation _gitAutomation;
+        private readonly IGitHubUtils _gitHubUtils;
 
         public CodeRepositoryProvider()
         {
 
         }
 
-        public CodeRepositoryProvider(ICodeRepository codeRepository)
+        public CodeRepositoryProvider(IGitAutomation gitAutomation)
         {
-            _codeRepository = codeRepository;
+            _gitAutomation = gitAutomation;
+        }
+
+        public CodeRepositoryProvider(IGitHubUtils gitHubUtils)
+        {
+            _gitHubUtils = gitHubUtils;
         }
 
         public string Name => "GitHubRepositoryProvider";
@@ -35,12 +41,12 @@ namespace GitHub
 
         public async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetCodeRepositoryConfig(config.CloneLocation, config.Repository, additionalConfigs);
+            var repoConfig = GetGitAutomationConfig(config.CloneLocation, config.Repository, additionalConfigs);
 
-            if (_codeRepository == null)
-                _codeRepository = new CodeRepository(repoConfig, logger);
+            if (_gitAutomation == null)
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
 
-            var error = await _codeRepository.Clone();
+            var error = await _gitAutomation.Clone();
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
@@ -59,12 +65,12 @@ namespace GitHub
 
         public async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetCodeRepositoryConfig(config.SourceLocation, config.Repository, additionalConfigs);
+            var repoConfig = GetGitAutomationConfig(config.SourceLocation, config.Repository, additionalConfigs);
 
-            if (_codeRepository == null)
-                _codeRepository = new CodeRepository(repoConfig, logger);
+            if (_gitAutomation == null)
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
 
-            var error = await _codeRepository.Push(config.Branch);
+            var error = await _gitAutomation.Push(config.Branch);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
@@ -72,7 +78,7 @@ namespace GitHub
 
             if (config.CreatePullRequest)
             {
-                var prNumber = await _codeRepository.SubmitPullRequest(config.Branch, config.PullRequestTargetBranch);
+                var prNumber = await _gitAutomation.SubmitPullRequest(config.Branch, config.PullRequestTargetBranch);
                 if (prNumber > 0)
                 {
                     outputValues = new Dictionary<string, string>
@@ -97,12 +103,12 @@ namespace GitHub
 
         public async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge(string prNumber, MergeTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetCodeRepositoryConfig("", config.Repository, additionalConfigs);
+            var repoConfig = GetGitAutomationConfig("", config.Repository, additionalConfigs);
 
-            if (_codeRepository == null)
-                _codeRepository = new CodeRepository(repoConfig, logger);
+            if (_gitAutomation == null)
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
 
-            var success = await _codeRepository.MergePullRequest(prNumber);
+            var success = await _gitAutomation.MergePullRequest(prNumber);
             if (!success)
                 return ("", null, "Failed to merge pull request.");
 
@@ -114,25 +120,28 @@ namespace GitHub
             return Task.FromResult("");
         }
 
-        private CodeRepositoryConfig GetCodeRepositoryConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs)
+        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs)
         {
-            var config = new CodeRepositoryConfig
+            var config = new GitAutomationConfig
             {
                 LocalRepository = localRepository,
                 RemoteUrl = remoteUrl
             };
 
-            if (additionalConfigs.ContainsKey("RemoteCredentialType"))
-                config.RemoteCredentialType = additionalConfigs["RemoteCredentialType"];
+            if (additionalConfigs != null)
+            {
+                if (additionalConfigs.ContainsKey("RemoteCredentialType"))
+                    config.RemoteCredentialType = additionalConfigs["RemoteCredentialType"];
 
-            if (additionalConfigs.ContainsKey("RemoteUsername"))
-                config.RemoteUsername = additionalConfigs["RemoteUsername"];
+                if (additionalConfigs.ContainsKey("RemoteUsername"))
+                    config.RemoteUsername = additionalConfigs["RemoteUsername"];
 
-            if (additionalConfigs.ContainsKey("RemotePassword"))
-                config.RemotePassword = additionalConfigs["RemotePassword"];
+                if (additionalConfigs.ContainsKey("RemotePassword"))
+                    config.RemotePassword = additionalConfigs["RemotePassword"];
 
-            if (additionalConfigs.ContainsKey("RepoAuthToken"))
-                config.RepoAuthToken = additionalConfigs["RepoAuthToken"];
+                if (additionalConfigs.ContainsKey("RepoAuthToken"))
+                    config.RepoAuthToken = additionalConfigs["RepoAuthToken"];
+            }
 
             return config;
         }
