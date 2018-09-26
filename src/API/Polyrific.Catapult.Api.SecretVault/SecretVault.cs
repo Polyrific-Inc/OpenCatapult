@@ -45,5 +45,15 @@ namespace Polyrific.Catapult.Api.SecretVault
             var protectedValue = _protector.Protect(value);
             await _textWriter.Write(FolderName, name, protectedValue);
         }
+
+        public Task<string> Encrypt(string value, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(_protector.Protect(value));
+        }
+
+        public Task<string> Decrypt(string encryptedValue, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            return Task.FromResult(_protector.Unprotect(encryptedValue));
+        }
     }
 }
