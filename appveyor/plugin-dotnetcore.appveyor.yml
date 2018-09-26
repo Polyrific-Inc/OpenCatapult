@@ -22,7 +22,7 @@ before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore ./src/Plugins/BuildProvider/DotNetCore/src/DotNetCore.csproj
 build_script:
-  - cmd: dotnet publish ./src/Plugins/BuildProvider/DotNetCore/src/DotNetCore.csproj -o ./src/Plugins/BuildProvider/DotNetCore/publish
+  - cmd: dotnet publish ./src/Plugins/BuildProvider/DotNetCore/src/DotNetCore.csproj -o ../publish
 test_script:
   - cmd: dotnet test ./src/Plugins/BuildProvider/DotNetCore/tests/DotNetCore.Tests.csproj
 artifacts:
