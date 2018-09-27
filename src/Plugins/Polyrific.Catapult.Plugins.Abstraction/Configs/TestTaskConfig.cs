@@ -8,5 +8,10 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
         /// Location of the test code
         /// </summary>
         public string TestLocation { get; set; }
+
+        /// <summary>
+        /// Continue the job execution when the test is failed. Default to false
+        /// </summary>
+        public bool ContinueWhenFailed { get; set; }
     }
 }
