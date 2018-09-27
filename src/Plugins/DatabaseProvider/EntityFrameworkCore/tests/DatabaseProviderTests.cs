@@ -25,13 +25,8 @@ namespace DotNetCore.Tests
         public async void DeployDatabase_Success()
         {
             var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.1");
-
-            if (Directory.Exists(workingLocation))
-                Directory.Delete(workingLocation, true);
-
-            Directory.CreateDirectory(workingLocation);
             
-            var provider = new DatabaseProvider();
+            var provider = new DatabaseProvider(_databaseCommand.Object);
 
             var taskConfig = new DeployDbTaskConfig
             {
