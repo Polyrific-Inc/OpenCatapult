@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforeDeployDatabase(TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.BeforeDeployDatabase(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
 
@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.DeployDatabase(TaskConfig, AdditionalConfigs, Logger);
+            var result = await provider.DeployDatabase(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
@@ -61,7 +61,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterDeployDatabase(TaskConfig, AdditionalConfigs, Logger);
+            var error = await provider.AfterDeployDatabase(Project.Name, TaskConfig, AdditionalConfigs, Logger);
             if (!string.IsNullOrEmpty(error))
                 return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
 
