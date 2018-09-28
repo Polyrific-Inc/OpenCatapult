@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Cli.Commands
         protected virtual int OnExecute(CommandLineApplication app)
         {
             Console.WriteLine("-----------------------------");
-            Console.WriteLine("= Polyrific Catapult Engine =");
+            Console.WriteLine("= Polyrific Catapult CLI =");
             Console.WriteLine("-----------------------------");
             Console.WriteLine();
 
