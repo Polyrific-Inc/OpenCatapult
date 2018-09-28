@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="CatapultEngineIdentity\**" />
-    <EmbeddedResource Remove="CatapultEngineIdentity\**" />
-    <None Remove="CatapultEngineIdentity\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Remove="EngineDbContext.cs" />
     <Compile Remove="Identity\ApplicationCatapultEngine.cs" />
     <Compile Remove="Identity\RoleStore.cs" />
@@ -44,7 +38,9 @@
     <Compile Remove="Migrations\20180919081452_ExternalServiceType.cs" />
     <Compile Remove="Migrations\20180919081842_ExternalServiceType.cs" />
     <Compile Remove="Migrations\20180921023147_JobTaskDefinitionProvider.cs" />
-    <Compile Remove="Migrations\EngineDb\20180815061308_testing.cs" />
+    <Compile Remove="Migrations\20180928072337_AddBuiltInPluginSeed.cs" />
+    <Compile Remove="Migrations\20180928072958_AddBuiltInPluginSeed.cs" />
+    <Compile Remove="Migrations\20180928073921_AddBuiltInPluginSeed.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,10 +55,6 @@
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Dto\Polyrific.Catapult.Shared.Dto.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\EngineDb\" />
   </ItemGroup>
 
 </Project>
