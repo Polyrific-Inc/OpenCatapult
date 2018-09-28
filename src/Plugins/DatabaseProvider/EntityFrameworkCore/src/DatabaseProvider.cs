@@ -45,8 +45,8 @@ namespace EntityFrameworkCore
                 startupProjectPath = Path.Combine(config.WorkingLocation, startupProjectPath);
 
             var dataProjectName = $"{projectName}.Data";
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("DataProjectName"))
-                dataProjectName = additionalConfigs["DataProjectName"];
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("DatabaseProjectName"))
+                dataProjectName = additionalConfigs["DatabaseProjectName"];
 
             var dataProjectPath = Path.Combine(config.MigrationLocation, dataProjectName);
             if (!Path.IsPathRooted(dataProjectPath))
