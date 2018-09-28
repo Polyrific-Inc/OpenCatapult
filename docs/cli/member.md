@@ -3,7 +3,9 @@
 Add user as a project member
 
 Usage: 
-`dotnet pc.dll member add --project [project] --user [user] --role [role]`
+```sh
+dotnet pc.dll member add --project [project] --user [user] --role [role]
+```
 
 **Options**
 * project (mandatory)
@@ -22,7 +24,9 @@ Usage:
 List members of the project
 
 Usage: 
-`dotnet pc.dll member list --project [project]`
+```sh
+dotnet pc.dll member list --project [project]
+```
 
 **Options**
 * project (mandatory)
@@ -38,7 +42,9 @@ Usage:
 Remove a project member
 
 Usage: 
-`dotnet pc.dll member remove --project [project] --user [user]`
+```sh
+dotnet pc.dll member remove --project [project] --user [user]
+```
 
 **Options**
 * project (mandatory)
@@ -52,7 +58,9 @@ Usage:
 Update the role of a project member
 
 Usage: 
-`dotnet pc.dll member update --project [project] --user [user] --role [role]` 
+```sh
+dotnet pc.dll member update --project [project] --user [user] --role [role]
+``` 
 
 **Options**
 * project (mandatory)

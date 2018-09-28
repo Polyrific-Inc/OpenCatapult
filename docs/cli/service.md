@@ -2,22 +2,28 @@
 Add new external service
 
 Usage: 
-`dotnet pc.dll service add --name [name] --property [propname]:[propvalue]`
+```sh
+dotnet pc.dll service add --name [name] --type [service type] --description [description]
+```
 
 **Options**
 * name (mandatory)
     * Name of the service
     * Usage: `--name` (alias: `-n`)
-* property
-    * Project properties
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
+* type (mandatory)
+    * Type of the external service
+    * Usage: `--type` (alias: `-t`)
+* description
+    * Description of the external service
+    * Usage: `--description` (alias: `-d`)
 
 # Get
 Get a single service details
 
 Usage: 
-`dotnet pc.dll service get --name [name]`
+```sh
+dotnet pc.dll service get --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -28,13 +34,17 @@ Usage:
 List all registered services
 
 Usage: 
-`dotnet pc.dll service list`
+```sh
+dotnet pc.dll service list
+```
 
 # Remove
 Remove an external service
 
 Usage: 
-`dotnet pc.dll service remove --name [name]` 
+```sh
+dotnet pc.dll service remove --name [name]
+``` 
 
 **Options**
 * name (mandatory)
@@ -45,13 +55,13 @@ Usage:
 Update an external service
 
 Usage: 
-`dotnet pc.dll service update --name [name] --property [propname]:[propvalue]` 
+```sh
+dotnet pc.dll service update --name [name] --rename [new name]
+``` 
 
 **Options**
 * name (mandatory)
     * Name of the external service
     * Usage: `--name` (alias: `-n`)
-* property
-    * Project properties
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
+* rename
+    * New name of the external service

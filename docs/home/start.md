@@ -24,7 +24,7 @@ cd OpenCatapult
 
 Modify the connection string in `.\src\API\Polyrific.Catapult.Api\appsettings.json` to connect to your database server
 
-Run the migration srcript to initialize the database:
+Run the migration script to initialize the database:
 ```sh
 dotnet ef database update --startup-project .\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj --project .\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj
 ```
@@ -35,7 +35,7 @@ Run the API:
 dotnet run -p .\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj -c Release
 ```
 
-Open new shell, go to the root folder, build and start the Engine:
+Open new shell, go to the root folder, build and set the Api Url for the engine:
 
 ```sh
 dotnet build .\src\Engine\Polyrific.Catapult.Engine\Polyrific.Catapult.Engine.csproj -c Release
@@ -52,6 +52,13 @@ dotnet .\src\CLI\Polyrific.Catapult.Cli\bin\Release\PC.dll --help
 ```
 
 You are now ready to create your first catapult project.
+
+Note:
+
+If you have some error related to ssl, you can try to run the following command, and accept the popup prompt:
+```sh
+dotnet dev-certs https --trust
+```
 
 ## Create your first project
 
@@ -105,7 +112,7 @@ dotnet PC.dll engine token --name Engine01
 
 Copy the engine token, then open a new CLI and go to the catapult directory. Run the following command to set authorization token of the engine:
 ```sh
-dotnet .\src\Engine\Polyrific.Catapult.Engine\bin\Release\PCEngine.dll config set config set -n AuthorizationToken -v <paste the token here>
+dotnet .\src\Engine\Polyrific.Catapult.Engine\bin\Release\PCEngine.dll config set -n AuthorizationToken -v <paste the token here>
 ```
 
 Finally, start the engine so that it will process our queued job:

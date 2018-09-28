@@ -59,3 +59,12 @@ Available job task types:
 - `Deploy`: Deploy the build result into cloud provider such as Azure app service
 - `DeployDb`: Apply the changes in model into the deployed database
 - `Test`: Run test that's available on the project
+
+## Built-in Providers
+Following are the built-in providers. You can add other providers later using the [plugin](plugins.md) command.
+- `AspNetCoreMvc`: Generate an asp net core mvc application
+- `GitHubRepositoryProvider`: Used to clone or push code to GitHub
+- `DotNetCoreBuildProvider`: Build a dotnet corea application
+- `DotNetCoreTest`: Run tests available on the project
+- `EntityFrameworkCore`: A database provider for deploying the model changes
+- `AzureAppService`: Deploys the application into Azure App Service instance

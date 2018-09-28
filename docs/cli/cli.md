@@ -3,10 +3,12 @@
 Opencatapult provide a command line interface to interact with the API
 
 ## Login
-Login to catapult
+Login to catapult. You will be prompted to input the user's password.
 
 Usage:
-`dotnet pc.dll login --user [user]`
+```sh
+dotnet pc.dll login --user [user]
+```
 
 **Options:**
 * user (mandatory)
@@ -17,7 +19,8 @@ Usage:
 Logout from catapult
 
 Usage:
-`dotnet pc.dll logout`
+```sh
+dotnet pc.dll logout`
 
 ## Account		
 User account related commands			
@@ -33,7 +36,9 @@ User account related commands
 CLI Configurations
 
 Usage: 
-`dotnet pc.dll config [subcommands]`
+```sh
+dotnet pc.dll config [subcommands]
+```
 
 ### Subcommands
 
@@ -46,7 +51,9 @@ Usage:
 Catapult engine registration commands
 
 Usage: 
-`dotnet pc.dll engine [subcommands]`
+```sh
+dotnet pc.dll engine [subcommands]
+```
 
 ### Subcommands
 
@@ -62,7 +69,9 @@ Usage:
 Job Definition related commands
 
 Usage: 
-`dotnet pc.dll job [subcommands]`
+```sh
+dotnet pc.dll job [subcommands]
+```
 
 ### Subcommands
 
@@ -74,7 +83,9 @@ Usage:
 Project member related commands
 
 Usage: 
-`dotnet pc.dll member [subcommands]`
+```sh
+dotnet pc.dll member [subcommands]
+```
 
 ### Subcommands
 
@@ -87,7 +98,9 @@ Usage:
 Project Data Model related commands
 
 Usage: 
-`dotnet pc.dll model [subcommands]`
+```sh
+dotnet pc.dll model [subcommands]
+```
 
 ### Subcommands
 
@@ -100,7 +113,9 @@ Usage:
 Plugin registration commands
 
 Usage: 
-`dotnet pc.dll plugin [subcommands]`
+```sh
+dotnet pc.dll plugin [subcommands]
+```
 
 ### Subcommands
 
@@ -113,7 +128,9 @@ Usage:
 Project related commands
 
 Usage: 
-`dotnet pc.dll project [subcommands]`
+```sh
+dotnet pc.dll project [subcommands]
+```
 
 ### Subcommands
 
@@ -130,7 +147,9 @@ Usage:
 Project Data Model Property related commands
 
 Usage: 
-`dotnet pc.dll property [subcommands]`
+```sh
+dotnet pc.dll property [subcommands]
+```
 
 ### Subcommands
 
@@ -143,7 +162,9 @@ Usage:
 Job Queue related commands
 
 Usage: 
-`dotnet pc.dll queue [subcommands]`
+```sh
+dotnet pc.dll queue [subcommands]
+```
 
 ### Subcommands
 
@@ -156,7 +177,9 @@ Usage:
 External service related commands
 
 Usage: 
-`dotnet pc.dll service [subcommands]`
+```sh
+dotnet pc.dll service [subcommands]
+```
 
 ### Subcommands
 
@@ -170,7 +193,9 @@ Usage:
 Job Task Definitions related commands
 
 Usage: 
-`dotnet pc.dll task [subcommands]`
+```sh
+dotnet pc.dll task [subcommands]
+```
 
 ### Subcommands
 

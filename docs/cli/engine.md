@@ -3,7 +3,9 @@
 Activate a suspended engine
 
 Usage: 
-`dotnet pc.dll engine activate --name [name]`
+```sh
+dotnet pc.dll engine activate --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -14,7 +16,9 @@ Usage:
 Get a single engine record
 
 Usage: 
-`dotnet pc.dll engine get --name [name]`
+```sh
+dotnet pc.dll engine get --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -25,7 +29,9 @@ Usage:
 List registered engines
 
 Usage: 
-`dotnet pc.dll engine list --status [status]`
+```sh
+dotnet pc.dll engine list --status [status]
+```
 
 **Options**
 * status
@@ -38,7 +44,9 @@ Usage:
 Register a new engine
 
 Usage: 
-`dotnet pc.dll engine register --name [name]`
+```sh
+dotnet pc.dll engine register --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -49,7 +57,9 @@ Usage:
 Remove an engine
 
 Usage: 
-`dotnet pc.dll engine remove --name [name]`
+```sh
+dotnet pc.dll engine remove --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -60,7 +70,9 @@ Usage:
 Suspend an engine
 
 Usage: 
-`dotnet pc.dll engine suspend --name [name]`
+```sh
+dotnet pc.dll engine suspend --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -71,7 +83,9 @@ Usage:
 Generate a token for the engine
 
 Usage: 
-`dotnet pc.dll engine token --name [name]`
+```sh
+dotnet pc.dll engine token --name [name]
+```
 
 **Options**
 * name (mandatory)

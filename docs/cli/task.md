@@ -3,7 +3,9 @@
 Add a new job task definition
 
 Usage: 
-`dotnet pc.dll task add --project [project] --job [job] --name [name] --type [type] --provider [provider] --property [propname]:[propvalue]`
+```sh
+dotnet pc.dll task add --project [project] --job [job] --name [name] --type [type] --provider [provider] --property [propname]:[propvalue]
+```
 
 **Options**
 * project (mandatory)
@@ -32,7 +34,9 @@ Usage:
 List job task definitions
 
 Usage: 
-`dotnet pc.dll task list --project [project] --job [job]`
+```sh
+dotnet pc.dll task list --project [project] --job [job]
+```
 
 **Options**
 * project (mandatory)
@@ -46,7 +50,9 @@ Usage:
 Remove a job task definition
 
 Usage: 
-`dotnet pc.dll task remove --project [project] --job [job] --name [name]`
+```sh
+dotnet pc.dll task remove --project [project] --job [job] --name [name]
+```
 
 **Options**
 * project (mandatory)
@@ -63,7 +69,9 @@ Usage:
 Update a job task definition
 
 Usage: 
-`dotnet pc.dll task update --project [project] --job [job] --name [name] --rename [newname] --type [type] --provider [provider] --property [propname]:[propvalue]`
+```sh
+dotnet pc.dll task update --project [project] --job [job] --name [name] --rename [newname] --type [type] --provider [provider] --property [propname]:[propvalue]
+```
 
 **Options**
 * project (mandatory)
@@ -77,7 +85,7 @@ Usage:
     * Usage: `--name` (alias: `-n`)
 * rename
     * New name of the new job task definition
-    * Usage: `--rename` (alias: `-r`)
+    * Usage: `--rename` (alias: `-rn`)
 * type
     * Type of the task
     * Usage: `--type` (alias: `-t`)

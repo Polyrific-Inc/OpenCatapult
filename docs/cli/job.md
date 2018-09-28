@@ -3,7 +3,9 @@
 Add a new job definition
 
 Usage: 
-`dotnet pc.dll job add --project [project] --name [name]`
+```sh
+dotnet pc.dll job add --project [project] --name [name]
+```
 
 **Options**
 * project (mandatory)
@@ -17,7 +19,9 @@ Usage:
 List project's job definition
 
 Usage: 
-`dotnet pc.dll job list --project [project]`
+```sh
+dotnet pc.dll job list --project [project]
+```
 
 **Options**
 * project (mandatory)
@@ -28,7 +32,9 @@ Usage:
 Remove a job definition
 
 Usage: 
-`dotnet pc.dll job remove --project [project] --name [name]`
+```sh
+dotnet pc.dll job remove --project [project] --name [name]
+```
 
 **Options**
 * project (mandatory)

@@ -3,7 +3,9 @@
 Add job to queue
 
 Usage: 
-`dotnet pc.dll queue add --project [project] --job [job]`
+```sh
+dotnet pc.dll queue add --project [project] --job [job]
+```
 
 **Options**
 * project (mandatory)
@@ -17,7 +19,9 @@ Usage:
 List queued jobs
 
 Usage: 
-`dotnet pc.dll queue list --project [project]`
+```sh
+dotnet pc.dll queue list --project [project]
+```
 
 **Options**
 * project (mandatory)
@@ -28,7 +32,9 @@ Usage:
 Get complete log of a queued job
 
 Usage: 
-`dotnet pc.dll queue get --project [project] --number [number]`
+```sh
+dotnet pc.dll queue get --project [project] --number [number]
+```
 
 **Options**
 * project (mandatory)
@@ -42,7 +48,9 @@ Usage:
 Restart the pending queue
 
 Usage: 
-`dotnet pc.dll queue restart --project [project] --number [number]`
+```sh
+dotnet pc.dll queue restart --project [project] --number [number]
+```
 
 **Options**
 * project (mandatory)

@@ -3,7 +3,9 @@
 Add a project data model property
 
 Usage: 
-`dotnet pc.dll property add --project [project] --model [model] --name [name] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]`
+```sh
+dotnet pc.dll property add --project [project] --model [model] --name [name] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]
+```
 
 **Options**
 * project (mandatory)
@@ -41,7 +43,9 @@ Usage:
 List properties in a data model
 
 Usage: 
-`dotnet pc.dll property list --project [project] --model [model]`
+```sh
+dotnet pc.dll property list --project [project] --model [model]
+```
 
 **Options**
 * project (mandatory)
@@ -55,7 +59,9 @@ Usage:
 Remove a project data model property
 
 Usage: 
-`dotnet pc.dll property remove --project [project] --model [model] --name [name]`
+```sh
+dotnet pc.dll property remove --project [project] --model [model] --name [name]
+```
 
 **Options**
 * project (mandatory)
@@ -72,7 +78,9 @@ Usage:
 Update a project data model property
 
 Usage: 
-`dotnet pc.dll property update --project [project] --name [name] --rename [newname] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]`
+```sh
+dotnet pc.dll property update --project [project] --name [name] --rename [newname] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]
+```
 
 **Options**
 * project (mandatory)

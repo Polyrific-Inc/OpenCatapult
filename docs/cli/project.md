@@ -3,7 +3,9 @@
 Archive a project
 
 Usage: 
-`dotnet pc.dll project archive --name [name]`
+```sh
+dotnet pc.dll project archive --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -14,7 +16,9 @@ Usage:
 Clone a project
 
 Usage: 
-`dotnet pc.dll project clone --project [project] --name [name] --includemember --includejob`
+```sh
+dotnet pc.dll project clone --project [project] --name [name] --includemember --includejob
+```
 
 **Options**
 * project (mandatory)
@@ -34,7 +38,9 @@ Usage:
 Create a project
 
 Usage: 
-`dotnet pc.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]`
+```sh
+dotnet pc.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]
+```
 
 **Options**
 * name (mandatory)
@@ -55,7 +61,9 @@ Usage:
 Update a project
 
 Usage: 
-`dotnet pc.dll project update --name [name] --client [client] --property [propname]:[propvalue]`
+```sh
+dotnet pc.dll project update --name [name] --client [client] --property [propname]:[propvalue]
+```
 
 **Options**
 * name (mandatory)
@@ -73,7 +81,9 @@ Usage:
 Export project into a yaml file
 
 Usage: 
-`dotnet pc.dll project export --name [name]`
+```sh
+dotnet pc.dll project export --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -87,7 +97,9 @@ Usage:
 List projects which the user has access to
 
 Usage: 
-`dotnet pc.dll project list --status [status]`
+```sh
+dotnet pc.dll project list --status [status]
+```
 
 **Options**
 * status
@@ -100,7 +112,9 @@ Usage:
 Remove a project
 
 Usage: 
-`dotnet pc.dll project remove --name [name]`
+```sh
+dotnet pc.dll project remove --name [name]
+```
 
 **Options**
 * name (mandatory)
@@ -111,7 +125,9 @@ Usage:
 Restore an archived project
 
 Usage: 
-`dotnet pc.dll project restore --name [name]`
+```sh
+dotnet pc.dll project restore --name [name]
+```
 
 **Options**
 * name (mandatory)
