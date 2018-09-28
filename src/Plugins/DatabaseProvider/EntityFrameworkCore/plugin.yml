@@ -1,0 +1,4 @@
+name: 'EntityFrameworkCore'
+type: 'DatabaseProvider'
+author: 'Polyrific'
+version: '1.0'

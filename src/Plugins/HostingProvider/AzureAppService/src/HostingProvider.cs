@@ -13,6 +13,8 @@ namespace AzureAppService
     public class HostingProvider : IHostingProvider
     {
         private IAzureAutomation _azure;
+        private readonly IAzureUtils _azureUtils;
+        private readonly IMsDeployUtils _msDeployUtils;
 
         public HostingProvider()
         {
@@ -22,6 +24,12 @@ namespace AzureAppService
         public HostingProvider(IAzureAutomation azure)
         {
             _azure = azure;
+        }
+
+        public HostingProvider(IAzureUtils azureUtils, IMsDeployUtils msDeployUtils)
+        {
+            _azureUtils = azureUtils;
+            _msDeployUtils = msDeployUtils;
         }
 
         public string Name => "AzureAppService";
@@ -36,7 +44,7 @@ namespace AzureAppService
         public async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             if (_azure == null)
-                _azure = new AzureAutomation(GetAzureAppServiceConfig(additionalConfigs), logger);
+                _azure = new AzureAutomation(GetAzureAppServiceConfig(additionalConfigs), _azureUtils, _msDeployUtils, logger);
 
             var subscriptionId = "";
             if (additionalConfigs.ContainsKey("SubscriptionId"))

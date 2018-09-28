@@ -22,28 +22,31 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <summary>
         /// Process to run before executing deploy database
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy database task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> BeforeDeployDatabase(DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<string> BeforeDeployDatabase(string projectName, DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Deploy database
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy database task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns></returns>
-        Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase(DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase(string projectName, DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing deploy database
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy database task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> AfterDeployDatabase(DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<string> AfterDeployDatabase(string projectName, DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
     }
 }
