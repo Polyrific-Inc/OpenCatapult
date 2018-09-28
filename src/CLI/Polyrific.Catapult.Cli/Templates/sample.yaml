@@ -166,8 +166,19 @@ jobs:
     type: Generate
     provider: AspNetCoreMvc
   - name: Push
-    type: Generate
+    type: Push
     provider: GitHubRepositoryProvider
     configs:
       Branch: master
       GitHubExternalService: github-default
+  - name: Build
+    type: Build
+    provider: DotNetCoreBuildProvider
+  - name: DeployDb
+    type: DeployDb
+    provider: EntityFrameworkCore
+  - name: Deploy
+    type: Deploy
+    provider: AzureAppService
+    configs:
+      AzureAppServiceExternalService: azure-default
