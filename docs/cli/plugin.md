@@ -2,9 +2,7 @@
 Get a single plugin details
 
 Usage: 
-```sh
-dotnet pc.dll plugin get --name [name]
-```
+`dotnet pc.dll plugin get --name [name]`
 
 **Options**
 * name (mandatory)
@@ -15,37 +13,31 @@ dotnet pc.dll plugin get --name [name]
 List all registered plugins
 
 Usage: 
-```sh
-dotnet pc.dll plugin list --type [type]
-```
+`dotnet pc.dll plugin list --type [type]`
 
 **Options**
 * type
     * Type of the plugins
     * Usage: `--role` (alias: `-r`)
-    * Allowed values: `all` | `BuildProvider` | `DatabaseProvider` | `GeneratorProvider` | `HostingProvider` | `RepositoryProvider` | `StorageProvider` | `TestProvider`
+    * Allowed values: `all` | `generator` | `repository` | `build` | `deploy`
     * Default value: `all`
 
 # Register
-Register a plugin
+Remove a plugin
 
 Usage: 
-```sh
-dotnet pc.dll plugin register --file [path to plugin.yml file]
-``` 
+`dotnet pc.dll plugin register --name [name]` 
 
 **Options**
-* file (mandatory)
+* name (mandatory)
     * Name of the plugin
-    * Usage: `--file` (alias: `-f`)
+    * Usage: `--name` (alias: `-n`)
 
 # Remove
 Remove a plugin
 
 Usage: 
-```sh
-dotnet pc.dll plugin remove --name [name]
-``` 
+`dotnet pc.dll plugin remove --name [name]` 
 
 **Options**
 * name (mandatory)

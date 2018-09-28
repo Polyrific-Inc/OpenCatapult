@@ -3,9 +3,7 @@
 Archive a project
 
 Usage: 
-```sh
-dotnet pc.dll project archive --name [name]
-```
+`dotnet pc.dll project archive --name [name]`
 
 **Options**
 * name (mandatory)
@@ -16,9 +14,7 @@ dotnet pc.dll project archive --name [name]
 Clone a project
 
 Usage: 
-```sh
-dotnet pc.dll project clone --project [project] --name [name] --includemember --includejob
-```
+`dotnet pc.dll project clone --project [project] --name [name] --includemember --includejob`
 
 **Options**
 * project (mandatory)
@@ -38,9 +34,7 @@ dotnet pc.dll project clone --project [project] --name [name] --includemember --
 Create a project
 
 Usage: 
-```sh
-dotnet pc.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]
-```
+`dotnet pc.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]`
 
 **Options**
 * name (mandatory)
@@ -61,9 +55,7 @@ dotnet pc.dll project create --name [name] --client [client] --template [templat
 Update a project
 
 Usage: 
-```sh
-dotnet pc.dll project update --name [name] --client [client] --property [propname]:[propvalue]
-```
+`dotnet pc.dll project update --name [name] --client [client] --property [propname]:[propvalue]`
 
 **Options**
 * name (mandatory)
@@ -81,9 +73,7 @@ dotnet pc.dll project update --name [name] --client [client] --property [propnam
 Export project into a yaml file
 
 Usage: 
-```sh
-dotnet pc.dll project export --name [name]
-```
+`dotnet pc.dll project export --name [name]`
 
 **Options**
 * name (mandatory)
@@ -97,9 +87,7 @@ dotnet pc.dll project export --name [name]
 List projects which the user has access to
 
 Usage: 
-```sh
-dotnet pc.dll project list --status [status]
-```
+`dotnet pc.dll project list --status [status]`
 
 **Options**
 * status
@@ -112,9 +100,7 @@ dotnet pc.dll project list --status [status]
 Remove a project
 
 Usage: 
-```sh
-dotnet pc.dll project remove --name [name]
-```
+`dotnet pc.dll project remove --name [name]`
 
 **Options**
 * name (mandatory)
@@ -125,9 +111,7 @@ dotnet pc.dll project remove --name [name]
 Restore an archived project
 
 Usage: 
-```sh
-dotnet pc.dll project restore --name [name]
-```
+`dotnet pc.dll project restore --name [name]`
 
 **Options**
 * name (mandatory)

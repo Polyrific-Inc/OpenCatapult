@@ -3,9 +3,7 @@
 Activate a suspended user
 
 Usage: 
-```sh
-dotnet pc.dll account activate --email [email]
-```
+`dotnet pc.dll account activate --email [email] `
 
 **Options**
 * email (mandatory)
@@ -16,9 +14,7 @@ dotnet pc.dll account activate --email [email]
 Register a catapult user
 
 Usage: 
-```sh
-dotnet pc.dll account register --email [email] --firstname [firstname] --lastname [lastname]
-```
+`dotnet pc.dll account register --email [email] --firstname [firstname] --lastname [lastname]`
 
 **Options**
 * email (mandatory)
@@ -35,9 +31,7 @@ dotnet pc.dll account register --email [email] --firstname [firstname] --lastnam
 Remove a user
 
 Usage: 
-```sh
-dotnet pc.dll account remove --email [email]
-```
+`dotnet pc.dll account remove --email [email]`
 
 **Options**
 * email (mandatory)
@@ -48,9 +42,7 @@ dotnet pc.dll account remove --email [email]
 Suspend a user	
 
 Usage: 
-```sh
-dotnet pc.dll account suspend --email [email]
-```
+`dotnet pc.dll account suspend --email [email]`
 
 **Options**
 * email (mandatory)
@@ -61,9 +53,7 @@ dotnet pc.dll account suspend --email [email]
 Update user profile
 
 Usage: 
-```sh
-dotnet pc.dll account update --email [email] --firstname [firstname] --lastname [lastname]
-```
+`dotnet pc.dll account update --email [email] --firstname [firstname] --lastname [lastname]`
 
 **Options**
 * email (mandatory)
@@ -77,12 +67,10 @@ dotnet pc.dll account update --email [email] --firstname [firstname] --lastname 
     * Usage: `--lastname` (alias: `-ln`)
     
 # Updatepassword
-Update user's password. You will be prompted to input the old and new password.
+Update user's password
 
 Usage: 
-```sh
-dotnet pc.dll account updatepassword --email [email]
-```
+`dotnet pc.dll account updatepassword --email [email]`
 
 **Options**
 * email (mandatory)

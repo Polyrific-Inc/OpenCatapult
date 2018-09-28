@@ -3,9 +3,7 @@
 Add a project data model
 
 Usage: 
-```sh
-dotnet pc.dll model add --project [project] --name [name]
-```
+`dotnet pc.dll model add --project [project] --name [name]`
 
 **Options**
 * project (mandatory)
@@ -25,9 +23,7 @@ dotnet pc.dll model add --project [project] --name [name]
 List data models in a project
 
 Usage: 
-```sh
-dotnet pc.dll model list --project [project]
-```
+`dotnet pc.dll model list --project [project]`
 
 **Options**
 * project (mandatory)
@@ -38,9 +34,7 @@ dotnet pc.dll model list --project [project]
 Remove a project data model
 
 Usage: 
-```sh
-dotnet pc.dll model remove --project [project] --name [name]
-```
+`dotnet pc.dll model remove --project [project] --name [name]`
 
 **Options**
 * project (mandatory)
@@ -54,9 +48,7 @@ dotnet pc.dll model remove --project [project] --name [name]
 Update a project data model
 
 Usage: 
-```sh
-dotnet pc.dll model update --project [project] --name [name] --rename [newname]
-```
+`dotnet pc.dll model update --project [project] --name [name] --rename [newname]`
 
 **Options**
 * project (mandatory)

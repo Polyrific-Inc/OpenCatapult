@@ -3,12 +3,10 @@
 Opencatapult provide a command line interface to interact with the API
 
 ## Login
-Login to catapult. You will be prompted to input the user's password.
+Login to catapult
 
 Usage:
-```sh
-dotnet pc.dll login --user [user]
-```
+`dotnet pc.dll login --user [user]`
 
 **Options:**
 * user (mandatory)
@@ -19,8 +17,7 @@ dotnet pc.dll login --user [user]
 Logout from catapult
 
 Usage:
-```sh
-dotnet pc.dll logout`
+`dotnet pc.dll logout`
 
 ## Account		
 User account related commands			
@@ -36,9 +33,7 @@ User account related commands
 CLI Configurations
 
 Usage: 
-```sh
-dotnet pc.dll config [subcommands]
-```
+`dotnet pc.dll config [subcommands]`
 
 ### Subcommands
 
@@ -51,9 +46,7 @@ dotnet pc.dll config [subcommands]
 Catapult engine registration commands
 
 Usage: 
-```sh
-dotnet pc.dll engine [subcommands]
-```
+`dotnet pc.dll engine [subcommands]`
 
 ### Subcommands
 
@@ -69,9 +62,7 @@ dotnet pc.dll engine [subcommands]
 Job Definition related commands
 
 Usage: 
-```sh
-dotnet pc.dll job [subcommands]
-```
+`dotnet pc.dll job [subcommands]`
 
 ### Subcommands
 
@@ -83,9 +74,7 @@ dotnet pc.dll job [subcommands]
 Project member related commands
 
 Usage: 
-```sh
-dotnet pc.dll member [subcommands]
-```
+`dotnet pc.dll member [subcommands]`
 
 ### Subcommands
 
@@ -98,9 +87,7 @@ dotnet pc.dll member [subcommands]
 Project Data Model related commands
 
 Usage: 
-```sh
-dotnet pc.dll model [subcommands]
-```
+`dotnet pc.dll model [subcommands]`
 
 ### Subcommands
 
@@ -113,9 +100,7 @@ dotnet pc.dll model [subcommands]
 Plugin registration commands
 
 Usage: 
-```sh
-dotnet pc.dll plugin [subcommands]
-```
+`dotnet pc.dll plugin [subcommands]`
 
 ### Subcommands
 
@@ -128,9 +113,7 @@ dotnet pc.dll plugin [subcommands]
 Project related commands
 
 Usage: 
-```sh
-dotnet pc.dll project [subcommands]
-```
+`dotnet pc.dll project [subcommands]`
 
 ### Subcommands
 
@@ -147,9 +130,7 @@ dotnet pc.dll project [subcommands]
 Project Data Model Property related commands
 
 Usage: 
-```sh
-dotnet pc.dll property [subcommands]
-```
+`dotnet pc.dll property [subcommands]`
 
 ### Subcommands
 
@@ -162,9 +143,7 @@ dotnet pc.dll property [subcommands]
 Job Queue related commands
 
 Usage: 
-```sh
-dotnet pc.dll queue [subcommands]
-```
+`dotnet pc.dll queue [subcommands]`
 
 ### Subcommands
 
@@ -177,9 +156,7 @@ dotnet pc.dll queue [subcommands]
 External service related commands
 
 Usage: 
-```sh
-dotnet pc.dll service [subcommands]
-```
+`dotnet pc.dll service [subcommands]`
 
 ### Subcommands
 
@@ -193,9 +170,7 @@ dotnet pc.dll service [subcommands]
 Job Task Definitions related commands
 
 Usage: 
-```sh
-dotnet pc.dll task [subcommands]
-```
+`dotnet pc.dll task [subcommands]`
 
 ### Subcommands
 
