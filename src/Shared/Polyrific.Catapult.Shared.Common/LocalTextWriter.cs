@@ -77,7 +77,7 @@ namespace Polyrific.Catapult.Shared.Common
 
         private string GetFolderPath(string folderName)
         {
-            return Path.Combine(_basePath, $"{folderName}");
+            return Path.Combine(_basePath ?? string.Empty, $"{folderName}");
         }
     }
 }
