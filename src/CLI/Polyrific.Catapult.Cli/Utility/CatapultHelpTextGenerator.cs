@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.HelpText;
+using Polyrific.Catapult.Cli.Commands;
 
 namespace Polyrific.Catapult.Cli
 {
@@ -20,12 +21,12 @@ namespace Polyrific.Catapult.Cli
 
         private string InvokeGetHelpFooter(CommandLineApplication application)
         {
-            const BindingFlags binding = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
             var commandInstance = application.GetType().GetProperty("Model").GetValue(application, null);
-            var commandType = commandInstance.GetType();
-            var method = commandType.GetMethod("GetHelpFooter", binding);
 
-            return method?.Invoke(commandInstance, null) as string;
+            if (commandInstance is BaseCommand command)
+                return command.GetHelpFooter();
+
+            return null;
         }
     }
 }

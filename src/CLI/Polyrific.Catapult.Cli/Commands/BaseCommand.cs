@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Cli.Commands
         /// <returns>Execution result message</returns>
         public abstract string Execute();
 
-        protected virtual string GetHelpFooter()
+        public virtual string GetHelpFooter()
         {
             return "";
         }

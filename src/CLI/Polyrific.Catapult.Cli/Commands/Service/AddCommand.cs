@@ -105,7 +105,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             return message;
         }
 
-        protected override string GetHelpFooter()
+        public override string GetHelpFooter()
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("Types of the external service:");
