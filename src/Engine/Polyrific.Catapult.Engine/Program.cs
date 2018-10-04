@@ -32,7 +32,16 @@ namespace Polyrific.Catapult.Engine
             var app = new CommandLineApplication<Program>();
             ConfigureApplication(app, serviceProvider);
 
-            return app.Execute(args);
+            try
+            {
+                return app.Execute(args);
+            }
+            catch (CommandParsingException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+            return -1;
         }
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
