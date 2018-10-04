@@ -63,6 +63,7 @@ namespace Polyrific.Catapult.Cli
             services.AddTransient<ITemplateWriter, TemplateWriter>();
             services.AddTransient<ICliConfig, CliConfig>();
             services.AddTransient<IConsoleReader, ConsoleReader>();
+            services.AddTransient<CatapultHelpTextGenerator, CatapultHelpTextGenerator>();
 
             services.AddCatapultApi(configuration);
         }
@@ -72,6 +73,8 @@ namespace Polyrific.Catapult.Cli
             app.Conventions
                 .UseDefaultConventions()
                 .UseConstructorInjection(serviceProvider);
+
+            app.HelpTextGenerator = serviceProvider.GetService<CatapultHelpTextGenerator>();
 
             app.ValueParsers.Add(new CatapultOptionParser());
 

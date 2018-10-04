@@ -14,9 +14,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get the list of external service types related to current user
         /// </summary>
+        /// <param name="includeProperties">Indicate whether the properties will be included in the result</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of the external service type entity</returns>
-        Task<List<ExternalServiceType>> GetExternalServiceTypes(CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<ExternalServiceType>> GetExternalServiceTypes(bool includeProperties = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a single external service type

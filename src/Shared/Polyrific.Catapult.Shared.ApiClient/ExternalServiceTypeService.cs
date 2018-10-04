@@ -27,9 +27,12 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<ExternalServiceTypeDto>(path);
         }
 
-        public async Task<List<ExternalServiceTypeDto>> GetExternalServiceTypes()
+        public async Task<List<ExternalServiceTypeDto>> GetExternalServiceTypes(bool includeProperties = false)
         {
             var path = "serviceType";
+
+            if (includeProperties)
+                path += "?includeProperties=true";
 
             return await Api.Get<List<ExternalServiceTypeDto>>(path);
         }

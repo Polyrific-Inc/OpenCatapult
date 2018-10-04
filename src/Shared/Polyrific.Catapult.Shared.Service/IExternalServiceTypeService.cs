@@ -11,8 +11,9 @@ namespace Polyrific.Catapult.Shared.Service
         /// <summary>
         /// Get the list of external service types related to current user
         /// </summary>
+        /// <param name="includeProperties">Indicate whether the properties will be included in the result</param>
         /// <returns>List of the external service type entity</returns>
-        Task<List<ExternalServiceTypeDto>> GetExternalServiceTypes();
+        Task<List<ExternalServiceTypeDto>> GetExternalServiceTypes(bool includeProperties = false);
 
         /// <summary>
         /// Get a single external service type

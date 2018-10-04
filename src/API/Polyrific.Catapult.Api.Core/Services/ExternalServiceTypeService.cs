@@ -33,9 +33,13 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _externalServiceTypeRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
-        public async Task<List<ExternalServiceType>> GetExternalServiceTypes(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<ExternalServiceType>> GetExternalServiceTypes(bool includeProperties = false, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return (await _externalServiceTypeRepository.GetBySpec(new ExternalServiceTypeFilterSpecification(), cancellationToken)).ToList();
+            var getAllSpec = new ExternalServiceTypeFilterSpecification();
+            if (includeProperties)
+                getAllSpec.Includes.Add(s => s.ExternalServiceProperties);
+
+            return (await _externalServiceTypeRepository.GetBySpec(getAllSpec, cancellationToken)).ToList();
         }
     }
 }
