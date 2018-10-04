@@ -12,13 +12,15 @@ namespace Polyrific.Catapult.Cli.Extensions
 {
     public static class CatapultCliExtensions
     {
-        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null)
+        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0)
         {
             if (obj is string stringValue)
                 return stringValue;
 
             PropertyInfo[] propertyInfos = null;
             propertyInfos = obj.GetType().GetProperties();
+
+            string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
 
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -28,30 +30,30 @@ namespace Polyrific.Catapult.Cli.Extensions
 
                 if (prop == null)
                 {
-                    sb.AppendLine($"{item.Name}: NULL");
+                    sb.AppendLine($"{indentationString}{item.Name}: NULL");
                 }
                 else if (prop is Dictionary<string, string> propDictionary)
                 {
-                    sb.AppendLine($"{item.Name}:");
+                    sb.AppendLine($"{indentationString}{item.Name}:");
                     foreach (var dictItem in propDictionary)
                     {
-                        sb.AppendLine($" {dictItem.Key}: {GetDisplayValue(dictItem.Key, dictItem.Value, obfuscatedFields)}");
+                        sb.AppendLine($"{indentationString}  {dictItem.Key}: {GetDisplayValue(dictItem.Key, dictItem.Value, obfuscatedFields)}");
                     }
                 }
                 else if (prop is IEnumerable enumProp && !(prop is string))
                 {
-                    sb.AppendLine(enumProp.ToListCliString($"{item.Name}:"));
+                    sb.AppendLine(enumProp.ToListCliString($"{indentationString}{item.Name}:", obfuscatedFields, indentation));
                 }
                 else
                 {
-                    sb.AppendLine($"{item.Name}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
+                    sb.AppendLine($"{indentationString}{item.Name}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
                 }
             }
 
             return sb.ToString();
         }
 
-        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null)
+        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0)
         {
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -60,12 +62,13 @@ namespace Polyrific.Catapult.Cli.Extensions
             foreach (var listitem in list)
             {
                 empty = false;
-                sb.Append(listitem.ToCliString("", obfuscatedFields));
+                sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1));
             }
 
             if (empty)
             {
-                sb.Append("No item found");
+                string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
+                sb.Append($"{indentationString}No item found");
             }
 
             return sb.ToString();
