@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.IO;
-using System.Reflection;
 using McMaster.Extensions.CommandLineUtils;
 using McMaster.Extensions.CommandLineUtils.HelpText;
 using Polyrific.Catapult.Cli.Commands;
