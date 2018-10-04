@@ -38,6 +38,12 @@ namespace Polyrific.Catapult.Shared.Service
         Task<UserDto> GetUser(int userId);
 
         /// <summary>
+        /// Get current user
+        /// </summary>
+        /// <returns>User object</returns>
+        Task<UserDto> GetCurrentUser();
+
+        /// <summary>
         /// Get a user by userName
         /// </summary>
         /// <param name="userName">userName of the user</param>

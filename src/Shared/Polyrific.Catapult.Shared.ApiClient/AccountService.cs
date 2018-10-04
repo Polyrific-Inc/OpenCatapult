@@ -27,6 +27,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<UserDto>(path);
         }
 
+        public async Task<UserDto> GetCurrentUser()
+        {
+            var path = $"account/currentuser";
+
+            return await Api.Get<UserDto>(path);
+        }
+
         public async Task<UserDto> GetUserByUserName(string userName)
         {
             var path = $"account/name/{userName}";

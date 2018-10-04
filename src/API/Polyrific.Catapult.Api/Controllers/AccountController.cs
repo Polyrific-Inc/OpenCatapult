@@ -130,6 +130,19 @@ namespace Polyrific.Catapult.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet("currentuser")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var currentUserId = await _userService.GetUserId(User);
+
+            var user = await _userService.GetUserById(currentUserId);
+
+            var result = _mapper.Map<UserDto>(user);
+
+            return Ok(result);
+        }
+
         /// <summary>
         /// Get user by userName
         /// </summary>
