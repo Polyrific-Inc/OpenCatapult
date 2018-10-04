@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace EntityFrameworkCore.Helpers
 {
     public class CommandHelper
     {
-        public static async Task<(string output, string error)> Execute(string fileName, string args, ILogger logger = null)
+        public static async Task<(string output, string error)> Execute(string fileName, string args, Dictionary<string, string> environmentVariables = null, ILogger logger = null)
         {
             var outputBuilder = new StringBuilder();
             var error = "";
@@ -23,6 +24,10 @@ namespace EntityFrameworkCore.Helpers
                 RedirectStandardError = true,
                 CreateNoWindow = true
             };
+
+            if (environmentVariables != null)
+                foreach (var envVariable in environmentVariables)
+                    info.EnvironmentVariables.Add(envVariable.Key, envVariable.Value);
 
             using (var process = Process.Start(info))
             {

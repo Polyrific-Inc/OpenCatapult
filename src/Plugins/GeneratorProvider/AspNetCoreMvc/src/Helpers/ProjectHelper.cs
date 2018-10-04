@@ -2,6 +2,7 @@
 
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace AspNetCoreMvc.Helpers
 {
@@ -9,11 +10,13 @@ namespace AspNetCoreMvc.Helpers
     {
         private readonly string _projectName;
         private readonly string _outputLocation;
+        private readonly ILogger _logger;
 
-        public ProjectHelper(string projectName, string outputLocation)
+        public ProjectHelper(string projectName, string outputLocation, ILogger logger)
         {
             _projectName = projectName;
             _outputLocation = outputLocation;
+            _logger = logger;
         }
 
         public async Task<string> CreateProject(string projectName, string template, string[] projectReferences = null, (string name, string version)[] packages = null)
@@ -24,22 +27,22 @@ namespace AspNetCoreMvc.Helpers
 
             var args = $"new {template} -n {projectName} -o {projectFolder}";
 
-            var message = await CommandHelper.RunDotnet(args);
+            var message = await CommandHelper.RunDotnet(args, null, _logger);
             DeleteFileToProject(projectName, "Class1.cs");
 
             var projectFile = GetProjectFullPath(projectName);
 
             if (projectReferences != null)
                 foreach (var projectReference in projectReferences)
-                    await CommandHelper.RunDotnet($"add {projectFile} reference {projectReference}");
+                    await CommandHelper.RunDotnet($"add {projectFile} reference {projectReference}", null, _logger);
 
             if (packages != null)
                 foreach (var package in packages)
-                    await CommandHelper.RunDotnet($"add {projectFile} package {package.name} -v {package.version}");
+                    await CommandHelper.RunDotnet($"add {projectFile} package {package.name} -v {package.version}", null, _logger);
 
             // add project to solution
             var solutionFile = Path.Combine(_outputLocation, $"{_projectName}.sln");
-            await CommandHelper.RunDotnet($"sln {solutionFile} add {projectFile}");
+            await CommandHelper.RunDotnet($"sln {solutionFile} add {projectFile}", null, _logger);
 
             return message;
         }

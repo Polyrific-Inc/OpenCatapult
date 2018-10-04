@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
@@ -17,15 +18,17 @@ namespace AspNetCoreMvc.ProjectGenerators
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
         private readonly string _connectionString;
+        private readonly ILogger _logger;
 
         private string Name => $"{_projectName}";
 
-        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string connectionString)
+        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string connectionString, ILogger logger)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
             _connectionString = connectionString;
+            _logger = logger;
         }
 
         public async Task<string> Initialize()
@@ -42,7 +45,6 @@ namespace AspNetCoreMvc.ProjectGenerators
             };
 
             var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
-            AddConnectionString();
             AddLogo();
             ModifyHomePage();
 
@@ -52,39 +54,10 @@ namespace AspNetCoreMvc.ProjectGenerators
         public async Task<string> UpdateMigrationScript()
         {
             var args = $"ef migrations add {DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s {_projectHelper.GetProjectFullPath(Name)} -p {_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}")}";
-            return await CommandHelper.RunDotnet(args);
-        }
-
-        private void AddConnectionString()
-        {
-            string line = null;
-            var appSettingFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "appsettings.json");
-            var updatedContent = new StringBuilder();
-            using (var reader = new StreamReader(appSettingFile))
+            return await CommandHelper.RunDotnet(args, new Dictionary<string, string>
             {
-                int lineNo = 0;
-                while ((line = reader.ReadLine()) != null)
-                {
-                    lineNo++;
-
-                    if (lineNo == 1)
-                    {
-                        updatedContent.AppendLine(line);
-                        updatedContent.AppendLine("  \"ConnectionStrings\": {");
-                        updatedContent.AppendLine($"    \"DefaultConnection\": \"{_connectionString}\"");
-                        updatedContent.AppendLine("  },");
-                    }
-                    else
-                    {
-                        updatedContent.AppendLine(line);
-                    }
-                }
-            }
-
-            using (var writer = new StreamWriter(appSettingFile))
-            {
-                writer.Write(updatedContent.ToString());
-            }
+                { "ConnectionStrings__DefaultConnection", _connectionString }
+            }, _logger);
         }
 
         private void AddLogo()

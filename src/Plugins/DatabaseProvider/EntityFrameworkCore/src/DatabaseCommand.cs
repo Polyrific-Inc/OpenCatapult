@@ -9,10 +9,12 @@ namespace EntityFrameworkCore
     public class DatabaseCommand : IDatabaseCommand
     {
         private readonly ILogger _logger;
+        private readonly string _connectionString;
 
-        public DatabaseCommand(ILogger logger)
+        public DatabaseCommand(ILogger logger, string connectionString)
         {
             _logger = logger;
+            _connectionString = connectionString;
         }
 
         public async Task<string> Update(string dataProject, string startupProject, string configuration = "Debug")
@@ -23,7 +25,10 @@ namespace EntityFrameworkCore
 
         private async Task<string> RunDotnet(string args)
         {
-            var result = await CommandHelper.Execute("dotnet", args, _logger);
+            var result = await CommandHelper.Execute("dotnet", args, new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "ConnectionStrings__DefaultConnection", _connectionString }
+            }, _logger);
 
             return result.error;
         }

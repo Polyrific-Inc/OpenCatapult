@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -33,8 +34,13 @@ namespace DotNetCore.Tests
                 MigrationLocation = "src",
                 WorkingLocation = workingLocation
             };
+            
+            var additionalConfig = new Dictionary<string, string>
+            {
+                { "ConnectionString", "Server=localhost;Database=generated.db;User ID=sa;Password=samprod;" }
+            };
 
-            var result = await provider.DeployDatabase("MyProject", taskConfig, null, _logger.Object);
+            var result = await provider.DeployDatabase("MyProject", taskConfig, additionalConfig, _logger.Object);
 
             Assert.Equal("", result.errorMessage);
             Assert.Equal("MyProject.Data", result.databaseLocation);

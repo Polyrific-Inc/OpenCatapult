@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
 using AspNetCoreMvc.ProjectGenerators;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc
@@ -19,17 +20,19 @@ namespace AspNetCoreMvc
         private readonly DataProjectGenerator _dataProjectGenerator;
         private readonly InfrastructureProjectGenerator _infrastructureProjectGenerator;
         private readonly MainProjectGenerator _mainProjectGenerator;
+        private readonly ILogger _logger;
         
-        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models, string connectionString)
+        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models, string connectionString, ILogger logger = null)
         {
             _projectName = projectName;
             _outputLocation = outputLocation;
             _models = models;
-            _projectHelper = new ProjectHelper(projectName, outputLocation);
-            _coreProjectGenerator = new CoreProjectGenerator(projectName, _projectHelper, models);
-            _dataProjectGenerator = new DataProjectGenerator(projectName, _projectHelper, models);
-            _infrastructureProjectGenerator = new InfrastructureProjectGenerator(projectName, _projectHelper, models);
-            _mainProjectGenerator = new MainProjectGenerator(projectName, _projectHelper, models, connectionString);
+            _projectHelper = new ProjectHelper(projectName, outputLocation, logger);
+            _coreProjectGenerator = new CoreProjectGenerator(projectName, _projectHelper, models, logger);
+            _dataProjectGenerator = new DataProjectGenerator(projectName, _projectHelper, models, logger);
+            _infrastructureProjectGenerator = new InfrastructureProjectGenerator(projectName, _projectHelper, models, logger);
+            _mainProjectGenerator = new MainProjectGenerator(projectName, _projectHelper, models, connectionString, logger);
+            _logger = logger;
         }
 
         public async Task<string> InitSolution()

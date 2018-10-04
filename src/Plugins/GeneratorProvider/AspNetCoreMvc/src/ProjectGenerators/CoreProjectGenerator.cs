@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
@@ -14,16 +15,18 @@ namespace AspNetCoreMvc.ProjectGenerators
         private string _projectName;
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
+        private readonly ILogger _logger;
 
         public const string CoreProject = "Core";
 
         private string Name => $"{_projectName}.{CoreProject}";
 
-        public CoreProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models)
+        public CoreProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, ILogger logger)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
+            _logger = logger;
         }
 
         public async Task<string> Initialize()

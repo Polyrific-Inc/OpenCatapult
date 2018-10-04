@@ -56,8 +56,12 @@ namespace EntityFrameworkCore
             if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration"))
                 buildConfiguration = additionalConfigs["Configuration"];
 
+            string connectionString = "";
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("ConnectionString"))
+                connectionString = additionalConfigs["ConnectionString"];
+
             if (_databaseCommand == null)
-                _databaseCommand = new DatabaseCommand(logger);
+                _databaseCommand = new DatabaseCommand(logger, connectionString);
 
             var error = await _databaseCommand.Update(dataProjectPath, startupProjectPath, buildConfiguration);
             if (!string.IsNullOrEmpty(error))
