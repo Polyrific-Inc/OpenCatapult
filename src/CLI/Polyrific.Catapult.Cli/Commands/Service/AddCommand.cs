@@ -104,5 +104,32 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             return message;
         }
+
+        protected override string GetHelpFooter()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("Types of the external service:");
+
+            try
+            {
+                var serviceTypes = _externalServiceTypeService.GetExternalServiceTypes(true).Result;
+                foreach (var serviceType in serviceTypes)
+                {
+                    sb.AppendLine($"  - {serviceType.Name}");
+                    if (serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0)
+                    {
+                        sb.AppendLine("    Properties:");
+                        foreach (var property in serviceType.ExternalServiceProperties)
+                            sb.AppendLine($"      - {property.Name} {(property.IsRequired ? "(required)" : "")}");
+                    }
+                }
+            }
+            catch
+            {
+                sb.AppendLine("Failed retrieving external service types. Please try to login into application");
+            }
+
+            return sb.ToString();
+        }
     }
 }
