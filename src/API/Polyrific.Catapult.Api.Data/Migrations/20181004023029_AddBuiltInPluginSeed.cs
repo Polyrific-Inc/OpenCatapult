@@ -30,11 +30,12 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     { 3, "c48cafcc-b3e9-4375-a2c2-f3040438225a", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Configuration", "Configuration", 3, "string", null },
                     { 4, "c48cafcc-b3e9-4375-a2c2-f3040438225b", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Startup Project Name", "StartupProjectName", 5, "string", null },
                     { 5, "c48cafcc-b3e9-4375-a2c2-f3040438225c", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Database Project Name", "DatabaseProjectName", 5, "string", null },
-                    { 6, "c48cafcc-b3e9-4375-a2c2-f3040438225d", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Configuration", "Configuration", 5, "string", null },
-                    { 7, "c48cafcc-b3e9-4375-a2c2-f3040438225e", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "Subscription Id", "SubscriptionId", 6, "string", null },
-                    { 8, "c48cafcc-b3e9-4375-a2c2-f3040438225f", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "Resource Group", "ResourceGroupName", 6, "string", null },
-                    { 9, "c48cafcc-b3e9-4375-a2c2-f30404382260", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "App Service", "AppServiceName", 6, "string", null },
-                    { 10, "c48cafcc-b3e9-4375-a2c2-f30404382261", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Deployment Slot", "DeploymentSlot", 6, "string", null }
+                    { 6, "c48cafcc-b3e9-4375-a2c2-f30404382262", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, true, "Connection String", "ConnectionString", 5, "string", null },
+                    { 7, "c48cafcc-b3e9-4375-a2c2-f3040438225d", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Configuration", "Configuration", 5, "string", null },
+                    { 8, "c48cafcc-b3e9-4375-a2c2-f3040438225e", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "Subscription Id", "SubscriptionId", 6, "string", null },
+                    { 9, "c48cafcc-b3e9-4375-a2c2-f3040438225f", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "Resource Group", "ResourceGroupName", 6, "string", null },
+                    { 10, "c48cafcc-b3e9-4375-a2c2-f30404382260", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), true, false, "App Service", "AppServiceName", 6, "string", null },
+                    { 11, "c48cafcc-b3e9-4375-a2c2-f30404382261", new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), false, false, "Deployment Slot", "DeploymentSlot", 6, "string", null }
                 });
         }
 
@@ -68,27 +69,32 @@ namespace Polyrific.Catapult.Api.Data.Migrations
             migrationBuilder.DeleteData(
                 table: "PluginAdditionalConfigs",
                 keyColumns: new[] { "Id", "ConcurrencyStamp" },
-                keyValues: new object[] { 6, "c48cafcc-b3e9-4375-a2c2-f3040438225d" });
+                keyValues: new object[] { 6, "c48cafcc-b3e9-4375-a2c2-f30404382262" });
 
             migrationBuilder.DeleteData(
                 table: "PluginAdditionalConfigs",
                 keyColumns: new[] { "Id", "ConcurrencyStamp" },
-                keyValues: new object[] { 7, "c48cafcc-b3e9-4375-a2c2-f3040438225e" });
+                keyValues: new object[] { 7, "c48cafcc-b3e9-4375-a2c2-f3040438225d" });
 
             migrationBuilder.DeleteData(
                 table: "PluginAdditionalConfigs",
                 keyColumns: new[] { "Id", "ConcurrencyStamp" },
-                keyValues: new object[] { 8, "c48cafcc-b3e9-4375-a2c2-f3040438225f" });
+                keyValues: new object[] { 8, "c48cafcc-b3e9-4375-a2c2-f3040438225e" });
 
             migrationBuilder.DeleteData(
                 table: "PluginAdditionalConfigs",
                 keyColumns: new[] { "Id", "ConcurrencyStamp" },
-                keyValues: new object[] { 9, "c48cafcc-b3e9-4375-a2c2-f30404382260" });
+                keyValues: new object[] { 9, "c48cafcc-b3e9-4375-a2c2-f3040438225f" });
 
             migrationBuilder.DeleteData(
                 table: "PluginAdditionalConfigs",
                 keyColumns: new[] { "Id", "ConcurrencyStamp" },
-                keyValues: new object[] { 10, "c48cafcc-b3e9-4375-a2c2-f30404382261" });
+                keyValues: new object[] { 10, "c48cafcc-b3e9-4375-a2c2-f30404382260" });
+
+            migrationBuilder.DeleteData(
+                table: "PluginAdditionalConfigs",
+                keyColumns: new[] { "Id", "ConcurrencyStamp" },
+                keyValues: new object[] { 11, "c48cafcc-b3e9-4375-a2c2-f30404382261" });
 
             migrationBuilder.DeleteData(
                 table: "Plugins",
