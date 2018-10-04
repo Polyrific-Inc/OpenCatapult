@@ -1,0 +1,33 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+pull_requests:
+  do_not_increment_build_number: true
+branches:
+  only:
+    - master
+only_commits:
+  files:
+    - appveyor/plugin-azureappservice.appveyor.yml
+    - src/Plugins/HostingProvider/AzureAppService/
+    - src/Plugins/Polyrific.Catapult.Plugins.Abstraction/
+configuration: Release
+dotnet_csproj:
+  patch: true
+  file: '**\AzureAppService.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+before_build:
+  - cmd: dotnet --version
+  - cmd: dotnet restore ./src/Plugins/HostingProvider/AzureAppService/src/AzureAppService.csproj
+build_script:
+  - cmd: dotnet publish ./src/Plugins/HostingProvider/AzureAppService/src/AzureAppService.csproj -o ../publish
+test_script:
+  - cmd: dotnet test ./src/Plugins/HostingProvider/AzureAppService/tests/AzureAppService.Tests.csproj
+artifacts:
+  - path: 'src/Plugins/HostingProvider/AzureAppService/publish/'
+    name: HostingProvider-AzureAppService
+    type: zip
+deploy: off
