@@ -26,7 +26,9 @@ namespace Polyrific.Catapult.Shared.Common.Notification
         }
 
         public const string RegistrationCompleted = "RegistrationCompleted";
-        
+
+        public const string ResetPassword = "ResetPassword";
+
         public string[] GetNotificationProviders(string messageType)
         {
             return GetConfigArrayValue(messageType, new string[0]);
@@ -79,7 +81,9 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             var configs = new Dictionary<string, string>
             {
                 {RegistrationCompleted, $"{NotificationProvider.SmtpEmail}"},
-                {$"{RegistrationCompleted}Subject", "Catapult - Please confirm your account"}
+                {ResetPassword, $"{NotificationProvider.SmtpEmail}"},
+                {$"{RegistrationCompleted}Subject", "Catapult - Please confirm your account"},
+                {$"{ResetPassword}Subject", "Catapult - Reset password token"}
             };
 
             return configs;

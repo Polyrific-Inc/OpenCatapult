@@ -6,15 +6,15 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
 
-namespace Polyrific.Catapult.Cli.Commands.Account
+namespace Polyrific.Catapult.Cli.Commands.Account.Password
 {
     [Command(Description = "Update user password")]
-    public class UpdatePasswordCommand : BaseCommand
+    public class UpdateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
         private readonly IConsoleReader _consoleReader;
 
-        public UpdatePasswordCommand(IConsole console, ILogger<UpdatePasswordCommand> logger, IAccountService accountService, IConsoleReader consoleReader) : base(console, logger)
+        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IAccountService accountService, IConsoleReader consoleReader) : base(console, logger)
         {
             _accountService = accountService;
             _consoleReader = consoleReader;

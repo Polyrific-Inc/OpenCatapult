@@ -8,14 +8,22 @@
 
   <ItemGroup>
     <None Remove="Notification\Template\RegistrationCompleted.html" />
+    <None Remove="Notification\Template\ResetPassword.html" />
     <None Remove="Notification\Template\SmtpEmail\RegistrationCompleted.html" />
+    <None Remove="Notification\Template\SmtpEmail\ResetPassword.html" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Notification\Template\RegistrationCompleted.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Notification\Template\ResetPassword.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Notification\Template\SmtpEmail\RegistrationCompleted.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Notification\Template\SmtpEmail\ResetPassword.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

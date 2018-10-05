@@ -277,11 +277,21 @@ namespace Polyrific.Catapult.Api.Controllers
         public async Task<IActionResult> ResetPassword(int userId)
         {
             var token = await _userService.GetResetPasswordToken(userId);
+            var user = await _userService.GetUserById(userId);
 
-            return Ok(new ResetPasswordTokenDto
+            _notificationProvider.SendNotification(new SendNotificationRequest
             {
-                Token = token
-            });
+                MessageType = NotificationConfig.ResetPassword,
+                Emails = new List<string>
+                        {
+                            user.Email
+                        }
+            }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ResetPasswordToken, token}
+                    });
+
+            return Ok();
         }
 
         /// <summary>

@@ -5,5 +5,6 @@ namespace Polyrific.Catapult.Shared.Common.Notification
     public static class MessageParameter
     {
         public const string ConfirmUrl = "ConfirmUrl";
+        public const string ResetPasswordToken = "ResetPasswordToken";
     }
 }

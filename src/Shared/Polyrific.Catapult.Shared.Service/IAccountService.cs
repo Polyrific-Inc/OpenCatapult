@@ -101,5 +101,20 @@ namespace Polyrific.Catapult.Shared.Service
         /// <param name="dto">DTO containing required details</param>
         /// <returns></returns>
         Task UpdatePassword(int userId, UpdatePasswordDto dto);
+
+        /// <summary>
+        /// Request reset password token to be sent to user
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <returns></returns>
+        Task RequestResetPassword(int userId);
+
+        /// <summary>
+        /// Reset the user password
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="dto">DTO containing required details</param>
+        /// <returns></returns>
+        Task ResetPassword(int userId, ResetPasswordDto dto);
     }
 }

@@ -103,5 +103,19 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             await Api.Post(path, dto);
         }
+
+        public async Task RequestResetPassword(int userId)
+        {
+            var path = $"account/{userId}/resetpassword";
+
+            await Api.Get<string>(path);
+        }
+
+        public async Task ResetPassword(int userId, ResetPasswordDto dto)
+        {
+            var path = $"account/{userId}/resetpassword";
+
+            await Api.Post<object>(path, dto);
+        }
     }
 }

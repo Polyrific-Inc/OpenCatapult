@@ -123,10 +123,10 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
-        /// Get the list of catapult engines by name
+        /// Get a catapult engines by name
         /// </summary>
         /// <param name="engineName">Name of the engine</param>
-        /// <returns>List of catapult engines</returns>
+        /// <returns>Catapult engine object</returns>
         [HttpGet("name/{engineName}")]
         public async Task<IActionResult> GetCatapultEngineByName(string engineName)
         {
