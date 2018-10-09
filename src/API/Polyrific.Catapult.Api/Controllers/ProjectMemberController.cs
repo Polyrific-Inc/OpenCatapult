@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <returns></returns>
         [HttpPost("Project/{projectId}/member", Name = "CreateProjectMember")]
         [ProducesResponseType(201)]
-        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
         public async Task<IActionResult> CreateProjectMember(int projectId, NewProjectMemberDto newProjectMember)
         {
             try
@@ -132,7 +132,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="projectMember">Update project member request body</param>
         /// <returns></returns>
         [HttpPut("Project/{projectId}/member/{memberId}")]
-        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
         public async Task<IActionResult> UpdateProjectMember(int projectId, int memberId, UpdateProjectMemberDto projectMember)
         {
             if (memberId != projectMember.Id)
@@ -150,7 +150,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="memberId">Id of the project member</param>
         /// <returns></returns>
         [HttpDelete("Project/{projectId}/member/{memberId}")]
-        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
         public async Task<IActionResult> RemoveProjectMember(int projectId, int memberId)
         {
             var member = await _projectMemberService.GetProjectMemberById(memberId);
