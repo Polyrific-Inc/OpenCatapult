@@ -26,6 +26,8 @@ namespace AspNetCoreMvc
         {
             additionalConfigs.TryGetValue("ConnectionString", out var connectionString);
 
+            config.OutputLocation = config.OutputLocation ?? config.WorkingLocation;
+
             var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString);
 
             await generator.InitSolution();

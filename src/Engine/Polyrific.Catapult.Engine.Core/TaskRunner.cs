@@ -20,13 +20,14 @@ namespace Polyrific.Catapult.Engine.Core
     {
         private readonly JobTaskService _jobTaskService;
         private readonly ILogger _logger;
+        private CompositionContainer _compositionContainer;
 
         public TaskRunner(JobTaskService jobTaskService, ILogger<TaskRunner> logger)
         {
             _jobTaskService = jobTaskService;
             _logger = logger;
         }
-
+        
         public async Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, string queueCode, List<JobTaskDefinitionDto> jobTasks, string pluginsLocation, string workingLocation)
         {
             var orderedJobTasks = jobTasks.OrderBy(t => t.Sequence).ToList();
@@ -35,7 +36,7 @@ namespace Polyrific.Catapult.Engine.Core
 
             var results = orderedJobTasks.Select(t => (t.Id, new TaskRunnerResult())).ToDictionary(r => r.Item1, r => r.Item2);
 
-            RefreshPlugins(pluginsLocation, orderedJobTasks.Select(t => t.Type).ToArray());
+            _compositionContainer = GetPluginsCompositionContainer(pluginsLocation, orderedJobTasks.Select(t => t.Type).ToArray());
 
             var outputValues = new Dictionary<string, string>();
             foreach (var jobTask in orderedJobTasks)
@@ -130,11 +131,12 @@ namespace Polyrific.Catapult.Engine.Core
             task.JobQueueCode = queueCode;
             task.SetConfig(JsonConvert.SerializeObject(jobTask.Configs), workingLocation);
             task.AdditionalConfigs = jobTask.AdditionalConfigs;
+            _compositionContainer.ComposeParts(task);
             
             return task;
         }
 
-        private void RefreshPlugins(string pluginsLocation, string[] jobTaskTypes)
+        private CompositionContainer GetPluginsCompositionContainer(string pluginsLocation, string[] jobTaskTypes)
         {
             var catalog = new AggregateCatalog();
 
@@ -184,8 +186,7 @@ namespace Polyrific.Catapult.Engine.Core
                 }
             }
 
-            var container = new CompositionContainer(catalog);
-            container.ComposeParts(this);
+            return new CompositionContainer(catalog);
         }
     }
 }

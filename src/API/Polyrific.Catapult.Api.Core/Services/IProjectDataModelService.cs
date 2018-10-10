@@ -40,9 +40,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Get list of project data models
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="includeProperties">Indicate whether the result should include model's properties</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of project data models</returns>
-        Task<List<ProjectDataModel>> GetProjectDataModels(int projectId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<ProjectDataModel>> GetProjectDataModels(int projectId, bool includeProperties, CancellationToken cancellationToken = default(CancellationToken));
         
         /// <summary>
         /// Get a project data model by id

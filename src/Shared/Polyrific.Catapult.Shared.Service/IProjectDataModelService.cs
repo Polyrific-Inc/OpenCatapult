@@ -12,8 +12,9 @@ namespace Polyrific.Catapult.Shared.Service
         /// Get list of project data models
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="includeProperties">Indicate whether the result should include model's properties. Default to false</param>
         /// <returns>List of Project data models</returns>
-        Task<List<ProjectDataModelDto>> GetProjectDataModels(int projectId);
+        Task<List<ProjectDataModelDto>> GetProjectDataModels(int projectId, bool includeProperties = false);
 
         /// <summary>
         /// Create a project data model

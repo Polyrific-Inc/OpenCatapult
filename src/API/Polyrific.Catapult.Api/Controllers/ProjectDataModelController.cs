@@ -29,12 +29,13 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Get project data models for a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="includeProperties">Indicate whether the result should include model's properties. Default to false</param>
         /// <returns>List of project data models</returns>
         [HttpGet("Project/{projectId}/model", Name = "GetProjectDataModels")]
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
-        public async Task<IActionResult> GetProjectDataModels(int projectId)
+        public async Task<IActionResult> GetProjectDataModels(int projectId, bool includeProperties = false)
         {
-            var dataModels = await _projectDataModelService.GetProjectDataModels(projectId);
+            var dataModels = await _projectDataModelService.GetProjectDataModels(projectId, includeProperties);
             var results = _mapper.Map<List<ProjectDataModelDto>>(dataModels);
 
             return Ok(results);

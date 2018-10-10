@@ -17,5 +17,10 @@ namespace AspNetCoreMvc.Helpers
         {
             return text.Camelize();
         }
+
+        public static string Pascalize(string text)
+        {
+            return text.Pascalize();
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
 using AspNetCoreMvc.ProjectGenerators;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc
@@ -24,14 +26,14 @@ namespace AspNetCoreMvc
         
         public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models, string connectionString, ILogger logger = null)
         {
-            _projectName = projectName;
+            _projectName = TextHelper.Pascalize(projectName.Replace("-", "_"));
             _outputLocation = outputLocation;
-            _models = models;
-            _projectHelper = new ProjectHelper(projectName, outputLocation, logger);
-            _coreProjectGenerator = new CoreProjectGenerator(projectName, _projectHelper, models, logger);
-            _dataProjectGenerator = new DataProjectGenerator(projectName, _projectHelper, models, logger);
-            _infrastructureProjectGenerator = new InfrastructureProjectGenerator(projectName, _projectHelper, models, logger);
-            _mainProjectGenerator = new MainProjectGenerator(projectName, _projectHelper, models, connectionString, logger);
+            _models = NormalizeModels(models);
+            _projectHelper = new ProjectHelper(_projectName, outputLocation, logger);
+            _coreProjectGenerator = new CoreProjectGenerator(_projectName, _projectHelper, _models, logger);
+            _dataProjectGenerator = new DataProjectGenerator(_projectName, _projectHelper, _models, logger);
+            _infrastructureProjectGenerator = new InfrastructureProjectGenerator(_projectName, _projectHelper, _models, logger);
+            _mainProjectGenerator = new MainProjectGenerator(_projectName, _projectHelper, _models, connectionString, logger);
             _logger = logger;
         }
 
@@ -110,6 +112,30 @@ namespace AspNetCoreMvc
         public Task<string> UpdateMigrationScript()
         {
             return _mainProjectGenerator.UpdateMigrationScript();
+        }
+
+        public List<ProjectDataModelDto> NormalizeModels(List<ProjectDataModelDto> models)
+        {
+            var baseProperties = new string[] { "id", "created", "updated", "concurrencystamp" };
+            foreach (var model in models)
+            {
+                model.Properties = model.Properties.Where(p => !baseProperties.Contains(p.Name.ToLower())).ToList();
+
+                foreach (var property in model.Properties)
+                {
+                    switch (property.DataType)
+                    {
+                        case PropertyDataType.DateTime:
+                            property.DataType = "DateTime";
+                            break;
+                        case PropertyDataType.DbGeography:
+                            property.DataType = "DbGeography";
+                            break;
+                    }
+                }
+            }
+
+            return models;
         }
     }
 }

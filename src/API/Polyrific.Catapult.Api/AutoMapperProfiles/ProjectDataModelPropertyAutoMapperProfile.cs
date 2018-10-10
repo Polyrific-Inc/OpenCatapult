@@ -10,7 +10,8 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
     {
         public ProjectDataModelPropertyAutoMapperProfile()
         {
-            CreateMap<ProjectDataModelProperty, ProjectDataModelPropertyDto>();
+            CreateMap<ProjectDataModelProperty, ProjectDataModelPropertyDto>()
+                .ForMember(dest => dest.RelatedProjectDataModelName, opt => opt.MapFrom(src => src.RelatedProjectDataModel.Name));
             CreateMap<UpdateProjectDataModelPropertyDto, ProjectDataModelProperty>();
             CreateMap<CreateProjectDataModelPropertyDto, ProjectDataModelPropertyDto>();
             CreateMap<CreateProjectDataModelPropertyDto, ProjectDataModelProperty>();

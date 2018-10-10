@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Api.Identity
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ProjectAccessRequirement requirement)
         {
-            if (context.User.IsInRole(UserRole.Administrator))
+            if (context.User.IsInRole(UserRole.Administrator) || context.User.IsInRole(UserRole.Engine))
             {
                 context.Succeed(requirement);
                 return Task.CompletedTask;

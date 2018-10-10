@@ -14,7 +14,7 @@ namespace Polyrific.Catapult.Shared.Common
                 return new string[0];
 
             var subDirectories = Directory.GetDirectories(path);
-            return subDirectories.Select(sd => sd.Substring(sd.LastIndexOf("\\", StringComparison.Ordinal))).ToArray();
+            return subDirectories;
         }
     }
 }

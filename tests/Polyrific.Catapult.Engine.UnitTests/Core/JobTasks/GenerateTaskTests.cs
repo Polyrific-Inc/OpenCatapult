@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 .ReturnsAsync((int id) => new ProjectDto {Id = id, Name = $"Project {id}"});
 
             _dataModelService = new Mock<IProjectDataModelService>();
-            _dataModelService.Setup(s => s.GetProjectDataModels(It.IsAny<int>())).ReturnsAsync(dataModels);
+            _dataModelService.Setup(s => s.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(dataModels);
 
             _logger = new Mock<ILogger<GenerateTask>>();
         }

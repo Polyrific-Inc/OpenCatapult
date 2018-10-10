@@ -143,11 +143,15 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _dataModelPropertyRepository.GetSingleBySpec(new ProjectDataModelPropertyFilterSpecification(propertyName, dataModelId), cancellationToken);
         }
 
-        public async Task<List<ProjectDataModel>> GetProjectDataModels(int projectId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<ProjectDataModel>> GetProjectDataModels(int projectId, bool includeProperties, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var projectMemberByProjectSpec = new ProjectDataModelFilterSpecification(projectId);
+
+            if (includeProperties)
+                projectMemberByProjectSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
+
             var projectMembers = await _dataModelRepository.GetBySpec(projectMemberByProjectSpec, cancellationToken);
 
             return projectMembers.ToList();

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
@@ -21,6 +22,17 @@ namespace AspNetCoreMvc.ProjectGenerators
         private readonly ILogger _logger;
 
         private string Name => $"{_projectName}";
+        
+        private static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
 
         public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string connectionString, ILogger logger)
         {
@@ -62,7 +74,7 @@ namespace AspNetCoreMvc.ProjectGenerators
 
         private void AddLogo()
         {
-            var logoFile = Path.Combine(AppContext.BaseDirectory, "Resources/Images/logo.png");
+            var logoFile = Path.Combine(AssemblyDirectory, "Resources/Images/logo.png");
             _projectHelper.CopyFileToProject(Name, logoFile, "wwwroot/images/logo.png");
         }
 
@@ -472,7 +484,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             var sb = new StringBuilder();
             foreach (var property in model.Properties)
             {
-                var propertyName = string.IsNullOrEmpty(property.RelatedProjectDataModelName) ? property.Name : $"{property.Name}Id";
+                var propertyName = property.Name;
+                if (property.RelationalType == PropertyRelationalType.OneToOne)
+                    propertyName += "Id";
+                else if (property.RelationalType == PropertyRelationalType.OneToMany)
+                    propertyName += "Ids";
+
                 sb.AppendLine("    <div class=\"form-group row\">");
                 sb.AppendLine($"        @Html.LabelFor(model => model.{propertyName}, htmlAttributes: new {{ @class = \"col-form-label col-md-2\" }})");
                 sb.AppendLine("        <div class=\"col-md-10\">");

@@ -76,9 +76,12 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<ProjectDataModelPropertyDto>(path);
         }
 
-        public async Task<List<ProjectDataModelDto>> GetProjectDataModels(int projectId)
+        public async Task<List<ProjectDataModelDto>> GetProjectDataModels(int projectId, bool includeProperties = false)
         {
-            var path = $"project/{projectId}/model/";
+            var path = $"project/{projectId}/model";
+
+            if (includeProperties)
+                path += "?includeProperties=true";
 
             return await Api.Get<List<ProjectDataModelDto>>(path);
         }

@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         public override string Type => JobTaskDefinitionType.Generate;
 
         private List<ProjectDataModelDto> _dataModels;
-        protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId).Result);
+        protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId, true).Result);
 
         [ImportMany(typeof(ICodeGeneratorProvider))]
         public IEnumerable<ICodeGeneratorProvider> GeneratorProviders;
