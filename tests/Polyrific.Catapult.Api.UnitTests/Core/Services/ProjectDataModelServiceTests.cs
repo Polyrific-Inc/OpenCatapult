@@ -167,7 +167,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetProjectDataModels_ReturnItems()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
-            var dataModels = await projectDataModelService.GetProjectDataModels(1);
+            var dataModels = await projectDataModelService.GetProjectDataModels(1, false);
 
             Assert.NotEmpty(dataModels);
         }
@@ -176,7 +176,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetProjectDataModels_ReturnEmpty()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
-            var dataModels = await projectDataModelService.GetProjectDataModels(2);
+            var dataModels = await projectDataModelService.GetProjectDataModels(2, false);
 
             Assert.Empty(dataModels);
         }
