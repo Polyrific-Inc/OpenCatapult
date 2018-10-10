@@ -59,7 +59,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 projectModels.Add(newProjectDataModel);
                 return newProjectDataModel;
             });
-            _projectModelService.Setup(p => p.GetProjectDataModels(It.IsAny<int>())).ReturnsAsync(projectModels);
+            _projectModelService.Setup(p => p.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(projectModels);
             _projectModelService.Setup(p => p.GetProjectDataModelByName(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync((int projectId, string name) =>
                 projectModels.FirstOrDefault(p => p.ProjectId == projectId && p.Name == name));
         }
