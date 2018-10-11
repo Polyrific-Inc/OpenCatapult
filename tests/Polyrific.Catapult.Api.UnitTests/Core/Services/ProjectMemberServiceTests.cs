@@ -51,6 +51,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     r.GetSingleBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(d => d.ProjectId == spec.ProjectId && d.UserId == spec.UserId));
+            _projectMemberRepository.Setup(r =>
+                    r.CountBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
+                    _data.Count(d => d.ProjectId == spec.ProjectId && d.UserId == spec.UserId));
             _projectMemberRepository.Setup(s =>
                     s.GetBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
@@ -188,9 +192,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void RemoveProjectMember_ValidItem()
         {
             var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
-            await projectMemberService.RemoveProjectMember(1, 1);
+            await projectMemberService.RemoveProjectMember(1, 1, 1);
 
             Assert.Empty(_data);
+        }
+
+        [Fact]
+        public void RemoveProjectMember_RemoveProjectOwnerException()
+        {
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var exception = Record.ExceptionAsync(() => projectMemberService.RemoveProjectMember(1, 1, 2));
+
+            Assert.IsType<RemoveProjectOwnerException>(exception?.Result);
         }
 
         [Fact]

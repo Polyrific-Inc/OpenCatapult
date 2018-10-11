@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,11 +17,13 @@ namespace Polyrific.Catapult.Api.Controllers
     public class ProjectMemberController : ControllerBase
     {
         private readonly IProjectMemberService _projectMemberService;
+        private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public ProjectMemberController(IProjectMemberService projectMemberService, IMapper mapper)
+        public ProjectMemberController(IProjectMemberService projectMemberService, IUserService userService, IMapper mapper)
         {
             _projectMemberService = projectMemberService;
+            _userService = userService;
             _mapper = mapper;
         }
 
@@ -153,14 +156,26 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> RemoveProjectMember(int projectId, int memberId)
         {
-            var member = await _projectMemberService.GetProjectMemberById(memberId);
-
-            if (member != null)
+            try
             {
-                await _projectMemberService.RemoveProjectMember(projectId, member.UserId);
-            }            
+                var member = await _projectMemberService.GetProjectMemberById(memberId);
 
-            return NoContent();
+                if (member != null)
+                {
+                    int currentUserId = 0;
+
+                    if (!User.IsInRole(UserRole.Administrator))
+                        currentUserId = await _userService.GetUserId(User);
+
+                    await _projectMemberService.RemoveProjectMember(projectId, member.UserId, currentUserId);
+                }
+
+                return NoContent();
+            }
+            catch (RemoveProjectOwnerException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

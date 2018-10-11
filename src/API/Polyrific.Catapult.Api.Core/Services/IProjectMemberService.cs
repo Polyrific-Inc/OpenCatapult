@@ -55,9 +55,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="projectId">Id of the project</param>
         /// <param name="userId">Id of the user</param>
+        /// <param name="currentUserId">Id of the current user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task RemoveProjectMember(int projectId, int userId, CancellationToken cancellationToken = default(CancellationToken));
+        Task RemoveProjectMember(int projectId, int userId, int currentUserId = 0, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get project member by id

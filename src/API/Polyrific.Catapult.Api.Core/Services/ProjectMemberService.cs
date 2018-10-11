@@ -4,6 +4,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -106,12 +107,20 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _projectMemberRepository.GetSingleBySpec(projectMemberByProjectSpec, cancellationToken);
         }
 
-        public async Task RemoveProjectMember(int projectId, int userId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task RemoveProjectMember(int projectId, int userId, int currentUserId = 0, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var projectMemberByProjectSpec = new ProjectMemberFilterSpecification(projectId, userId);
             var projectMember = await _projectMemberRepository.GetSingleBySpec(projectMemberByProjectSpec, cancellationToken);
+
+            if (projectMember.ProjectMemberRoleId == MemberRole.OwnerId && currentUserId > 0)
+            {
+                var currentUserOwnerSpec = new ProjectMemberFilterSpecification(projectId, currentUserId, null, MemberRole.OwnerId);
+                if (await _projectMemberRepository.CountBySpec(currentUserOwnerSpec) == 0)
+                    throw new RemoveProjectOwnerException(currentUserId);
+            }
+
             var projectMemberId = projectMember?.Id;
 
             if (projectMemberId > 0)
