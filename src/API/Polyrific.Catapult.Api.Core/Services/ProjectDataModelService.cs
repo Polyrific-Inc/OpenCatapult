@@ -147,14 +147,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var projectMemberByProjectSpec = new ProjectDataModelFilterSpecification(projectId);
+            var dataModelByProjectSpec = new ProjectDataModelFilterSpecification(projectId);
 
             if (includeProperties)
-                projectMemberByProjectSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
+                dataModelByProjectSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
 
-            var projectMembers = await _dataModelRepository.GetBySpec(projectMemberByProjectSpec, cancellationToken);
+            var dataModels = await _dataModelRepository.GetBySpec(dataModelByProjectSpec, cancellationToken);
 
-            return projectMembers.ToList();
+            return dataModels.ToList();
         }
 
         public async Task UpdateDataModel(ProjectDataModel updatedDataModel, CancellationToken cancellationToken = default(CancellationToken))

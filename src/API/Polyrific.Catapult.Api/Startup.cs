@@ -91,6 +91,7 @@ namespace Polyrific.Catapult.Api
             });
             
             services.AddSingleton<IAuthorizationHandler, ProjectAccessHandler>();
+            services.AddSingleton<IAuthorizationHandler, ProjectEngineAccessHandler>();
 
             services.AddSignalR();
 

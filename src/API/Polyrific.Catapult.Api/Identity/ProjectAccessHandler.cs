@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Api.Identity
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, ProjectAccessRequirement requirement)
         {
-            if (context.User.IsInRole(UserRole.Administrator) || context.User.IsInRole(UserRole.Engine))
+            if (context.User.IsInRole(UserRole.Administrator))
             {
                 context.Succeed(requirement);
                 return Task.CompletedTask;
@@ -26,7 +26,6 @@ namespace Polyrific.Catapult.Api.Identity
                 
             var expectedProjectId = Convert.ToInt32(mvcContext.RouteData.Values["projectId"]);
             var expectedProjectName = mvcContext.RouteData.Values["projectName"]?.ToString();
-            var expectedMemberRole = requirement.MemberRole;
 
             if (!context.User.HasClaim(c => c.Type == CustomClaimTypes.Projects))
                 return Task.CompletedTask;
@@ -48,41 +47,16 @@ namespace Polyrific.Catapult.Api.Identity
             }
             else
             {
-                projectClaim = userProjects.FirstOrDefault(up => string.IsNullOrEmpty(expectedMemberRole) || IsAllowedByMemberRole(up.MemberRole, expectedMemberRole));
+                projectClaim = userProjects.FirstOrDefault(up => requirement.IsAllowedByMemberRole(up.MemberRole));
             }
 
             if (projectClaim != null)
             {
-                if (string.IsNullOrEmpty(expectedMemberRole) || IsAllowedByMemberRole(projectClaim.MemberRole, expectedMemberRole))
+                if (requirement.IsAllowedByMemberRole(projectClaim.MemberRole))
                     context.Succeed(requirement);
             }
 
             return Task.CompletedTask;
-        }
-
-        private bool IsAllowedByMemberRole(string userRole, string expectedRole)
-        {
-            var userRoleRank = GetMemberRoleRank(userRole);
-            var expectedRoleRank = GetMemberRoleRank(expectedRole);
-
-            return userRoleRank > 0 && userRoleRank <= expectedRoleRank;
-        }
-
-        private int GetMemberRoleRank(string member)
-        {
-            switch (member)
-            {
-                case MemberRole.Owner:
-                    return 1;
-                case MemberRole.Maintainer:
-                    return 2;
-                case MemberRole.Contributor:
-                    return 3;
-                case MemberRole.Member:
-                    return 4;
-                default:
-                    return 0;
-            }
         }
     }
 }
