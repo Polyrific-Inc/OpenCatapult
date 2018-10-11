@@ -18,9 +18,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Instantiate <see cref="DeployTask"/>
         /// </summary>
         /// <param name="projectService">Project service</param>
+        /// <param name="externalServiceService">External service service</param>
         /// <param name="logger">Logger</param>
-        public DeployTask(IProjectService projectService, ILogger<DeployTask> logger) 
-            : base(projectService, logger)
+        public DeployTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger<DeployTask> logger) 
+            : base(projectService, externalServiceService, logger)
         {
         }
 

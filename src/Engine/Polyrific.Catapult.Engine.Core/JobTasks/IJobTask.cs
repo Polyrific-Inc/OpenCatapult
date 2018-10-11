@@ -40,9 +40,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Set job task configuration
         /// </summary>
-        /// <param name="configString">Serialized configuration</param>
+        /// <param name="configs">Configurations</param>
         /// <param name="workingLocation">Location of the working directory</param>
-        void SetConfig(string configString, string workingLocation);
+        void SetConfig(Dictionary<string, string> configs, string workingLocation);
 
         /// <summary>
         /// Run the main task

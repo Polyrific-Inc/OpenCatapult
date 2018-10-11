@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Shared.Common;
@@ -129,7 +128,7 @@ namespace Polyrific.Catapult.Engine.Core
             task.JobTaskId = jobTask.Id;
             task.Provider = jobTask.Provider;
             task.JobQueueCode = queueCode;
-            task.SetConfig(JsonConvert.SerializeObject(jobTask.Configs), workingLocation);
+            task.SetConfig(jobTask.Configs, workingLocation);
             task.AdditionalConfigs = jobTask.AdditionalConfigs;
             _compositionContainer.ComposeParts(task);
             

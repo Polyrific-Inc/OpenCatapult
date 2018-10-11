@@ -25,6 +25,7 @@ namespace Polyrific.Catapult.Engine.Infrastructure
             services.AddTransient<IProjectMemberService, ProjectMemberService>();
             services.AddTransient<IProjectService, ProjectService>();
             services.AddTransient<ITokenService, TokenService>();
+            services.AddTransient<IExternalServiceService, ExternalServiceService>();
         }
     }
 }

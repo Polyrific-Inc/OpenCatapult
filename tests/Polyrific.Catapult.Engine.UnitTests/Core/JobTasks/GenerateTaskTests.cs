@@ -18,6 +18,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     public class GenerateTaskTests
     {
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IProjectDataModelService> _dataModelService;
         private readonly Mock<ILogger<GenerateTask>> _logger;
 
@@ -29,6 +30,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             };
 
             _projectService = new Mock<IProjectService>();
+            _externalServiceService = new Mock<IExternalServiceService>();
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto {Id = id, Name = $"Project {id}"});
 
@@ -41,16 +43,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new GenerateTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
+
 
             var providers = new List<ICodeGeneratorProvider>
             {
                 new FakeCodeGeneratorProvider("good-result", null, "")
             };
 
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
-            task.SetConfig(configString, "working");
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -62,16 +64,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new GenerateTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
+
 
             var providers = new List<ICodeGeneratorProvider>
             {
                 new FakeCodeGeneratorProvider("", null, "error-message")
             };
 
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
-            task.SetConfig(configString, "working");
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -83,11 +85,11 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new GenerateTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
 
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _logger.Object);
-            task.SetConfig(configString, "working");
+
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object);
+            task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());

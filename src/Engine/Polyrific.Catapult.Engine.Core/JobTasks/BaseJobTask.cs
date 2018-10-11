@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
@@ -13,17 +14,22 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public abstract class BaseJobTask<TTaskConfig> where TTaskConfig : BaseJobTaskConfig, new()
     {
         private readonly IProjectService _projectService;
+        private readonly IExternalServiceService _externalServiceService;
 
         /// <summary>
         /// Instantiate job task
         /// </summary>
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
         /// <param name="logger"></param>
-        protected BaseJobTask(IProjectService projectService, ILogger logger)
+        protected BaseJobTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger logger)
         {
             _projectService = projectService;
 
+            _externalServiceService = externalServiceService;
+
             Logger = logger;
+
+            _loadedExternalService = new List<string>();
         }
 
         /// <summary>
@@ -71,13 +77,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             set => _project = value;
         }
 
+        private Dictionary<string, string> _configs;
+
+        private List<string> _loadedExternalService;
+
         /// <summary>
         /// Set job task configuration
         /// </summary>
-        /// <param name="configString">Serialized configuration</param>
+        /// <param name="configs">Configurations</param>
         /// <param name="workingLocation">Location of the working directory</param>
-        public void SetConfig(string configString, string workingLocation)
+        public void SetConfig(Dictionary<string, string> configs, string workingLocation)
         {
+            _configs = configs;
+            var configString = JsonConvert.SerializeObject(configs);
             TaskConfig = JsonConvert.DeserializeObject<TTaskConfig>(configString) ?? new TTaskConfig();
             TaskConfig.WorkingLocation = workingLocation;
         }
@@ -112,14 +124,37 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return Task.FromResult(new TaskRunnerResult());
         }
 
-        protected Task LoadRequiredServicesToAdditionalConfigs(string[] serviceNames)
+        protected async Task LoadRequiredServicesToAdditionalConfigs(string[] serviceNames)
         {
             if (AdditionalConfigs == null)
                 AdditionalConfigs = new Dictionary<string, string>();
+            
+            foreach (var serviceType in serviceNames)
+            {
+                // prevent loading the service twice
+                if (_loadedExternalService.Contains(serviceType))
+                    break;
 
-            // TODO: load service properties to the configs
+                if (_configs.TryGetValue($"{serviceType}ExternalService", out var externalServiceName))
+                {
 
-            return Task.CompletedTask;
+                    var externalService = await _externalServiceService.GetExternalServiceByName(externalServiceName);
+
+                    if (externalService != null)
+                    {
+                        foreach (var serviceProp in externalService.Config)
+                            AdditionalConfigs.Add(serviceProp.Key, serviceProp.Value);
+
+                        _loadedExternalService.Add(serviceType);
+                    }
+                    else
+                        throw new ExternalServiceNotFoundException(externalServiceName);
+                }
+                else
+                {
+                    throw new UnavailableExternalServiceException(serviceType, JobTaskId);
+                }
+            }
         }
     }
 }

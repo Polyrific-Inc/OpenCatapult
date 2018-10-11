@@ -18,12 +18,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     {
         private readonly Mock<ILogger<BuildTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<IExternalServiceService> _externalServiceService;
 
         public BuildTaskTests()
         {
             _logger = new Mock<ILogger<BuildTask>>();
 
             _projectService = new Mock<IProjectService>();
+            _externalServiceService = new Mock<IExternalServiceService>();
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
         }
@@ -31,16 +33,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            var config = new BuildTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
+
 
             var providers = new List<IBuildProvider>
             {
                 new FakeBuildProvider("good-result", null, "")
             };
 
-            var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
-            task.SetConfig(configString, "working");
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {BuildProviders = providers};
+            task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -52,16 +54,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            var config = new BuildTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
+
 
             var providers = new List<IBuildProvider>
             {
                 new FakeBuildProvider("", null, "error-message")
             };
 
-            var task = new BuildTask(_projectService.Object, _logger.Object) {BuildProviders = providers};
-            task.SetConfig(configString, "working");
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {BuildProviders = providers};
+            task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
@@ -73,11 +75,11 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_NoProvider()
         {
-            var config = new BuildTaskConfig();
-            var configString = JsonConvert.SerializeObject(config);
+            var config = new Dictionary<string, string>();
 
-            var task = new BuildTask(_projectService.Object, _logger.Object);
-            task.SetConfig(configString, "working");
+
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object , _logger.Object);
+            task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
