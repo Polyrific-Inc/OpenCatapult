@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             try
             {
-                var currentUserId = await _userService.GetUserId(User);
+                var currentUserId = User.GetUserId();
                 var projects = await _projectService.GetProjectsByUser(currentUserId, status);
                 var results = _mapper.Map<List<ProjectDto>>(projects.Select(p => p.Item1));
 
@@ -88,7 +88,7 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var projectMembers = newProject.Members.Select(m => (m.UserId, m.ProjectMemberRoleId)).ToList();
-                var currentUserId = await _userService.GetUserId(User);
+                var currentUserId = User.GetUserId();
 
                 List<ProjectDataModel> models = null;
                 List<JobDefinition> jobs = null;

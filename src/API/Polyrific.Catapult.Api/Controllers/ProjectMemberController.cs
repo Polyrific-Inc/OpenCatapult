@@ -165,7 +165,7 @@ namespace Polyrific.Catapult.Api.Controllers
                     int currentUserId = 0;
 
                     if (!User.IsInRole(UserRole.Administrator))
-                        currentUserId = await _userService.GetUserId(User);
+                        currentUserId = User.GetUserId();
 
                     await _projectMemberService.RemoveProjectMember(projectId, member.UserId, currentUserId);
                 }

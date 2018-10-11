@@ -51,7 +51,7 @@ namespace Polyrific.Catapult.Api.Controllers
             var tokenIssuer = _configuration["Security:Tokens:Issuer"];
             var tokenAudience = _configuration["Security:Tokens:Audience"];
 
-            var token = AuthorizationToken.GenerateToken(dto.Email, userRole, userProjects, tokenKey, tokenIssuer,
+            var token = AuthorizationToken.GenerateToken(user.Id, dto.Email, userRole, userProjects, tokenKey, tokenIssuer,
                 tokenAudience);
 
             return Ok(token);

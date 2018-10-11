@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
@@ -117,7 +118,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUser(int userId)
         {
-            var currentUserId = await _userService.GetUserId(User);
+            var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
             {
                 return Unauthorized();
@@ -134,7 +135,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
-            var currentUserId = await _userService.GetUserId(User);
+            var currentUserId = User.GetUserId();
 
             var user = await _userService.GetUserById(currentUserId);
 
@@ -196,7 +197,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser(int userId, UpdateUserDto updatedUser)
         {
-            var currentUserId = await _userService.GetUserId(User);
+            var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
             {
                 return Unauthorized();
@@ -252,7 +253,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             try
             {
-                var currentUserId = await _userService.GetUserId(User);
+                var currentUserId = User.GetUserId();
                 if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
                 {
                     return Unauthorized();

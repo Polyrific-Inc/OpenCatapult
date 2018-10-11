@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServices()
         {
-            var currentUserId = await _userService.GetUserId(User);
+            var currentUserId = User.GetUserId();
             var externalServices = await _externalServiceService.GetExternalServices(currentUserId);
             var results = _mapper.Map<List<ExternalServiceDto>>(externalServices);
 
@@ -83,7 +84,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             try
             {
-                var currentUserId = await _userService.GetUserId(User);
+                var currentUserId = User.GetUserId();
                 var newExternalService = _mapper.Map<ExternalServiceDto>(dto);
 
                 newExternalService.Id = await _externalServiceService.AddExternalService(dto.Name,
