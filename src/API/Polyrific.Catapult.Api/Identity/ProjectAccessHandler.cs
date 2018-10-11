@@ -46,6 +46,10 @@ namespace Polyrific.Catapult.Api.Identity
             {
                 projectClaim = userProjects.FirstOrDefault(up => up.ProjectName?.ToLower() == expectedProjectName.ToLower());
             }
+            else
+            {
+                projectClaim = userProjects.FirstOrDefault(up => string.IsNullOrEmpty(expectedMemberRole) || IsAllowedByMemberRole(up.MemberRole, expectedMemberRole));
+            }
 
             if (projectClaim != null)
             {
