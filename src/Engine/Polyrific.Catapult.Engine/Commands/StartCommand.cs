@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Engine.Commands
 
             Console.WriteLine($"Connection to API {_engineConfig.ApiUrl} is good.");
             Console.WriteLine("Engine is waiting for a job to execute..");
-            _jobCheckerTimer.Start();
+            _jobCheckerTimer_Elapsed(this, null);
 
             while (true)
             {
@@ -66,7 +66,7 @@ namespace Polyrific.Catapult.Engine.Commands
             {
                 if (Verbose)
                 {
-                    Console.WriteLine($"[{e.SignalTime.ToLongTimeString()}] No job in queue.");
+                    Console.WriteLine($"[{e?.SignalTime.ToLongTimeString() ?? DateTime.Now.ToLongTimeString()}] No job in queue.");
                 }
             }
 
