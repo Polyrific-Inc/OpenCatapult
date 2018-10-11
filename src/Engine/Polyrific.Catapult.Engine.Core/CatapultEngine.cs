@@ -1,8 +1,13 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
 
@@ -40,12 +45,46 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task ExecuteJob(JobDto jobQueue)
         {
-            _logger.LogInformation($"Executing job queue {jobQueue.Code}.");
-            
-            var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
-            
-            var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
-            await _taskRunner.Run(jobQueue.ProjectId, jobQueue.Code, jobTasks, _engineConfig.PluginsLocation, workingLocation);
+            var taskStatus = new List<JobTaskStatusDto>();
+            try
+            {
+                _logger.LogInformation($"Executing job queue {jobQueue.Code}.");
+
+                var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
+
+                var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
+                var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue.Code, jobTasks, _engineConfig.PluginsLocation, workingLocation);
+
+                if (result.Values.Any(t => !t.IsSuccess))
+                    jobQueue.Status = JobStatus.Error;
+                else
+                    jobQueue.Status = JobStatus.Completed;
+
+                taskStatus = result.Select(r => new JobTaskStatusDto
+                {
+                    TaskName = jobTasks.FirstOrDefault(t => t.Id == r.Key)?.Name,
+                    Status = GetJobTaskStatusType(r.Value),
+                    Remarks = r.Value.ErrorMessage
+                }).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                jobQueue.Status = JobStatus.Error;
+            }
+
+            await _jobQueueService.UpdateJobQueue(jobQueue.Id, new UpdateJobDto
+            {
+                Id = jobQueue.Id,
+                CatapultEngineId = jobQueue.CatapultEngineId,
+                CatapultEngineIPAddress = jobQueue.CatapultEngineIPAddress,
+                CatapultEngineMachineName = jobQueue.CatapultEngineMachineName,
+                CatapultEngineVersion = jobQueue.CatapultEngineVersion,
+                JobType = jobQueue.JobType,
+                Status = jobQueue.Status,
+                JobTasksStatus = JsonConvert.SerializeObject(taskStatus)
+            });
         }
 
         public async Task<JobDto> GetJobInQueue()
@@ -55,5 +94,18 @@ namespace Polyrific.Catapult.Engine.Core
             return await _jobQueueService.CheckJob();
         }
         
+        private string GetJobTaskStatusType(TaskRunnerResult result)
+        {
+            if (!result.IsProcessed)
+                return JobTaskStatusType.NotExecuted;
+
+            if (result.IsSuccess)
+                return JobTaskStatusType.Success;
+
+            if (!string.IsNullOrEmpty(result.ErrorMessage))
+                return JobTaskStatusType.Failed;
+
+            return JobTaskStatusType.Executing;
+        }
     }
 }
