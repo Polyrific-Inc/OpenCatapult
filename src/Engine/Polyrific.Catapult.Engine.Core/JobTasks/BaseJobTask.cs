@@ -133,7 +133,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             {
                 // prevent loading the service twice
                 if (_loadedExternalService.Contains(serviceType))
-                    break;
+                    continue;
 
                 if (_configs.TryGetValue($"{serviceType}ExternalService", out var externalServiceName))
                 {
@@ -152,7 +152,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 }
                 else
                 {
-                    throw new UnavailableExternalServiceException(serviceType, JobTaskId);
+                    throw new InvalidExternalServiceTypeException(serviceType, JobTaskId);
                 }
             }
         }

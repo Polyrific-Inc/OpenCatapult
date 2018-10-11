@@ -4,9 +4,9 @@ using System;
 
 namespace Polyrific.Catapult.Engine.Core.Exceptions
 {
-    public class UnavailableExternalServiceException : Exception
+    public class InvalidExternalServiceTypeException : Exception
     {
-        public UnavailableExternalServiceException(string serviceType, int taskId)
+        public InvalidExternalServiceTypeException(string serviceType, int taskId)
             : base($"Task Config \"{serviceType}ExternalService\" is required for task \"{taskId}\".")
         {
             ServiceType = serviceType;
