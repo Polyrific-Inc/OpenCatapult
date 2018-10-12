@@ -28,8 +28,6 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             _externalServiceService = externalServiceService;
 
             Logger = logger;
-
-            _loadedExternalService = new List<string>();
         }
 
         /// <summary>
@@ -73,13 +71,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// </summary>
         protected ProjectDto Project
         {
-            get => _project ?? (_project = _projectService.GetProject(ProjectId).Result);
+            get => _project == null || _project.Id != ProjectId ? (_project = _projectService.GetProject(ProjectId).Result) : _project;
             set => _project = value;
         }
 
         private Dictionary<string, string> _configs;
-
-        private List<string> _loadedExternalService;
 
         /// <summary>
         /// Set job task configuration
@@ -131,21 +127,17 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             
             foreach (var serviceType in serviceNames)
             {
-                // prevent loading the service twice
-                if (_loadedExternalService.Contains(serviceType))
-                    continue;
-
                 if (_configs.TryGetValue($"{serviceType}ExternalService", out var externalServiceName))
                 {
-
                     var externalService = await _externalServiceService.GetExternalServiceByName(externalServiceName);
 
                     if (externalService != null)
                     {
                         foreach (var serviceProp in externalService.Config)
-                            AdditionalConfigs.Add(serviceProp.Key, serviceProp.Value);
-
-                        _loadedExternalService.Add(serviceType);
+                        {
+                            if (!AdditionalConfigs.ContainsKey(serviceProp.Key))
+                                AdditionalConfigs.Add(serviceProp.Key, serviceProp.Value);
+                        }                            
                     }
                     else
                         throw new ExternalServiceNotFoundException(externalServiceName);
