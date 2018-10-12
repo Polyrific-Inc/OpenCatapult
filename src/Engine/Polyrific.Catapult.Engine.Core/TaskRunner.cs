@@ -64,6 +64,7 @@ namespace Polyrific.Catapult.Engine.Core
                     _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
                     jobTaskStatus.Status = JobTaskStatusType.Failed;
                     jobTaskStatus.Remarks = preResult.ErrorMessage;
+                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                     break;
                 }
 
@@ -76,6 +77,7 @@ namespace Polyrific.Catapult.Engine.Core
                     _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
                     jobTaskStatus.Status = JobTaskStatusType.Failed;
                     jobTaskStatus.Remarks = preResult.ErrorMessage;
+                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                     break;
                 }
 
@@ -99,6 +101,7 @@ namespace Polyrific.Catapult.Engine.Core
                     _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
                     jobTaskStatus.Status = JobTaskStatusType.Failed;
                     jobTaskStatus.Remarks = preResult.ErrorMessage;
+                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                     break;
                 }
 
