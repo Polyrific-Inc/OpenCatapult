@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
+using Polyrific.Catapult.Shared.Dto.JobQueue;
 
 namespace Polyrific.Catapult.Engine.Core
 {
@@ -12,13 +13,13 @@ namespace Polyrific.Catapult.Engine.Core
         /// Run job tasks
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="job">Job queue</param>
         /// <param name="jobTask">Job tasks to run</param>
-        /// <param name="queueCode">Code of the job queue</param>
         /// <param name="pluginsLocation">Location of the plugins folder</param>
         /// <param name="workingLocation">Location of the working directory</param>
         /// <returns></returns>
         Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, 
-            string queueCode, 
+            JobDto job, 
             List<JobTaskDefinitionDto> jobTask,
             string pluginsLocation, 
             string workingLocation);

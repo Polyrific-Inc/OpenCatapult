@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             await engine.ExecuteJob(new JobDto{ProjectId = 1, Code = "20180817.1"});
 
-            _taskRunner.Verify(tr => tr.Run(1, "20180817.1", It.IsAny<List<JobTaskDefinitionDto>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            _taskRunner.Verify(tr => tr.Run(1, It.Is<JobDto>(j => j.Code == "20180817.1"), It.IsAny<List<JobTaskDefinitionDto>>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]

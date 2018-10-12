@@ -9,6 +9,8 @@ using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
+using Polyrific.Catapult.Shared.Dto.JobQueue;
+using Polyrific.Catapult.Shared.Service;
 using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core
@@ -26,6 +28,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly Mock<IPushTask> _pushTask;
         private readonly Mock<ITestTask> _testTask;
         private readonly JobTaskService _jobTaskService;
+        private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly List<JobTaskDefinitionDto> _data;
 
         public TaskRunnerTests()
@@ -91,6 +94,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _jobTaskService = new JobTaskService(_buildTask.Object, _cloneTask.Object, _deployTask.Object,
                 _deployDbTask.Object, _generateTask.Object, _mergeTask.Object, _publishArtifactTask.Object,
                 _pushTask.Object, _testTask.Object);
+
+            _jobQueueService = new Mock<IJobQueueService>();
         }
 
         [Fact]
@@ -101,14 +106,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             
-            var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
             Assert.True(results[2].IsSuccess);
             Assert.True(results[3].IsSuccess);
             Assert.True(results[4].IsSuccess);
+
+            _jobQueueService.Verify(j => j.UpdateJobQueue(1, It.Is<UpdateJobDto>(u => u.Status == JobStatus.Processing)), Times.Exactly(4));
         }
 
         [Fact]
@@ -119,8 +126,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.False(results[1].IsSuccess);
@@ -130,15 +137,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         }
 
         [Fact]
-        public async void Run__SuccessOne_FailedOne_SkipTheRests()
+        public async void Run_SuccessOne_FailedOne_SkipTheRests()
         {
             _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult("Failed"));
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -148,15 +155,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         }
 
         [Fact]
-        public async void Run__SuccessOne_FailedOneButContinue()
+        public async void Run_SuccessOne_FailedOneButContinue()
         {
             _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult("Failed", false));
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _logger.Object);
-            var results = await runner.Run(1, "20180817.1", _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);

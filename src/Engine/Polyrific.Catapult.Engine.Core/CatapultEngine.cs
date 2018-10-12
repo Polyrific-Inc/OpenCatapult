@@ -45,7 +45,6 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task ExecuteJob(JobDto jobQueue)
         {
-            var taskStatus = new List<JobTaskStatusDto>();
             try
             {
                 _logger.LogInformation($"Executing job queue {jobQueue.Code}.");
@@ -53,20 +52,12 @@ namespace Polyrific.Catapult.Engine.Core
                 var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
 
                 var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
-                var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue.Code, jobTasks, _engineConfig.PluginsLocation, workingLocation);
+                var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.PluginsLocation, workingLocation);
 
                 if (result.Values.Any(t => !t.IsSuccess))
                     jobQueue.Status = JobStatus.Error;
                 else
-                    jobQueue.Status = JobStatus.Completed;
-
-                taskStatus = result.Select(r => new JobTaskStatusDto
-                {
-                    TaskName = jobTasks.FirstOrDefault(t => t.Id == r.Key)?.Name,
-                    Status = GetJobTaskStatusType(r.Value),
-                    Remarks = r.Value.ErrorMessage
-                }).ToList();
-
+                    jobQueue.Status = JobStatus.Completed;                
             }
             catch (Exception ex)
             {
@@ -83,7 +74,7 @@ namespace Polyrific.Catapult.Engine.Core
                 CatapultEngineVersion = jobQueue.CatapultEngineVersion,
                 JobType = jobQueue.JobType,
                 Status = jobQueue.Status,
-                JobTasksStatus = JsonConvert.SerializeObject(taskStatus)
+                JobTasksStatus = jobQueue.JobTasksStatus
             });
         }
 
@@ -92,20 +83,6 @@ namespace Polyrific.Catapult.Engine.Core
             _logger.LogInformation("Trying to get a job in queue.");
 
             return await _jobQueueService.CheckJob();
-        }
-        
-        private string GetJobTaskStatusType(TaskRunnerResult result)
-        {
-            if (!result.IsProcessed)
-                return JobTaskStatusType.NotExecuted;
-
-            if (result.IsSuccess)
-                return JobTaskStatusType.Success;
-
-            if (!string.IsNullOrEmpty(result.ErrorMessage))
-                return JobTaskStatusType.Failed;
-
-            return JobTaskStatusType.Executing;
         }
     }
 }
