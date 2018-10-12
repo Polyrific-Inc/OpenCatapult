@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.Engine.Core
                 TaskName = t.Name,
                 Sequence = idx + 1,
                 Status = JobTaskStatusType.NotExecuted
-            });
+            }).ToList();
             foreach (var jobTask in orderedJobTasks)
             {
                 var jobTaskStatus = jobTaskStatuses.First(t => t.TaskName == jobTask.Name);
