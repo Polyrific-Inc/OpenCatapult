@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.ApiClient\Polyrific.Catapult.Shared.ApiClient.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Service\Polyrific.Catapult.Shared.Service.csproj" />
+    <ProjectReference Include="..\Polyrific.Catapult.Engine.SignalRLogger\Polyrific.Catapult.Engine.SignalRLogger.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
@@ -20,6 +19,7 @@ namespace Polyrific.Catapult.Engine.Core
         private readonly IHealthService _healthService;
         private readonly IJobQueueService _jobQueueService;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IJobLogWriter _jobLogWriter;
         private readonly ILogger<CatapultEngine> _logger;
 
         public CatapultEngine(ICatapultEngineConfig engineConfig, 
@@ -27,6 +27,7 @@ namespace Polyrific.Catapult.Engine.Core
             IHealthService healthService,
             IJobQueueService jobQueueService, 
             IJobDefinitionService jobDefinitionService,
+            IJobLogWriter jobLogWriter,
             ILogger<CatapultEngine> logger)
         {
             _engineConfig = engineConfig;
@@ -34,6 +35,7 @@ namespace Polyrific.Catapult.Engine.Core
             _healthService = healthService;
             _jobQueueService = jobQueueService;
             _jobDefinitionService = jobDefinitionService;
+            _jobLogWriter = jobLogWriter;
             _logger = logger;
         }
 
@@ -45,37 +47,42 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task ExecuteJob(JobDto jobQueue)
         {
-            try
+            using (_logger.BeginScope(new JobScope(jobQueue.Id)))
             {
-                _logger.LogInformation($"Executing job queue {jobQueue.Code}.");
+                try
+                {
+                    _logger.LogInformation($"Executing job queue {jobQueue.Code}.");
 
-                var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
+                    var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
 
-                var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
-                var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.PluginsLocation, workingLocation);
+                    var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
+                    var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.PluginsLocation, workingLocation);
 
-                if (result.Values.Any(t => !t.IsSuccess))
+                    if (result.Values.Any(t => !t.IsSuccess))
+                        jobQueue.Status = JobStatus.Error;
+                    else
+                        jobQueue.Status = JobStatus.Completed;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
                     jobQueue.Status = JobStatus.Error;
-                else
-                    jobQueue.Status = JobStatus.Completed;                
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                jobQueue.Status = JobStatus.Error;
-            }
+                }
 
-            await _jobQueueService.UpdateJobQueue(jobQueue.Id, new UpdateJobDto
-            {
-                Id = jobQueue.Id,
-                CatapultEngineId = jobQueue.CatapultEngineId,
-                CatapultEngineIPAddress = jobQueue.CatapultEngineIPAddress,
-                CatapultEngineMachineName = jobQueue.CatapultEngineMachineName,
-                CatapultEngineVersion = jobQueue.CatapultEngineVersion,
-                JobType = jobQueue.JobType,
-                Status = jobQueue.Status,
-                JobTasksStatus = jobQueue.JobTasksStatus
-            });
+                await _jobQueueService.UpdateJobQueue(jobQueue.Id, new UpdateJobDto
+                {
+                    Id = jobQueue.Id,
+                    CatapultEngineId = jobQueue.CatapultEngineId,
+                    CatapultEngineIPAddress = jobQueue.CatapultEngineIPAddress,
+                    CatapultEngineMachineName = jobQueue.CatapultEngineMachineName,
+                    CatapultEngineVersion = jobQueue.CatapultEngineVersion,
+                    JobType = jobQueue.JobType,
+                    Status = jobQueue.Status,
+                    JobTasksStatus = jobQueue.JobTasksStatus
+                });
+                
+                await _jobLogWriter.EndJobLog(jobQueue.Id);
+            }
         }
 
         public async Task<JobDto> GetJobInQueue()

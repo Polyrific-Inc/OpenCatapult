@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Engine.Core;
+using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Infrastructure;
 using Serilog;
 using System;
@@ -52,6 +53,10 @@ namespace Polyrific.Catapult.Engine
                 conf.AddDebug();
                 conf.AddSerilog();
             });
+
+            // add custom logger
+            services.AddSingleton<ILoggerProvider, JobLoggerProvider>();
+            services.AdJobLogWriter(configuration);
 
             // init serilog
             Log.Logger = new LoggerConfiguration()

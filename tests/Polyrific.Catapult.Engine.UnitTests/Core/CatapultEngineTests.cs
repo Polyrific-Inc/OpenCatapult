@@ -6,6 +6,7 @@ using System.IO;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Engine.Core;
+using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
@@ -20,6 +21,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly Mock<IHealthService> _healthService;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
+        private readonly Mock<IJobLogWriter> _jobLogWriter;
         private readonly Mock<ILogger<CatapultEngine>> _logger;
 
         public CatapultEngineTests()
@@ -31,6 +33,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _healthService = new Mock<IHealthService>();
             _jobQueueService = new Mock<IJobQueueService>();
             _jobDefinitionService = new Mock<IJobDefinitionService>();
+            _jobLogWriter = new Mock<IJobLogWriter>();
             _logger = new Mock<ILogger<CatapultEngine>>();
         }
 
@@ -40,7 +43,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _healthService.Setup(s => s.CheckHealthSecure()).ReturnsAsync(true);
 
             var engine = new CatapultEngine(_engineConfig.Object, _taskRunner.Object, _healthService.Object,
-                _jobQueueService.Object, _jobDefinitionService.Object, _logger.Object);
+                _jobQueueService.Object, _jobDefinitionService.Object, _jobLogWriter.Object, _logger.Object);
 
             var success = await engine.CheckApiConnection();
 
@@ -53,7 +56,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _healthService.Setup(s => s.CheckHealthSecure()).ReturnsAsync(false);
 
             var engine = new CatapultEngine(_engineConfig.Object, _taskRunner.Object, _healthService.Object,
-                _jobQueueService.Object, _jobDefinitionService.Object, _logger.Object);
+                _jobQueueService.Object, _jobDefinitionService.Object, _jobLogWriter.Object, _logger.Object);
 
             var success = await engine.CheckApiConnection();
 
@@ -68,7 +71,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 .ReturnsAsync(new List<JobTaskDefinitionDto>());
 
             var engine = new CatapultEngine(_engineConfig.Object, _taskRunner.Object, _healthService.Object,
-                _jobQueueService.Object, _jobDefinitionService.Object, _logger.Object);
+                _jobQueueService.Object, _jobDefinitionService.Object, _jobLogWriter.Object, _logger.Object);
 
             await engine.ExecuteJob(new JobDto{ProjectId = 1, Code = "20180817.1"});
 
@@ -85,7 +88,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             });
 
             var engine = new CatapultEngine(_engineConfig.Object, _taskRunner.Object, _healthService.Object,
-                _jobQueueService.Object, _jobDefinitionService.Object, _logger.Object);
+                _jobQueueService.Object, _jobDefinitionService.Object, _jobLogWriter.Object, _logger.Object);
 
             var result = await engine.GetJobInQueue();
 
@@ -98,7 +101,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _jobQueueService.Setup(s => s.CheckJob()).ReturnsAsync((JobDto)null);
 
             var engine = new CatapultEngine(_engineConfig.Object, _taskRunner.Object, _healthService.Object,
-                _jobQueueService.Object, _jobDefinitionService.Object, _logger.Object);
+                _jobQueueService.Object, _jobDefinitionService.Object, _jobLogWriter.Object, _logger.Object);
 
             var result = await engine.GetJobInQueue();
 

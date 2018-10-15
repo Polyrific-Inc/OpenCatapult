@@ -28,7 +28,7 @@ namespace AspNetCoreMvc
 
             config.OutputLocation = config.OutputLocation ?? config.WorkingLocation;
 
-            var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString);
+            var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString, logger);
 
             await generator.InitSolution();
 

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
+using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Dto.Constants;
@@ -31,7 +32,7 @@ namespace Polyrific.Catapult.Engine.Core
             _jobQueueService = jobQueueService;
             _logger = logger;
         }
-        
+
         public async Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, JobDto job, List<JobTaskDefinitionDto> jobTasks, string pluginsLocation, string workingLocation)
         {
             job.Status = JobStatus.Processing;
@@ -53,71 +54,74 @@ namespace Polyrific.Catapult.Engine.Core
             }).ToList();
             foreach (var jobTask in orderedJobTasks)
             {
-                var jobTaskStatus = jobTaskStatuses.First(t => t.TaskName == jobTask.Name);
-                var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
-
-                // pre-processing
-                _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} pre-processing task");
-                var preResult = await taskObj.RunPreprocessingTask();
-                if (!preResult.IsSuccess && preResult.StopTheProcess)
+                using (_logger.BeginScope(new TaskScope(jobTask.Name)))
                 {
-                    _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
-                    jobTaskStatus.Status = JobTaskStatusType.Failed;
-                    jobTaskStatus.Remarks = preResult.ErrorMessage;
-                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
-                    break;
-                }
+                    var jobTaskStatus = jobTaskStatuses.First(t => t.TaskName == jobTask.Name);
+                    var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
 
-                // main process
-                _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} task");
-                var result = await taskObj.RunMainTask(outputValues);
-                results[jobTask.Id] = result;
-                if (!result.IsSuccess && result.StopTheProcess)
-                {
-                    _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
-                    jobTaskStatus.Status = JobTaskStatusType.Failed;
-                    jobTaskStatus.Remarks = preResult.ErrorMessage;
-                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
-                    break;
-                }
-
-                // save output values to be used as the input for the next tasks
-                if (result.OutputValues != null)
-                {
-                    foreach (var key in result.OutputValues.Keys)
+                    // pre-processing
+                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} pre-processing task");
+                    var preResult = await taskObj.RunPreprocessingTask();
+                    if (!preResult.IsSuccess && preResult.StopTheProcess)
                     {
-                        if (outputValues.ContainsKey(key))
-                            outputValues[key] = result.OutputValues[key];
-                        else
-                            outputValues.Add(key, result.OutputValues[key]);
+                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
+                        jobTaskStatus.Status = JobTaskStatusType.Failed;
+                        jobTaskStatus.Remarks = preResult.ErrorMessage;
+                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        break;
                     }
-                }
 
-                // post-processing
-                _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} post-processing task");
-                var postResult = await taskObj.RunPostprocessingTask();
-                if (!postResult.IsSuccess && postResult.StopTheProcess)
-                {
-                    _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
-                    jobTaskStatus.Status = JobTaskStatusType.Failed;
-                    jobTaskStatus.Remarks = preResult.ErrorMessage;
+                    // main process
+                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} task");
+                    var result = await taskObj.RunMainTask(outputValues);
+                    results[jobTask.Id] = result;
+                    if (!result.IsSuccess && result.StopTheProcess)
+                    {
+                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
+                        jobTaskStatus.Status = JobTaskStatusType.Failed;
+                        jobTaskStatus.Remarks = preResult.ErrorMessage;
+                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        break;
+                    }
+
+                    // save output values to be used as the input for the next tasks
+                    if (result.OutputValues != null)
+                    {
+                        foreach (var key in result.OutputValues.Keys)
+                        {
+                            if (outputValues.ContainsKey(key))
+                                outputValues[key] = result.OutputValues[key];
+                            else
+                                outputValues.Add(key, result.OutputValues[key]);
+                        }
+                    }
+
+                    // post-processing
+                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} post-processing task");
+                    var postResult = await taskObj.RunPostprocessingTask();
+                    if (!postResult.IsSuccess && postResult.StopTheProcess)
+                    {
+                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
+                        jobTaskStatus.Status = JobTaskStatusType.Failed;
+                        jobTaskStatus.Remarks = preResult.ErrorMessage;
+                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        break;
+                    }
+
+                    jobTaskStatus.Status = JobTaskStatusType.Success;
                     job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
-                    break;
+                    await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
+                    {
+                        Id = job.Id,
+                        CatapultEngineId = job.CatapultEngineId,
+                        CatapultEngineIPAddress = job.CatapultEngineIPAddress,
+                        CatapultEngineMachineName = job.CatapultEngineMachineName,
+                        CatapultEngineVersion = job.CatapultEngineVersion,
+                        JobTasksStatus = job.JobTasksStatus,
+                        JobType = job.JobType,
+                        Status = job.Status
+                    });
                 }
-
-                jobTaskStatus.Status = JobTaskStatusType.Success;
-                job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
-                await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
-                {
-                    Id = job.Id,
-                    CatapultEngineId = job.CatapultEngineId,
-                    CatapultEngineIPAddress = job.CatapultEngineIPAddress,
-                    CatapultEngineMachineName = job.CatapultEngineMachineName,
-                    CatapultEngineVersion = job.CatapultEngineVersion,
-                    JobTasksStatus = job.JobTasksStatus,
-                    JobType = job.JobType,
-                    Status = job.Status
-                });
             }
 
             _logger.LogInformation($"[Queue \"{job.Code}\"] Job tasks execution complete with the following result: {results}");
@@ -168,7 +172,7 @@ namespace Polyrific.Catapult.Engine.Core
             task.SetConfig(jobTask.Configs, workingLocation);
             task.AdditionalConfigs = jobTask.AdditionalConfigs;
             _compositionContainer.ComposeParts(task);
-            
+
             return task;
         }
 
@@ -215,7 +219,7 @@ namespace Polyrific.Catapult.Engine.Core
 
                 var taskPluginsLocation = Path.Combine(pluginsLocation, providerType);
                 var plugins = DirectoryHelper.GetChildFolders(taskPluginsLocation);
-            
+
                 foreach (var plugin in plugins)
                 {
                     catalog.Catalogs.Add(new DirectoryCatalog(plugin));
