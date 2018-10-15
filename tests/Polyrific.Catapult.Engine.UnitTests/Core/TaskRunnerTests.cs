@@ -115,7 +115,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             Assert.True(results[3].IsSuccess);
             Assert.True(results[4].IsSuccess);
 
-            _jobQueueService.Verify(j => j.UpdateJobQueue(1, It.Is<UpdateJobDto>(u => u.Status == JobStatus.Processing)), Times.Exactly(4));
+            _jobQueueService.Verify(j => j.UpdateJobQueue(1, It.Is<UpdateJobDto>(u => u.Status == JobStatus.Processing)), Times.Exactly(5));
         }
 
         [Fact]
