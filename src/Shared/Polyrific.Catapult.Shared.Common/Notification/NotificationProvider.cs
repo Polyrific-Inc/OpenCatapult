@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Common.Interface;
 
 namespace Polyrific.Catapult.Shared.Common.Notification
@@ -13,20 +14,34 @@ namespace Polyrific.Catapult.Shared.Common.Notification
     {
         private readonly IEnumerable<INotificationSender> _notificationSenders;
         private readonly NotificationConfig _notificationConfig;
+        private readonly ILogger _logger;
 
         public const string SmtpEmail = "SmtpEmail";
 
-        public NotificationProvider(IEnumerable<INotificationSender> notificationSenders, NotificationConfig notificationConfig)
+        public NotificationProvider(IEnumerable<INotificationSender> notificationSenders, NotificationConfig notificationConfig, ILoggerFactory loggerFactory)
         {
             _notificationSenders = notificationSenders;
             _notificationConfig = notificationConfig;
+            _logger = loggerFactory.CreateLogger<NotificationProvider>();
         }
 
         public void SendNotification(SendNotificationRequest request, Dictionary<string, string> messageParameters)
         {
             foreach (var sender in _notificationSenders)
-                if (ValidateSenderPreference(sender, request.MessageType) && sender.ValidateRequest(request))
-                    sender.SendNotification(request, GetSubject(request.MessageType, messageParameters), GetBody(sender, request.MessageType, messageParameters));
+            {
+                try
+                {
+                    if (ValidateSenderPreference(sender, request.MessageType) && sender.ValidateRequest(request))
+                    {
+                        sender.SendNotification(request, GetSubject(request.MessageType, messageParameters), GetBody(sender, request.MessageType, messageParameters));
+                        _logger.LogInformation($"Notification sent via {sender.Name}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, $"Failed sending notification via {sender.Name}");
+                }
+            }
         }
 
         private bool ValidateSenderPreference(INotificationSender sender, string messageType)
