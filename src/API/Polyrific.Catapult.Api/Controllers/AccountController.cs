@@ -55,7 +55,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
                     // TODO: We might need to change the confirm url into the web UI url, when it's ready
                     var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{userId}/confirm?token={confirmToken}";
-                    _notificationProvider.SendNotification(new SendNotificationRequest
+                    await _notificationProvider.SendNotification(new SendNotificationRequest
                     {
                         MessageType = NotificationConfig.RegistrationCompleted,
                         Emails = new List<string>
@@ -280,7 +280,7 @@ namespace Polyrific.Catapult.Api.Controllers
             var token = await _userService.GetResetPasswordToken(userId);
             var user = await _userService.GetUserById(userId);
 
-            _notificationProvider.SendNotification(new SendNotificationRequest
+            await _notificationProvider.SendNotification(new SendNotificationRequest
             {
                 MessageType = NotificationConfig.ResetPassword,
                 Emails = new List<string>

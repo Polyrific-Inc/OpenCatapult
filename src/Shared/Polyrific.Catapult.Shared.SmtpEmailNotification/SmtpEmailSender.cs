@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using MimeKit;
@@ -21,12 +22,12 @@ namespace Polyrific.Catapult.Shared.SmtpEmailNotification
             _smtpSetting = smtpSetting;
         }
         
-        public void SendNotification(SendNotificationRequest request, string subject, string body)
+        public async Task SendNotification(SendNotificationRequest request, string subject, string body)
         {
-            SendEmail(request.Emails, subject, body);
+            await SendEmail(request.Emails, subject, body);
         }
 
-        private void SendEmail(List<string> toAddresses, string subject, string body)
+        private async Task SendEmail(List<string> toAddresses, string subject, string body)
         {
             var message = new MimeMessage();
             message.From.Add(new MailboxAddress(_smtpSetting.SenderEmail));
@@ -43,11 +44,11 @@ namespace Polyrific.Catapult.Shared.SmtpEmailNotification
 
             using (var client = new SmtpClient())
             {
-                client.Connect(_smtpSetting.Server, _smtpSetting.Port, SecureSocketOptions.Auto);
-                client.Authenticate(_smtpSetting.Username, _smtpSetting.Password);
+                await client.ConnectAsync(_smtpSetting.Server, _smtpSetting.Port, SecureSocketOptions.Auto);
+                await client.AuthenticateAsync(_smtpSetting.Username, _smtpSetting.Password);
 
-                client.Send(message);
-                client.Disconnect(true);
+                await client.SendAsync(message);
+                await client.DisconnectAsync(true);
             }
         }
 

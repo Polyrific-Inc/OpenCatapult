@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Common.Interface;
 
@@ -25,7 +26,7 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             _logger = loggerFactory.CreateLogger<NotificationProvider>();
         }
 
-        public void SendNotification(SendNotificationRequest request, Dictionary<string, string> messageParameters)
+        public async Task SendNotification(SendNotificationRequest request, Dictionary<string, string> messageParameters)
         {
             foreach (var sender in _notificationSenders)
             {
@@ -33,13 +34,13 @@ namespace Polyrific.Catapult.Shared.Common.Notification
                 {
                     if (ValidateSenderPreference(sender, request.MessageType) && sender.ValidateRequest(request))
                     {
-                        sender.SendNotification(request, GetSubject(request.MessageType, messageParameters), GetBody(sender, request.MessageType, messageParameters));
-                        _logger.LogInformation($"Notification sent via {sender.Name}");
+                        await sender.SendNotification(request, GetSubject(request.MessageType, messageParameters), GetBody(sender, request.MessageType, messageParameters));
+                        _logger.LogInformation("Notification sent via {Name} with the following request: {@request}", sender.Name, request);
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, $"Failed sending notification via {sender.Name}");
+                    _logger.LogWarning(ex, "Failed sending notification via {Name} with the following request: {@request}", sender.Name, request);
                 }
             }
         }
