@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((string name, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.UserName == name));
             _UserRepository.Setup(r => r.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(UserRole.Administrator);
-            _UserRepository.Setup(r => r.GetUsers(It.IsAny<bool?>(), It.IsAny<CancellationToken>()))
+            _UserRepository.Setup(r => r.GetUsers(It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_data);
             _UserRepository.Setup(r => r.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("test");

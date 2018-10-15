@@ -89,10 +89,11 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <summary>
         /// Get the list of users
         /// </summary>
-        /// <param name="lockoutEnabled">whether account lockout is enabled</param>
+        /// <param name="isActive">Indicates whether user is active</param>
+        /// <param name="role">Role of the user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The list of user</returns>
-        Task<List<User>> GetUsers(bool? lockoutEnabled, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<User>> GetUsers(bool? isActive, string role, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Suspend the user

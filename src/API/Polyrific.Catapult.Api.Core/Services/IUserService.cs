@@ -107,10 +107,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get user list
         /// </summary>
-        /// <param name="status">Status of the user</param>
+        /// <param name="status">Status of the users</param>
+        /// <param name="role">Role of the users</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task<List<User>> GetUsers(string status, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<User>> GetUsers(string status = null, string role = null, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Set role of a user

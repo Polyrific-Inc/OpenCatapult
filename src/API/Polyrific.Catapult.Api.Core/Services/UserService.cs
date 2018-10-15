@@ -117,29 +117,33 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _userRepository.GetUserRole(userName, cancellationToken);
         }
 
-        public async Task<List<User>> GetUsers(string status, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<User>> GetUsers(string status = null, string role = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            bool? lockoutEnabled;
+            bool? isActive;
 
             switch (status?.ToLower())
             {
                 case UserStatus.Active:
-                    lockoutEnabled = false;
+                    isActive = true;
                     break;
                 case UserStatus.Suspended:
-                    lockoutEnabled = true;
+                    isActive = false;
                     break;
                 case "":
                 case null:
-                    lockoutEnabled = null;
+                case UserStatus.All:
+                    isActive = null;
                     break;
                 default:
                     throw new UserStatusNotFoundException(status);
             }
 
-            return await _userRepository.GetUsers(lockoutEnabled);
+            if (role == UserRole.All)
+                role = null;
+
+            return await _userRepository.GetUsers(isActive, role);
         }
 
         public async Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))

@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _console = new Mock<IConsole>();
 
             _accountService = new Mock<IAccountService>();
-            _accountService.Setup(s => s.GetUsers(It.IsAny<string>())).ReturnsAsync(users);
+            _accountService.Setup(s => s.GetUsers(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(users);
             _accountService.Setup(s => s.GetUserByEmail(It.IsAny<string>())).ReturnsAsync((string email) => users.FirstOrDefault(u => u.Email == email));
             _accountService.Setup(s => s.GetUserByUserName(It.IsAny<string>())).ReturnsAsync((string userName) => users.FirstOrDefault(u => u.UserName == userName));
             _accountService.Setup(s => s.RemoveUser(It.IsAny<int>())).Returns(Task.CompletedTask).Callback((int id) =>
@@ -276,6 +276,16 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+        }
+
+        [Fact]
+        public void AccountList_Execute_ReturnsSuccessMessage()
+        {
+            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _accountService.Object);
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Users:", resultMessage);
         }
     }
 }

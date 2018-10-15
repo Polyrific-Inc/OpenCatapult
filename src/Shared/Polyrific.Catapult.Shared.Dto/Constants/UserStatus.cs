@@ -4,6 +4,7 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
 {
     public class UserStatus
     {
+        public const string All = "all";
         public const string Active = "active";
         public const string Suspended = "suspended";
     }

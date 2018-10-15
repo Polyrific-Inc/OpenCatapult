@@ -97,12 +97,13 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Get all users, optionally filterred it by status
         /// </summary>
         /// <param name="status">Status filter [active | suspended]</param>
+        /// <param name="role">Role of the users [Administrator | Basic | Guest]</param>
         /// <returns>The list of user</returns>
         [HttpGet]
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
-        public async Task<IActionResult> GetUsers(string status)
+        public async Task<IActionResult> GetUsers(string status, string role)
         {
-            var users = await _userService.GetUsers(status);
+            var users = await _userService.GetUsers(status, role);
 
             var results = _mapper.Map<List<UserDto>>(users);
 

@@ -48,9 +48,9 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<UserDto>(path);
         }
 
-        public async Task<List<UserDto>> GetUsers(string status)
+        public async Task<List<UserDto>> GetUsers(string status, string role)
         {
-            var path = "account";
+            var path = $"account?status={status}&role={role}";
 
             return await Api.Get<List<UserDto>>(path);
         }

@@ -26,9 +26,10 @@ namespace Polyrific.Catapult.Shared.Service
         /// <summary>
         /// Get list of users by their status
         /// </summary>
-        /// <param name="status">Status of the user</param>
+        /// <param name="status">Status of the users</param>
+        /// <param name="role">Role of the users</param>
         /// <returns>List of users</returns>
-        Task<List<UserDto>> GetUsers(string status);
+        Task<List<UserDto>> GetUsers(string status, string role);
 
         /// <summary>
         /// Get a user

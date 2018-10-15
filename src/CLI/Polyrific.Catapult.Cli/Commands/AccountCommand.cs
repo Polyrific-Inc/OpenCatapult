@@ -7,6 +7,7 @@ using Polyrific.Catapult.Cli.Commands.Account;
 namespace Polyrific.Catapult.Cli.Commands
 {
     [Command(Description = "User account related command")]
+    [Subcommand("list", typeof(ListCommand))]
     [Subcommand("activate", typeof(ActivateCommand))]
     [Subcommand("register", typeof(RegisterCommand))]
     [Subcommand("remove", typeof(RemoveCommand))]

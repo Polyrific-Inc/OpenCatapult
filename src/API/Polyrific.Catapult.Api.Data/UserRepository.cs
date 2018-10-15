@@ -220,11 +220,14 @@ namespace Polyrific.Catapult.Api.Data
             return roles.Any() ? roles.First() : "";
         }
 
-        public async Task<List<User>> GetUsers(bool? lockoutEnabled, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<User>> GetUsers(bool? isActive, string role, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => u.LockoutEnabled == lockoutEnabled || lockoutEnabled == null).ToListAsync();
+            var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => u.UserProfile.IsActive == isActive || isActive == null).ToListAsync();
+            if (!string.IsNullOrEmpty(role))
+                users = users.Where(u => _userManager.IsInRoleAsync(u, role).Result).ToList();
+
             return _mapper.Map<List<User>>(users);
         }
 
