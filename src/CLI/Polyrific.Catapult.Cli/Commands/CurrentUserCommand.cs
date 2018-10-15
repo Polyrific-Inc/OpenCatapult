@@ -21,6 +21,8 @@ namespace Polyrific.Catapult.Cli.Commands
         {
             try
             {
+                Console.WriteLine("Checking current logged-in user...");
+
                 var currentUser = _accountService.GetCurrentUser().Result;
 
                 return $"Logged in as {currentUser.Email}";
@@ -30,7 +32,7 @@ namespace Polyrific.Catapult.Cli.Commands
                 if (ex.Message.Contains("Unauthorized"))
                     return "Not logged in";
 
-                throw ex;
+                throw;
             }
         }
     }
