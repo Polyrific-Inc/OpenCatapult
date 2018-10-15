@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>Polyrific.Catapult.Engine</RootNamespace>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AssemblyName>PCEngine</AssemblyName>
+    <AssemblyName>ocengine</AssemblyName>
     <LangVersion>7.1</LangVersion>
     <PackageId>Polyrific.Catapult.Engine</PackageId>
     <Authors>Polyrific</Authors>
