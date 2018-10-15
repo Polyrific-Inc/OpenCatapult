@@ -24,12 +24,12 @@ namespace Polyrific.Catapult.Api.Hubs
             _textWriter = textWriter;
         }
 
-        public async Task SendMessage(int jobQueueId, string taskType, string message)
+        public async Task SendMessage(int jobQueueId, string taskName, string message)
         {
             var group = GetGroupName(jobQueueId.ToString());
             List<string> groups = new List<string>() { group };
-            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", taskType, message);
-            await Clients.Groups(groups).SendAsync("ReceiveMessage", taskType, message);
+            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", taskName, message);
+            await Clients.Groups(groups).SendAsync("ReceiveMessage", taskName, message);
         }
 
         public async Task CompleteJob(int jobQueueId)

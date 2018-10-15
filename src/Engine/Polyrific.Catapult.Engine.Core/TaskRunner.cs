@@ -35,7 +35,19 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, JobDto job, List<JobTaskDefinitionDto> jobTasks, string pluginsLocation, string workingLocation)
         {
+            // update the status to processing so the clients can start listening for logs
             job.Status = JobStatus.Processing;
+            await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
+            {
+                Id = job.Id,
+                CatapultEngineId = job.CatapultEngineId,
+                CatapultEngineIPAddress = job.CatapultEngineIPAddress,
+                CatapultEngineMachineName = job.CatapultEngineMachineName,
+                CatapultEngineVersion = job.CatapultEngineVersion,
+                JobTasksStatus = job.JobTasksStatus,
+                JobType = job.JobType,
+                Status = job.Status
+            });
 
             var orderedJobTasks = jobTasks.OrderBy(t => t.Sequence).ToList();
 

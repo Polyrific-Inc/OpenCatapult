@@ -38,7 +38,10 @@ namespace Polyrific.Catapult.Shared.Common
             }
             else
             {
-                DirectoryInfo di = new DirectoryInfo(folderPath);
+                var di = new DirectoryInfo(folderPath);
+                if (!di.Exists)
+                    return null;
+
                 FileSystemInfo[] files = di.GetFileSystemInfos();
                 var orderedFiles = files.OrderBy(f => f.CreationTime)
                                         .Select(f => f.FullName).ToList();

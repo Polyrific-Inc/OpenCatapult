@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Cli
             {
                 onLogReceived(initialMessage);
 
-                connection.On<string, string>("ReceiveMessage", (taskType, message) =>
+                connection.On<string, string>("ReceiveMessage", (taskName, message) =>
                 {
                     onLogReceived(message);
                 });
