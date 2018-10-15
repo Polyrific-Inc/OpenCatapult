@@ -173,5 +173,12 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Generate a password for the user
+        /// </summary>
+        /// <param name="length">Length of the password</param>
+        /// <returns>The password</returns>
+        Task<string> GeneratePassword(int length = 10);
     }
 }

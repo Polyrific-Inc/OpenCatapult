@@ -6,5 +6,6 @@ namespace Polyrific.Catapult.Shared.Common.Notification
     {
         public const string ConfirmUrl = "ConfirmUrl";
         public const string ResetPasswordToken = "ResetPasswordToken";
+        public const string TemporaryPassword = "TemporaryPassword";
     }
 }

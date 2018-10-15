@@ -39,13 +39,15 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="dto">The register request body</param>
         /// <returns>The user id and confirmation token</returns>
         [HttpPost("Register")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterUser(RegisterUserDto dto)
         {
             int userId = 0;
 
             try
             {
-                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.Password);
+                var temporaryPassword = await _userService.GeneratePassword();
+                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, temporaryPassword);
                 if (createdUser != null)
                 {
                     userId = createdUser.Id;
@@ -64,7 +66,8 @@ namespace Polyrific.Catapult.Api.Controllers
                         }
                     }, new Dictionary<string, string>
                     {
-                        {MessageParameter.ConfirmUrl, confirmUrl}
+                        {MessageParameter.ConfirmUrl, confirmUrl},
+                        {MessageParameter.TemporaryPassword, temporaryPassword}
                     });
                 }
             }

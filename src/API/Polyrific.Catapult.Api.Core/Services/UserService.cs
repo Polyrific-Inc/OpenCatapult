@@ -7,6 +7,7 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,6 +16,10 @@ namespace Polyrific.Catapult.Api.Core.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+
+        private static char[] punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
+
+        private static char[] startingChars = new char[] { '<', '&' };
 
         public UserService(IUserRepository userRepository)
         {
@@ -205,6 +210,96 @@ namespace Polyrific.Catapult.Api.Core.Services
         public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await _userRepository.ValidateUserPassword(userName, password, cancellationToken);
+        }
+
+        public Task<string> GeneratePassword(int length = 10)
+        {
+            if (length < 1 || length > 128)
+            {
+                throw new ArgumentException("Length should be betwen 1 and 128");
+            }
+            
+            string password;
+            int index;
+            byte[] buf;
+            char[] cBuf;
+            int count;
+
+            do
+            {
+                buf = new byte[length];
+                cBuf = new char[length];
+                count = 0;
+
+                (new RNGCryptoServiceProvider()).GetBytes(buf);
+
+                for (int iter = 0; iter < length; iter++)
+                {
+                    int i = (int)(buf[iter] % 87);
+                    if (i < 10)
+                        cBuf[iter] = (char)('0' + i);
+                    else if (i < 36)
+                        cBuf[iter] = (char)('A' + i - 10);
+                    else if (i < 62)
+                        cBuf[iter] = (char)('a' + i - 36);
+                    else
+                    {
+                        cBuf[iter] = punctuations[i - 62];
+                        count++;
+                    }
+                }
+
+                // make sure password contains digit
+                var rand = new Random();
+                int k = rand.Next(0, length - 1);
+                cBuf[k] = (char)('0' + rand.Next(0, 9));
+
+                password = new string(cBuf);
+            }
+            while (IsDangerousString(password, out index));
+
+            return Task.FromResult(password);
+        }
+
+        private static bool IsDangerousString(string s, out int matchIndex)
+        {
+            //bool inComment = false;
+            matchIndex = 0;
+
+            for (int i = 0; ;)
+            {
+
+                // Look for the start of one of our patterns
+                int n = s.IndexOfAny(startingChars, i);
+
+                // If not found, the string is safe
+                if (n < 0) return false;
+
+                // If it's the last char, it's safe
+                if (n == s.Length - 1) return false;
+
+                matchIndex = n;
+
+                switch (s[n])
+                {
+                    case '<':
+                        // If the < is followed by a letter or '!', it's unsafe (looks like a tag or HTML comment)
+                        if (IsAtoZ(s[n + 1]) || s[n + 1] == '!' || s[n + 1] == '/' || s[n + 1] == '?') return true;
+                        break;
+                    case '&':
+                        // If the & is followed by a #, it's unsafe (e.g. &#83;)
+                        if (s[n + 1] == '#') return true;
+                        break;
+                }
+
+                // Continue searching
+                i = n + 1;
+            }
+        }
+
+        private static bool IsAtoZ(char c)
+        {
+            return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
         }
     }
 }
