@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using Microsoft.AspNetCore.Identity;
 using Moq;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
@@ -278,6 +279,30 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var token = await UserService.GetResetPasswordToken(1);
             
             Assert.NotNull(token);
+        }
+
+        [Fact]
+        public async void GeneratePassword_SatisfyRequirement()
+        {
+            var UserService = new UserService(_UserRepository.Object);
+            var passwordValidator = new PasswordValidator<User>();
+            var userManager = GetMockUserManager().Object;
+            var user = new User();
+
+            // since the password is generated randomly, it'd be better to assert it several time
+            for (var i = 0; i < 50; i++)
+            {
+                var password = await UserService.GeneratePassword();
+                var result = await passwordValidator.ValidateAsync(userManager, user, password);
+                Assert.True(result.Succeeded);
+            }
+        }
+
+        private Mock<UserManager<User>> GetMockUserManager()
+        {
+            var userStoreMock = new Mock<IUserStore<User>>();
+            return new Mock<UserManager<User>>(
+                userStoreMock.Object, null, null, null, null, null, null, null, null);
         }
     }
 }

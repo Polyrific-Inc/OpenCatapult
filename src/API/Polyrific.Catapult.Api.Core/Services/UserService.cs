@@ -6,6 +6,7 @@ using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Threading;
@@ -220,43 +221,36 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
             
             string password;
-            int index;
-            byte[] buf;
             char[] cBuf;
-            int count;
 
             do
             {
-                buf = new byte[length];
-                cBuf = new char[length];
-                count = 0;
-
-                (new RNGCryptoServiceProvider()).GetBytes(buf);
-
-                for (int iter = 0; iter < length; iter++)
-                {
-                    int i = (int)(buf[iter] % 87);
-                    if (i < 10)
-                        cBuf[iter] = (char)('0' + i);
-                    else if (i < 36)
-                        cBuf[iter] = (char)('A' + i - 10);
-                    else if (i < 62)
-                        cBuf[iter] = (char)('a' + i - 36);
-                    else
-                    {
-                        cBuf[iter] = punctuations[i - 62];
-                        count++;
-                    }
-                }
+                cBuf = GetRandomLowerCaseString(length);
 
                 // make sure password contains digit
                 var rand = new Random();
-                int k = rand.Next(0, length - 1);
-                cBuf[k] = (char)('0' + rand.Next(0, 9));
+                int digitIdx = rand.Next(0, length - 1);
+                cBuf[digitIdx] = (char)('0' + rand.Next(0, 9));
+
+                // make sure password contain upperCase
+                int ucLetterIdx;
+                do
+                {
+                    ucLetterIdx = rand.Next(0, length - 1);
+                } while (ucLetterIdx == digitIdx);
+                cBuf[ucLetterIdx] = (char)('A' + rand.Next(0, 25));
+
+                // make sure password contain nonalphanumeric
+                int nonAlphanumericIdx;
+                do
+                {
+                    nonAlphanumericIdx = rand.Next(0, length - 1);
+                } while (nonAlphanumericIdx == digitIdx || nonAlphanumericIdx == ucLetterIdx);
+                cBuf[nonAlphanumericIdx] = punctuations[rand.Next(0, punctuations.Length)];
 
                 password = new string(cBuf);
             }
-            while (IsDangerousString(password, out index));
+            while (IsDangerousString(password, out var index));
 
             return Task.FromResult(password);
         }
@@ -300,6 +294,15 @@ namespace Polyrific.Catapult.Api.Core.Services
         private static bool IsAtoZ(char c)
         {
             return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+        }
+
+        private static char[] GetRandomLowerCaseString(int length)
+        {
+            var chars = "abcdefghijklmnopqrstuvwxyz";
+            var random = new Random();
+            return Enumerable.Repeat(chars, length)
+                          .Select(s => s[random.Next(s.Length)])
+                          .ToArray();
         }
     }
 }
