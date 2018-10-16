@@ -31,8 +31,8 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            string message = string.Empty;
-                       
+            Console.WriteLine($"Trying to register new user {Email}...");
+
             var user = _accountService.RegisterUser(new RegisterUserDto
             {
                 Email = Email,
@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                 LastName = LastName
             }).Result;
 
-            message = user.ToCliString("User registered");
+            var message = user.ToCliString($"User {Email} has been registered, but he/she needs to confirm the email first before being able to login.");
             Logger.LogInformation(message);
 
             return message;

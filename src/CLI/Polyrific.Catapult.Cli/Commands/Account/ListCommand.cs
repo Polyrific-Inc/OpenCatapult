@@ -28,10 +28,11 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine("Trying to get list of users...");
+
             var users = _accountService.GetUsers(Status, Role).Result;
 
-            message = users.ToListCliString("Users:");
+            var message = users.ToListCliString($"Found {users.Count} user(s):");
 
             return message;
         }

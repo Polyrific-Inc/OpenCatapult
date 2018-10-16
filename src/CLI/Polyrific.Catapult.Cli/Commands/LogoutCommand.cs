@@ -17,9 +17,11 @@ namespace Polyrific.Catapult.Cli.Commands
 
         public override string Execute()
         {
+            Console.Out.WriteLine("Trying to logout from OpenCatapult...");
+
             _tokenStore.DeleteToken().Wait();
 
-            return $"Logged out";
+            return "Logged out, bye!";
         }
     }
 }

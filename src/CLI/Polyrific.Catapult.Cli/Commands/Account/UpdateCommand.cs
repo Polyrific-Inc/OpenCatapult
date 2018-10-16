@@ -30,24 +30,27 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            string message = string.Empty;
-            var user = _accountService.GetUserByEmail(User).Result;
+            Console.WriteLine($"Trying to update user {User}...");
 
+            string message;
+
+            var user = _accountService.GetUserByEmail(User).Result;
             if (user != null)
             {
-                int userId = int.Parse(user.Id);
+                var userId = int.Parse(user.Id);
                 _accountService.UpdateUser(userId, new UpdateUserDto
                 {
                     Id = userId,
                     FirstName = FirstName ?? user.FirstName,
                     LastName = LastName ?? user.LastName
                 }).Wait();
+
                 message = $"User {User} has been updated";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {User} is not found";
+                message = $"User {User} was not found";
             }
 
             return message;

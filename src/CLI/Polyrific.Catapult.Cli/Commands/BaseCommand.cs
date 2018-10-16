@@ -40,9 +40,9 @@ namespace Polyrific.Catapult.Cli.Commands
 
         protected virtual int OnExecute(CommandLineApplication app)
         {
-            Console.WriteLine("-----------------------------");
-            Console.WriteLine("= Polyrific Catapult CLI =");
-            Console.WriteLine("-----------------------------");
+            Console.WriteLine("----------------------------");
+            Console.WriteLine("|     OpenCatapult CLI     |");
+            Console.WriteLine("----------------------------");
             Console.WriteLine();
 
             var (resultMessage, errorMessage) = ("", "");

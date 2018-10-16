@@ -30,23 +30,26 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            string message = string.Empty;
-            var user = _accountService.GetUserByEmail(User).Result;
+            Console.WriteLine($"Trying to update role of user {User}...");
 
+            string message;
+
+            var user = _accountService.GetUserByEmail(User).Result;
             if (user != null)
             {
-                int userId = int.Parse(user.Id);
+                var userId = int.Parse(user.Id);
                 _accountService.SetUserRole(userId, new SetUserRoleDto
                 {
                     UserId = userId,
                     RoleName = Role,
                 }).Wait();
-                message = $"User {User} has been set to role \"{Role}\"";
+
+                message = $"User {User} has been assigned to role \"{Role}\"";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {User} is not found";
+                message = $"User {User} was not found";
             }
 
             return message;

@@ -1,23 +1,25 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class LoginCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<ITokenStore> _tokenStore;
         private readonly Mock<ITokenService> _tokenService;
         private readonly Mock<IConsoleReader> _consoleReader;
 
-        public LoginCommandTests()
+        public LoginCommandTests(ITestOutputHelper output)
         {
             var users = new List<UserDto>
             {
@@ -28,7 +30,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
             _tokenService = new Mock<ITokenService>();
             _tokenService.Setup(t => t.RequestToken(It.IsAny<RequestTokenDto>())).ReturnsAsync("testToken");
 
@@ -41,7 +43,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Login_Execute_ReturnsSuccessMessage()
         {
-            var command = new LoginCommand(_console.Object, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object, _consoleReader.Object)
+            var command = new LoginCommand(_console, LoggerMock.GetLogger<LoginCommand>().Object, _tokenService.Object, _tokenStore.Object, _consoleReader.Object)
             {
                 Username = "user1@opencatapult.net"
             };
