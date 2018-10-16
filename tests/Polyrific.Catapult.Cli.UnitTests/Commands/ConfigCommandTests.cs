@@ -153,7 +153,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ConfigRemove_RemoveAll_Execute_ReturnsSuccess()
         {
-            var console = new TestConsole(_output);
+            var console = new TestConsole(_output, "y");
             var command = new RemoveCommand(_cliConfig.Object, console, (new Mock<ILogger<RemoveCommand>>()).Object)
             {
                 RemoveAll = true
@@ -168,7 +168,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ConfigRemove_Execute_ReturnsSuccess()
         {
-            var console = new TestConsole(_output);
+            var console = new TestConsole(_output, "y");
             var command = new RemoveCommand(_cliConfig.Object, console, (new Mock<ILogger<RemoveCommand>>()).Object)
             {
                 ConfigName = "config1"

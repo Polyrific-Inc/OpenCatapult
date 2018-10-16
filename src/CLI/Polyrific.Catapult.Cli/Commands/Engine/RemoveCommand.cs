@@ -2,6 +2,7 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 using System.ComponentModel.DataAnnotations;
 
@@ -21,9 +22,15 @@ namespace Polyrific.Catapult.Cli.Commands.Engine
         [Option("-n|--name <NAME>", "Name of the engine", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
-            string message = string.Empty;
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove engine {Name}?", false)))
+                return string.Empty;
+
+            string message;
             var engine = _engineService.GetCatapultEngineByName(Name).Result;
 
             if (engine != null)

@@ -40,6 +40,51 @@ namespace Polyrific.Catapult.Cli.Extensions
             return defaultValue;
         }
 
+        /// <summary>
+        /// Gets a yes/no response from the console after displaying a <paramref name="prompt" />.
+        /// <para>
+        /// The parsing is case insensitive. Valid responses include: yes, no, y, n.
+        /// </para>
+        /// </summary>
+        /// <param name="prompt">The question to display on the command line</param>
+        /// <param name="defaultAnswer">If the user provides an empty response, which value should be returned</param>
+        /// <param name="promptColor">The console color to display</param>
+        /// <param name="promptBgColor">The console background color for the prompt</param>
+        /// <returns>True is 'yes'</returns>
+        public static bool GetYesNo(this IConsole console, string prompt, bool defaultAnswer, ConsoleColor? promptColor = null, ConsoleColor? promptBgColor = null)
+        {
+            var answerHint = defaultAnswer ? "[Y/n]" : "[y/N]";
+            do
+            {
+                Write($"{prompt} {answerHint}", promptColor, promptBgColor);
+                Console.Write(' ');
+
+                string resp;
+                using (ShowCursor())
+                {
+                    resp = console.In.ReadLine()?.ToLower()?.Trim();
+                }
+
+                if (string.IsNullOrEmpty(resp))
+                {
+                    return defaultAnswer;
+                }
+
+                if (resp == "n" || resp == "no")
+                {
+                    return false;
+                }
+
+                if (resp == "y" || resp == "yes")
+                {
+                    return true;
+                }
+
+                Console.WriteLine($"Invalid response '{resp}'. Please answer 'y' or 'n' or CTRL+C to exit.");
+            }
+            while (true);
+        }
+        
         private static void Write(string value, ConsoleColor? foreground, ConsoleColor? background)
         {
             if (foreground.HasValue)

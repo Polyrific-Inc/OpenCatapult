@@ -427,7 +427,8 @@ jobs:
         [Fact]
         public void ProjectRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
             {
                 Name = "Project 1"
             };
@@ -440,7 +441,8 @@ jobs:
         [Fact]
         public void ProjectRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
             {
                 Name = "Project 2"
             };

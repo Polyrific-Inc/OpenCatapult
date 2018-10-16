@@ -2,6 +2,7 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 using System.ComponentModel.DataAnnotations;
 
@@ -28,9 +29,15 @@ namespace Polyrific.Catapult.Cli.Commands.Job
         [Option("-n|--name <NAME>", "Name of the job definition", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
-            string message = string.Empty;
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove job {Name} from project {Project}?", false)))
+                return string.Empty;
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 

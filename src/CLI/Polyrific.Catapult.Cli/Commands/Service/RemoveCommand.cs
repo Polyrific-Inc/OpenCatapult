@@ -3,6 +3,7 @@
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
@@ -21,8 +22,14 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         [Option("-n|--name <NAME>", "Name of the external service", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove external service {Name}?", false)))
+                return string.Empty;
+
             string message = string.Empty;
 
             var service = _externalServiceService.GetExternalServiceByName(Name).Result;

@@ -4,6 +4,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Member;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Polyrific.Catapult.Shared.Dto.User;
@@ -11,6 +12,7 @@ using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
@@ -20,9 +22,12 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProjectMemberService> _projectMemberService;
         private readonly Mock<IAccountService> _accountService;
+        private readonly ITestOutputHelper _output;
 
-        public MemberCommandTests()
+        public MemberCommandTests(ITestOutputHelper output)
         {
+            _output = output;
+
             var projects = new List<ProjectDto>
             {
                 new ProjectDto
@@ -162,7 +167,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void MemberRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user1@opencatapult.net"
@@ -176,7 +182,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void MemberRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user2@opencatapult.net"

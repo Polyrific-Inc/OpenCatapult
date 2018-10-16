@@ -5,6 +5,7 @@ using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Polyrific.Catapult.Cli.Extensions;
 
 namespace Polyrific.Catapult.Cli.Commands.Config
 {
@@ -24,11 +25,14 @@ namespace Polyrific.Catapult.Cli.Commands.Config
         [Option("-n|--name", "Name of the configuration item", CommandOptionType.SingleValue)]
         public string ConfigName { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
             _cliConfig.Load();
 
-            if (RemoveAll)
+            if (RemoveAll && (AutoConfirm || Console.GetYesNo($"Are you sure you want to remove all configs?", false)))
             {
                 var configKeys = _cliConfig.Configs.Keys.ToList();
                 var removedConfigs = new List<string>();
@@ -48,11 +52,15 @@ namespace Polyrific.Catapult.Cli.Commands.Config
             if (string.IsNullOrEmpty(ConfigName))
                 return "";
 
-            _cliConfig.RemoveValue(ConfigName);
-            _cliConfig.Save();
+            string message = string.Empty;
+            if (AutoConfirm || Console.GetYesNo($"Are you sure you want to remove config \"{ConfigName}\"?", false))
+            {
+                _cliConfig.RemoveValue(ConfigName);
+                _cliConfig.Save();
 
-            var message = $"Config \"{ConfigName}\" has been removed.";
-            Logger.LogInformation(message);
+                message = $"Config \"{ConfigName}\" has been removed.";
+                Logger.LogInformation(message);
+            }
 
             return message;
         }

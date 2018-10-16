@@ -10,7 +10,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands.Utilities
 
     public class TestConsole : IConsole
     {
-        public TestConsole(ITestOutputHelper output, string inputString = "")
+        public TestConsole(ITestOutputHelper output, params string[] inputString)
         {
             Out = new XunitTextWriter(output);
             Error = new XunitTextWriter(output);

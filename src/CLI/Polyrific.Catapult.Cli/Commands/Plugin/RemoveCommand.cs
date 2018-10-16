@@ -2,6 +2,7 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Plugin
@@ -19,8 +20,14 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
         [Option("-n|--name", "Name of the plugin", CommandOptionType.SingleValue)]
         public string PluginName { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove plugin {PluginName}?", false)))
+                return string.Empty;
+
             var plugin = _pluginService.GetPluginByName(PluginName).Result;
             if (plugin == null)
                 return $"Plugin {PluginName} was not found.";

@@ -4,12 +4,14 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Engine;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.CatapultEngine;
 using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
@@ -18,9 +20,12 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IConsole> _console;
         private readonly Mock<ICatapultEngineService> _engineService;
         private readonly Mock<ITokenService> _tokenService;
+        private readonly ITestOutputHelper _output;
 
-        public EngineCommandTests()
+        public EngineCommandTests(ITestOutputHelper output)
         {
+            _output = output;
+
             var engines = new List<CatapultEngineDto>
             {
                 new CatapultEngineDto
@@ -99,7 +104,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void EngineRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _engineService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _engineService.Object)
             {
                 Name = "Engine01"
             };
@@ -112,7 +118,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void EngineRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _engineService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _engineService.Object)
             {
                 Name = "Engine02"
             };

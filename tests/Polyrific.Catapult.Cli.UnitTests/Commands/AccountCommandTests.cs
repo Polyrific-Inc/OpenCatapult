@@ -20,6 +20,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     public class AccountCommandTests
     {
         private readonly IConsole _console;
+        private readonly ITestOutputHelper _output;
         private readonly Mock<IAccountService> _accountService;
         private readonly Mock<IConsoleReader> _consoleReader;
 
@@ -34,6 +35,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
+            _output = output;
             _console = new TestConsole(output);
 
             _accountService = new Mock<IAccountService>();
@@ -103,7 +105,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
                 User = "user1@opencatapult.net"
             };
@@ -116,7 +119,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
                 User = "user2@opencatapult.net"
             };

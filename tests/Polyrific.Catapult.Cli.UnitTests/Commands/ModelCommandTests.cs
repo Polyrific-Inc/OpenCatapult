@@ -4,12 +4,14 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Model;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
 using System.Linq;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
@@ -18,9 +20,12 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IConsole> _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProjectDataModelService> _projectModelService;
+        private readonly ITestOutputHelper _output;
 
-        public ModelCommandTests()
+        public ModelCommandTests(ITestOutputHelper output)
         {
+            _output = output;
+
             var projects = new List<ProjectDto>
             {
                 new ProjectDto
@@ -130,7 +135,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ModelRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _projectModelService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _projectModelService.Object)
             {
                 Project = "Project 1",
                 Name = "Product"
@@ -144,7 +150,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ModelRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _projectModelService.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _projectModelService.Object)
             {
                 Project = "Project 1",
                 Name = "Tag"

@@ -8,10 +8,12 @@ using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Plugin;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.Plugin;
 using Polyrific.Catapult.Shared.Service;
 using Xunit;
+using Xunit.Abstractions;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -21,9 +23,11 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     {
         private readonly Mock<IConsole> _console;
         private readonly Mock<IPluginService> _pluginService;
+        private readonly ITestOutputHelper _output;
 
-        public PluginCommandTests()
+        public PluginCommandTests(ITestOutputHelper output)
         {
+            _output = output;
             _console = new Mock<IConsole>();
 
             _pluginService = new Mock<IPluginService>();
@@ -176,11 +180,12 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void PluginRemove_Execute_ReturnsSuccessMessage()
         {
+            var console = new TestConsole(_output, "y");
             _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
                 .ReturnsAsync((string pluginName) => new PluginDto {Id = 1, Name = pluginName});
             _pluginService.Setup(s => s.DeletePlugin(It.IsAny<int>())).Returns(Task.CompletedTask);
 
-            var command = new RemoveCommand(_pluginService.Object, _console.Object,
+            var command = new RemoveCommand(_pluginService.Object, console,
                 LoggerMock.GetLogger<RemoveCommand>().Object)
             {
                 PluginName = "APlugin01"
@@ -194,10 +199,12 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void PluginRemove_Execute_ReturnsNotFoundMessage()
         {
+            var console = new TestConsole(_output, "y");
+
             _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
                 .ReturnsAsync((PluginDto)null);
 
-            var command = new RemoveCommand(_pluginService.Object, _console.Object,
+            var command = new RemoveCommand(_pluginService.Object, console,
                 LoggerMock.GetLogger<RemoveCommand>().Object)
             {
                 PluginName = "APlugin01"

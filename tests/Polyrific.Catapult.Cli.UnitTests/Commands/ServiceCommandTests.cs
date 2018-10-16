@@ -201,7 +201,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ServiceRemove_Execute_ReturnsSuccessMessage()
         {
-            var console = new TestConsole(_output, "userPassword");
+            var console = new TestConsole(_output, "y", "userPassword");
             var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _externalServiceService.Object)
             {
                 Name = "Default-Github"
@@ -215,7 +215,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ServiceRemove_Execute_ReturnsNotFoundMessage()
         {
-            var console = new TestConsole(_output, "userPassword");
+            var console = new TestConsole(_output, "y", "userPassword");
             var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _externalServiceService.Object)
             {
                 Name = "Default-VSTS"

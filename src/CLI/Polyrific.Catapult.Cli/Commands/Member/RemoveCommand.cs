@@ -2,6 +2,7 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 using System.ComponentModel.DataAnnotations;
 
@@ -30,8 +31,14 @@ namespace Polyrific.Catapult.Cli.Commands.Member
         [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public override string Execute()
         {
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove user {User} from project {Project}?", false)))
+                return string.Empty;
+
             string message = string.Empty;
 
             var project = _projectService.GetProjectByName(Project).Result;
