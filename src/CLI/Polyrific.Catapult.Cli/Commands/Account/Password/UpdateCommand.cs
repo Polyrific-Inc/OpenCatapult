@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account.Password
 {
-    [Command(Description = "Update user password")]
+    [Command(Description = "Update current user's password")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
