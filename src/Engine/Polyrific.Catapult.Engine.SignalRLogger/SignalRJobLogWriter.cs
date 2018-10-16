@@ -10,33 +10,41 @@ namespace Polyrific.Catapult.Engine.SignalRLogger
     public class SignalRJobLogWriter : IJobLogWriter
     {
         private const string JobQueueHubEndpoint = "jobQueueHub";
-        private readonly HubConnection _hubConnection;
+        private readonly SignalRClientOption _option;
+        private HubConnection _hubConnection;
 
         public SignalRJobLogWriter(SignalRClientOption option)
         {
-            _hubConnection = GetConnection($"{option.ApiUrl.ToString()}{JobQueueHubEndpoint}", option.AuthorizationToken, option.ApiRequestTimeout);
-            _hubConnection.StartAsync().Wait();
+            _option = option;
         }
 
         public async Task EndJobLog(int jobQueueId)
         {
+            if (_hubConnection == null)
+                _hubConnection = await GetConnection();
+
             await _hubConnection.SendAsync("CompleteJob", jobQueueId);
         }
 
         public async Task WriteLog(int jobQueueId, string taskName, string message)
         {
+            if (_hubConnection == null)
+                _hubConnection = await GetConnection();
+
             await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
         }
 
-        private HubConnection GetConnection(string hubUrl, string authorizationToken, TimeSpan timeout)
+        private async Task<HubConnection> GetConnection()
         {
             var connection = new HubConnectionBuilder()
-            .WithUrl(hubUrl, options =>
+            .WithUrl($"{_option.ApiUrl.ToString()}{JobQueueHubEndpoint}", options =>
             {
-                options.AccessTokenProvider = () => Task.FromResult(authorizationToken);
-                options.CloseTimeout = timeout;
+                options.AccessTokenProvider = () => Task.FromResult(_option.AuthorizationToken);
+                options.CloseTimeout = _option.ApiRequestTimeout;
             })
             .Build();
+
+            await connection.StartAsync();
 
             return connection;
         }
