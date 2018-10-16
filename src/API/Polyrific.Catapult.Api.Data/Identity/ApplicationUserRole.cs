@@ -16,5 +16,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
             UserId = userId;
             RoleId = roleId;
         }
+
+        public ApplicationRole Role { get; set; }
     }
 }

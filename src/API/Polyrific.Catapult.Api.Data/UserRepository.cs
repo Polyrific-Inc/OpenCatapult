@@ -113,7 +113,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+            var user = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
             if (user != null)
                 return _mapper.Map<User>(user);
 
@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+            var user = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
             if (user != null)
                 return _mapper.Map<User>(user);
 
@@ -154,7 +154,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var appUser = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.UserName == userName);
+            var appUser = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.UserName == userName);
 
             return _mapper.Map<User>(appUser);
         }
@@ -224,9 +224,9 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => u.UserProfile.IsActive == isActive || isActive == null).ToListAsync();
-            if (!string.IsNullOrEmpty(role))
-                users = users.Where(u => _userManager.IsInRoleAsync(u, role).Result).ToList();
+            var users = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role")
+                .Where(u => u.UserProfile != null && (u.UserProfile.IsActive == isActive || isActive == null) &&
+                    (role == null || u.Roles.Any(r => r.Role.Name == role))).ToListAsync();
 
             return _mapper.Map<List<User>>(users);
         }

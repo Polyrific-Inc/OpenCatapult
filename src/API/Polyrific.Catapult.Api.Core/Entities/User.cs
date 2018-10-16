@@ -45,5 +45,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Is user active?
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Role of the user
+        /// </summary>
+        public string Role { get; set; }
     }
 }

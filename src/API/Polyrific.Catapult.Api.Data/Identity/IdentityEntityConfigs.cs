@@ -18,6 +18,8 @@ namespace Polyrific.Catapult.Api.Data.Identity
             builder.ToTable("Users");
 
             builder.HasMany<ProjectMember>().WithOne().HasForeignKey(pm => pm.UserId).IsRequired();
+            
+            builder.HasMany(x => x.Roles).WithOne().HasForeignKey(ur => ur.UserId).IsRequired();
 
             builder.HasData(CreateInitialUser());
         }
@@ -79,6 +81,8 @@ namespace Polyrific.Catapult.Api.Data.Identity
             builder.ToTable("UserRoles");
 
             builder.HasData(new ApplicationUserRole(1, 1));
+
+            builder.HasOne(x => x.Role).WithMany(r => r.UserRoles).HasForeignKey(r => r.RoleId).IsRequired();
         }
     }
 

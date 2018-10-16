@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace Polyrific.Catapult.Api.Data.Identity
@@ -28,5 +29,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
 
         public bool? IsCatapultEngine { get; set; }
         public virtual CatapultEngineProfile CatapultEngineProfile { get; set; }
+
+        public virtual ICollection<ApplicationUserRole> Roles { get; set; }
     }
 }

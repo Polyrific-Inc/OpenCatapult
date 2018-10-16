@@ -30,5 +30,10 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// Is user active?
         /// </summary>
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Role of the user
+        /// </summary>
+        public string Role { get; set; }
     }
 }
