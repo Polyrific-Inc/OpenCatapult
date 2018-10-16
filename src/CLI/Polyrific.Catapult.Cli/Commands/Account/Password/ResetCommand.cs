@@ -30,12 +30,14 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
 
         public override string Execute()
         {
-            string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            Console.WriteLine($"Trying to reset password for user {Email}...");
 
+            string message;
+            
+            var user = _accountService.GetUserByEmail(Email).Result;
             if (user != null)
             {
-                int userId = int.Parse(user.Id);
+                var userId = int.Parse(user.Id);
                 _accountService.ResetPassword(userId, new ResetPasswordDto
                 {
                     Id = userId,
@@ -43,6 +45,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
                     NewPassword = _consoleReader.GetPassword("Enter new password:"),
                     ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
                 }).Wait();
+
                 message = $"Password for user {Email} has been reset";
                 Logger.LogInformation(message);
             }

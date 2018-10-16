@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
@@ -23,18 +23,21 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            Console.WriteLine($"Trying to remove user {Email}...");
 
+            string message;
+            
+            var user = _accountService.GetUserByEmail(Email).Result;
             if (user != null)
             {
                 _accountService.RemoveUser(int.Parse(user.Id)).Wait();
+                
                 message = $"User {Email} has been removed";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {Email} is not found";
+                message = $"User {Email} was not found";
             }
 
             return message;

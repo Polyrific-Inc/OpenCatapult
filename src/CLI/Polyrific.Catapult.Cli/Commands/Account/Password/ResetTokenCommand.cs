@@ -11,12 +11,10 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
     public class ResetTokenCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
-        private readonly IConsoleReader _consoleReader;
 
-        public ResetTokenCommand(IConsole console, ILogger<ResetTokenCommand> logger, IAccountService accountService, IConsoleReader consoleReader) : base(console, logger)
+        public ResetTokenCommand(IConsole console, ILogger<ResetTokenCommand> logger, IAccountService accountService) : base(console, logger)
         {
             _accountService = accountService;
-            _consoleReader = consoleReader;
         }
 
         [Required]
@@ -25,13 +23,16 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
 
         public override string Execute()
         {
-            string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            Console.WriteLine($"Requesting reset password token for user {Email}...");
 
+            string message;
+            
+            var user = _accountService.GetUserByEmail(Email).Result;
             if (user != null)
             {
-                int userId = int.Parse(user.Id);
+                var userId = int.Parse(user.Id);
                 _accountService.RequestResetPassword(userId).Wait();
+                
                 message = $"Reset password token has been sent to {Email}";
             }
             else

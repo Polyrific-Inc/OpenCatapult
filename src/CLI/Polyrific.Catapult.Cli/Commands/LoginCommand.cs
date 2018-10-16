@@ -28,6 +28,8 @@ namespace Polyrific.Catapult.Cli.Commands
 
         public override string Execute()
         {
+            Console.WriteLine($"Trying to login as {Username}...");
+
             var token = _tokenService.RequestToken(new RequestTokenDto
             {
                 Email = Username,

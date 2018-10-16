@@ -1,27 +1,29 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Account;
 using Polyrific.Catapult.Cli.Commands.Account.Password;
+using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class AccountCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IAccountService> _accountService;
         private readonly Mock<IConsoleReader> _consoleReader;
 
-        public AccountCommandTests()
+        public AccountCommandTests(ITestOutputHelper output)
         {
             var users = new List<UserDto>
             {
@@ -32,7 +34,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
 
             _accountService = new Mock<IAccountService>();
             _accountService.Setup(s => s.GetUsers(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(users);
@@ -51,7 +53,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Account_Execute_ReturnsEmpty()
         {
-            var command = new AccountCommand(_console.Object, LoggerMock.GetLogger<AccountCommand>().Object);
+            var command = new AccountCommand(_console, LoggerMock.GetLogger<AccountCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -60,7 +62,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountActivate_Execute_ReturnsSuccessMessage()
         {
-            var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
+            var command = new ActivateCommand(_console, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -73,14 +75,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountActivate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
+            var command = new ActivateCommand(_console, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("User user2@opencatapult.net was not found", resultMessage);
         }
 
         [Fact]
@@ -89,16 +91,19 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _accountService.Setup(s => s.RegisterUser(It.IsAny<RegisterUserDto>()))
                 .ReturnsAsync(new RegisterUserResultDto());
 
-            var command = new RegisterCommand(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object);
+            var command = new RegisterCommand(_console, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object)
+            {
+                Email = "user2@opencatapult.net"
+            };
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("User registered", resultMessage);
+            Assert.StartsWith("User user2@opencatapult.net has been registered", resultMessage);
         }
 
         [Fact]
         public void AccountRemove_Execute_ReturnsSuccessMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
+            var command = new RemoveCommand(_console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -111,20 +116,20 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountRemove_Execute_ReturnsNotFoundMessage()
         {
-            var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
+            var command = new RemoveCommand(_console, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("User user2@opencatapult.net was not found", resultMessage);
         }
 
         [Fact]
         public void AccountSuspend_Execute_ReturnsSuccessMessage()
         {
-            var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
+            var command = new SuspendCommand(_console, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -137,20 +142,20 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountSuspend_Execute_ReturnsNotFoundMessage()
         {
-            var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
+            var command = new SuspendCommand(_console, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("User user2@opencatapult.net was not found", resultMessage);
         }
 
         [Fact]
         public void AccountUpdate_Execute_ReturnsSuccessMessage()
         {
-            var command = new Cli.Commands.Account.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
+            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -163,20 +168,20 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new Cli.Commands.Account.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
+            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("User user2@opencatapult.net was not found", resultMessage);
         }
 
         [Fact]
         public void AccountUpdatePassword_Execute_ReturnsSuccessMessage()
         {
-            var command = new Cli.Commands.Account.Password.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new Cli.Commands.Account.Password.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -189,7 +194,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdatePassword_Execute_ReturnsNotFoundMessage()
         {
-            var command = new Cli.Commands.Account.Password.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new Cli.Commands.Account.Password.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
                 Email = "user2@opencatapult.net"
             };
@@ -202,7 +207,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountPasswordResetToken_Execute_ReturnsSuccessMessage()
         {
-            var command = new ResetTokenCommand(_console.Object, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new ResetTokenCommand(_console, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -215,7 +220,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountPasswordResetToken_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ResetTokenCommand(_console.Object, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new ResetTokenCommand(_console, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
@@ -228,7 +233,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountPasswordReset_Execute_ReturnsSuccessMessage()
         {
-            var command = new ResetCommand(_console.Object, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new ResetCommand(_console, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
                 Email = "user1@opencatapult.net"
             };
@@ -241,7 +246,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountPasswordReset_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ResetCommand(_console.Object, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
+            var command = new ResetCommand(_console, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
                 Email = "user2@opencatapult.net"
             };
@@ -254,7 +259,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountSetRole_Execute_ReturnsSuccessMessage()
         {
-            var command = new SetRoleCommand(_console.Object, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
+            var command = new SetRoleCommand(_console, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
             {
                 Email = "user1@opencatapult.net",
                 Role = UserRole.Basic
@@ -262,30 +267,30 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user1@opencatapult.net has been set to role \"Basic\"", resultMessage);
+            Assert.Equal("User user1@opencatapult.net has been assigned to role \"Basic\"", resultMessage);
         }
 
         [Fact]
         public void AccountSetRole_Execute_ReturnsNotFoundMessage()
         {
-            var command = new SetRoleCommand(_console.Object, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
+            var command = new SetRoleCommand(_console, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
             {
                 Email = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("User user2@opencatapult.net was not found", resultMessage);
         }
 
         [Fact]
         public void AccountList_Execute_ReturnsSuccessMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _accountService.Object);
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _accountService.Object);
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Users:", resultMessage);
+            Assert.StartsWith("Found 1 user(s):", resultMessage);
         }
     }
 }
