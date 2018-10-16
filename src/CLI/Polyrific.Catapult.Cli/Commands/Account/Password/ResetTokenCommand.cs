@@ -25,18 +25,17 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
         {
             Console.WriteLine($"Requesting reset password token for user {User}...");
 
-            string message;
+            string message = $"Reset password token has been sent to {User}";
 
             var user = _accountService.GetUserByEmail(User).Result;
             if (user != null)
             {
                 var userId = int.Parse(user.Id);
                 _accountService.RequestResetPassword(userId).Wait();
-                message = $"Reset password token has been sent to {User}";
             }
             else
             {
-                message = $"User {User} is not found";
+                Logger.LogWarning($"A reset password token was requested for user {User} that doesn't exist");
             }
 
             return message;

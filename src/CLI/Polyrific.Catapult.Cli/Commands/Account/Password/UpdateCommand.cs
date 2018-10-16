@@ -19,36 +19,21 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
             _accountService = accountService;
             _consoleReader = consoleReader;
         }
-
-        [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
-        public string User { get; set; }
         
         public override string Execute()
         {
-            Console.WriteLine($"Trying to update password for user {User}...");
+            Console.WriteLine($"Trying to update password for current user...");
 
             string message;
 
-            var user = _accountService.GetUserByEmail(User).Result;
-            if (user != null)
+            _accountService.UpdatePassword(new UpdatePasswordDto
             {
-                var userId = int.Parse(user.Id);
-                _accountService.UpdatePassword(userId, new UpdatePasswordDto
-                {
-                    Id = userId,
-                    OldPassword = _consoleReader.GetPassword("Enter old password:"),
-                    NewPassword = _consoleReader.GetPassword("Enter new password:"),
-                    ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
-                }).Wait();
-
-                message = $"Password for user {User} has been updated";
-                Logger.LogInformation(message);
-            }
-            else
-            {
-                message = $"User {User} is not found";
-            }
+                OldPassword = _consoleReader.GetPassword("Enter old password:"),
+                NewPassword = _consoleReader.GetPassword("Enter new password:"),
+                ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
+            }).Wait();
+            message = $"Password for current user has been updated";
+            Logger.LogInformation(message);
 
             return message;
         }

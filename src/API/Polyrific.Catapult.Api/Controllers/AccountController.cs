@@ -248,22 +248,17 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Update user's password
         /// </summary>
-        /// <param name="userId">Id of the user</param>
         /// <param name="dto">The request body for update password</param>
         /// <returns></returns>
-        [HttpPost("{userId}/password")]
+        [HttpPut("password")]
         [Authorize]
-        public async Task<IActionResult> UpdatePassword(int userId, UpdatePasswordDto dto)
+        public async Task<IActionResult> UpdatePassword(UpdatePasswordDto dto)
         {
             try
             {
                 var currentUserId = User.GetUserId();
-                if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
-                {
-                    return Unauthorized();
-                }
 
-                await _userService.UpdatePassword(userId, dto.OldPassword, dto.NewPassword);
+                await _userService.UpdatePassword(currentUserId, dto.OldPassword, dto.NewPassword);
 
                 return Ok("Password updated");
             }

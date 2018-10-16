@@ -7,12 +7,6 @@ namespace Polyrific.Catapult.Shared.Dto.User
     public class UpdatePasswordDto
     {
         /// <summary>
-        /// Id of the user
-        /// </summary>
-        [Required]
-        public int Id { get; set; }
-
-        /// <summary>
         /// Old password of the user
         /// </summary>
         [Required]

@@ -97,11 +97,11 @@ namespace Polyrific.Catapult.Shared.ApiClient
             await Api.Put(path, dto);
         }
 
-        public async Task UpdatePassword(int userId, UpdatePasswordDto dto)
+        public async Task UpdatePassword(UpdatePasswordDto dto)
         {
-            var path = $"account/{userId}/password";
+            var path = $"account/password";
 
-            await Api.Post(path, dto);
+            await Api.Put(path, dto);
         }
 
         public async Task RequestResetPassword(int userId)

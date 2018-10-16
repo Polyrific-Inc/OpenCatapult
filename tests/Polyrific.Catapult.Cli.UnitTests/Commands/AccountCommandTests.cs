@@ -181,27 +181,11 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdatePassword_Execute_ReturnsSuccessMessage()
         {
-            var command = new Cli.Commands.Account.Password.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
-            {
-                User = "user1@opencatapult.net"
-            };
+            var command = new Cli.Commands.Account.Password.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object);
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Password for user user1@opencatapult.net has been updated", resultMessage);
-        }
-
-        [Fact]
-        public void AccountUpdatePassword_Execute_ReturnsNotFoundMessage()
-        {
-            var command = new Cli.Commands.Account.Password.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
-            {
-                User = "user2@opencatapult.net"
-            };
-
-            var resultMessage = command.Execute();
-
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("Password for current user has been updated", resultMessage);
         }
 
         [Fact]
@@ -218,7 +202,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void AccountPasswordResetToken_Execute_ReturnsNotFoundMessage()
+        public void AccountPasswordResetToken_Execute_ReturnsSuccessWhenEmailNotFound()
         {
             var command = new ResetTokenCommand(_console, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object)
             {
@@ -227,7 +211,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("Reset password token has been sent to user2@opencatapult.net", resultMessage);
         }
 
         [Fact]
@@ -244,7 +228,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void AccountPasswordReset_Execute_ReturnsNotFoundMessage()
+        public void AccountPasswordReset_Execute_ReturnsFailedMessage()
         {
             var command = new ResetCommand(_console, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
@@ -253,7 +237,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user2@opencatapult.net is not found", resultMessage);
+            Assert.Equal("Reset password failed. Please make sure to input the correct reset password token", resultMessage);
         }
 
         [Fact]
