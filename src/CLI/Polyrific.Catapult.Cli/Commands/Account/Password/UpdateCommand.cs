@@ -21,13 +21,13 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
         }
 
         [Required]
-        [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
-        public string Email { get; set; }
+        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        public string User { get; set; }
         
         public override string Execute()
         {
             string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            var user = _accountService.GetUserByEmail(User).Result;
 
             if (user != null)
             {
@@ -39,12 +39,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
                     NewPassword = _consoleReader.GetPassword("Enter new password:"),
                     ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
                 }).Wait();
-                message = $"Password for user {Email} has been updated";
+                message = $"Password for user {User} has been updated";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {Email} is not found";
+                message = $"User {User} is not found";
             }
 
             return message;

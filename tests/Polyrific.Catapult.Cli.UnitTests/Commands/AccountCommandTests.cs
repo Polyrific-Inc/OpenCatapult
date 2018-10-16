@@ -62,7 +62,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -75,7 +75,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _accountService.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -100,7 +100,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -113,7 +113,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new RemoveCommand(_console.Object, LoggerMock.GetLogger<RemoveCommand>().Object, _accountService.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -126,7 +126,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -139,7 +139,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _accountService.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -152,7 +152,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new Cli.Commands.Account.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -165,7 +165,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new Cli.Commands.Account.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -178,7 +178,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new Cli.Commands.Account.Password.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -191,7 +191,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new Cli.Commands.Account.Password.UpdateCommand(_console.Object, LoggerMock.GetLogger<Cli.Commands.Account.Password.UpdateCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -204,7 +204,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ResetTokenCommand(_console.Object, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -217,7 +217,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ResetTokenCommand(_console.Object, LoggerMock.GetLogger<ResetTokenCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -230,7 +230,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ResetCommand(_console.Object, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user1@opencatapult.net"
+                User = "user1@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -243,7 +243,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new ResetCommand(_console.Object, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();
@@ -256,7 +256,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new SetRoleCommand(_console.Object, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
             {
-                Email = "user1@opencatapult.net",
+                User = "user1@opencatapult.net",
                 Role = UserRole.Basic
             };
 
@@ -270,7 +270,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var command = new SetRoleCommand(_console.Object, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)
             {
-                Email = "user2@opencatapult.net"
+                User = "user2@opencatapult.net"
             };
 
             var resultMessage = command.Execute();

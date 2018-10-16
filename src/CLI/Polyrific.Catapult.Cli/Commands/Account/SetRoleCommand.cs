@@ -20,8 +20,8 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         }
 
         [Required]
-        [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
-        public string Email { get; set; }
+        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        public string User { get; set; }
 
         [Required]
         [Option("-r|--role <ROLE>", "Role of user", CommandOptionType.SingleValue)]
@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         public override string Execute()
         {
             string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            var user = _accountService.GetUserByEmail(User).Result;
 
             if (user != null)
             {
@@ -41,12 +41,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                     UserId = userId,
                     RoleName = Role,
                 }).Wait();
-                message = $"User {Email} has been set to role \"{Role}\"";
+                message = $"User {User} has been set to role \"{Role}\"";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {Email} is not found";
+                message = $"User {User} is not found";
             }
 
             return message;

@@ -20,23 +20,23 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
         }
 
         [Required]
-        [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
-        public string Email { get; set; }
+        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        public string User { get; set; }
 
         public override string Execute()
         {
             string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            var user = _accountService.GetUserByEmail(User).Result;
 
             if (user != null)
             {
                 int userId = int.Parse(user.Id);
                 _accountService.RequestResetPassword(userId).Wait();
-                message = $"Reset password token has been sent to {Email}";
+                message = $"Reset password token has been sent to {User}";
             }
             else
             {
-                message = $"User {Email} is not found";
+                message = $"User {User} is not found";
             }
 
             return message;

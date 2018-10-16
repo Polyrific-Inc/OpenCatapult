@@ -18,23 +18,23 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         }
 
         [Required]
-        [Option("-e|--email <EMAIL>", "Email of the user", CommandOptionType.SingleValue)]
-        public string Email { get; set; }
+        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        public string User { get; set; }
 
         public override string Execute()
         {
             string message = string.Empty;
-            var user = _accountService.GetUserByEmail(Email).Result;
+            var user = _accountService.GetUserByEmail(User).Result;
 
             if (user != null)
             {
                 _accountService.ReactivateUser(int.Parse(user.Id)).Wait();
-                message = $"User {Email} has been activated";
+                message = $"User {User} has been activated";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"User {Email} is not found";
+                message = $"User {User} is not found";
             }
 
             return message;
