@@ -3,6 +3,7 @@
 using AutoMapper;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.Project;
 using System.Collections.Generic;
 
@@ -16,7 +17,8 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
                 .ForMember(
                     dest => dest.Config,
                     opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString))
-                );
+                )
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IsArchived ? ProjectStatusFilterType.Archived: ProjectStatusFilterType.Active));
 
             CreateMap<UpdateProjectDto, Project>()
                 .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Config)));

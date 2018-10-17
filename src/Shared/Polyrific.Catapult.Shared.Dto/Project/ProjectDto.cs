@@ -22,6 +22,11 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         public string Client { get; set; }
 
         /// <summary>
+        /// Status of the project
+        /// </summary>
+        public string Status { get; set; }
+
+        /// <summary>
         /// Config of the project
         /// </summary>
         public Dictionary<string, string> Config { get; set; }
