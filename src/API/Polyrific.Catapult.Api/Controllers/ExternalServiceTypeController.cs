@@ -34,7 +34,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServiceTypes(bool includeProperties = false)
         {
-            _logger.LogInformation("Getting external service types");
+            _logger.LogInformation("Getting external service types. Includes properties: {includeProperties}", includeProperties);
 
             var externalServiceTypes = await _externalServiceTypeService.GetExternalServiceTypes(includeProperties);
             var results = _mapper.Map<List<ExternalServiceTypeDto>>(externalServiceTypes);

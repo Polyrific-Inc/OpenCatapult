@@ -91,7 +91,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateExternalService(CreateExternalServiceDto dto)
         {
-            _logger.LogInformation("Creating external service");
+            // exclude configs since it may contain secret values
+            var requestBodyToLog = new CreateExternalServiceDto
+            {
+                Name = dto.Name,
+                Description = dto.Description,
+                ExternalServiceTypeId = dto.ExternalServiceTypeId
+            };
+            _logger.LogInformation("Creating external service. Request body: {@requestBodyToLog}", requestBodyToLog);
 
             try
             {
@@ -126,7 +133,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateExternalService(int serviceId, UpdateExternalServiceDto dto)
         {
-            _logger.LogInformation("Updating external service {serviceId}", serviceId);
+            // exclude configs since it may contain secret values
+            var requestBodyToLog = new UpdateExternalServiceDto
+            {
+                Description = dto.Description
+            };
+
+            _logger.LogInformation("Updating external service {serviceId}. Request body: {@requestBodyToLog}", serviceId, requestBodyToLog);
 
             var updatedService = _mapper.Map<ExternalService>(dto);
             updatedService.Id = serviceId;

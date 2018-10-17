@@ -38,7 +38,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModels(int projectId, bool includeProperties = false)
         {
-            _logger.LogInformation("Getting project data models in project {projectId}", projectId);
+            _logger.LogInformation("Getting data models in project {projectId}. Include properties: {includeProperties}", projectId, includeProperties);
 
             var dataModels = await _projectDataModelService.GetProjectDataModels(projectId, includeProperties);
             var results = _mapper.Map<List<ProjectDataModelDto>>(dataModels);
@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> CreateProjectDataModel(int projectId, CreateProjectDataModelDto newProjectDataModel)
         {
-            _logger.LogInformation("Getting project data models for project {projectId}", projectId);
+            _logger.LogInformation("Getting data models for project {projectId}. Request body: {@newProjectDataModel}", projectId, newProjectDataModel);
 
             try
             {
@@ -92,7 +92,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModel(int projectId, int modelId)
         {
-            _logger.LogInformation("Getting project data model {modelId}", modelId);
+            _logger.LogInformation("Getting data model {modelId} in project {projectId}", modelId, projectId);
 
             var projectDataModel = await _projectDataModelService.GetProjectDataModelById(modelId);
             var result = _mapper.Map<ProjectDataModelDto>(projectDataModel);
@@ -109,7 +109,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModel(int projectId, string modelName)
         {
-            _logger.LogInformation("Getting project data model {modelName}", modelName);
+            _logger.LogInformation("Getting data model {modelName} in project {projectId}", modelName, projectId);
 
             var projectDataModel = await _projectDataModelService.GetProjectDataModelByName(projectId, modelName);
             var result = _mapper.Map<ProjectDataModelDto>(projectDataModel);
@@ -127,7 +127,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> UpdateProjectDataModel(int projectId, int modelId, UpdateProjectDataModelDto projectDataModel)
         {
-            _logger.LogInformation("Updating project data model {modelId}", modelId);
+            _logger.LogInformation("Updating data model {modelId} in project {projectId}. Request body: {@projectDataModel}", modelId, projectId, projectDataModel);
 
             try
             {
@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> DeleteProjectDataModel(int projectId, int modelId)
         {
-            _logger.LogInformation("Deleting project data model {modelId}", modelId);
+            _logger.LogInformation("Deleting data model {modelId} in project {projectId}", modelId, projectId);
 
             await _projectDataModelService.DeleteDataModel(modelId);
 
@@ -176,7 +176,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModelProperties(int projectId, int modelId)
         {
-            _logger.LogInformation("Getting properties in data model {modelId}", modelId);
+            _logger.LogInformation("Getting properties in data model {modelId}, project {projectId}", modelId, projectId);
 
             var properties = await _projectDataModelService.GetDataModelProperties(modelId);
             var results = _mapper.Map<List<ProjectDataModelPropertyDto>>(properties);
@@ -196,7 +196,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> CreateProjectDataModelProperty(int projectId, int modelId, CreateProjectDataModelPropertyDto newProperty)
         {
-            _logger.LogInformation("Creating property for data model {modelId}", modelId);
+            _logger.LogInformation("Creating property for data model {modelId} in project {projectId}. Request body: {@newProperty}", modelId, projectId, newProperty);
 
             try
             {
@@ -241,7 +241,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModelProperty(int projectId, int modelId, int propertyId)
         {
-            _logger.LogInformation("Getting property {propertyId}", propertyId);
+            _logger.LogInformation("Getting property {propertyId} in data model {modelId}, project {projectId}", propertyId, modelId, projectId);
 
             var property = await _projectDataModelService.GetProjectDataModelPropertyById(modelId);
             var result = _mapper.Map<ProjectDataModelPropertyDto>(property);
@@ -259,7 +259,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectDataModelProperty(int projectId, int modelId, string propertyName)
         {
-            _logger.LogInformation("Getting property {propertyName}", propertyName);
+            _logger.LogInformation("Getting property {propertyName} in data model {modelId}, project {projectId}", propertyName, modelId, projectId);
 
             var property = await _projectDataModelService.GetProjectDataModelPropertyByName(modelId, propertyName);
             var result = _mapper.Map<ProjectDataModelPropertyDto>(property);
@@ -278,7 +278,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> UpdateProjectDataModelProperty(int projectId, int modelId, int propertyId, UpdateProjectDataModelPropertyDto projectDataModelProperty)
         {
-            _logger.LogInformation("Updating property {propertyId}", propertyId);
+            _logger.LogInformation("Updating property {propertyId} in data model {modelId}, project {projectId}. Request body: {@projectDataModelProperty}", propertyId, modelId, projectId, projectDataModelProperty);
 
             try
             {
@@ -311,7 +311,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> DeleteProjectDataModelProperty(int projectId, int modelId, int propertyId)
         {
-            _logger.LogInformation("Updating property {propertyId}", propertyId);
+            _logger.LogInformation("Updating property {propertyId} in data model {modelId}, project {projectId}", propertyId, modelId, projectId);
 
             await _projectDataModelService.DeleteDataModelProperty(propertyId);
 

@@ -125,7 +125,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterPlugin(NewPluginDto dto)
         {
-            _logger.LogInformation("Registering plugin");
+            _logger.LogInformation("Registering plugin. Request body: {@dto}", dto);
 
             try
             {

@@ -45,7 +45,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterUser(RegisterUserDto dto)
         {
-            _logger.LogInformation("Registering user");
+            _logger.LogInformation("Registering user. Request body: {@dto}", dto);
 
             int userId = 0;
 
@@ -114,7 +114,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetUsers(string status, string role)
         {
-            _logger.LogInformation("Getting users");
+            _logger.LogInformation("Getting users. Filtered by status = {status} and role = {role}", status, role);
 
             var users = await _userService.GetUsers(status, role);
 
@@ -222,7 +222,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser(int userId, UpdateUserDto updatedUser)
         {
-            _logger.LogInformation("Updating user {userId}", userId);
+            _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
 
             var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
@@ -388,7 +388,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> SetUserRole(int userId, SetUserRoleDto dto)
         {
-            _logger.LogInformation("Setting role for user {userId}", userId);
+            _logger.LogInformation("Setting role for user {userId}. Request body: {@dto}", userId, dto);
 
             if (userId != dto.UserId)
             {

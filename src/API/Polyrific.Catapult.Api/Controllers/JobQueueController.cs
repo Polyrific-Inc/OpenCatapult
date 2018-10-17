@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueues(int projectId, string filter = JobQueueFilterType.All)
         {
-            _logger.LogInformation("Getting job queues in project {projectId}", projectId);
+            _logger.LogInformation("Getting job queues in project {projectId}. Filter: {filter}", projectId, filter);
 
             try
             {
@@ -65,7 +65,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueue(int projectId, int queueId)
         {
-            _logger.LogInformation("Getting job queue {queueId}", queueId);
+            _logger.LogInformation("Getting job queue {queueId} in project {projectId}", queueId, projectId);
 
             var job = await _jobQueueService.GetJobQueueById(queueId);
             var result = _mapper.Map<JobDto>(job);
@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CreateJobQueue(int projectId, NewJobDto newJobQueue)
         {
-            _logger.LogInformation("Creating job queue for project {projectId}", projectId);
+            _logger.LogInformation("Creating job queue for project {projectId}. Request body: {@newJobQueue}", projectId, newJobQueue);
 
             try
             {
@@ -128,7 +128,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CancelJobQueue(int projectId, int queueId)
         {
-            _logger.LogInformation("Cancel job queue {queueId}", queueId);
+            _logger.LogInformation("Cancel job queue {queueId} in project {projectId}", queueId, projectId);
 
             try
             {
@@ -174,7 +174,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> UpdateJobQueue(int queueId, UpdateJobDto job)
         {
-            _logger.LogInformation("Updating job queue");
+            _logger.LogInformation("Updating job queue. Request body: {@job}", job);
 
             try
             {
@@ -206,7 +206,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueueStatus(int projectId, int queueId, string filter = JobTaskStatusFilterType.All)
         {
-            _logger.LogInformation("Getting status for job queue {queueId}", queueId);
+            _logger.LogInformation("Getting status for job queue {queueId} in project {projectId}. Filter: {filter}", queueId, projectId, filter);
 
             try
             {

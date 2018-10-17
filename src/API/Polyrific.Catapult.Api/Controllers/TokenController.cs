@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> RequestToken(RequestTokenDto dto)
         {
-            _logger.LogInformation("Requesting user token");
+            _logger.LogInformation("Requesting user token for user {Email}", dto?.Email);
 
             if (!await _userService.ValidateUserPassword(dto.Email, dto.Password))
             {
@@ -79,7 +79,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RequestEngineToken(int engineId, RequestEngineTokenDto dto)
         {
-            _logger.LogInformation("Requesting engine token");
+            _logger.LogInformation("Requesting token for engine {engineId}. Request body: {@dto}", engineId, dto);
 
             var engine = await _catapultEngineService.GetCatapultEngine(engineId);
             if (!engine.IsActive)

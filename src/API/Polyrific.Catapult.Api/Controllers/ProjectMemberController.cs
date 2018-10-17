@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMembers(int projectId, int roleId)
         {
-            _logger.LogInformation("Getting members in project {projectId}", projectId);
+            _logger.LogInformation("Getting members in project {projectId} with role {roleId}", projectId, roleId);
 
             var projects = await _projectMemberService.GetProjectMembers(projectId, roleId);
             var results = _mapper.Map<List<ProjectMemberDto>>(projects);
@@ -59,7 +59,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CreateProjectMember(int projectId, NewProjectMemberDto newProjectMember)
         {
-            _logger.LogInformation("Creating member in project {projectId}", projectId);
+            _logger.LogInformation("Creating member in project {projectId}. Request body: {@newProjectMember}", projectId, newProjectMember);
 
             try
             {
@@ -120,7 +120,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMember(int projectId, int memberId)
         {
-            _logger.LogInformation("Getting member {memberId}", memberId);
+            _logger.LogInformation("Getting member {memberId} in project {projectId}", memberId, projectId);
 
             var projectMember = await _projectMemberService.GetProjectMemberById(memberId);
             var result = _mapper.Map<ProjectMemberDto>(projectMember);
@@ -137,7 +137,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMemberByUserId(int projectId, int userId)
         {
-            _logger.LogInformation("Getting member for user {userId}", userId);
+            _logger.LogInformation("Getting member for user {userId} in project {projectId}", userId, projectId);
 
             var projectMember = await _projectMemberService.GetProjectMemberByUserId(projectId, userId);
             var result = _mapper.Map<ProjectMemberDto>(projectMember);
@@ -155,7 +155,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> UpdateProjectMember(int projectId, int memberId, UpdateProjectMemberDto projectMember)
         {
-            _logger.LogInformation("Updating member {memberId}", memberId);
+            _logger.LogInformation("Updating member {memberId} in project {projectId}. Request body: {@projectMember}", memberId, projectId, projectMember);
 
             if (memberId != projectMember.Id)
             {
@@ -178,7 +178,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> RemoveProjectMember(int projectId, int memberId)
         {
-            _logger.LogInformation("Removing member {memberId}", memberId);
+            _logger.LogInformation("Removing member {memberId} in project {projectId}", memberId, projectId);
 
             try
             {

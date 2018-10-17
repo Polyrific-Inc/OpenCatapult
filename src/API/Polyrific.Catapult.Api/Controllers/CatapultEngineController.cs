@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterEngine(RegisterCatapultEngineDto dto)
         {
-            _logger.LogInformation("Registering engine");
+            _logger.LogInformation("Registering engine. Request body: {@dto}", dto);
 
             int catapultEngineId = 0;
             string confirmToken = "";
@@ -128,7 +128,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatapultEngines(string status)
         {
-            _logger.LogInformation("Getting engines");
+            _logger.LogInformation("Getting engines with status = {status}", status);
 
             var catapultEngines = await _catapultEngineService.GetCatapultEngines(status);
 

@@ -8,6 +8,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMemberAccess)]
         public async Task<IActionResult> GetProjects(string status = null)
         {
-            _logger.LogInformation("Getting projects");
+            _logger.LogInformation("Getting projects. Filtered by status = {status}", status);
 
             try
             {
@@ -95,7 +96,28 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateProject(NewProjectDto newProject)
         {
-            _logger.LogInformation("Creating project");
+            // exclude task's additional configs since it may contain secret values
+            var requestBodyToLog = new NewProjectDto
+            {
+                Name = newProject.Name,
+                Members = newProject.Members,
+                Client = newProject.Client,
+                Config = newProject.Config,
+                Models = newProject.Models,
+                Jobs = newProject.Jobs?.Select(j => new CreateJobDefinitionWithTasksDto
+                {
+                    Name = j.Name,
+                    Tasks = j.Tasks?.Select(t => new CreateJobTaskDefinitionDto
+                    {
+                        Name = t.Name,
+                        Configs = t.Configs,
+                        Provider = t.Provider,
+                        Sequence = t.Sequence,
+                        Type = t.Type
+                    }).ToList()
+                }).ToList()
+            };
+            _logger.LogInformation("Creating project. Request body: {@requestBodyToLog}", requestBodyToLog);
 
             try
             {
@@ -158,7 +180,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
         public async Task<IActionResult> UpdateProject(int projectId, UpdateProjectDto updatedProject)
         {
-            _logger.LogInformation("Updating project {projectId}", projectId);
+            _logger.LogInformation("Updating project {projectId}. Request body: {@updatedProject}", projectId, updatedProject);
 
             try
             {
@@ -191,7 +213,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
         public async Task<IActionResult> CloneProject(int projectId, CloneProjectOptionDto option)
         {
-            _logger.LogInformation("Cloning project {projectId}", projectId);
+            _logger.LogInformation("Cloning project {projectId}. Request body: {@option}", projectId, option);
 
             try
             {
