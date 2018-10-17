@@ -1,5 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
@@ -8,9 +11,6 @@ using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -49,7 +49,8 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to create project \"{Name}\"...");
+
             NewProjectDto projectDto;
             if (!string.IsNullOrEmpty(Template))
             {
@@ -73,13 +74,13 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             projectDto.Jobs = projectDto.Jobs ?? new List<CreateJobDefinitionWithTasksDto>();
             projectDto.Config = Property?.ToDictionary(x => x.Item1, x => x.Item2);
 
-            message = ValidateTask(projectDto.Jobs);
+            var message = ValidateTask(projectDto.Jobs);
             if (!string.IsNullOrEmpty(message))
                 return message;
 
             var project = _projectService.CreateProject(projectDto).Result;
 
-            message = project.ToCliString($"Project created:");
+            message = project.ToCliString("Project created:", null, 1);
             Logger.LogInformation(message);
             
             return message;

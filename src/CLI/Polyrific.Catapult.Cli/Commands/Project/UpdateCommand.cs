@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
@@ -34,10 +34,11 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to update project {Name}...");
+
+            string message;
             
             var project = _projectService.GetProjectByName(Name).Result;
-
             if (project != null)
             {
                 var dto = new UpdateProjectDto
@@ -50,12 +51,12 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
                 _projectService.UpdateProject(project.Id, dto).Wait();
 
-                message = $"Project {Name} was updated";
+                message = $"Project {Name} has been updated successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Name} is not found";
+                message = $"Project {Name} was not found";
             }
 
             return message;

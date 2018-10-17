@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     public class ProjectCommandTests
     {
         private readonly ITestOutputHelper _output;
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IConsoleReader> _consoleReader;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IPluginService> _pluginService;
@@ -101,7 +101,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
             _consoleReader = new Mock<IConsoleReader>();
 
             _projectService = new Mock<IProjectService>();
@@ -133,7 +133,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Project_Execute_ReturnsEmpty()
         {
-            var command = new ProjectCommand(_console.Object, LoggerMock.GetLogger<ProjectCommand>().Object);
+            var command = new ProjectCommand(_console, LoggerMock.GetLogger<ProjectCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -142,33 +142,33 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProjectArchive_Execute_ReturnsSuccessMessage()
         {
-            var command = new ArchiveCommand(_console.Object, LoggerMock.GetLogger<ArchiveCommand>().Object, _projectService.Object)
+            var command = new ArchiveCommand(_console, LoggerMock.GetLogger<ArchiveCommand>().Object, _projectService.Object)
             {
                 Name = "Project 1"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 1 archived", resultMessage);
+            Assert.Equal("Project Project 1 has been archived successfully", resultMessage);
         }
 
         [Fact]
         public void ProjectArchive_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ArchiveCommand(_console.Object, LoggerMock.GetLogger<ArchiveCommand>().Object, _projectService.Object)
+            var command = new ArchiveCommand(_console, LoggerMock.GetLogger<ArchiveCommand>().Object, _projectService.Object)
             {
                 Name = "Project 2"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void ProjectClone_Execute_ReturnsSuccessMessage()
         {
-            var command = new CloneCommand(_console.Object, LoggerMock.GetLogger<CloneCommand>().Object, _projectService.Object)
+            var command = new CloneCommand(_console, LoggerMock.GetLogger<CloneCommand>().Object, _projectService.Object)
             {
                 Project = "Project 1",
                 Name = "Project 2"
@@ -182,7 +182,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProjectClone_Execute_ReturnsNotFoundMessage()
         {
-            var command = new CloneCommand(_console.Object, LoggerMock.GetLogger<CloneCommand>().Object, _projectService.Object)
+            var command = new CloneCommand(_console, LoggerMock.GetLogger<CloneCommand>().Object, _projectService.Object)
             {
                 Project = "Project 2",
                 Name = "Project 3"
@@ -190,13 +190,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void ProjectCreate_Execute_ReturnsSuccessMessage()
         {
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -264,7 +264,7 @@ jobs:
     provider: AspNetCoreMvc2"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -296,7 +296,7 @@ jobs:
       Branch: master"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -329,7 +329,7 @@ jobs:
       GitHubExternalService: github-default2"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -362,7 +362,7 @@ jobs:
       GitHubExternalService: azure-default"
             );
 
-            var command = new CreateCommand(_console.Object, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -377,20 +377,20 @@ jobs:
         [Fact]
         public void ProjectExport_Execute_ReturnsSuccessMessage()
         {
-            var command = new ExportCommand(_console.Object, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
+            var command = new ExportCommand(_console, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
             {
                 Name = "Project 1"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project exported to Project 1", resultMessage);
+            Assert.Equal("Project has been exported to Project 1", resultMessage);
         }
 
         [Fact]
         public void ProjectExport_Execute_SpecifyOutputReturnsSuccessMessage()
         {
-            var command = new ExportCommand(_console.Object, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
+            var command = new ExportCommand(_console, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
             {
                 Name = "Project 1",
                 Output = "C:\\Document\\project.yaml"
@@ -398,30 +398,30 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project exported to C:\\Document\\project.yaml", resultMessage);
+            Assert.Equal("Project has been exported to C:\\Document\\project.yaml", resultMessage);
         }
 
         [Fact]
         public void ProjectExport_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ExportCommand(_console.Object, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
+            var command = new ExportCommand(_console, LoggerMock.GetLogger<ExportCommand>().Object, _projectService.Object, _templateWriter.Object)
             {
                 Name = "Project 2",
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void ProjectList_Execute_ReturnsSuccessMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object);
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object);
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Projects:", resultMessage);
+            Assert.StartsWith("Found 1 project(s):", resultMessage);
         }
 
         [Fact]
@@ -435,7 +435,7 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 1 was removed", resultMessage);
+            Assert.Equal("Project Project 1 has been removed successfully", resultMessage);
         }
 
         [Fact]
@@ -449,13 +449,13 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void ProjectUpdate_Execute_ReturnsSuccessMessage()
         {
-            var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object)
             {
                 Name = "Project 1",
                 Rename = "Project 2"
@@ -463,13 +463,13 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 1 was updated", resultMessage);
+            Assert.Equal("Project Project 1 has been updated successfully", resultMessage);
         }
 
         [Fact]
         public void ProjectUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object)
             {
                 Name = "Project 2",
                 Rename = "Project 1"
@@ -477,7 +477,7 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
@@ -35,10 +35,11 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to clone project {Project} to project {Name}...");
+
+            string message;
             
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
                 var clonedProject = _projectService.CloneProject(project.Id, new CloneProjectOptionDto
@@ -48,12 +49,12 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     NewProjectName = Name
                 }).Result;
 
-                message = clonedProject.ToCliString("Project cloned:");
+                message = clonedProject.ToCliString("Project cloned:", null, 1);
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;

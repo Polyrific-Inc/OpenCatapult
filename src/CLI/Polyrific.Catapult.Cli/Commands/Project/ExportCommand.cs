@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
@@ -28,29 +28,22 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to export project {Name}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Name).Result;
-
             if (project != null)
             {
                 var projectYaml = _projectService.ExportProject(project.Id).Result;
 
-                string filePath;
-                if (string.IsNullOrEmpty(Output))
-                {
-                    filePath = Name;
-                }
-                else
-                {
-                    filePath = Output;
-                }
+                var filePath = string.IsNullOrEmpty(Output) ? Name : Output;
 
-                message = $"Project exported to {_templateWriter.Write(filePath, projectYaml)}";
+                message = $"Project has been exported to {_templateWriter.Write(filePath, projectYaml)}";
             }
             else
             {
-                message = $"Project {Name} is not found";
+                message = $"Project {Name} was not found";
             }
 
             return message;

@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
@@ -30,20 +30,21 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove project {Name}?", false)))
                 return string.Empty;
 
-            string message = string.Empty;
+            Console.WriteLine($"Trying to remove project {Name}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Name).Result;
-
             if (project != null)
             {
                 _projectService.DeleteProject(project.Id).Wait();
 
-                message = $"Project {Name} was removed";
+                message = $"Project {Name} has been removed successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Name} is not found";
+                message = $"Project {Name} was not found";
             }
 
             return message;

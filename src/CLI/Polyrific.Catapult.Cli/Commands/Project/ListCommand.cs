@@ -24,9 +24,11 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
+            Console.WriteLine("Trying to get list of projects...");
+
             var projects = _projectService.GetProjects(Status).Result;
 
-            return projects.ToListCliString("Projects:");
+            return projects.ToListCliString($"Found {projects.Count} project(s):");
         }
     }
 }

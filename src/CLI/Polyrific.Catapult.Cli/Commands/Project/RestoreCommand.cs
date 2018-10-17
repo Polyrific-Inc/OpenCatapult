@@ -23,20 +23,21 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to restore project {Name}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Name).Result;
-
             if (project != null)
             {
                 _projectService.RestoreProject(project.Id).Wait();
 
-                message = $"Project {Name} restored";
+                message = $"Project {Name} has been restored successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Name} is not found";
+                message = $"Project {Name} was not found";
             }
 
             return message;
