@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
@@ -57,7 +58,7 @@ namespace Polyrific.Catapult.Cli.Commands
             }
             catch (Exception ex)
             {
-                errorMessage = ex.Message;
+                errorMessage = ex.GetLastInnerExceptionMessage();
                 Logger.LogError(ex, errorMessage);
             }
 
@@ -66,6 +67,8 @@ namespace Polyrific.Catapult.Cli.Commands
 
             if (!string.IsNullOrEmpty(errorMessage))
                 Console.Error.WriteLine(errorMessage);
+
+            Console.WriteLine();
 
             return 0;
         }

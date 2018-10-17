@@ -50,6 +50,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
     <ProjectReference Include="..\Polyrific.Catapult.Cli.Infrastructure\Polyrific.Catapult.Cli.Infrastructure.csproj" />
   </ItemGroup>
 
