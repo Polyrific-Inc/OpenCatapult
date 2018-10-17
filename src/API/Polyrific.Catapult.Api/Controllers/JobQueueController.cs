@@ -151,7 +151,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> CheckJob()
         {
-            _logger.LogInformation("Checking for job queue");
+            // log as debug so it won't be put to log when min level is Info
+            _logger.LogDebug("Checking for job queue");
 
             var isEngine = User.IsInRole(UserRole.Engine);
 

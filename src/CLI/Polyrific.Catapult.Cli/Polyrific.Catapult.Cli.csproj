@@ -7,11 +7,12 @@
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AssemblyName>occli</AssemblyName>	
     <LangVersion>7.1</LangVersion>	
-    <PackageId>Polyrific.Catapult.Cli</PackageId>	
+    <PackageId>Polyrific.Catapult.Cli</PackageId>
+    <Version>1.0.0-alpha</Version>
     <Authors>Polyrific</Authors>	
     <Company>Polyrific, Inc</Company>	
-    <Product>Polyrific Catapult</Product>	
-    <Description>Polyrific Catapult - Command Line Interface</Description>	
+    <Product>OpenCatapult</Product>	
+    <Description>OpenCatapult - Command Line Interface</Description>	
     <Copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</Copyright>	
     <PackageLicenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</PackageLicenseUrl>	
     <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>	

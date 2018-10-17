@@ -8,10 +8,11 @@
     <AssemblyName>ocengine</AssemblyName>
     <LangVersion>7.1</LangVersion>
     <PackageId>Polyrific.Catapult.Engine</PackageId>
+    <Version>1.0.0-alpha</Version>
     <Authors>Polyrific</Authors>
-    <Company>Polyrific, IncPolyrific</Company>
-    <Product>Polyrific Catapult</Product>
-    <Description>Polyrific Catapult - Engine</Description>
+    <Company>Polyrific, Inc</Company>
+    <Product>OpenCatapult</Product>
+    <Description>OpenCatapult - Engine</Description>
     <Copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</Copyright>
     <PackageLicenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>

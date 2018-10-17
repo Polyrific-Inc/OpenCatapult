@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
@@ -13,7 +13,10 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public IActionResult Get()
         {
-            return Ok(new {Version = PlatformServices.Default.Application.ApplicationVersion});
+            var assembly = Assembly.GetExecutingAssembly();
+            var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            
+            return Ok(new {Version = informationalVersion});
         }
     }
 }

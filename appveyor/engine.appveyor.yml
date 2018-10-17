@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.0.0-alpha-{build}
 image: Visual Studio 2017
 pull_requests:
   do_not_increment_build_number: true
@@ -19,10 +19,6 @@ dotnet_csproj:
   patch: true
   file: '**\Polyrific.Catapult.Engine.csproj'
   version: '{version}'
-  package_version: '{version}'
-  assembly_version: '{version}'
-  file_version: '{version}'
-  informational_version: '{version}'
 before_build:
   - cmd: dotnet --version
   - cmd: dotnet restore ./src/Engine/Polyrific.Catapult.Engine/Polyrific.Catapult.Engine.csproj

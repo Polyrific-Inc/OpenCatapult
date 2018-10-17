@@ -26,7 +26,6 @@
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="5.0.1" />
     <PackageReference Include="CorrelationId" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.5" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.1" />
     <PackageReference Include="Serilog.Enrichers.Environment" Version="2.1.2" />
@@ -48,13 +47,15 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <Authors>Polyrific</Authors>
     <Company>Polyrific, Inc</Company>
-    <Product>Polyrific Catapult</Product>
-    <Description>Polyrific Catapult - API</Description>
+    <Product>OpenCatapult</Product>
+    <Description>OpenCatapult - API</Description>
     <Copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</Copyright>
     <PackageLicenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Catapult, OpenCatapult, tools, devops, api</PackageTags>
+    <PackageId>Polyrific.Catapult.Api</PackageId>
+    <Version>1.0.0-alpha</Version>
   </PropertyGroup>
 </Project>
