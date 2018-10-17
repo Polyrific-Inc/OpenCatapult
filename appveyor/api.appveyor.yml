@@ -11,7 +11,7 @@ only_commits:
     - src/API/
     - src/Shared/Polyrific.Catapult.Shared.Common/
     - src/Shared/Polyrific.Catapult.Shared.Dto/
-    - src/Shared/Polyrific.Catapult.Shared.SecretVault/
+    - src/Shared/Polyrific.Catapult.Shared.SmtpEmailNotification/
     - tests/Polyrific.Catapult.Api.UnitTests/
 configuration: Release
 dotnet_csproj:

@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             string requiredServicesString = null;
             if (requiredServices != null && requiredServices.Length > 0)
             {
-                requiredServicesString = string.Join(DataDelimiter.Comma, requiredServices);
+                requiredServicesString = string.Join(DataDelimiter.Comma.ToString(), requiredServices);
                 var serviceTypeSpec = new ExternalServiceTypeFilterSpecification(requiredServices);
                 serviceTypes = (await _externalServiceTypeRepository.GetBySpec(serviceTypeSpec, cancellationToken)).ToList();
 

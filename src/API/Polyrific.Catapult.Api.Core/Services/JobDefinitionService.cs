@@ -249,7 +249,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                     var config = JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.ConfigString);
                     foreach (var requiredService in requiredServices)
                     {
-                        var serviceName = config.GetValueOrDefault(GetServiceTaskConfigKey(requiredService));
+                        config.TryGetValue(GetServiceTaskConfigKey(requiredService), out var serviceName);
 
                         if (string.IsNullOrEmpty(serviceName))
                         {
@@ -286,7 +286,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                     
                     foreach (var requiredConfig in requiredConfigs)
                     {
-                        if (taskAdditionalConfigs.GetValueOrDefault(requiredConfig) == null)
+                        taskAdditionalConfigs.TryGetValue(requiredConfig, out var conf);
+                        if (conf == null)
                         {
                             throw new PluginAdditionalConfigRequiredException(requiredConfig, plugin.Name);
                         }
