@@ -180,7 +180,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void CloneProject_ValidSource()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var newProject = await projectService.CloneProject(1, "Project B");
+            var newProject = await projectService.CloneProject(1, "Project B", 1);
             
             Assert.True(_data.Count > 1);
             Assert.True(newProject.Id > 1);
@@ -191,7 +191,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void CloneProject_SourceNotExist()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var exception = Record.ExceptionAsync(() => projectService.CloneProject(2, "Project B"));
+            var exception = Record.ExceptionAsync(() => projectService.CloneProject(2, "Project B", 1));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
         }

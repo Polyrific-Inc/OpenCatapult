@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _projectRepository.Update(project, cancellationToken);
         }
 
-        public async Task<Project> CloneProject(int sourceProjectId, string newProjectName, bool includeMembers = false,
+        public async Task<Project> CloneProject(int sourceProjectId, string newProjectName, int ownerUserId, bool includeMembers = false,
             bool includeJobDefinitions = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -115,6 +115,18 @@ namespace Polyrific.Catapult.Api.Core.Services
                     ProjectMemberRoleId = m.ProjectMemberRoleId,
                     Created = DateTime.UtcNow
                 }).ToList();
+            }
+            else
+            {
+                newProject.Members = new List<ProjectMember>
+                {
+                    new ProjectMember
+                    {
+                        UserId = ownerUserId,
+                        ProjectMemberRoleId = MemberRole.OwnerId,
+                        Created = DateTime.UtcNow
+                    }
+                };
             }
 
             var newProjectId = await _projectRepository.Create(newProject, cancellationToken);
