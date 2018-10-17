@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
@@ -39,7 +39,9 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to update the role of {User} in project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
             var user = _accountService.GetUserByUserName(User).Result;
@@ -57,13 +59,14 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                         UserId = int.Parse(user.Id),
                         ProjectMemberRoleId = roleId
                     }).Wait();
-                    message = $"User {User} is updated to role {Role} in project {Project}";
+
+                    message = $"User {User} has been assigned as {Role} in project {Project}";
                     Logger.LogInformation(message);
                     return message;
                 }
             }
 
-            message = $"Failed updating user {User}. Make sure the project name and user email are correct.";
+            message = $"Failed to update user {User}. Make sure the project name and user email are correct.";
 
             return message;
         }

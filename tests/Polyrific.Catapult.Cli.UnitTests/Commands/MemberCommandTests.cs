@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
@@ -9,8 +11,6 @@ using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class MemberCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProjectMemberService> _projectMemberService;
         private readonly Mock<IAccountService> _accountService;
@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
 
             _projectService = new Mock<IProjectService>();
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
@@ -87,7 +87,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Member_Execute_ReturnsEmpty()
         {
-            var command = new MemberCommand(_console.Object, LoggerMock.GetLogger<MemberCommand>().Object);
+            var command = new MemberCommand(_console, LoggerMock.GetLogger<MemberCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -96,7 +96,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void MemberAdd_Execute_ReturnsSuccessMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user1@opencatapult.net"
@@ -104,13 +104,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("User user1@opencatapult.net is added to project Project 1 as Member:", resultMessage);
+            Assert.StartsWith("User has been added to project Project 1:", resultMessage);
         }
 
         [Fact]
         public void MemberAdd_Execute_NewUserReturnsSuccessMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user2@opencatapult.net",
@@ -119,13 +119,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("User user2@opencatapult.net is added to project Project 1 as Owner:", resultMessage);
+            Assert.StartsWith("User has been added to project Project 1:", resultMessage);
         }
 
         [Fact]
         public void MemberAdd_Execute_ReturnsNotFoundMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 2",
                 User = "user2@opencatapult.net",
@@ -134,34 +134,34 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void MemberList_Execute_ReturnsSuccessMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectMemberService.Object, _projectService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectMemberService.Object, _projectService.Object)
             {
                 Project = "Project 1"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Project members:", resultMessage);
+            Assert.StartsWith("Found 1 project member(s):", resultMessage);
             _projectMemberService.Verify(p => p.GetProjectMembers(1, 0), Times.Once);
         }
 
         [Fact]
         public void MemberList_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectMemberService.Object, _projectService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectMemberService.Object, _projectService.Object)
             {
                 Project = "Project 2"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
@@ -176,7 +176,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user1@opencatapult.net was removed from project Project 1", resultMessage);
+            Assert.Equal("User user1@opencatapult.net has been removed from project Project 1", resultMessage);
         }
 
         [Fact]
@@ -191,13 +191,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed removing user user2@opencatapult.net. Make sure the project name and user email are correct.", resultMessage);
+            Assert.Equal("Failed to remove user user2@opencatapult.net. Make sure the project name and user email are correct.", resultMessage);
         }
 
         [Fact]
         public void MemberUpdate_Execute_ReturnsSuccessMessage()
         {
-            var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user1@opencatapult.net",
@@ -206,14 +206,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("User user1@opencatapult.net is updated to role Owner in project Project 1", resultMessage);
+            Assert.Equal("User user1@opencatapult.net has been assigned as Owner in project Project 1", resultMessage);
             _projectMemberService.Verify(p => p.UpdateProjectMember(1, 1, It.Is<UpdateProjectMemberDto>(pm => pm.ProjectMemberRoleId == 1)), Times.Once);
         }
 
         [Fact]
         public void MemberUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectMemberService.Object, _projectService.Object, _accountService.Object)
             {
                 Project = "Project 1",
                 User = "user2@opencatapult.net",
@@ -222,7 +222,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed updating user user2@opencatapult.net. Make sure the project name and user email are correct.", resultMessage);
+            Assert.Equal("Failed to update user user2@opencatapult.net. Make sure the project name and user email are correct.", resultMessage);
         }
     }
 }

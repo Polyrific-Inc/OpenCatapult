@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
@@ -32,20 +32,21 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get members of project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
                 var roleId = MemberRole.GetMemberRoleId(Role ?? string.Empty);
                 var projectMembers = _projectMemberService.GetProjectMembers(project.Id, roleId).Result;
 
-                message = projectMembers.ToListCliString("Project members:");
+                message = projectMembers.ToListCliString($"Found {projectMembers.Count} project member(s):");
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;

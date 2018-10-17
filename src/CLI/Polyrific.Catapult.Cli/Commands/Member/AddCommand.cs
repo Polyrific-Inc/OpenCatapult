@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
@@ -39,7 +39,9 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add {User} as member of project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
             var user = _accountService.GetUserByUserName(User).Result;
@@ -55,12 +57,12 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                     ProjectMemberRoleId = roleId
                 }).Result;
 
-                message = projectMember.ToCliString($"User {User} is added to project {Project} as {Role}:");
+                message = projectMember.ToCliString($"User has been added to project {Project}:", null, 1);
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;

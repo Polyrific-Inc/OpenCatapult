@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
@@ -39,6 +39,8 @@ namespace Polyrific.Catapult.Cli.Commands.Member
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove user {User} from project {Project}?", false)))
                 return string.Empty;
 
+            Console.WriteLine($"Trying to remove {User} from project {Project}...");
+
             string message = string.Empty;
 
             var project = _projectService.GetProjectByName(Project).Result;
@@ -51,14 +53,14 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                 if (projectMember != null)
                 {
                     _projectMemberService.RemoveProjectMember(project.Id, projectMember.Id).Wait();
-                    message = $"User {User} was removed from project {Project}";
+                    message = $"User {User} has been removed from project {Project}";
                     Logger.LogInformation(message);
                     return message;
                 }
             }
             else
             {
-                message = $"Failed removing user {User}. Make sure the project name and user email are correct.";
+                message = $"Failed to remove user {User}. Make sure the project name and user email are correct.";
             }
 
             return message;
