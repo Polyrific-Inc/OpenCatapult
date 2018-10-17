@@ -15,21 +15,17 @@ namespace Polyrific.Catapult.Cli
         public (string, string) Parse(string argName, string value, CultureInfo culture)
         {
             if (value == null)
-                return default((string, string));
+                return default;
 
-            var keyValue = value.Split(Separator);
-            if (keyValue.Length == 0)
+            var separatorIndex = value.IndexOf(Separator);
+            if (separatorIndex < 0)
             {
                 throw new FormatException($"Invalid value specified for {argName}. The string should be two key and value separated by '{Separator}'");
             }
-            else if (keyValue.Length == 2)
-            {
-                return (keyValue[0], keyValue[1]);
-            }
-            else
-            {
-                return (keyValue[0], null);
-            }
+
+            var optionKey = value.Substring(0, separatorIndex);
+            var optionValue = value.Substring(separatorIndex + 1);
+            return (optionKey, optionValue);
         }
 
         object IValueParser.Parse(string argName, string value, CultureInfo culture)
