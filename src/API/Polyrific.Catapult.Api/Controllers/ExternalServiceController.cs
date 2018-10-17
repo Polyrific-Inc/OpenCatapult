@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
@@ -21,12 +22,14 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IExternalServiceService _externalServiceService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public ExternalServiceController(IExternalServiceService externalServiceService, IUserService userService, IMapper mapper)
+        public ExternalServiceController(IExternalServiceService externalServiceService, IUserService userService, IMapper mapper, ILogger<ExternalServiceController> logger)
         {
             _externalServiceService = externalServiceService;
             _userService = userService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -37,6 +40,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServices()
         {
+            _logger.LogInformation("Getting external services");
+
             var currentUserId = User.GetUserId();
             var externalServices = await _externalServiceService.GetExternalServices(currentUserId);
             var results = _mapper.Map<List<ExternalServiceDto>>(externalServices);
@@ -53,6 +58,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalService(int serviceId)
         {
+            _logger.LogInformation("Getting external service {serviceId}", serviceId);
+
             var externalService = await _externalServiceService.GetExternalService(serviceId);
             var result = _mapper.Map<ExternalServiceDto>(externalService);
             return Ok(result);
@@ -67,6 +74,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalService(string serviceName)
         {
+            _logger.LogInformation("Getting external service {serviceName}", serviceName);
+
             var externalService = await _externalServiceService.GetExternalServiceByName(serviceName);
             var result = _mapper.Map<ExternalServiceDto>(externalService);
             return Ok(result);
@@ -82,6 +91,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateExternalService(CreateExternalServiceDto dto)
         {
+            _logger.LogInformation("Creating external service");
+
             try
             {
                 var currentUserId = User.GetUserId();
@@ -100,6 +111,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (DuplicateExternalServiceException ex)
             {
+                _logger.LogWarning(ex, "Duplicate external service name");
                 return BadRequest(ex.Message);
             }
         }
@@ -114,6 +126,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateExternalService(int serviceId, UpdateExternalServiceDto dto)
         {
+            _logger.LogInformation("Updating external service {serviceId}", serviceId);
+
             var updatedService = _mapper.Map<ExternalService>(dto);
             updatedService.Id = serviceId;
             await _externalServiceService.UpdateExternalService(updatedService);
@@ -130,6 +144,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteExternalService(int serviceId)
         {
+            _logger.LogInformation("Deleting external service {serviceId}", serviceId);
+
             await _externalServiceService.DeleteExternalService(serviceId);
 
             return NoContent();

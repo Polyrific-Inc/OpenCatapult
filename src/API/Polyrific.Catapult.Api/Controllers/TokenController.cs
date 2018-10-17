@@ -3,6 +3,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.CatapultEngine;
@@ -21,13 +22,16 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IProjectService _projectService;
         private readonly ICatapultEngineService _catapultEngineService;
         private readonly IConfiguration _configuration;
+        private readonly ILogger _logger;
 
-        public TokenController(IUserService userService, IProjectService projectService, ICatapultEngineService catapultEngineService, IConfiguration configuration)
+        public TokenController(IUserService userService, IProjectService projectService, ICatapultEngineService catapultEngineService, 
+            IConfiguration configuration, ILogger<TokenController> logger)
         {
             _userService = userService;
             _projectService = projectService;
             _catapultEngineService = catapultEngineService;
             _configuration = configuration;
+            _logger = logger;
         }
 
         /// <summary>
@@ -38,12 +42,20 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> RequestToken(RequestTokenDto dto)
         {
-            if (!await _userService.ValidateUserPassword(dto.Email, dto.Password)) 
+            _logger.LogInformation("Requesting user token");
+
+            if (!await _userService.ValidateUserPassword(dto.Email, dto.Password))
+            {
+                _logger.LogWarning("Username or password is invalid");
                 return BadRequest("Username or password is invalid");
+            }                
 
             var user = await _userService.GetUser(dto.Email);
             if (!user.IsActive)
+            {
+                _logger.LogWarning("User is suspended");
                 return BadRequest("User is suspended");
+            }                
 
             var userRole = await _userService.GetUserRole(dto.Email);
             var userProjects = await GetUserProjects(dto.Email);
@@ -67,9 +79,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RequestEngineToken(int engineId, RequestEngineTokenDto dto)
         {
+            _logger.LogInformation("Requesting engine token");
+
             var engine = await _catapultEngineService.GetCatapultEngine(engineId);
             if (!engine.IsActive)
+            {
+                _logger.LogWarning("Engine is suspended");
                 return BadRequest("Engine is suspended");
+            }                
 
             var engineRole = await _catapultEngineService.GetCatapultEngineRole(engineId);
             var tokenKey = _configuration["Security:Tokens:Key"];

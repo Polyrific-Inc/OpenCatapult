@@ -2,6 +2,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
@@ -9,6 +10,13 @@ namespace Polyrific.Catapult.Api.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
+        private readonly ILogger _logger;
+
+        public HealthController(ILogger<HealthController> logger)
+        {
+            _logger = logger;
+        }
+
         /// <summary>
         /// Check whether the engine API is healthy
         /// </summary>
@@ -17,6 +25,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet]
         public IActionResult Get()
         {
+            _logger.LogInformation("Checking API health");
+
             return Ok("Healthy");
         }
 
@@ -29,6 +39,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public IActionResult GetSecure()
         {
+            _logger.LogInformation("Checking secured API health");
+
             return Ok("Healthy");
         }
     }

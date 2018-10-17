@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -19,11 +20,13 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly IJobDefinitionService _jobDefinitionService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public JobDefinitionController(IJobDefinitionService jobDefinitionService, IMapper mapper)
+        public JobDefinitionController(IJobDefinitionService jobDefinitionService, IMapper mapper, ILogger<JobDefinitionController> logger)
         {
             _jobDefinitionService = jobDefinitionService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -34,6 +37,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job", Name = "GetJobDefinitions")]
         public async Task<IActionResult> GetJobDefinitions(int projectId)
         {
+            _logger.LogInformation("Getting job definitions in project {projectId}", projectId);
+
             var jobDefinitions = await _jobDefinitionService.GetJobDefinitions(projectId);
             var results = _mapper.Map<List<JobDefinitionDto>>(jobDefinitions);
 
@@ -50,6 +55,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateJobDefinition(int projectId, CreateJobDefinitionDto newJobDefinition)
         {
+            _logger.LogInformation("Creating job definition in project {projectId}", projectId);
+
             try
             {
                 var newJobDefinitionResponse = _mapper.Map<JobDefinitionDto>(newJobDefinition);
@@ -65,10 +72,12 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (DuplicateJobDefinitionException dupEx)
             {
+                _logger.LogWarning(dupEx, "Duplicate job definition name");
                 return BadRequest(dupEx.Message);
             }
             catch (ProjectNotFoundException projEx)
             {
+                _logger.LogWarning(projEx, "Project not found");
                 return BadRequest(projEx.Message);
             }
         }
@@ -82,6 +91,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}", Name = "GetJobDefinitionById")]
         public async Task<IActionResult> GetJobDefinition(int projectId, int jobId)
         {
+            _logger.LogInformation("Getting job definition {jobId}", jobId);
+
             var jobDefinition = await _jobDefinitionService.GetJobDefinitionById(jobId);
             var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
             return Ok(result);
@@ -96,6 +107,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/name/{jobName}")]
         public async Task<IActionResult> GetJobDefinition(int projectId, string jobName)
         {
+            _logger.LogInformation("Getting job definition {jobName}", jobName);
+
             var jobDefinition = await _jobDefinitionService.GetJobDefinitionByName(projectId, jobName);
             var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
             return Ok(result);
@@ -111,10 +124,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}")]
         public async Task<IActionResult> UpdateJobDefinition(int projectId, int jobId, UpdateJobDefinitionDto jobDefinition)
         {
+            _logger.LogInformation("Updating job definition {jobId}", jobId);
+
             try
             {
                 if (jobId != jobDefinition.Id)
+                {
+                    _logger.LogWarning("Job Id doesn't match.");
                     return BadRequest("Job Id doesn't match.");
+                }                    
 
                 await _jobDefinitionService.RenameJobDefinition(jobId, jobDefinition.Name);
 
@@ -122,6 +140,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (DuplicateJobDefinitionException ex)
             {
+                _logger.LogWarning(ex, "Duplicate job definition name");
                 return BadRequest(ex.Message);
             }
         }
@@ -135,6 +154,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("Project/{projectId}/job/{jobId}")]
         public async Task<IActionResult> DeleteJobDefinition(int projectId, int jobId)
         {
+            _logger.LogInformation("Deleting job definition {jobId}", jobId);
+
             await _jobDefinitionService.DeleteJobDefinition(jobId);
 
             return NoContent();
@@ -151,13 +172,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateJobTaskDefinition(int projectId, int jobId, CreateJobTaskDefinitionDto newTask)
         {
+            _logger.LogInformation("Creating job task definition in job {jobId}", jobId);
+
             try
             {
                 var entity = _mapper.Map<JobTaskDefinition>(newTask);
                 entity.JobDefinitionId = jobId;
                 entity.Id = await _jobDefinitionService.AddJobTaskDefinition(entity);
-
-
+                
                 var newJobTaskDefinitionResponse = _mapper.Map<JobTaskDefinitionDto>(entity);
 
                 return CreatedAtRoute("GetJobTaskDefinitionById", new
@@ -169,22 +191,27 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (JobDefinitionNotFoundException modEx)
             {
+                _logger.LogWarning(modEx, "Job definition not found");
                 return BadRequest(modEx.Message);
             }
             catch (ProviderNotInstalledException provEx)
             {
+                _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);
             }
             catch (ExternalServiceRequiredException esrEx)
             {
+                _logger.LogWarning(esrEx, "External service required");
                 return BadRequest(esrEx.Message);
             }
             catch (ExternalServiceNotFoundException esnfEx)
             {
+                _logger.LogWarning(esnfEx, "External service not found");
                 return BadRequest(esnfEx.Message);
             }
             catch (IncorrectExternalServiceTypeException iestEx)
             {
+                _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
             }
         }
@@ -200,6 +227,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateJobTaskDefinitions(int projectId, int jobId, List<CreateJobTaskDefinitionDto> newTasks)
         {
+            _logger.LogInformation("Creating job task definitions in job {jobId}", jobId);
+
             try
             {
                 var entities = _mapper.Map<List<JobTaskDefinition>>(newTasks);
@@ -215,22 +244,27 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (JobDefinitionNotFoundException modEx)
             {
+                _logger.LogWarning(modEx, "Job definition not found");
                 return BadRequest(modEx.Message);
             }
             catch (ProviderNotInstalledException provEx)
             {
+                _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);
             }
             catch (ExternalServiceRequiredException esrEx)
             {
+                _logger.LogWarning(esrEx, "External service required");
                 return BadRequest(esrEx.Message);
             }
             catch (ExternalServiceNotFoundException esnfEx)
             {
+                _logger.LogWarning(esnfEx, "External service not found");
                 return BadRequest(esnfEx.Message);
             }
             catch (IncorrectExternalServiceTypeException iestEx)
             {
+                _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
             }
         }
@@ -243,6 +277,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task", Name = "GetJobTaskDefinitions")]
         public async Task<IActionResult> GetJobTaskDefinitions(int jobId)
         {
+            _logger.LogInformation("Getting job task definitions in job {jobId}", jobId);
+
             var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
             var results = _mapper.Map<List<JobTaskDefinitionDto>>(jobTaskDefinitions);
 
@@ -259,6 +295,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task/{taskId}", Name = "GetJobTaskDefinitionById")]
         public async Task<IActionResult> GetJobTaskDefinition(int projectId, int jobId, int taskId)
         {
+            _logger.LogInformation("Getting job task definition {taskId}", taskId);
+
             var jobTaskDefinition = await _jobDefinitionService.GetJobTaskDefinitionById(taskId);
             var result = _mapper.Map<JobTaskDefinitionDto>(jobTaskDefinition);
             return Ok(result);
@@ -274,6 +312,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task/name/{taskName}")]
         public async Task<IActionResult> GetJobTaskDefinition(int projectId, int jobId, string taskName)
         {
+            _logger.LogInformation("Getting job task definition {taskName}", taskName);
+
             var jobTaskDefinition = await _jobDefinitionService.GetJobTaskDefinitionByName(jobId, taskName);
             var result = _mapper.Map<JobTaskDefinitionDto>(jobTaskDefinition);
             return Ok(result);
@@ -290,10 +330,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}/task/{taskId}")]
         public async Task<IActionResult> UpdateJobTaskDefinition(int projectId, int jobId, int taskId, UpdateJobTaskDefinitionDto jobTaskDefinition)
         {
+            _logger.LogInformation("Updating job task definition {taskId}", taskId);
+
             try
             {
                 if (taskId != jobTaskDefinition.Id)
-                    return BadRequest("task Id doesn't match.");
+                {
+                    _logger.LogWarning("Task Id doesn't match.");
+                    return BadRequest("Task Id doesn't match.");
+                }                    
 
                 var entity = _mapper.Map<JobTaskDefinition>(jobTaskDefinition);
                 await _jobDefinitionService.UpdateJobTaskDefinition(entity);
@@ -302,18 +347,22 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (ProviderNotInstalledException provEx)
             {
+                _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);
             }
             catch (ExternalServiceRequiredException esrEx)
             {
+                _logger.LogWarning(esrEx, "External service required");
                 return BadRequest(esrEx.Message);
             }
             catch (ExternalServiceNotFoundException esnfEx)
             {
+                _logger.LogWarning(esnfEx, "External service not found");
                 return BadRequest(esnfEx.Message);
             }
             catch (IncorrectExternalServiceTypeException iestEx)
             {
+                _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
             }
         }
@@ -329,8 +378,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}/task/{taskId}/config")]
         public async Task<IActionResult> UpdateJobTaskConfig(int projectId, int jobId, int taskId, UpdateJobTaskConfigDto jobTaskConfig)
         {
+            _logger.LogInformation("Updating job task config for task {taskId}", taskId);
+
             if (taskId != jobTaskConfig.Id)
+            {
+                _logger.LogWarning("Task Id doesn't match.");
                 return BadRequest("Task Id doesn't match.");
+            }                
             
             await _jobDefinitionService.UpdateJobTaskConfig(jobTaskConfig.Id, jobTaskConfig.Config);
 
@@ -347,6 +401,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("Project/{projectId}/job/{jobId}/task/{taskId}")]
         public async Task<IActionResult> DeleteJobTaskDefinition(int projectId, int jobId, int taskId)
         {
+            _logger.LogInformation("Deleting job task definition {taskId}", taskId);
+
             await _jobDefinitionService.DeleteJobTaskDefinition(taskId);
 
             return NoContent();

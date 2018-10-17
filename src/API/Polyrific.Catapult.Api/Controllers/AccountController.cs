@@ -7,6 +7,7 @@ using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -25,12 +26,14 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly NotificationProvider _notificationProvider;
+        private readonly ILogger _logger;
 
-        public AccountController(IUserService service, IMapper mapper, NotificationProvider notificationProvider)
+        public AccountController(IUserService service, IMapper mapper, NotificationProvider notificationProvider, ILogger<AccountController> logger)
         {
             _userService = service;
             _mapper = mapper;
             _notificationProvider = notificationProvider;
+            _logger = logger;
         }
 
         /// <summary>
@@ -42,6 +45,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterUser(RegisterUserDto dto)
         {
+            _logger.LogInformation("Registering user");
+
             int userId = 0;
 
             try
@@ -73,6 +78,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (UserCreationFailedException uex)
             {
+                _logger.LogWarning(uex, "User creation failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
 
@@ -91,6 +97,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("{userId}/Confirm")]
         public async Task<IActionResult> ConfirmEmail(int userId, string token)
         {
+            _logger.LogInformation("Confirming email for user {userId}", userId);
+
             await _userService.ConfirmEmail(userId, token);
 
             return Ok("Email confirmed.");
@@ -106,6 +114,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetUsers(string status, string role)
         {
+            _logger.LogInformation("Getting users");
+
             var users = await _userService.GetUsers(status, role);
 
             var results = _mapper.Map<List<UserDto>>(users);
@@ -122,9 +132,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUser(int userId)
         {
+            _logger.LogInformation("Getting user {userId}", userId);
+
             var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
             {
+                _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
                 return Unauthorized();
             }
 
@@ -139,6 +152,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
+            _logger.LogInformation("Getting current user");
+
             var currentUserId = User.GetUserId();
 
             var user = await _userService.GetUserById(currentUserId);
@@ -157,8 +172,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserByName(string userName)
         {
+            _logger.LogInformation("Getting user {userName}", userName);
+
             if (User.Identity.Name.ToLower() != userName.ToLower() && !User.IsInRole(UserRole.Administrator))
             {
+                _logger.LogWarning("User {Name} is not authorized to access the endpoint", User.Identity.Name);
                 return Unauthorized();
             }
 
@@ -178,9 +196,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserByEmail(string email)
         {
+            _logger.LogInformation("Getting user {email}", email);
+
             var currentUserEmail = await _userService.GetUserEmail(User);
             if (currentUserEmail.ToLower() != email.ToLower() && !User.IsInRole(UserRole.Administrator))
             {
+                _logger.LogWarning("User {currentUserEmail} is not authorized to access the endpoint", currentUserEmail);
                 return Unauthorized();
             }
 
@@ -201,14 +222,20 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser(int userId, UpdateUserDto updatedUser)
         {
+            _logger.LogInformation("Updating user {userId}", userId);
+
             var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
             {
+                _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
                 return Unauthorized();
             }
 
             if (userId != updatedUser.Id)
+            {
+                _logger.LogWarning("User Id doesn't match.");
                 return BadRequest("User Id doesn't match.");
+            }                
 
             var user = _mapper.Map<User>(updatedUser);
 
@@ -226,6 +253,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> SuspendUser(int userId)
         {
+            _logger.LogInformation("Suspending user {userId}", userId);
+
             await _userService.Suspend(userId);
 
             return Ok("User suspended");
@@ -240,6 +269,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> ReactivateUser(int userId)
         {
+            _logger.LogInformation("Reactivating user {userId}", userId);
+
             await _userService.Reactivate(userId);
 
             return Ok("User activated");
@@ -254,6 +285,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDto dto)
         {
+            _logger.LogInformation("Updating current user's password");
+
             try
             {
                 var currentUserId = User.GetUserId();
@@ -264,6 +297,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (UpdatePasswordFailedException uex)
             {
+                _logger.LogWarning(uex, "Update password failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
         }
@@ -276,6 +310,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("{userId}/resetpassword")]
         public async Task<IActionResult> ResetPassword(int userId)
         {
+            _logger.LogInformation("Requesting reset password token for user {userId}", userId);
+
             var token = await _userService.GetResetPasswordToken(userId);
             var user = await _userService.GetUserById(userId);
 
@@ -303,6 +339,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("{userId}/resetpassword")]
         public async Task<IActionResult> ResetPassword(int userId, ResetPasswordDto dto)
         {
+            _logger.LogInformation("Resetting password for user {userId}", userId);
+
             try
             {
                 await _userService.ResetPassword(userId, dto.Token, dto.NewPassword);
@@ -311,6 +349,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (ResetPasswordFailedException rex)
             {
+                _logger.LogWarning(rex, "Reset password failed");
                 return BadRequest(rex.GetExceptionMessageList());
             }
         }
@@ -324,12 +363,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RemoveUser(int userId)
         {
+            _logger.LogInformation("Removing user {userId}", userId);
+
             try
             {
                 await _userService.DeleteUser(userId);
             }
             catch (UserDeletionFailedException uex)
             {
+                _logger.LogWarning(uex, "User deletion failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
 
@@ -346,8 +388,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> SetUserRole(int userId, SetUserRoleDto dto)
         {
+            _logger.LogInformation("Setting role for user {userId}", userId);
+
             if (userId != dto.UserId)
+            {
+                _logger.LogWarning("User Id doesn't match.");
                 return BadRequest("User Id doesn't match.");
+            }
 
             try
             {
@@ -355,6 +402,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (InvalidRoleException irEx)
             {
+                _logger.LogWarning(irEx, "Invalid role");
                 return BadRequest(irEx.Message);
             }
 

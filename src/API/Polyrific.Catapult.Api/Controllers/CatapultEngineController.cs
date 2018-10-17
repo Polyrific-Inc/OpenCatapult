@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
@@ -21,11 +22,13 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly ICatapultEngineService _catapultEngineService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public CatapultEngineController(ICatapultEngineService service, IMapper mapper)
+        public CatapultEngineController(ICatapultEngineService service, IMapper mapper, ILogger<CatapultEngineController> logger)
         {
             _catapultEngineService = service;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,6 +39,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterEngine(RegisterCatapultEngineDto dto)
         {
+            _logger.LogInformation("Registering engine");
+
             int catapultEngineId = 0;
             string confirmToken = "";
 
@@ -59,10 +64,12 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (DuplicateCatapultEngineException nex)
             {
+                _logger.LogWarning(nex, "Duplicate catapult engine name");
                 return BadRequest(nex.Message);
             }
             catch (CatapultEngineCreationFailedException uex)
             {
+                _logger.LogWarning(uex, "Catapult engine creation failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
         }
@@ -77,6 +84,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmRegistration(int engineId, string token)
         {
+            _logger.LogInformation("Confirming engine {engineId} registration", engineId);
+
             await _catapultEngineService.ConfirmRegistration(engineId, token);
 
             return Ok("Engine confirmed.");
@@ -90,6 +99,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("{engineId}/Suspend")]
         public async Task<IActionResult> Suspend(int engineId)
         {
+            _logger.LogInformation("Suspending engine {engineId}", engineId);
+
             await _catapultEngineService.Suspend(engineId);
 
             return Ok("Engine suspended.");
@@ -103,6 +114,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("{engineId}/Activate")]
         public async Task<IActionResult> Reactivate(int engineId)
         {
+            _logger.LogInformation("Reactivating engine {engineId}", engineId);
+
             await _catapultEngineService.Reactivate(engineId);
 
             return Ok("Engine reactivated.");
@@ -115,6 +128,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatapultEngines(string status)
         {
+            _logger.LogInformation("Getting engines");
+
             var catapultEngines = await _catapultEngineService.GetCatapultEngines(status);
 
             var results = _mapper.Map<List<CatapultEngineDto>>(catapultEngines);
@@ -130,6 +145,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("name/{engineName}")]
         public async Task<IActionResult> GetCatapultEngineByName(string engineName)
         {
+            _logger.LogInformation("Getting engine {engineName}", engineName);
+
             var catapultEngine = await _catapultEngineService.GetCatapultEngine(engineName);
 
             var results = _mapper.Map<CatapultEngineDto>(catapultEngine);
@@ -145,12 +162,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("{engineId}")]
         public async Task<IActionResult> RemoveCatapultEngine(int engineId)
         {
+            _logger.LogInformation("Removing engine {engineId}", engineId);
+
             try
             {
                 await _catapultEngineService.DeleteCatapultEngine(engineId);
             }
             catch (CatapultEngineDeletionFailedException uex)
             {
+                _logger.LogWarning(uex, "Catapult engine deletion failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
 

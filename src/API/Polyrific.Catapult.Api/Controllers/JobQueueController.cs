@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -19,11 +20,13 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly IJobQueueService _jobQueueService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public JobQueueController(IJobQueueService jobQueueService, IMapper mapper)
+        public JobQueueController(IJobQueueService jobQueueService, IMapper mapper, ILogger<JobQueueController> logger)
         {
             _jobQueueService = jobQueueService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -36,6 +39,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueues(int projectId, string filter = JobQueueFilterType.All)
         {
+            _logger.LogInformation("Getting job queues in project {projectId}", projectId);
+
             try
             {
                 var jobs = await _jobQueueService.GetJobQueues(projectId, filter);
@@ -45,6 +50,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (FilterTypeNotFoundException ex)
             {
+                _logger.LogWarning(ex, "Filter type not found");
                 return BadRequest(ex.Message);
             }
         }
@@ -59,6 +65,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueue(int projectId, int queueId)
         {
+            _logger.LogInformation("Getting job queue {queueId}", queueId);
+
             var job = await _jobQueueService.GetJobQueueById(queueId);
             var result = _mapper.Map<JobDto>(job);
             return Ok(result);
@@ -75,10 +83,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CreateJobQueue(int projectId, NewJobDto newJobQueue)
         {
+            _logger.LogInformation("Creating job queue for project {projectId}", projectId);
+
             try
             {
                 if (projectId != newJobQueue.ProjectId)
-                    return BadRequest("project Id doesn't match.");
+                {
+                    _logger.LogWarning("Project Id doesn't match");
+                    return BadRequest("Project Id doesn't match.");
+                }
 
                 var newQueue = _mapper.Map<JobDto>(newJobQueue);
 
@@ -95,10 +108,12 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (JobQueueInProgressException jobEx)
             {
+                _logger.LogWarning(jobEx, "Job queue in progress");
                 return BadRequest(jobEx.Message);
             }
             catch (ProjectNotFoundException projEx)
             {
+                _logger.LogWarning(projEx, "Project not found");
                 return BadRequest(projEx.Message);
             }
         }
@@ -113,6 +128,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CancelJobQueue(int projectId, int queueId)
         {
+            _logger.LogInformation("Cancel job queue {queueId}", queueId);
+
             try
             {
                 await _jobQueueService.CancelJobQueue(queueId);
@@ -121,6 +138,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (CancelCompletedJobException ex)
             {
+                _logger.LogWarning(ex, "Cannot cancel a completed job");
                 return BadRequest(ex.Message);
             }
         }
@@ -133,6 +151,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> CheckJob()
         {
+            _logger.LogInformation("Checking for job queue");
+
             var isEngine = User.IsInRole(UserRole.Engine);
 
             var engineName = "";
@@ -154,10 +174,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> UpdateJobQueue(int queueId, UpdateJobDto job)
         {
+            _logger.LogInformation("Updating job queue");
+
             try
             {
                 if (queueId != job.Id)
+                {
                     return BadRequest("Queue Id doesn't match.");
+                }                    
 
                 var entity = _mapper.Map<JobQueue>(job);
                 await _jobQueueService.UpdateJobQueue(entity);
@@ -166,6 +190,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (JobProcessedByOtherEngineException ex)
             {
+                _logger.LogWarning(ex, "Job is processed by other engine");
                 return BadRequest(ex.Message);
             }
         }
@@ -181,6 +206,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueueStatus(int projectId, int queueId, string filter = JobTaskStatusFilterType.All)
         {
+            _logger.LogInformation("Getting status for job queue {queueId}", queueId);
+
             try
             {
                 var jobTaskStatus = await _jobQueueService.GetJobTaskStatus(queueId, filter);
@@ -190,6 +217,7 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             catch (FilterTypeNotFoundException ex)
             {
+                _logger.LogWarning(ex, "Filter type not found");
                 return BadRequest(ex.Message);
             }
         }
@@ -204,6 +232,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobLogs(int projectId, int queueId)
         {
+            _logger.LogInformation("Getting logs for job queue {queueId}", queueId);
+
             var logs = await _jobQueueService.GetJobLogs(queueId);
 
             return Ok(logs);

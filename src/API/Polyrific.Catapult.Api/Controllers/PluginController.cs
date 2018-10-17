@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -21,12 +22,15 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IPluginService _pluginService;
         private readonly IPluginAdditionalConfigService _pluginAdditionalConfigService;
         private readonly IMapper _mapper;
+        private readonly ILogger _logger;
 
-        public PluginController(IPluginService pluginService, IPluginAdditionalConfigService pluginAdditionalConfigService, IMapper mapper)
+        public PluginController(IPluginService pluginService, IPluginAdditionalConfigService pluginAdditionalConfigService, 
+            IMapper mapper, ILogger<PluginController> logger)
         {
             _pluginService = pluginService;
             _pluginAdditionalConfigService = pluginAdditionalConfigService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         /// <summary>
@@ -37,6 +41,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetPlugins()
         {
+            _logger.LogInformation("Getting plugins");
+
             var plugins = await _pluginService.GetPlugins();
 
             var result = _mapper.Map<List<PluginDto>>(plugins);
@@ -53,6 +59,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetPluginsByType(string pluginType)
         {
+            _logger.LogInformation("Getting plugins for type {pluginType}", pluginType);
+
             var plugins = await _pluginService.GetPlugins(pluginType);
 
             var result = _mapper.Map<List<PluginDto>>(plugins);
@@ -69,6 +77,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetPluginById(int pluginId)
         {
+            _logger.LogInformation("Getting plugin {pluginId}", pluginId);
+
             var plugin = await _pluginService.GetPluginById(pluginId);
             if (plugin == null)
                 return NoContent();
@@ -91,6 +101,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetPluginByName(string pluginName)
         {
+            _logger.LogInformation("Getting plugin {pluginName}", pluginName);
+
             var plugin = await _pluginService.GetPluginByName(pluginName);
             if (plugin == null)
                 return NoContent();
@@ -113,6 +125,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterPlugin(NewPluginDto dto)
         {
+            _logger.LogInformation("Registering plugin");
+
             try
             {
                 var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices);
@@ -141,6 +155,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> DeletePluginById(int pluginId)
         {
+            _logger.LogInformation("Deleting plugin {pluginId}", pluginId);
+
             await _pluginService.DeletePlugin(pluginId);
 
             return NoContent();
@@ -155,6 +171,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetPluginAdditionalConfigsByPluginName(string pluginName)
         {
+            _logger.LogInformation("Getting additional configs for plugin {pluginName}", pluginName);
+
             var additionalConfigs = await _pluginAdditionalConfigService.GetByPluginName(pluginName);
 
             var result = _mapper.Map<List<PluginAdditionalConfigDto>>(additionalConfigs);
