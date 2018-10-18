@@ -3,6 +3,7 @@
 using System.Reflection;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
@@ -10,9 +11,18 @@ namespace Polyrific.Catapult.Api.Controllers
     [ApiController]
     public class VersionController : ControllerBase
     {
+        private readonly ILogger<VersionController> _logger;
+
+        public VersionController(ILogger<VersionController> logger)
+        {
+            _logger = logger;
+        }
+
         [Authorize]
         public IActionResult Get()
         {
+            _logger.LogDebug("Checking versions");
+
             var assembly = Assembly.GetExecutingAssembly();
             var informationalVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
             

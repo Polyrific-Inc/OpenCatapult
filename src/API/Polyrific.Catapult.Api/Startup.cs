@@ -1,5 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 using AutoMapper;
 using CorrelationId;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,10 +22,6 @@ using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Common.Interface;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Swashbuckle.AspNetCore.Swagger;
-using System;
-using System.IO;
-using System.Reflection;
-using System.Text;
 
 namespace Polyrific.Catapult.Api
 {
@@ -42,8 +42,6 @@ namespace Polyrific.Catapult.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCorrelationId();
-
             services.AddSingleton(Configuration);
 
             string baseUrl = _hostingEnvironment.IsDevelopment() ? Path.Combine(_hostingEnvironment.ContentRootPath, "bin") : _hostingEnvironment.WebRootPath;
@@ -74,6 +72,8 @@ namespace Polyrific.Catapult.Api
                 });
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddCorrelationId();
 
             services.AddAutoMapper();
 
@@ -114,8 +114,6 @@ namespace Polyrific.Catapult.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseCorrelationId();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -125,8 +123,13 @@ namespace Polyrific.Catapult.Api
                 app.UseHsts();
             }
 
+            app.UseCorrelationId();
+
             app.UseHttpsRedirection();
             app.UseAuthentication();
+
+            // enrich log with request context
+            app.UseMiddleware<SerilogRequestLogger>();
 
             app.ConfigureExceptionHandler(_logger, env.IsDevelopment());
 
