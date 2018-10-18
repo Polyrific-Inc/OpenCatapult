@@ -52,6 +52,8 @@ namespace GitHub.Tests
 
             _gitHubUtils.Setup(u => u.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
+            _gitHubUtils.Setup(u => u.Commit(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(true);
             _gitHubUtils.Setup(u => u.CreatePullRequest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(),
                 It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync("100");
 

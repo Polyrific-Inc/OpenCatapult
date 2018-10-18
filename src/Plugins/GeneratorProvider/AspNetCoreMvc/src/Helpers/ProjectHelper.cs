@@ -62,7 +62,7 @@ namespace AspNetCoreMvc.Helpers
         public void CopyFileToProject(string projectName, string sourceFile, string targetFile)
         {
             var targetFilePath = Path.Combine(_outputLocation, projectName, targetFile);
-            File.Copy(sourceFile, targetFilePath);
+            File.Copy(sourceFile, targetFilePath, true);
         }
 
         public void DeleteFileToProject(string projectName, string filePath)

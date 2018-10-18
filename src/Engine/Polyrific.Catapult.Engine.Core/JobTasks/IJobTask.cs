@@ -45,6 +45,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         void SetConfig(Dictionary<string, string> configs, string workingLocation);
 
         /// <summary>
+        /// Reload the project of task instance
+        /// </summary>
+        void ReloadProject();
+
+        /// <summary>
         /// Run the main task
         /// </summary>
         /// <param name="previousTasksOutputValues">Output values from the previous tasks</param>

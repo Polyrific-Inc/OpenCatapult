@@ -89,6 +89,14 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             TaskConfig = JsonConvert.DeserializeObject<TTaskConfig>(configString) ?? new TTaskConfig();
             TaskConfig.WorkingLocation = workingLocation;
         }
+
+        /// <summary>
+        /// Reload the project of task instance
+        /// </summary>
+        public void ReloadProject()
+        {
+            _project = null;
+        }
         
         /// <summary>
         /// Type of the job task

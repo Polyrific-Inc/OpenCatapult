@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GitHub.Helpers;
@@ -200,6 +201,53 @@ namespace GitHub
                 _logger.LogError(ex, ex.Message);
 
                 return false;
+            }
+        }
+
+        public Task<bool> CheckoutBranch(string localRepository, string branch)
+        {
+            var repo = new Repository(localRepository);
+            var branchObj = repo.Branches[branch] != null ? repo.Branches[branch] : repo.Branches[$"origin/{branch}"];
+            Commands.Checkout(repo, branchObj);
+
+            return Task.FromResult(true);
+        }
+
+        public Task<bool> Commit(string localRepository, string baseBranch, string branch, string commitMessage, string author, string email)
+        {
+            try
+            {
+                var repo = new Repository(localRepository);
+                var signature = new LibGit2Sharp.Signature(author, email, DateTimeOffset.UtcNow);
+
+                // checkout base branch
+                var branchObj = repo.Branches[baseBranch] != null ? repo.Branches[baseBranch] : repo.Branches[$"origin/{baseBranch}"];
+                if (repo.Head.Commits.FirstOrDefault() != branchObj.Commits.FirstOrDefault())
+                    Commands.Checkout(repo, branchObj);
+
+                if (repo.Branches[branch] == null)
+                {
+                    var newBranch = repo.CreateBranch(branch);
+
+                    var remote = repo.Network.Remotes["origin"];
+                    repo.Branches.Update(newBranch,
+                        b => b.Remote = remote.Name,
+                        b => b.UpstreamBranch = newBranch.CanonicalName);
+
+                    _logger.LogInformation("Branch {branch} has been created.", branch);
+                }
+
+                Commands.Checkout(repo, repo.Branches[branch]);
+                Commands.Stage(repo, "*");
+                var commit = repo.Commit(commitMessage, signature, signature);
+
+                return Task.FromResult(commit != null);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Task.FromResult(false);
             }
         }
 

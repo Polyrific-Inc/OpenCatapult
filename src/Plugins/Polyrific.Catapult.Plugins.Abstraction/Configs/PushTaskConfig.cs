@@ -28,5 +28,20 @@ namespace Polyrific.Catapult.Plugins.Abstraction.Configs
         /// Branch which will be the target of the pull request
         /// </summary>
         public string PullRequestTargetBranch { get; set; }
+
+        /// <summary>
+        /// Message set when committing changes
+        /// </summary>
+        public string CommitMessage { get; set; }
+               
+        /// <summary>
+        /// Author of the commit
+        /// </summary>
+        public string Author { get; set; }
+
+        /// <summary>
+        /// Email of the commiters
+        /// </summary>
+        public string Email { get; set; }
     }
 }

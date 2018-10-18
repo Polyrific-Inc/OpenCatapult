@@ -52,6 +52,32 @@ namespace GitHub
             return $"Failed to clone source code from remote repository after {MaxAttempt} attempts.";
         }
 
+        public async Task<bool> CheckoutBranch(string branch)
+        {
+            var success = await _gitHubUtils.CheckoutBranch(_config.LocalRepository, branch);
+
+            if (success)
+            {
+                _logger.LogInformation("Checking out base branch to {branch}", branch);
+                return true;
+            }
+
+            return false;
+        }
+
+        public async Task<string> Commit(string baseBranch, string branch, string commitMessage, string author, string email)
+        {
+            var success = await _gitHubUtils.Commit(_config.LocalRepository, baseBranch, branch, commitMessage, author, email);
+
+            if (success)
+            {
+                _logger.LogInformation("All changes has been commited into branch {branch}", branch);
+                return "";
+            }
+
+            return "Failed committing changes";
+        }
+
         public async Task<string> Push(string branch)
         {
             var attempt = 1;

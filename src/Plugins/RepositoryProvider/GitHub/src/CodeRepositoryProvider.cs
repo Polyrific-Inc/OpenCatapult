@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
@@ -14,6 +15,10 @@ namespace GitHub
     {
         private IGitAutomation _gitAutomation;
         private readonly IGitHubUtils _gitHubUtils;
+
+        private const string DefaultAuthor = "OpenCatapult";
+        private const string DefaultEmail = "admin@opencatapult.net";
+        private const string DefaultCommitMessage = "Changes by OpenCatapult";
 
         public CodeRepositoryProvider()
         {
@@ -41,7 +46,7 @@ namespace GitHub
 
         public async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetGitAutomationConfig(config.CloneLocation, config.Repository, additionalConfigs);
+            var repoConfig = GetGitAutomationConfig(config.CloneLocation, config.Repository, additionalConfigs, config.IsPrivateRepository);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
@@ -49,6 +54,9 @@ namespace GitHub
             var error = await _gitAutomation.Clone();
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
+
+            if (!string.IsNullOrEmpty(config.BaseBranch))
+                await _gitAutomation.CheckoutBranch(config.BaseBranch);
 
             return (config.CloneLocation, null, "");
         }
@@ -69,6 +77,10 @@ namespace GitHub
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
+
+            var commitError = await _gitAutomation.Commit(config.PullRequestTargetBranch, config.Branch, config.CommitMessage ?? DefaultCommitMessage, config.Author ?? DefaultAuthor, config.Email ?? DefaultEmail);
+            if (!string.IsNullOrEmpty(commitError))
+                return ("", null, commitError);
 
             var error = await _gitAutomation.Push(config.Branch);
             if (!string.IsNullOrEmpty(error))
@@ -120,13 +132,22 @@ namespace GitHub
             return Task.FromResult("");
         }
 
-        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs)
+        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool isPrivateRepository = false)
         {
+            var remoteUrlCleaned = remoteUrl?.Trim(' ', '/');
             var config = new GitAutomationConfig
             {
                 LocalRepository = localRepository,
-                RemoteUrl = remoteUrl
+                RemoteUrl = remoteUrlCleaned,
+                IsPrivateRepository = isPrivateRepository,
             };
+
+            var remoteUrlBrokenDown = remoteUrlCleaned?.Split('/');
+            if (remoteUrlBrokenDown.Length >= 2)
+            {
+                config.ProjectName = remoteUrlBrokenDown.Last();
+                config.RepoOwner = remoteUrlBrokenDown[remoteUrlBrokenDown.Length - 2];
+            }
 
             if (additionalConfigs != null)
             {

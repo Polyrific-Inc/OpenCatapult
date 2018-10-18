@@ -13,6 +13,24 @@ namespace GitHub
         Task<string> Clone();
 
         /// <summary>
+        /// Checkout a branch
+        /// </summary>
+        /// <param name="branch">Branch to be checked out</param>
+        /// <returns></returns>
+        Task<bool> CheckoutBranch(string branch);
+
+        /// <summary>
+        /// Commit changes into a branch
+        /// </summary>
+        /// <param name="baseBranch">Base branch that will be used as Head for the new branch</param>
+        /// <param name="branch">branch of the commit</param>
+        /// <param name="commitMessage">Message of the commit</param>
+        /// <param name="author">Author of the commit</param>
+        /// <param name="email">Email of the comitter</param>
+        /// <returns></returns>
+        Task<string> Commit(string baseBranch, string branch, string commitMessage, string author, string email);
+
+        /// <summary>
         /// Push local changes into remote repository
         /// </summary>
         /// <param name="branch">Remote branch</param>

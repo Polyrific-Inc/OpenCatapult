@@ -16,6 +16,25 @@ namespace GitHub
         Task<string> Clone(string remoteUrl, string localRepository, bool isPrivateRepository);
 
         /// <summary>
+        /// Commit changes into a branch
+        /// </summary>
+        /// <param name="baseBranch">Base branch that will be used as Head for the new branch</param>
+        /// <param name="branch">Branch of the commit</param>
+        /// <param name="commitMessage">Message of the commit</param>
+        /// <param name="author">Author of the commit</param>
+        /// <param name="email">Email of the comitter</param>
+        /// <returns></returns>
+        Task<bool> Commit(string localRepository, string baseBranch, string branch, string commitMessage, string author, string email);
+
+        /// <summary>
+        /// Checkout a branch
+        /// </summary>
+        /// <param name="localRepository">Location of the local repository</param>
+        /// <param name="branch">Branch to be checked out</param>
+        /// <returns></returns>
+        Task<bool> CheckoutBranch(string localRepository, string branch);
+
+        /// <summary>
         /// Push source code changes to remote repository
         /// </summary>
         /// <param name="remoteUrl">URL of the remote repository</param>
