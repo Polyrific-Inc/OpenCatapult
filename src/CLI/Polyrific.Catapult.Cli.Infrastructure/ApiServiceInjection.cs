@@ -31,6 +31,7 @@ namespace Polyrific.Catapult.Cli.Infrastructure
             services.AddTransient<IExternalServiceService, ExternalServiceService>();
             services.AddTransient<IExternalServiceTypeService, ExternalServiceTypeService>();
             services.AddTransient<IPluginService, PluginService>();
+            services.AddTransient<IVersionService, VersionService>();
         }
     }
 }
