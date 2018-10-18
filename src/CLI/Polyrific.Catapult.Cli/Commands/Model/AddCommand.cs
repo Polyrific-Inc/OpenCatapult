@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Model
 {
@@ -38,10 +38,11 @@ namespace Polyrific.Catapult.Cli.Commands.Model
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add new data model to project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
                 var model = _projectDataModelService.CreateProjectDataModel(project.Id, new CreateProjectDataModelDto
@@ -51,13 +52,14 @@ namespace Polyrific.Catapult.Cli.Commands.Model
                     Label = Label
                 }).Result;
 
-                message = model.ToCliString($"Model {Name} was added to project {Project}:");
+                message = model.ToCliString($"Model has been added:", null, 1);
                 Logger.LogInformation(message);
             }
             else
             { 
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
+
             return message;
         }
     }

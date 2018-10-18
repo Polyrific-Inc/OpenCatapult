@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Model
 {
@@ -40,14 +40,14 @@ namespace Polyrific.Catapult.Cli.Commands.Model
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to update model \"{Name}\"...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
                 var model = _projectDataModelService.GetProjectDataModelByName(project.Id, Name).Result;
-
                 if (model != null)
                 {
                     _projectDataModelService.UpdateProjectDataModel(project.Id, model.Id, new UpdateProjectDataModelDto
@@ -58,13 +58,13 @@ namespace Polyrific.Catapult.Cli.Commands.Model
                         Label = Label ?? model.Label
                     }).Wait();
 
-                    message = $"Model {Name} was updated";
+                    message = $"Model {Name} has been updated successfully";
                     Logger.LogInformation(message);
                     return message;
                 }
             }
 
-            message = $"Failed updating model {Name}. Make sure the project and model names are correct.";
+            message = $"Failed to update model {Name}. Make sure the project and model names are correct.";
 
             return message;
         }

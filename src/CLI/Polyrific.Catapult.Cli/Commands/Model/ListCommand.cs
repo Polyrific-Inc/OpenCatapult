@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Model
 {
@@ -27,18 +27,20 @@ namespace Polyrific.Catapult.Cli.Commands.Model
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get data models for project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
                 var models = _projectDataModelService.GetProjectDataModels(project.Id).Result;
-                message = models.ToListCliString($"Models in project {Project}:");
+                
+                message = models.ToListCliString($"Found {models.Count} data model(s):");
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;
