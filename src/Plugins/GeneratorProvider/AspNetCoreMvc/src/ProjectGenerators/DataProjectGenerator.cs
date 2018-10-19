@@ -1,30 +1,35 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc.ProjectGenerators
 {
     internal class DataProjectGenerator
     {
-        private string _projectName;
+        private readonly string _projectName;
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
         private readonly ILogger _logger;
+        private readonly string _adminEmail;
 
         public const string DataProject = "Data";
 
         private string Name => $"{_projectName}.{DataProject}";
 
-        public DataProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, ILogger logger)
+        public DataProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models,
+            string adminEmail, ILogger logger)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
+            _adminEmail = adminEmail;
             _logger = logger;
         }
 
@@ -36,6 +41,9 @@ namespace AspNetCoreMvc.ProjectGenerators
             };
             var dataProjectPackages = new (string, string)[]
             {
+                ("AutoMapper", "7.0.1"),
+                ("Microsoft.AspNetCore.Identity", "2.1.3"),
+                ("Microsoft.AspNetCore.Identity.EntityFrameworkCore", "2.1.3"),
                 ("Microsoft.EntityFrameworkCore.SqlServer", "2.1.1"),
                 ("Microsoft.EntityFrameworkCore.Tools", "2.1.1")
             };
@@ -91,13 +99,15 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateDbContext()
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Identity.EntityFrameworkCore;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
             sb.AppendLine($"using {Name}.EntityConfigs;");
+            sb.AppendLine($"using {Name}.Identity;");
             sb.AppendLine();
             sb.AppendLine($"namespace {Name}");
             sb.AppendLine("{");
-            sb.AppendLine("    public class ApplicationDbContext : DbContext");
+            sb.AppendLine("    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, int, ApplicationUserClaim, ApplicationUserRole, ApplicationUserLogin, ApplicationRoleClaim, ApplicationUserToken>");
             sb.AppendLine("    {");
             sb.AppendLine("        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)");
             sb.AppendLine("        {");
@@ -115,6 +125,14 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             foreach (var model in _models)
                 sb.AppendLine($"            modelBuilder.ApplyConfiguration(new {model.Name}Config());");
+
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationRoleConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserRoleConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserClaimConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserLoginConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationRoleClaimConfig());");
+            sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserTokenConfig());");
 
             sb.AppendLine("        }");
 
@@ -304,5 +322,599 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             _projectHelper.AddFileToProject(Name, $"BaseRepository.cs", sb.ToString());
         }
+
+        #region Identities
+        public Task<string> GenerateIdentityClasses()
+        {
+            GenerateApplicationRole();
+            GenerateApplicationRoleClaim();
+            GenerateApplicationUser();
+            GenerateApplicationUserClaim();
+            GenerateApplicationUserLogin();
+            GenerateApplicationUserRole();
+            GenerateApplicationUserToken();
+            GenerateIdentityAutoMapperProfile();
+            GenerateIdentityEntityConfigs();
+            GenerateIdentityResultExtensions();
+
+            return Task.FromResult("Identity classes generated");
+        }
+
+        private void GenerateApplicationUser()
+        {
+            var userModel = _models.FirstOrDefault(m => m.Name == CoreProjectGenerator.UserModel);
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"using System.Collections.Generic;");
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUser : IdentityUser<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public ApplicationUser()");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationUser(string userName) : base(userName)");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationUser(int userId, string userEmail) : base(userEmail)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Id = userId;");
+            sb.AppendLine("            NormalizedUserName = userEmail.ToUpper();");
+            sb.AppendLine("            Email = userEmail;");
+            sb.AppendLine("            NormalizedEmail = userEmail.ToUpper();");
+            sb.AppendLine("        }");
+
+            if (userModel != null && userModel.Properties != null)
+            {
+                foreach (var property in userModel.Properties)
+                {
+                    if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                    {
+                        if (property.RelationalType == PropertyRelationalType.OneToOne)
+                        {
+                            sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                            sb.AppendLine($"        public {property.RelatedProjectDataModelName} {property.Name} {{ get; set; }}");
+                        }
+                        else if (property.RelationalType == PropertyRelationalType.OneToMany)
+                        {
+                            sb.AppendLine($"        public ICollection<{property.RelatedProjectDataModelName}> {property.Name} {{ get; set; }}");
+                        }
+                        else if (property.RelationalType == PropertyRelationalType.ManyToMany)
+                        {
+                            // TODO: Implement this later as many-to-many relationship in ef core is not straightforward
+                        }
+                    }
+                    else
+                    {
+                        sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                    }
+                }
+            }
+
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUser.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationRole()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using System.Collections.Generic;");
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationRole : IdentityRole<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public ApplicationRole()");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationRole(string roleName) : base(roleName)");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationRole(int roleId, string roleName) : base(roleName)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            Id = roleId;");
+            sb.AppendLine("            NormalizedName = roleName.ToUpper();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationRole.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationRoleClaim()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationRoleClaim : IdentityRoleClaim<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine();
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationRoleClaim.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationUserClaim()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserClaim : IdentityUserClaim<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine();
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUserClaim.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationUserLogin()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserLogin : IdentityUserLogin<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine();
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUserLogin.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationUserRole()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserRole : IdentityUserRole<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationUserRole()");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public ApplicationUserRole(int userId, int roleId)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            UserId = userId;");
+            sb.AppendLine("            RoleId = roleId;");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUserRole.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationUserToken()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserToken : IdentityUserToken<int>");
+            sb.AppendLine("    {");
+            sb.AppendLine();
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUserToken.cs", sb.ToString());
+        }
+
+        private void GenerateIdentityAutoMapperProfile()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using System.Linq;");
+            sb.AppendLine($"using AutoMapper;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class IdentityAutoMapperProfile : Profile");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public IdentityAutoMapperProfile()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            CreateMap<User, ApplicationUser>()");
+            sb.AppendLine("              .ForMember(dest => dest.NormalizedUserName, opt => opt.Ignore())");
+            sb.AppendLine("              .ForMember(dest => dest.NormalizedEmail, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.EmailConfirmed, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.PasswordHash, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.SecurityStamp, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.ConcurrencyStamp, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.PhoneNumber, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.PhoneNumberConfirmed, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.TwoFactorEnabled, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.LockoutEnd, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.LockoutEnabled, opt => opt.Ignore())");
+            sb.AppendLine("	             .ForMember(dest => dest.AccessFailedCount, opt => opt.Ignore());");
+            sb.AppendLine("            CreateMap<ApplicationUser, User>();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/IdentityAutoMapperProfile.cs", sb.ToString());
+        }
+
+        private void GenerateIdentityEntityConfigs()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+            sb.AppendLine("using Microsoft.EntityFrameworkCore.Metadata.Builders;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Constants;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserConfig : IEntityTypeConfiguration<ApplicationUser>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationUser> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"Users\");");
+            sb.AppendLine();
+            sb.AppendLine("            builder.HasData(CreateInitialUser());");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        private ApplicationUser CreateInitialUser()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            var user = new ApplicationUser(1, \"{_adminEmail}\")");
+            sb.AppendLine("            {");
+            sb.AppendLine("                EmailConfirmed = true,");
+            sb.AppendLine();
+            sb.AppendLine("                // ideally these values don't need to be set here,");
+            sb.AppendLine("                // it's just a workaround because of a bug in ef core 2.1 which prevents migrations to work as expected");
+            sb.AppendLine("                ConcurrencyStamp = \"6e60fade-1c1f-4f6a-ab7e-768358780783\",");
+            sb.AppendLine("                SecurityStamp = \"D4ZMGAXVOVP33V5FMDWVCZ7ZMH5R2JCK\"");
+            sb.AppendLine("            };");
+            sb.AppendLine();
+            sb.AppendLine("            return user;");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationRoleConfig : IEntityTypeConfiguration<ApplicationRole>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationRole> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"Roles\");");
+            sb.AppendLine();
+            sb.AppendLine("            builder.HasData(");
+            sb.AppendLine("                new ApplicationRole(1, UserRole.Administrator){ConcurrencyStamp = \"f8025fee-dec6-4528-9514-58339adc3383\"},");
+            sb.AppendLine("                new ApplicationRole(2, UserRole.Guest) {ConcurrencyStamp = \"18f44ef4-86b2-4ebb-a400-b2615c9715e0\" }");
+            sb.AppendLine("            );");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationUserRoleConfig : IEntityTypeConfiguration<ApplicationUserRole>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationUserRole> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"UserRoles\");");
+            sb.AppendLine();
+            sb.AppendLine("            builder.HasData(new ApplicationUserRole(1, 1));");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationUserClaimConfig : IEntityTypeConfiguration<ApplicationUserClaim>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationUserClaim> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"UserClaims\");");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationUserLoginConfig : IEntityTypeConfiguration<ApplicationUserLogin>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationUserLogin> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"UserLogins\");");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationRoleClaimConfig : IEntityTypeConfiguration<ApplicationRoleClaim>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationRoleClaim> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"RoleClaims\");");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine();
+            sb.AppendLine("    public class ApplicationUserTokenConfig : IEntityTypeConfiguration<ApplicationUserToken>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public void Configure(EntityTypeBuilder<ApplicationUserToken> builder)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            builder.ToTable(\"UserTokens\");");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, "Identity/IdentityEntityConfigs.cs", sb.ToString());
+        }
+
+        private void GenerateIdentityResultExtensions()
+        {
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"using System;");
+            sb.AppendLine($"using System.Linq;");
+            sb.AppendLine("using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class IdentityResultExtensions");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public static void ThrowErrorException(this IdentityResult result)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (result.Errors.Any())");
+            sb.AppendLine("            {");
+            sb.AppendLine("                throw new Exception(string.Join(\" \", result.Errors.Select(err => err.Description)));");
+            sb.AppendLine("	           }");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, "Identity/IdentityResultExtensions.cs", sb.ToString());
+        }
+
+        private void GenerateUserRepository()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using AutoMapper;");
+            sb.AppendLine("using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine("using Microsoft.EntityFrameworkCore;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Exceptions;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Repositories;");
+            sb.AppendLine($"using {Name}.Identity;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Security.Claims;");
+            sb.AppendLine("using System.Threading;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class UserRepository : IUserRepository");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private readonly UserManager<ApplicationUser> _userManager;");
+            sb.AppendLine("        private readonly RoleManager<ApplicationRole> _roleManager;");
+            sb.AppendLine("        private readonly IMapper _mapper;");
+            sb.AppendLine();
+            sb.AppendLine("        public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IMapper mapper)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _userManager = userManager;");
+            sb.AppendLine("            _roleManager = roleManager;");
+            sb.AppendLine("            _mapper = mapper;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId.ToString());");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var result = await _userManager.ConfirmEmailAsync(user, token);");
+            sb.AppendLine("                if (!result.Succeeded)");
+            sb.AppendLine("                    result.ThrowErrorException();");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public Task<int> CountBySpec(ISpecification<User> spec, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            throw new System.NotImplementedException();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<int> Create(User entity, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = _mapper.Map<ApplicationUser>(entity);");
+            sb.AppendLine();
+            sb.AppendLine("            var result = await _userManager.CreateAsync(user);");
+            sb.AppendLine("            if (!result.Succeeded)");
+            sb.AppendLine("                result.ThrowErrorException();");
+            sb.AppendLine();
+            sb.AppendLine("            return user.Id;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<int> Create(User entity, string password, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = _mapper.Map<ApplicationUser>(entity);");
+            sb.AppendLine();
+            sb.AppendLine("            var result = await _userManager.CreateAsync(user, password);");
+            sb.AppendLine("            if (!result.Succeeded)");
+            sb.AppendLine("                result.ThrowErrorException();");
+            sb.AppendLine();
+            sb.AppendLine("            return user.Id;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task Delete(int id, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var result = await _userManager.DeleteAsync(user);");
+            sb.AppendLine("                if (!result.Succeeded)");
+            sb.AppendLine("                    result.ThrowErrorException();");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<string> GenerateConfirmationToken(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId.ToString());");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("                return await _userManager.GenerateEmailConfirmationTokenAsync(user);");
+            sb.AppendLine();
+            sb.AppendLine("            return \"\";");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetById(int id, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id, cancellationToken);");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("                return _mapper.Map<User>(user);");
+            sb.AppendLine();
+            sb.AppendLine("            return await Task.FromResult((User) null);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("                return _mapper.Map<User>(user);");
+            sb.AppendLine();
+            sb.AppendLine("            return await Task.FromResult((User)null);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetByPrincipal(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var appUser = await _userManager.FindByNameAsync(principal.Identity.Name);");
+            sb.AppendLine();
+            sb.AppendLine("            return _mapper.Map<User>(appUser);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public Task<IEnumerable<User>> GetBySpec(ISpecification<User> spec, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            throw new System.NotImplementedException();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public Task<User> GetSingleBySpec(ISpecification<User> spec, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            throw new System.NotImplementedException();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var appUser = await _userManager.Users.FirstOrDefaultAsync(u => u.UserName == userName);");
+            sb.AppendLine();
+            sb.AppendLine("            return _mapper.Map<User>(appUser);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.FindByNameAsync(userName);");
+            sb.AppendLine("            if (user != null && user.EmailConfirmed)");
+            sb.AppendLine("                return await _userManager.CheckPasswordAsync(user, password);");
+            sb.AppendLine();
+            sb.AppendLine("            return false;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("		   public async Task Update(User entity, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);");
+            sb.AppendLine("            if (user != null && user.UserProfile != null)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                user.UserProfile.FirstName = entity.FirstName;");
+            sb.AppendLine("                user.UserProfile.LastName = entity.LastName;");
+            sb.AppendLine("                await _userProfileRepository.Update(user.UserProfile, cancellationToken);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId);");
+            sb.AppendLine("            if (user != null)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                var role = await _roleManager.FindByNameAsync(roleName);");
+            sb.AppendLine("                if (role == null)");
+            sb.AppendLine("                    throw new InvalidRoleException(roleName);");
+            sb.AppendLine();
+            sb.AppendLine("                var roles = await _userManager.GetRolesAsync(user);");
+            sb.AppendLine("                if (!roles.Contains(roleName))");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    var result = await _userManager.RemoveFromRolesAsync(user, roles);");
+            sb.AppendLine("                    if (!result.Succeeded)");
+            sb.AppendLine("                        result.ThrowErrorException();");
+            sb.AppendLine();
+            sb.AppendLine("                    result = await _userManager.AddToRoleAsync(user, roleName);");
+            sb.AppendLine("                    if (!result.Succeeded)");
+            sb.AppendLine("                        result.ThrowErrorException();");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var users = await _userManager.Users.ToListAsync();");
+            sb.AppendLine();
+            sb.AppendLine("            return _mapper.Map<List<User>>(users);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<string> GetResetPasswordToken(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId.ToString());");
+            sb.AppendLine("            return await _userManager.GeneratePasswordResetTokenAsync(user);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task ResetPassword(int userId, string token, string newPassword, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId.ToString());");
+            sb.AppendLine("            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);");
+            sb.AppendLine("            if (!result.Succeeded)");
+            sb.AppendLine("                result.ThrowErrorException();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId.ToString());");
+            sb.AppendLine("            var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);");
+            sb.AppendLine("            if (!result.Succeeded)");
+            sb.AppendLine("                result.ThrowErrorException();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            
+            _projectHelper.AddFileToProject(Name, "UserRepository.cs", sb.ToString());
+        }
+        #endregion // Identities
     }
 }

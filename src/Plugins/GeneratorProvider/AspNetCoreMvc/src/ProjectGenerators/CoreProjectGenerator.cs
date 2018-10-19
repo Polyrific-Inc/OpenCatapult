@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
@@ -16,8 +17,36 @@ namespace AspNetCoreMvc.ProjectGenerators
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
         private readonly ILogger _logger;
+        private readonly List<ProjectDataModelDto> _builtInModel = new List<ProjectDataModelDto>
+        {
+            new ProjectDataModelDto
+            {
+                Name = UserModel,
+                Label = "User",
+                Description = "User of the application",
+                Properties = new List<ProjectDataModelPropertyDto>()
+                {
+                    new ProjectDataModelPropertyDto
+                    {
+                        Name = "Email",
+                        Label = "Email",
+                        DataType = "string",
+                        ControlType = "input-text"
+                    },
+                    new ProjectDataModelPropertyDto
+                    {
+                        Name = "UserName",
+                        Label = "UserName",
+                        DataType = "string",
+                        ControlType = "input-text"
+                    }
+                }
+            }
+        };
+        private readonly string[] _baseProperties = new string[] { "Id", "Created", "Updated", "ConcurrencyStamp"  };
 
         public const string CoreProject = "Core";
+        public const string UserModel = "User";
 
         private string Name => $"{_projectName}.{CoreProject}";
 
@@ -27,6 +56,9 @@ namespace AspNetCoreMvc.ProjectGenerators
             _projectHelper = projectHelper;
             _models = models;
             _logger = logger;
+
+            var addedModel = _builtInModel.Where(m => !models.Any(pm => pm.Name == m.Name));
+            _models = models.Concat(addedModel).ToList();
         }
 
         public async Task<string> Initialize()
@@ -43,11 +75,16 @@ namespace AspNetCoreMvc.ProjectGenerators
             foreach (var model in _models)
                 GenerateRepositoryInterface(model);
 
+            GenerateUserRepositoryInterface();
+
             return Task.FromResult($"{_models.Count} repository interface(s) generated");
         }
 
         private void GenerateRepositoryInterface(ProjectDataModelDto model)
         {
+            if (model.Name == UserModel)
+                return;
+
             var sb = new StringBuilder();
             sb.AppendLine($"using {Name}.Entities;");
             sb.AppendLine();
@@ -60,6 +97,46 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             _projectHelper.AddFileToProject(Name, $"Repositories/I{model.Name}Repository.cs", sb.ToString());
+        }
+
+        private void GenerateUserRepositoryInterface()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Security.Claims;");
+            sb.AppendLine("using System.Threading;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine($"using {Name}.Entities;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Repositories");
+            sb.AppendLine("{");
+            sb.AppendLine("    public interface IUserRepository : IRepository<User>");
+            sb.AppendLine("    {");
+            sb.AppendLine("        Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<int> Create(User entity, string password, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<string> GenerateConfirmationToken(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<User> GetByPrincipal(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<string> GetResetPasswordToken(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task ResetPassword(int userId, string token, string newPassword, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Repositories/IUserRepository.cs", sb.ToString());
         }
 
         private void GenerateBaseRepositoryInterface()
@@ -173,9 +250,15 @@ namespace AspNetCoreMvc.ProjectGenerators
         {
             foreach (var model in _models)
             {
+                if (model.Name == UserModel)
+                    continue;
+
                 GenerateServiceInterface(model);
                 GenerateServiceClass(model);
             }
+
+            GenerateUserServiceInterface();
+            GenerateUserServiceClass();
 
             return Task.FromResult($"{_models.Count} service(s) generated");
         }
@@ -202,6 +285,55 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             _projectHelper.AddFileToProject(Name, $"Services/I{model.Name}Service.cs", sb.ToString());
+        }
+
+        private void GenerateUserServiceInterface()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using {Name}.Entities;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Security.Claims;");
+            sb.AppendLine("using System.Threading;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Services");
+            sb.AppendLine("{");
+            sb.AppendLine("    public interface IUserService");
+            sb.AppendLine("    {");
+            sb.AppendLine("	");
+            sb.AppendLine("        Task<User> CreateUser(string email, string password, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task DeleteUser(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<string> GenerateConfirmationToken(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<int> GetUserId(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<string> GetUserEmail(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task<string> GetResetPasswordToken(int userId, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task ResetPassword(int userId, string token, string newPassword, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
+            sb.AppendLine("        Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            
+            _projectHelper.AddFileToProject(Name, $"Services/IUserService.cs", sb.ToString());
         }
 
         private void GenerateServiceClass(ProjectDataModelDto model)
@@ -271,6 +403,140 @@ namespace AspNetCoreMvc.ProjectGenerators
             _projectHelper.AddFileToProject(Name, $"Services/{model.Name}Service.cs", sb.ToString());
         }
 
+        private void GenerateUserServiceClass()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"using {Name}.Entities;");
+            sb.AppendLine($"using {Name}.Repositories;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Security.Claims;");
+            sb.AppendLine("using System.Threading;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Services");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class UserService : IUserService");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private readonly IUserRepository _userRepository;");
+            sb.AppendLine();
+            sb.AppendLine("        public UserService(IUserRepository userRepository)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _userRepository = userRepository;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            await _userRepository.ConfirmEmail(userId, token, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> CreateUser(string email, string password, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = new User");
+            sb.AppendLine("            {");
+            sb.AppendLine("                UserName = email,");
+            sb.AppendLine("                Email = email");
+            sb.AppendLine("            };");
+            sb.AppendLine();
+            sb.AppendLine("            var id = await _userRepository.Create(user, password, cancellationToken);");
+            sb.AppendLine("            if (id > 0)");
+            sb.AppendLine("                user.Id = id;");
+            sb.AppendLine();
+            sb.AppendLine("            return user;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task DeleteUser(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            await _userRepository.Delete(userId, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public Task<string> GenerateConfirmationToken(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            return _userRepository.GenerateConfirmationToken(userId, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            return await _userRepository.GetByUserName(userName, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return await _userRepository.GetById(userId, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return await _userRepository.GetByEmail(email, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<int> GetUserId(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userRepository.GetByPrincipal(principal, cancellationToken);");
+            sb.AppendLine();
+            sb.AppendLine("            return user?.Id ?? 0;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<string> GetUserEmail(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var user = await _userRepository.GetByPrincipal(principal, cancellationToken);");
+            sb.AppendLine();
+            sb.AppendLine("            return user?.Email;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            return await _userRepository.GetUsers();");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task ResetPassword(int userId, string token, string newPassword, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            await _userRepository.ResetPassword(userId, token, newPassword, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<string> GetResetPasswordToken(int userId, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            return await _userRepository.GetResetPasswordToken(userId, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine("            await _userRepository.UpdatePassword(userId, oldPassword, newPassword, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            await _userRepository.Update(user, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return await _userRepository.ValidateUserPassword(userName, password, cancellationToken);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Services/UserService.cs", sb.ToString());
+        }
+
         #endregion //services
 
         #region Models
@@ -279,6 +545,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateBaseModel();
             foreach (var model in _models)
                 GenerateModel(model);
+
+            GenerateUserRoleConstant();
 
             return Task.FromResult($"{_models.Count} model(s) generated");
         }
@@ -296,6 +564,9 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             foreach (var property in model.Properties)
             {
+                if (_baseProperties.Contains(property.Name))
+                    continue;
+
                 if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
                 {
                     if (property.RelationalType == PropertyRelationalType.OneToOne)
@@ -342,6 +613,22 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             _projectHelper.AddFileToProject(Name, $"Entities/BaseEntity.cs", sb.ToString());
+        }
+        
+        private void GenerateUserRoleConstant()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"namespace {Name}.Constants");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class UserRole");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public const string Administrator = \"Administrator\";");
+            sb.AppendLine("        public const string Guest = \"Guest\";");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, $"Constants/UserRole.cs", sb.ToString());
         }
         #endregion // models
     }

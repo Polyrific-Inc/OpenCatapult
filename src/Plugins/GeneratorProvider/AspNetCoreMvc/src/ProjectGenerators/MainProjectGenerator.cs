@@ -502,7 +502,7 @@ namespace AspNetCoreMvc.ProjectGenerators
                         break;
                     case PropertyControlType.InputFile:
                     case PropertyControlType.Image:
-                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ type = \"file\" htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ type = \"file\", htmlAttributes = new {{ @class = \"form-control\" }} }})");
                         break;
                     case PropertyControlType.Textarea:
                         sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
@@ -578,6 +578,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine("            services.RegisterRepositories();");
             sb.AppendLine("            services.RegisterServices();");
+            sb.AppendLine("            services.AddAppIdentity();");
             sb.AppendLine();
             sb.AppendLine("            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);");
             sb.AppendLine("            services.AddAutoMapper();");
@@ -598,6 +599,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine("            app.UseHttpsRedirection();");
             sb.AppendLine("            app.UseStaticFiles();");
+            sb.AppendLine("            app.UseAuthentication();");
             sb.AppendLine();
             sb.AppendLine("            app.UseMvc(routes =>");
             sb.AppendLine("            {");

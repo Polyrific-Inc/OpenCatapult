@@ -25,10 +25,11 @@ namespace AspNetCoreMvc
         public async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate(string projectName, List<ProjectDataModelDto> models, GenerateTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             additionalConfigs.TryGetValue("ConnectionString", out var connectionString);
+            additionalConfigs.TryGetValue("AdminEmail", out var adminEmail);
 
             config.OutputLocation = config.OutputLocation ?? config.WorkingLocation;
 
-            var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString, logger);
+            var generator = new CodeGenerator(projectName, config.OutputLocation, models, connectionString, adminEmail, logger);
 
             await generator.InitSolution();
 
