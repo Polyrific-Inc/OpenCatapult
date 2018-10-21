@@ -150,6 +150,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             foreach (var model in _models)
                 GenerateRepositoryClass(model);
 
+            GenerateUserRepository();
+
             return Task.FromResult($"{_models.Count} repository class(es) generated");
         }
 
@@ -336,6 +338,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateIdentityAutoMapperProfile();
             GenerateIdentityEntityConfigs();
             GenerateIdentityResultExtensions();
+            GenerateApplicationUserClaimsPrincipalFactory();
 
             return Task.FromResult("Identity classes generated");
         }
@@ -687,7 +690,6 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("using Microsoft.AspNetCore.Identity;");
             sb.AppendLine("using Microsoft.EntityFrameworkCore;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
-            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Exceptions;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Repositories;");
             sb.AppendLine($"using {Name}.Identity;");
             sb.AppendLine("using System.Collections.Generic;");
@@ -700,14 +702,24 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    public class UserRepository : IUserRepository");
             sb.AppendLine("    {");
             sb.AppendLine("        private readonly UserManager<ApplicationUser> _userManager;");
+            sb.AppendLine("        private readonly SignInManager<ApplicationUser> _signInManager;");
             sb.AppendLine("        private readonly RoleManager<ApplicationRole> _roleManager;");
             sb.AppendLine("        private readonly IMapper _mapper;");
             sb.AppendLine();
-            sb.AppendLine("        public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IMapper mapper)");
+            sb.AppendLine("        public UserRepository(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, RoleManager<ApplicationRole> roleManager, IMapper mapper)");
             sb.AppendLine("        {");
             sb.AppendLine("            _userManager = userManager;");
+            sb.AppendLine("            _signInManager = signInManager;");
             sb.AppendLine("            _roleManager = roleManager;");
             sb.AppendLine("            _mapper = mapper;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<Core.Entities.SignInResult> PasswordSignInAsync(string email, string password, bool isPersistent, bool lockoutOnFailure, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var result = await _signInManager.PasswordSignInAsync(email, password, isPersistent, lockoutOnFailure);");
+            sb.AppendLine("            return _mapper.Map<Core.Entities.SignInResult>(result);");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))");
@@ -778,6 +790,15 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            return \"\";");
             sb.AppendLine("        }");
             sb.AppendLine();
+            sb.AppendLine("        public async Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var users = await _userManager.Users.ToListAsync();");
+            sb.AppendLine();
+            sb.AppendLine("            return _mapper.Map<List<User>>(users);");
+            sb.AppendLine("        }");
+            sb.AppendLine();
             sb.AppendLine("        public async Task<User> GetById(int id, CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
             sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
@@ -843,41 +864,15 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("        {");
             sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
             sb.AppendLine();
-            sb.AppendLine("            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);");
-            sb.AppendLine("            if (user != null && user.UserProfile != null)");
-            sb.AppendLine("            {");
-            sb.AppendLine("                user.UserProfile.FirstName = entity.FirstName;");
-            sb.AppendLine("                user.UserProfile.LastName = entity.LastName;");
-            sb.AppendLine("                await _userProfileRepository.Update(user.UserProfile, cancellationToken);");
-            sb.AppendLine("            }");
-            sb.AppendLine("        }");
-            sb.AppendLine();
-            sb.AppendLine("        public async Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))");
-            sb.AppendLine("        {");
-            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
-            sb.AppendLine();
-            sb.AppendLine("            var user = await _userManager.FindByIdAsync(userId);");
+            sb.AppendLine("            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == entity.Id);");
             sb.AppendLine("            if (user != null)");
             sb.AppendLine("            {");
-            sb.AppendLine("                var role = await _roleManager.FindByNameAsync(roleName);");
-            sb.AppendLine("                if (role == null)");
-            sb.AppendLine("                    throw new InvalidRoleException(roleName);");
-            sb.AppendLine();
-            sb.AppendLine("                var roles = await _userManager.GetRolesAsync(user);");
-            sb.AppendLine("                if (!roles.Contains(roleName))");
-            sb.AppendLine("                {");
-            sb.AppendLine("                    var result = await _userManager.RemoveFromRolesAsync(user, roles);");
-            sb.AppendLine("                    if (!result.Succeeded)");
-            sb.AppendLine("                        result.ThrowErrorException();");
-            sb.AppendLine();
-            sb.AppendLine("                    result = await _userManager.AddToRoleAsync(user, roleName);");
-            sb.AppendLine("                    if (!result.Succeeded)");
-            sb.AppendLine("                        result.ThrowErrorException();");
-            sb.AppendLine("                }");
+            sb.AppendLine("                user = _mapper.Map(entity, user);");
+            sb.AppendLine("                await _userManager.UpdateAsync(user);");
             sb.AppendLine("            }");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine("        public async Task<List<User>> GetUsers(CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        public async Task<List<User>> GetAll(CancellationToken cancellationToken = default(CancellationToken))");
             sb.AppendLine("        {");
             sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
             sb.AppendLine();
@@ -914,6 +909,41 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             
             _projectHelper.AddFileToProject(Name, "UserRepository.cs", sb.ToString());
+        }
+
+        private void GenerateApplicationUserClaimsPrincipalFactory()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine("using Microsoft.Extensions.Options;");
+            sb.AppendLine("using System.Linq;");
+            sb.AppendLine("using System.Security.Claims;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("");
+            sb.AppendLine("namespace MyProject.Data.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class ApplicationUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>");
+            sb.AppendLine("    {");
+            sb.AppendLine("");
+            sb.AppendLine("        public ApplicationUserClaimsPrincipalFactory(");
+            sb.AppendLine("            UserManager<ApplicationUser> userManager,");
+            sb.AppendLine("            RoleManager<ApplicationRole> roleManager,");
+            sb.AppendLine("            IOptions<IdentityOptions> optionsAccessor)");
+            sb.AppendLine("            : base(userManager, roleManager, optionsAccessor)");
+            sb.AppendLine("        {");
+            sb.AppendLine("        }");
+            sb.AppendLine("");
+            sb.AppendLine("        protected override async Task<ClaimsIdentity> GenerateClaimsAsync(ApplicationUser user)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var identity = await base.GenerateClaimsAsync(user);");
+            sb.AppendLine("            var roles = await UserManager.GetRolesAsync(user);");
+            sb.AppendLine("            identity.AddClaim(new Claim(ClaimTypes.Role, roles.FirstOrDefault() ?? \"\"));");
+            sb.AppendLine("            return identity;");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, "Identity/ApplicationUserClaimsPrincipalFactory.cs", sb.ToString());
         }
         #endregion // Identities
     }

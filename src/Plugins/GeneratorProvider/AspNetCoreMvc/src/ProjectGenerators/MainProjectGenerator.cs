@@ -53,7 +53,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             var mainProjectPackages = new (string, string)[]
             {
                 ("AutoMapper", "7.0.1"),
-                ("AutoMapper.Extensions.Microsoft.DependencyInjection", "5.0.1")
+                ("AutoMapper.Extensions.Microsoft.DependencyInjection", "5.0.1"),
+                ("MailKit", "2.0.6")
             };
 
             var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
@@ -107,11 +108,15 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateViewModels()
         {
             GenerateBaseViewModel();
+            GenerateAdminBaseViewModel();
 
             foreach (var model in _models)
             {
                 GenerateViewModel(model);
                 GenerateAutoMapperProfile(model);
+
+                GenerateAdminViewModel(model);
+                GenerateAdminAutoMapperProfile(model);
             }                
 
             return Task.FromResult($"{_models.Count} view model(s) generated");
@@ -196,13 +201,98 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), true);
         }
+
+        private void GenerateAdminBaseViewModel()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Admin.Models");
+            sb.AppendLine("{");
+            sb.AppendLine("    public abstract class BaseViewModel");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public int Id { get; set; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+
+            _projectHelper.AddFileToProject(Name, $"Areas/AdminModels/BaseViewModel.cs", sb.ToString());
+        }
+
+        private void GenerateAdminViewModel(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using System;");
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Admin.Models");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}ViewModel : BaseViewModel");
+            sb.AppendLine("    {");
+
+            foreach (var property in model.Properties)
+            {
+                if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                {
+                    if (property.RelationalType == PropertyRelationalType.OneToOne)
+                    {
+                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                    }
+                    else if (property.RelationalType == PropertyRelationalType.OneToMany)
+                    {
+                        sb.AppendLine($"        public List<int> {property.Name}Ids {{ get; set; }}");
+                    }
+                    else if (property.RelationalType == PropertyRelationalType.ManyToMany)
+                    {
+                        // TODO: Implement this later as many-to-many relationship in ef core is not straightforward
+                    }
+                }
+                else
+                {
+                    sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                }
+            }
+
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/{model.Name}ViewModel.cs", sb.ToString(), true);
+        }
+
+        private void GenerateAdminAutoMapperProfile(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using AutoMapper;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {Name}.Areas.Admin.Models;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Admin.AutoMapperProfiles");
+            sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}AutoMapperProfile : Profile");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        public {model.Name}AutoMapperProfile()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            CreateMap<{model.Name}, {model.Name}ViewModel>();");
+            sb.AppendLine();
+            sb.AppendLine($"            CreateMap<{model.Name}ViewModel, {model.Name}>();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), true);
+        }
         #endregion
 
         #region controllers
         public Task<string> GenerateControllers()
         {
             foreach (var model in _models)
+            {
                 GenerateController(model);
+                GenerateAdminController(model);
+            }
+
+            GenerateHomeAdminController();
 
             return Task.FromResult($"{_models.Count} controller(s) generated");
         }
@@ -221,6 +311,47 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine($"namespace {Name}.Controllers");
             sb.AppendLine("{");
+            sb.AppendLine($"    public class {model.Name}Controller : Controller");
+            sb.AppendLine("    {");
+            sb.AppendLine($"        private readonly I{model.Name}Service _{camelModelName}Service;");
+            sb.AppendLine("        private readonly IMapper _mapper;");
+            sb.AppendLine();
+            sb.AppendLine($"        public {model.Name}Controller(I{model.Name}Service {camelModelName}Service, IMapper mapper)");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            _{camelModelName}Service = {camelModelName}Service;");
+            sb.AppendLine($"            _mapper = mapper;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<IActionResult> Index()");
+            sb.AppendLine("        {");
+            sb.AppendLine($"            var data = await _{camelModelName}Service.Get{TextHelper.Pluralize(model.Name)}();");
+            sb.AppendLine($"            var models = _mapper.Map<List<{model.Name}ViewModel>>(data);");
+            sb.AppendLine("            return View(models);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Controllers/{model.Name}Controller.cs", sb.ToString());
+        }
+
+        private void GenerateAdminController(ProjectDataModelDto model)
+        {
+            var camelModelName = TextHelper.Camelize(model.Name);
+            var sb = new StringBuilder();
+            sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine("using AutoMapper;");
+            sb.AppendLine("using Microsoft.AspNetCore.Authorization;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
+            sb.AppendLine($"using {Name}.Areas.Admin.Models;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Services;");
+            sb.AppendLine($"using {Name}.Identity;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Admin.Controllers");
+            sb.AppendLine("{");
+            sb.AppendLine("    [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]");
+            sb.AppendLine("    [Area(\"Admin\")]");
             sb.AppendLine($"    public class {model.Name}Controller : Controller");
             sb.AppendLine("    {");
             sb.AppendLine($"        private readonly I{model.Name}Service _{camelModelName}Service;");
@@ -307,7 +438,29 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Controllers/{model.Name}Controller.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Controllers/{model.Name}Controller.cs", sb.ToString());
+        }
+
+        private void GenerateHomeAdminController()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Authorization;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
+            sb.AppendLine($"using {Name}.Identity;");
+            sb.AppendLine("");
+            sb.AppendLine($"namespace {Name}.Areas.Admin.Controllers");
+            sb.AppendLine("{");
+            sb.AppendLine("    [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]");
+            sb.AppendLine("    [Area(\"Admin\")]");
+            sb.AppendLine("    public class HomeController : Controller");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public IActionResult Index()");
+            sb.AppendLine("        {");
+            sb.AppendLine("            return View();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, "Areas/Admin/Controllers/HomeController.cs", sb.ToString());
         }
         #endregion
 
@@ -317,12 +470,20 @@ namespace AspNetCoreMvc.ProjectGenerators
             foreach (var model in _models)
             {
                 GenerateIndexView(model);
-                GenerateCreateView(model);
-                GenerateEditView(model);
-                GenerateDeleteView(model);
+
+                GenerateAdminIndexView(model);
+                GenerateAdminCreateView(model);
+                GenerateAdminEditView(model);
+                GenerateAdminDeleteView(model);
             }
 
             UpdateMenuAndFooter();
+            GenerateLoginPartial();
+            GenerateAdminLayout();
+            GenerateAdminViewImports();
+            GenerateAdminViewStart();
+            GenerateAdminLoginPartial();
+            GenerateAdminIndexView();
 
             return Task.FromResult($"{_models.Count} view(s) generated");
         }
@@ -335,8 +496,40 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"    ViewData[\"Title\"] = \"View {model.Label}\";");
             sb.AppendLine("}");
             sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("<div>&nbsp;</div>");
+            sb.AppendLine("<table class=\"table\">");
+            sb.AppendLine("    <tr>");
+
+            foreach (var property in model.Properties)
+                if (string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                    sb.AppendLine($"        <th>{property.Label}</th>");
+            
+            sb.AppendLine("    </tr>");
+            sb.AppendLine("@foreach (var item in Model)");
+            sb.AppendLine("{");
+            sb.AppendLine("    <tr>");
+
+            foreach (var property in model.Properties)
+                if (string.IsNullOrEmpty(property.RelatedProjectDataModelName))
+                    sb.AppendLine($"        <td>@item.{property.Name}</td>");
+
+            sb.AppendLine("    </tr>");
+            sb.AppendLine("}");
+            sb.AppendLine("</table>");
+
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Index.cshtml", sb.ToString());
+        }
+
+        private void GenerateAdminIndexView(ProjectDataModelDto model)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@model List<{Name}.Areas.Admin.Models.{model.Name}ViewModel>");
+            sb.AppendLine("@{");
+            sb.AppendLine($"    ViewData[\"Title\"] = \"View {model.Label}\";");
+            sb.AppendLine("}");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
             sb.AppendLine("<div>");
-            sb.AppendLine($"    <a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Create\" class=\"btn btn-default\">Create</a>");
+            sb.AppendLine($"    <a asp-area=\"Admin\" asp-controller=\"{model.Name}\" asp-action=\"Create\" class=\"btn btn-default\">Create</a>");
             sb.AppendLine("</div>");
             sb.AppendLine("<div>&nbsp;</div>");
             sb.AppendLine("<table class=\"table\">");
@@ -358,76 +551,69 @@ namespace AspNetCoreMvc.ProjectGenerators
                     sb.AppendLine($"        <td>@item.{property.Name}</td>");
 
             sb.AppendLine("        <td>");
-            sb.AppendLine("            @Html.ActionLink(\"Edit\", \"Edit\", new { id = item.Id }) |");
-            sb.AppendLine("            @Html.ActionLink(\"Delete\", \"Delete\", new { id = item.Id }) |");
+            sb.AppendLine("            <a asp-action=\"Edit\" asp-route-id=\"@item.Id\">Edit</a> |");
+            sb.AppendLine("            <a asp-action=\"Delete\" asp-route-id=\"@item.Id\">Delete</a>");
             sb.AppendLine("        </td>");
 
             sb.AppendLine("    </tr>");
             sb.AppendLine("}");
             sb.AppendLine("</table>");
 
-            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Index.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Index.cshtml", sb.ToString());
         }
 
-        private void GenerateCreateView(ProjectDataModelDto model)
+        private void GenerateAdminCreateView(ProjectDataModelDto model)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine($"@model {Name}.Areas.Admin.Models.{model.Name}ViewModel");
             sb.AppendLine("@{");
             sb.AppendLine($"    ViewData[\"Title\"] = \"Create {model.Label}\";");
             sb.AppendLine("}");
             sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
-            sb.AppendLine("@using (Html.BeginForm())");
-            sb.AppendLine("{");
-            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine("<form method=\"post\">");
             sb.AppendLine(GenerateHtmlForm(model));
             sb.AppendLine("     <input type=\"submit\" value=\"Save\" class=\"btn btn-primary\" />");
-            sb.AppendLine("}");
-            sb.Append("<div>");
-            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
-            sb.Append("</div>");
-            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Create.cshtml", sb.ToString());
+            sb.AppendLine("</form>");
+            sb.AppendLine("<div>");
+            sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
+            sb.AppendLine("</div>");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Create.cshtml", sb.ToString());
         }
 
-        private void GenerateEditView(ProjectDataModelDto model)
+        private void GenerateAdminEditView(ProjectDataModelDto model)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine($"@model {Name}.Areas.Admin.Models.{model.Name}ViewModel");
             sb.AppendLine("@{");
             sb.AppendLine($"    ViewData[\"Title\"] = \"Edit {model.Label}\";");
             sb.AppendLine("}");
             sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
-            sb.AppendLine("@using (Html.BeginForm())");
-            sb.AppendLine("{");
-            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine("<form method=\"post\">");
             sb.AppendLine(GenerateHtmlForm(model));
             sb.AppendLine("     <input type=\"submit\" value=\"Save\" class=\"btn btn-primary\" />");
-            sb.AppendLine("}");
-            sb.Append("<div>");
-            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
-            sb.Append("</div>");
-            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Edit.cshtml", sb.ToString());
+            sb.AppendLine("</form>");
+            sb.AppendLine("<div>");
+            sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
+            sb.AppendLine("</div>");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Edit.cshtml", sb.ToString());
         }
 
-        private void GenerateDeleteView(ProjectDataModelDto model)
+        private void GenerateAdminDeleteView(ProjectDataModelDto model)
         {
             var sb = new StringBuilder();
-            sb.AppendLine($"@model {Name}.Models.{model.Name}ViewModel");
+            sb.AppendLine($"@model {Name}.Areas.Admin.Models.{model.Name}ViewModel");
             sb.AppendLine("@{");
             sb.AppendLine($"    ViewData[\"Title\"] = \"Edit {model.Label}\";");
             sb.AppendLine("}");
             sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
-            sb.AppendLine("@using (Html.BeginForm(routeValues: new { id = ViewData[\"Id\"] }))");
-            sb.AppendLine("{");
-            sb.AppendLine("    @Html.AntiForgeryToken()");
+            sb.AppendLine("<form method=\"post\" asp-route-id=\"@ViewData[\"Id\"]\">");
             sb.AppendLine($"    <h3>Confirm delete {model.Label}?</h3>");
             sb.AppendLine("     <input type=\"submit\" value=\"Delete\" class=\"btn btn-danger\" />");
-            sb.AppendLine("");
-            sb.AppendLine("}");
-            sb.Append("<div>");
-            sb.Append("    @Html.ActionLink(\"Back to List\", \"Index\")");
-            sb.Append("</div>");
-            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Delete.cshtml", sb.ToString());
+            sb.AppendLine("</form>");
+            sb.AppendLine("<div>");
+            sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
+            sb.AppendLine("</div>");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Delete.cshtml", sb.ToString());
         }
 
         private void UpdateMenuAndFooter()
@@ -454,6 +640,8 @@ namespace AspNetCoreMvc.ProjectGenerators
                                 updatedContent.AppendLine($"                    <li><a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
 
                             updatedContent.AppendLine(line);
+
+                            updatedContent.AppendLine("<partial name=\"_LoginPartial\" />");
                             break;
                         case "<footer>":
                             isFooterBlock = true;
@@ -479,6 +667,163 @@ namespace AspNetCoreMvc.ProjectGenerators
             }
         }
 
+        private void GenerateLoginPartial()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@if (User.Identity.Name != null)");
+            sb.AppendLine("{");
+            sb.AppendLine("    <form asp-area=\"Identity\" asp-page=\"/Account/Logout\" asp-route-returnUrl=\"@Url.Page(\"/Index\", new { area = \"\" })\" method=\"post\" id=\"logoutForm\" class=\"navbar-right\">");
+            sb.AppendLine("        <ul class=\"nav navbar-nav navbar-right\">");
+            sb.AppendLine("            <li>");
+            sb.AppendLine("                <a asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
+            sb.AppendLine("            </li>");
+            sb.AppendLine("            <li>");
+            sb.AppendLine("                <a asp-area=\"Admin\" asp-controller=\"Home\" title=\"Admin\">Admin</a>");
+            sb.AppendLine("            </li>");
+            sb.AppendLine("            <li>");
+            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link\">Logout</button>");
+            sb.AppendLine("            </li>");
+            sb.AppendLine("        </ul>");
+            sb.AppendLine("    </form>");
+            sb.AppendLine("}");
+            sb.AppendLine("else");
+            sb.AppendLine("{");
+            sb.AppendLine("    <ul class=\"nav navbar-nav navbar-right\">");
+            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
+            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
+            sb.AppendLine("    </ul>");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Views/Shared/_LoginPartial.cshtml", sb.ToString());
+        }
+
+        private void GenerateAdminLayout()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("<!DOCTYPE html>");
+            sb.AppendLine("<html>");
+            sb.AppendLine("<head>");
+            sb.AppendLine("    <meta charset=\"utf-8\" />");
+            sb.AppendLine("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />");
+            sb.AppendLine($"    <title>@ViewData[\"Title\"] - {Name}</title>");
+            sb.AppendLine("");
+            sb.AppendLine("    <environment include=\"Development\">");
+            sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/lib/bootstrap/dist/css/bootstrap.css\" />");
+            sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/css/site.css\" />");
+            sb.AppendLine("    </environment>");
+            sb.AppendLine("    <environment exclude=\"Development\">");
+            sb.AppendLine("        <link rel=\"stylesheet\" href=\"https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css\"");
+            sb.AppendLine("              asp-fallback-href=\"~/lib/bootstrap/dist/css/bootstrap.min.css\"");
+            sb.AppendLine("              asp-fallback-test-class=\"sr-only\" asp-fallback-test-property=\"position\" asp-fallback-test-value=\"absolute\" />");
+            sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/css/site.min.css\" asp-append-version=\"true\" />");
+            sb.AppendLine("    </environment>");
+            sb.AppendLine("</head>");
+            sb.AppendLine("<body>");
+            sb.AppendLine("    <nav class=\"navbar navbar-inverse navbar-fixed-top\">");
+            sb.AppendLine("        <div class=\"container\">");
+            sb.AppendLine("            <div class=\"navbar-header\">");
+            sb.AppendLine("                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">");
+            sb.AppendLine("                    <span class=\"sr-only\">Toggle navigation</span>");
+            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
+            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
+            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
+            sb.AppendLine("                </button>");
+            sb.AppendLine($"                <a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\" class=\"navbar-brand\">{Name}</a>");
+            sb.AppendLine("            </div>");
+            sb.AppendLine("            <div class=\"navbar-collapse collapse\">");
+            sb.AppendLine("                <ul class=\"nav navbar-nav\">");
+            sb.AppendLine("                    <li><a asp-area=\"Admin\" asp-controller=\"Home\" asp-action=\"Index\">Dashboard</a></li>");
+
+            foreach (var model in _models)
+                sb.AppendLine($"                    <li><a asp-area=\"Admin\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
+
+            sb.AppendLine("                </ul>");
+            sb.AppendLine("                <partial name=\"_LoginPartial\" />");
+            sb.AppendLine("            </div>");
+            sb.AppendLine("        </div>");
+            sb.AppendLine("    </nav>");
+            sb.AppendLine("");
+            sb.AppendLine("    <partial name=\"_CookieConsentPartial\" />");
+            sb.AppendLine("");
+            sb.AppendLine("    <div class=\"container body-content\">");
+            sb.AppendLine("        @RenderBody()");
+            sb.AppendLine("        <hr />");
+            sb.AppendLine("        <footer>");
+            sb.AppendLine($"            <p class=\"pull-left\">&copy; {DateTime.Today.Year} - {Name}</p>");
+            sb.AppendLine("            <p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+            sb.AppendLine("        </footer>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("");
+            sb.AppendLine("    <environment include=\"Development\">");
+            sb.AppendLine("        <script src=\"~/lib/jquery/dist/jquery.js\"></script>");
+            sb.AppendLine("        <script src=\"~/lib/bootstrap/dist/js/bootstrap.js\"></script>");
+            sb.AppendLine("        <script src=\"~/js/site.js\" asp-append-version=\"true\"></script>");
+            sb.AppendLine("    </environment>");
+            sb.AppendLine("    <environment exclude=\"Development\">");
+            sb.AppendLine("        <script src=\"https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js\"");
+            sb.AppendLine("                asp-fallback-src=\"~/lib/jquery/dist/jquery.min.js\"");
+            sb.AppendLine("                asp-fallback-test=\"window.jQuery\"");
+            sb.AppendLine("                crossorigin=\"anonymous\"");
+            sb.AppendLine("                integrity=\"sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT\">");
+            sb.AppendLine("        </script>");
+            sb.AppendLine("        <script src=\"https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js\"");
+            sb.AppendLine("                asp-fallback-src=\"~/lib/bootstrap/dist/js/bootstrap.min.js\"");
+            sb.AppendLine("                asp-fallback-test=\"window.jQuery && window.jQuery.fn && window.jQuery.fn.modal\"");
+            sb.AppendLine("                crossorigin=\"anonymous\"");
+            sb.AppendLine("                integrity=\"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa\">");
+            sb.AppendLine("        </script>");
+            sb.AppendLine("        <script src=\"~/js/site.min.js\" asp-append-version=\"true\"></script>");
+            sb.AppendLine("    </environment>");
+            sb.AppendLine("");
+            sb.AppendLine("    @RenderSection(\"Scripts\", required: false)");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_Layout.cshtml", sb.ToString());
+        }
+
+        private void GenerateAdminViewImports()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@namespace {Name}.Areas.Admin");
+            sb.AppendLine("@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/_ViewImports.cshtml", sb.ToString());
+        }
+
+        private void GenerateAdminViewStart()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@{");
+            sb.AppendLine("    Layout = \"_Layout\";");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/_ViewStart.cshtml", sb.ToString());
+        }
+
+        private void GenerateAdminLoginPartial()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@if (User.Identity.Name != null)");
+            sb.AppendLine("{");
+            sb.AppendLine("    <form asp-area=\"Identity\" asp-page=\"/Account/Logout\" asp-route-returnUrl=\"@Url.Page(\"/Index\", new { area = \"\" })\" method=\"post\" id=\"logoutForm\" class=\"navbar-right\">");
+            sb.AppendLine("        <ul class=\"nav navbar-nav navbar-right\">");
+            sb.AppendLine("            <li>");
+            sb.AppendLine("                <a asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
+            sb.AppendLine("            </li>");
+            sb.AppendLine("            <li>");
+            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link\">Logout</button>");
+            sb.AppendLine("            </li>");
+            sb.AppendLine("        </ul>");
+            sb.AppendLine("    </form>");
+            sb.AppendLine("}");
+            sb.AppendLine("else");
+            sb.AppendLine("{");
+            sb.AppendLine("    <ul class=\"nav navbar-nav navbar-right\">");
+            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
+            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
+            sb.AppendLine("    </ul>");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_LoginPartial.cshtml", sb.ToString());
+        }
+
         private string GenerateHtmlForm(ProjectDataModelDto model)
         {
             var sb = new StringBuilder();
@@ -491,32 +836,60 @@ namespace AspNetCoreMvc.ProjectGenerators
                     propertyName += "Ids";
 
                 sb.AppendLine("    <div class=\"form-group row\">");
-                sb.AppendLine($"        @Html.LabelFor(model => model.{propertyName}, htmlAttributes: new {{ @class = \"col-form-label col-md-2\" }})");
+                sb.AppendLine($"        <label asp-for=\"{propertyName}\" class=\"col-form-label col-md-2\"></label>");
                 sb.AppendLine("        <div class=\"col-md-10\">");
                 switch (property.ControlType)
                 {
                     case PropertyControlType.InputText:
+                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"text\" class=\"form-control\" />");
+                        break;
                     case PropertyControlType.InputNumber:
+                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"number\" class=\"form-control\" />");
+                        break;
                     case PropertyControlType.Calendar:
-                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"date\" class=\"form-control\" />");
                         break;
                     case PropertyControlType.InputFile:
                     case PropertyControlType.Image:
-                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ type = \"file\", htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"file\" class=\"form-control\" />");
                         break;
                     case PropertyControlType.Textarea:
-                        sb.AppendLine($"            @Html.EditorFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        sb.AppendLine($"            <textarea asp-for=\"{propertyName}\" class=\"form-control\"></textarea>");
                         break;
                     case PropertyControlType.Checkbox:
-                        sb.AppendLine($"            @Html.CheckBoxFor(model => model.{propertyName}, new {{ htmlAttributes = new {{ @class = \"form-control\" }} }})");
+                        sb.AppendLine($"            <input type=\"checkbox\" asp-for=\"{propertyName}\" class = \"form-control\" />");
                         break;
                 }
-                sb.AppendLine($"            @Html.ValidationMessageFor(model => model.{propertyName}, \"\", new {{ @class = \"text-danger\" }})");
+                sb.AppendLine($"            <span asp-validation-for=\"{propertyName}\" class=\"text-danger\"></span>");
                 sb.AppendLine("        </div>");
                 sb.AppendLine("    </div>");
             }
 
             return sb.ToString();
+        }
+
+        private void GenerateAdminIndexView()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@{");
+            sb.AppendLine("    ViewData[\"Title\"] = \"Admin Page\";");
+            sb.AppendLine("}");
+            sb.AppendLine("");
+            sb.AppendLine("<div class=\"jumbotron\">");
+            sb.AppendLine("    <h1>Admin Page</h1>");
+            sb.AppendLine("    <h3>This is the Dashboard page of your Admin</h3>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("");
+            sb.AppendLine("<p class=\"text-center\">");
+            sb.AppendLine("    <img class=\"logo\" src=\"/images/logo.png\" />");
+            sb.AppendLine("</p>");
+            sb.AppendLine("");
+            sb.AppendLine("<div class=\"row\">");
+            sb.AppendLine("    <div class=\"col-lg-12 text-center\">");
+            sb.AppendLine("        <h1>Insert dashboard content here</h1>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("</div>");
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Home/Index.cshtml", sb.ToString());
         }
         #endregion
 
@@ -535,6 +908,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("        {");
             foreach (var model in _models)
                 sb.AppendLine($"            services.AddTransient<I{model.Name}Service, {model.Name}Service>();");
+            
+            sb.AppendLine($"            services.AddTransient<IUserService, UserService>();");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -553,6 +928,9 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
             sb.AppendLine("using Microsoft.Extensions.Configuration;");
             sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine($"using {Name}.Areas.Identity.Services;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Constants;");
+            sb.AppendLine($"using {Name}.Identity;");
             sb.AppendLine($"using {_projectName}.{InfrastructureProjectGenerator.InfrastructureProject};");
             sb.AppendLine();
             sb.AppendLine($"namespace {Name}");
@@ -580,6 +958,14 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            services.RegisterServices();");
             sb.AppendLine("            services.AddAppIdentity();");
             sb.AppendLine();
+            sb.AppendLine("            services.AddAuthorization(options =>");
+            sb.AppendLine("            {");
+            sb.AppendLine("                options.AddPolicy(AuthorizePolicy.UserRoleAdminAccess, policy => policy.RequireRole(UserRole.Administrator));");
+            sb.AppendLine("                options.AddPolicy(AuthorizePolicy.UserRoleGuestAccess, policy => policy.RequireRole(UserRole.Administrator, UserRole.Guest));");
+            sb.AppendLine("            });");
+            sb.AppendLine();
+            sb.AppendLine("            services.AddEmail(Configuration);");
+            sb.AppendLine();
             sb.AppendLine("            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);");
             sb.AppendLine("            services.AddAutoMapper();");
             sb.AppendLine("        }");
@@ -603,6 +989,10 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine("            app.UseMvc(routes =>");
             sb.AppendLine("            {");
+            sb.AppendLine("                routes.MapRoute(");
+            sb.AppendLine("                    name: \"areas\",");
+            sb.AppendLine("                    template: \"{area:exists}/{controller=Home}/{action=Index}/{id?}\");");
+            sb.AppendLine();
             sb.AppendLine("                routes.MapRoute(");
             sb.AppendLine("                    name: \"default\",");
             sb.AppendLine("                    template: \"{controller=Home}/{action=Index}/{id?}\");");
@@ -655,5 +1045,346 @@ namespace AspNetCoreMvc.ProjectGenerators
             return Task.FromResult("Program class generated");
         }
         #endregion
+
+        #region Identity
+        public Task<string> AddApplicationIdentity()
+        {
+            AddAuthorizePolicy();
+            AddLoginPage();
+            GenerateIdentityViewImports();
+            GenerateIdentityViewStart();
+            AddSmtpSettingToAppSetting();
+            GenerateEmailSender();
+            GenerateSmtpSetting();
+            GenerateEmailInjection();
+
+            return Task.FromResult("Application identity generated");
+        }
+
+        private void AddSmtpSettingToAppSetting()
+        {
+            string line = null;
+            var appSettingFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "appsettings.json");
+            var updatedContent = new StringBuilder();
+            using (var reader = new StreamReader(appSettingFile))
+            {
+                int lineNo = 0;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    lineNo++;
+                    if (lineNo == 1)
+                    {
+                        updatedContent.AppendLine(line);
+                        updatedContent.AppendLine("  \"SmtpSetting\": {");
+                        updatedContent.AppendLine($"    \"Server\": \"localhost\",");
+                        updatedContent.AppendLine($"    \"Port\": 0,");
+                        updatedContent.AppendLine($"    \"Username\": \"username\",");
+                        updatedContent.AppendLine($"    \"Password\": \"password\",");
+                        updatedContent.AppendLine($"    \"SenderEmail\": \"localhost\"");
+                        updatedContent.AppendLine("  },");
+                    }
+                    else
+                    {
+                        updatedContent.AppendLine(line);
+                    }
+                }
+            }
+            using (var writer = new StreamWriter(appSettingFile))
+            {
+                writer.Write(updatedContent.ToString());
+            }
+        }
+
+        private void AddAuthorizePolicy()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"namespace {Name}.Identity");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class AuthorizePolicy");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public const string UserRoleAdminAccess = \"UserRoleAdminAccess\";");
+            sb.AppendLine("        public const string UserRoleGuestAccess = \"UserRoleGuestAccess\";");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Identity/AuthorizePolicy.cs", sb.ToString());
+        }
+
+        private void AddLoginPage()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@page");
+            sb.AppendLine("@model LoginModel");
+            sb.AppendLine("");
+            sb.AppendLine("@{");
+            sb.AppendLine("    ViewData[\"Title\"] = \"Log in\";");
+            sb.AppendLine("}");
+            sb.AppendLine("");
+            sb.AppendLine("<h2>@ViewData[\"Title\"]</h2>");
+            sb.AppendLine("<div class=\"row\">");
+            sb.AppendLine("    <div class=\"col-md-4\">");
+            sb.AppendLine("        <section>");
+            sb.AppendLine("            <form method=\"post\">");
+            sb.AppendLine("                <h4>Use a local account to log in.</h4>");
+            sb.AppendLine("                <hr />");
+            sb.AppendLine("                <div asp-validation-summary=\"All\" class=\"text-danger\"></div>");
+            sb.AppendLine("                <div class=\"form-group\">");
+            sb.AppendLine("                    <label asp-for=\"Input.Email\"></label>");
+            sb.AppendLine("                    <input asp-for=\"Input.Email\" class=\"form-control\" />");
+            sb.AppendLine("                    <span asp-validation-for=\"Input.Email\" class=\"text-danger\"></span>");
+            sb.AppendLine("                </div>");
+            sb.AppendLine("                <div class=\"form-group\">");
+            sb.AppendLine("                    <label asp-for=\"Input.Password\"></label>");
+            sb.AppendLine("                    <input asp-for=\"Input.Password\" class=\"form-control\" />");
+            sb.AppendLine("                    <span asp-validation-for=\"Input.Password\" class=\"text-danger\"></span>");
+            sb.AppendLine("                </div>");
+            sb.AppendLine("                <div class=\"form-group\">");
+            sb.AppendLine("                    <div class=\"checkbox\">");
+            sb.AppendLine("                        <label asp-for=\"Input.RememberMe\">");
+            sb.AppendLine("                            <input asp-for=\"Input.RememberMe\" />");
+            sb.AppendLine("                            @Html.DisplayNameFor(m => m.Input.RememberMe)");
+            sb.AppendLine("                        </label>");
+            sb.AppendLine("                    </div>");
+            sb.AppendLine("                </div>");
+            sb.AppendLine("                <div class=\"form-group\">");
+            sb.AppendLine("                    <button type=\"submit\" class=\"btn btn-default\">Log in</button>");
+            sb.AppendLine("                </div>");
+            sb.AppendLine("                <div class=\"form-group\">");
+            sb.AppendLine("                    <p>");
+            sb.AppendLine("                        <a asp-page=\"./ForgotPassword\">Forgot your password?</a>");
+            sb.AppendLine("                    </p>");
+            sb.AppendLine("                    <p>");
+            sb.AppendLine("                        <a asp-page=\"./Register\" asp-route-returnUrl=\"@Model.ReturnUrl\">Register as a new user</a>");
+            sb.AppendLine("                    </p>");
+            sb.AppendLine("                </div>");
+            sb.AppendLine("            </form>");
+            sb.AppendLine("        </section>");
+            sb.AppendLine("    </div>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("");
+            sb.AppendLine("@section Scripts {");
+            sb.AppendLine("    <partial name=\"_ValidationScriptsPartial\" />");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Pages/Account/Login.cshtml", sb.ToString());
+            
+            sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Authentication;");
+            sb.AppendLine("using Microsoft.AspNetCore.Authorization;");
+            sb.AppendLine("using Microsoft.AspNetCore.Identity;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc.RazorPages;");
+            sb.AppendLine("using Microsoft.Extensions.Logging;");
+            sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Services;");
+            sb.AppendLine($"using {_projectName}.{DataProjectGenerator.DataProject}.Identity;");
+            sb.AppendLine("using System.ComponentModel.DataAnnotations;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Identity.Pages.Account");
+            sb.AppendLine("{");
+            sb.AppendLine("    [AllowAnonymous]");
+            sb.AppendLine("    public class LoginModel : PageModel");
+            sb.AppendLine("    {");
+            sb.AppendLine("        private readonly IUserService _userService;");
+            sb.AppendLine("        private readonly ILogger<LoginModel> _logger;");
+            sb.AppendLine();
+            sb.AppendLine("        public LoginModel(IUserService userService, ILogger<LoginModel> logger)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _userService = userService;");
+            sb.AppendLine("            _logger = logger;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        [BindProperty]");
+            sb.AppendLine("        public InputModel Input { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public string ReturnUrl { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        [TempData]");
+            sb.AppendLine("        public string ErrorMessage { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public class InputModel");
+            sb.AppendLine("        {");
+            sb.AppendLine("            [Required]");
+            sb.AppendLine("            [EmailAddress]");
+            sb.AppendLine("            public string Email { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("            [Required]");
+            sb.AppendLine("            [DataType(DataType.Password)]");
+            sb.AppendLine("            public string Password { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("            [Display(Name = \"Remember me?\")]");
+            sb.AppendLine("            public bool RememberMe { get; set; }");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task OnGetAsync(string returnUrl = null)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            if (!string.IsNullOrEmpty(ErrorMessage))");
+            sb.AppendLine("            {");
+            sb.AppendLine("                ModelState.AddModelError(string.Empty, ErrorMessage);");
+            sb.AppendLine("            }");
+            sb.AppendLine();
+            sb.AppendLine("            returnUrl = returnUrl ?? Url.Content(\"~/\");");
+            sb.AppendLine();
+            sb.AppendLine("            // Clear the existing external cookie to ensure a clean login process");
+            sb.AppendLine("            await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);");
+            sb.AppendLine();
+            sb.AppendLine("            ReturnUrl = returnUrl;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<IActionResult> OnPostAsync(string returnUrl = null)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            returnUrl = returnUrl ?? Url.Content(\"~/\");");
+            sb.AppendLine();
+            sb.AppendLine("            if (ModelState.IsValid)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                // This doesn't count login failures towards account lockout");
+            sb.AppendLine("                // To enable password failures to trigger account lockout, set lockoutOnFailure: true");
+            sb.AppendLine("                var result = await _userService.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: true);");
+            sb.AppendLine("                if (result.Succeeded)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    _logger.LogInformation(\"User logged in.\");");
+            sb.AppendLine("                    return LocalRedirect(returnUrl);");
+            sb.AppendLine("                }");
+            sb.AppendLine("                if (result.RequiresTwoFactor)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    return RedirectToPage(\"./LoginWith2fa\", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });");
+            sb.AppendLine("                }");
+            sb.AppendLine("                if (result.IsLockedOut)");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    _logger.LogWarning(\"User account locked out.\");");
+            sb.AppendLine("                    return RedirectToPage(\"./Lockout\");");
+            sb.AppendLine("                }");
+            sb.AppendLine("                else");
+            sb.AppendLine("                {");
+            sb.AppendLine("                    ModelState.AddModelError(string.Empty, \"Invalid login attempt.\");");
+            sb.AppendLine("                    return Page();");
+            sb.AppendLine("                }");
+            sb.AppendLine("            }");
+            sb.AppendLine();
+            sb.AppendLine("            // If we got this far, something failed, redisplay form");
+            sb.AppendLine("            return Page();");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Pages/Account/Login.cshtml.cs", sb.ToString());
+        }
+
+        private void GenerateIdentityViewImports()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"@namespace {Name}.Areas.Identity.Pages");
+            sb.AppendLine("@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers");
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Pages/_ViewImports.cshtml", sb.ToString());
+        }
+
+        private void GenerateIdentityViewStart()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("@{");
+            sb.AppendLine($"    if (User.IsInRole({_projectName}.{CoreProjectGenerator.CoreProject}.Constants.UserRole.Administrator))");
+            sb.AppendLine("    {");
+            sb.AppendLine("        Layout = \"/Areas/Admin/Views/Shared/_Layout.cshtml\";");
+            sb.AppendLine("    }");
+            sb.AppendLine("    else");
+            sb.AppendLine("    {");
+            sb.AppendLine("        Layout = \"/Views/Shared/_Layout.cshtml\";");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Pages/_ViewStart.cshtml", sb.ToString());
+        }
+
+        private void GenerateEmailSender()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using MailKit.Net.Smtp;");
+            sb.AppendLine("using MailKit.Security;");
+            sb.AppendLine("using Microsoft.AspNetCore.Identity.UI.Services;");
+            sb.AppendLine("using Microsoft.Extensions.Options;");
+            sb.AppendLine("using MimeKit;");
+            sb.AppendLine("using MimeKit.Text;");
+            sb.AppendLine("using System.Threading.Tasks;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Identity.Services");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class EmailSender : IEmailSender");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public EmailSender(IOptions<SmtpSetting> optionsAccessor)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            _smtpSetting = optionsAccessor.Value;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        private readonly SmtpSetting _smtpSetting;");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task SendEmailAsync(string email, string subject, string message)");
+            sb.AppendLine("        {");
+            sb.AppendLine("            var mail = new MimeMessage();");
+            sb.AppendLine("            mail.From.Add(new MailboxAddress(_smtpSetting.SenderEmail));");
+            sb.AppendLine("            mail.To.Add(new MailboxAddress(email));");
+            sb.AppendLine();
+            sb.AppendLine("            mail.Subject = subject;");
+            sb.AppendLine();
+            sb.AppendLine("            mail.Body = new TextPart(TextFormat.Html)");
+            sb.AppendLine("            {");
+            sb.AppendLine("                Text = message");
+            sb.AppendLine("            };");
+            sb.AppendLine();
+            sb.AppendLine("            using (var client = new SmtpClient())");
+            sb.AppendLine("            {");
+            sb.AppendLine("                await client.ConnectAsync(_smtpSetting.Server, _smtpSetting.Port, SecureSocketOptions.Auto);");
+            sb.AppendLine("                await client.AuthenticateAsync(_smtpSetting.Username, _smtpSetting.Password);");
+            sb.AppendLine();
+            sb.AppendLine("                await client.SendAsync(mail);");
+            sb.AppendLine("                await client.DisconnectAsync(true);");
+            sb.AppendLine("            }");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Services/EmailSender.cs", sb.ToString());
+        }
+
+        private void GenerateSmtpSetting()
+        {
+            var sb = new StringBuilder(); sb.AppendLine($"namespace {Name}.Areas.Identity.Services");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class SmtpSetting");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public string Server { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public int Port { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public string Username { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public string Password { get; set; }");
+            sb.AppendLine();
+            sb.AppendLine("        public string SenderEmail { get; set; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            sb.AppendLine();
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Services/SmtpSetting.cs", sb.ToString());
+        }
+
+        private void GenerateEmailInjection()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Identity.UI.Services;");
+            sb.AppendLine("using Microsoft.Extensions.Configuration;");
+            sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
+            sb.AppendLine();
+            sb.AppendLine($"namespace {Name}.Areas.Identity.Services");
+            sb.AppendLine("{");
+            sb.AppendLine("    public static class EmailInjection");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public static void AddEmail(this IServiceCollection services, IConfiguration configuration, string sectionName = \"SmtpSetting\")");
+            sb.AppendLine("        {");
+            sb.AppendLine("            services.AddTransient<IEmailSender, EmailSender>();");
+            sb.AppendLine();
+            sb.AppendLine("            var section = configuration.GetSection(sectionName);");
+            sb.AppendLine("            services.Configure<SmtpSetting>(section);");
+            sb.AppendLine("        }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+            _projectHelper.AddFileToProject(Name, $"Areas/Identity/Services/EmailInjection.cs", sb.ToString());
+        }
+        #endregion //Identity
     }
 }

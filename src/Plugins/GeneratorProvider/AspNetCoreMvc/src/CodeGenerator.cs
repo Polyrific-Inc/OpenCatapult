@@ -102,9 +102,14 @@ namespace AspNetCoreMvc
             return sb.ToString();
         }
 
-        public Task<string> GenerateControllers()
+        public async Task<string> GenerateControllers()
         {
-            return _mainProjectGenerator.GenerateControllers();
+            var sb = new StringBuilder();
+
+            sb.AppendLine(await _mainProjectGenerator.GenerateControllers());
+            sb.AppendLine(await _mainProjectGenerator.AddApplicationIdentity());
+
+            return sb.ToString();
         }
 
         public Task<string> GenerateViews()

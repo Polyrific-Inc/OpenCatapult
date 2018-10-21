@@ -40,6 +40,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             {
                 ("Microsoft.AspNetCore.Identity", "2.1.3"),
                 ("Microsoft.AspNetCore.Identity.EntityFrameworkCore", "2.1.3"),
+                ("Microsoft.AspNetCore.Identity.UI", "2.1.3")
             };
 
             return await _projectHelper.CreateProject($"{_projectName}.{InfrastructureProject}", "classlib", infrastructureProjectReferences, infrastructureProjectPackages);
@@ -86,6 +87,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("        {");
             foreach (var model in _models)
                 sb.AppendLine($"            services.AddScoped<I{model.Name}Repository, {model.Name}Repository>();");
+
+            sb.AppendLine($"            services.AddScoped<IUserRepository, UserRepository>();");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -98,6 +101,7 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateIdentityIjection()
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.AspNetCore.Identity;");
             sb.AppendLine("using Microsoft.Extensions.DependencyInjection;");
             sb.AppendLine($"using {_projectName}.{DataProjectGenerator.DataProject};");
             sb.AppendLine($"using {_projectName}.{DataProjectGenerator.DataProject}.Identity;");
@@ -108,9 +112,11 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    {");
             sb.AppendLine("        public static void AddAppIdentity(this IServiceCollection services)");
             sb.AppendLine("        {");
-            sb.AppendLine("            services.AddIdentityCore<ApplicationUser>()");
+            sb.AppendLine("            services.AddDefaultIdentity<ApplicationUser>()");
             sb.AppendLine("                .AddRoles<ApplicationRole>()");
             sb.AppendLine("                .AddEntityFrameworkStores<ApplicationDbContext>();");
+            sb.AppendLine();
+            sb.AppendLine("            services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();");
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");

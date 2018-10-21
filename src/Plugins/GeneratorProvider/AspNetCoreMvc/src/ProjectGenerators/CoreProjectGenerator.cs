@@ -73,7 +73,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateBaseRepositoryInterface();
             GenerateBaseSpecificationClass();
             foreach (var model in _models)
-                GenerateRepositoryInterface(model);
+            {
+                if (_builtInModel.Any(m => m.Name == model.Name))
+                    continue;
+                else
+                    GenerateRepositoryInterface(model);
+            }
 
             GenerateUserRepositoryInterface();
 
@@ -82,9 +87,6 @@ namespace AspNetCoreMvc.ProjectGenerators
 
         private void GenerateRepositoryInterface(ProjectDataModelDto model)
         {
-            if (model.Name == UserModel)
-                return;
-
             var sb = new StringBuilder();
             sb.AppendLine($"using {Name}.Entities;");
             sb.AppendLine();
@@ -112,6 +114,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("{");
             sb.AppendLine("    public interface IUserRepository : IRepository<User>");
             sb.AppendLine("    {");
+            sb.AppendLine("        Task<SignInResult> PasswordSignInAsync(string email, string password, bool isPersistent, bool lockoutOnFailure, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
             sb.AppendLine("        Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine();
             sb.AppendLine("        Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));");
@@ -250,7 +254,7 @@ namespace AspNetCoreMvc.ProjectGenerators
         {
             foreach (var model in _models)
             {
-                if (model.Name == UserModel)
+                if (_builtInModel.Any(m => m.Name == model.Name))
                     continue;
 
                 GenerateServiceInterface(model);
@@ -300,7 +304,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("{");
             sb.AppendLine("    public interface IUserService");
             sb.AppendLine("    {");
-            sb.AppendLine("	");
+            sb.AppendLine("        Task<SignInResult> PasswordSignInAsync(string email, string password, bool isPersistent, bool lockoutOnFailure, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
             sb.AppendLine("        Task<User> CreateUser(string email, string password, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine();
             sb.AppendLine("        Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken));");
@@ -422,6 +427,13 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("        public UserService(IUserRepository userRepository)");
             sb.AppendLine("        {");
             sb.AppendLine("            _userRepository = userRepository;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public Task<SignInResult> PasswordSignInAsync(string email, string password, bool isPersistent, bool lockoutOnFailure, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            return _userRepository.PasswordSignInAsync(email, password, isPersistent, lockoutOnFailure, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();
             sb.AppendLine("        public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))");
@@ -547,6 +559,7 @@ namespace AspNetCoreMvc.ProjectGenerators
                 GenerateModel(model);
 
             GenerateUserRoleConstant();
+            GenerateSignInResult();
 
             return Task.FromResult($"{_models.Count} model(s) generated");
         }
@@ -629,6 +642,26 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             _projectHelper.AddFileToProject(Name, $"Constants/UserRole.cs", sb.ToString());
+        }
+
+        private void GenerateSignInResult()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine($"namespace {Name}.Entities");
+            sb.AppendLine("{");
+            sb.AppendLine("    public class SignInResult");
+            sb.AppendLine("    {");
+            sb.AppendLine("        public bool Succeeded { get; set; }");
+            sb.AppendLine("");
+            sb.AppendLine("        public bool IsLockedOut { get; set; }");
+            sb.AppendLine("");
+            sb.AppendLine("        public bool IsNotAllowed { get; set; }");
+            sb.AppendLine("");
+            sb.AppendLine("        public bool RequiresTwoFactor { get; set; }");
+            sb.AppendLine("    }");
+            sb.AppendLine("}");
+
+            _projectHelper.AddFileToProject(Name, $"Entities/SignInResult.cs", sb.ToString());
         }
         #endregion // models
     }
