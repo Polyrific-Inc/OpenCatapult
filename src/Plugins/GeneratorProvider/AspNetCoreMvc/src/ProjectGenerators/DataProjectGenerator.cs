@@ -920,7 +920,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("using System.Security.Claims;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("");
-            sb.AppendLine("namespace MyProject.Data.Identity");
+            sb.AppendLine($"namespace {Name}.Identity");
             sb.AppendLine("{");
             sb.AppendLine("    public class ApplicationUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<ApplicationUser, ApplicationRole>");
             sb.AppendLine("    {");
