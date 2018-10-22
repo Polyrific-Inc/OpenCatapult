@@ -88,9 +88,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="userId">Id of the user</param>
         /// <param name="status">Status of the project</param>
+        /// <param name="getAll">Indicates whether to get all projects for other members</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of accessible projects</returns>
-        Task<List<(Project, ProjectMemberRole)>> GetProjectsByUser(int userId, string status = null, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<(Project, ProjectMemberRole)>> GetProjectsByUser(int userId, string status = null, bool getAll = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Restore an archived project

@@ -22,11 +22,14 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [AllowedValues(ProjectStatusFilterType.All, ProjectStatusFilterType.Active, ProjectStatusFilterType.Archived, IgnoreCase = true)]
         public string Status { get; set; } = ProjectStatusFilterType.All;
 
+        [Option("-a|--all", "Retrieve all projects", CommandOptionType.NoValue)]
+        public bool GetAll { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine("Trying to get list of projects...");
 
-            var projects = _projectService.GetProjects(Status).Result;
+            var projects = _projectService.GetProjects(Status, GetAll).Result;
 
             return projects.ToListCliString($"Found {projects.Count} project(s):");
         }

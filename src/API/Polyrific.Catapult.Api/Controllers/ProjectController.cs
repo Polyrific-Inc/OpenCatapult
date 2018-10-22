@@ -8,6 +8,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
 using System.Collections.Generic;
@@ -37,17 +38,18 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Get project list that the user authorized to view
         /// </summary>
         /// <param name="status">Status of the project (all | active | archived)</param>
+        /// <param name="getAll">Get all projects</param>
         /// <returns>List of the project</returns>
         [HttpGet]
         [Authorize(Policy = AuthorizePolicy.ProjectMemberAccess)]
-        public async Task<IActionResult> GetProjects(string status = null)
+        public async Task<IActionResult> GetProjects(string status = null, bool getAll = false)
         {
             _logger.LogInformation("Getting projects. Filtered by status = {status}", status);
 
             try
             {
                 var currentUserId = User.GetUserId();
-                var projects = await _projectService.GetProjectsByUser(currentUserId, status);
+                var projects = await _projectService.GetProjectsByUser(currentUserId, status, getAll && User.IsInRole(UserRole.Administrator));
                 var results = _mapper.Map<List<ProjectDto>>(projects.Select(p => p.Item1));
 
                 return Ok(results);

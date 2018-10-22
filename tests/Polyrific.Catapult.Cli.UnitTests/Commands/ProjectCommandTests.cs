@@ -105,7 +105,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _consoleReader = new Mock<IConsoleReader>();
 
             _projectService = new Mock<IProjectService>();
-            _projectService.Setup(p => p.GetProjects(It.IsAny<string>())).ReturnsAsync(projects);
+            _projectService.Setup(p => p.GetProjects(It.IsAny<string>(), It.IsAny<bool>())).ReturnsAsync(projects);
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
             _projectService.Setup(p => p.CreateProject(It.IsAny<NewProjectDto>())).ReturnsAsync((NewProjectDto dto) => new ProjectDto
             {

@@ -62,9 +62,9 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<ProjectDto>(path);
         }
 
-        public async Task<List<ProjectDto>> GetProjects(string status = null)
+        public async Task<List<ProjectDto>> GetProjects(string status = null, bool getAll = false)
         {
-            var path = $"project?status={status}";
+            var path = $"project?status={status}&getAll={getAll}";
 
             return await Api.Get<List<ProjectDto>>(path);
         }

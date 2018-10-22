@@ -268,7 +268,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _projectRepository.GetSingleBySpec(new ProjectFilterSpecification(name), cancellationToken);
         }
 
-        public async Task<List<(Project, ProjectMemberRole)>> GetProjectsByUser(int userId, string status = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<(Project, ProjectMemberRole)>> GetProjectsByUser(int userId, string status = null, bool getAll = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -290,7 +290,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                     throw new FilterTypeNotFoundException(status);
             }
 
-            var projectMembersByUserSpec = new ProjectMemberFilterSpecification(0, userId, isArchived);
+            var projectMembersByUserSpec = new ProjectMemberFilterSpecification(0, getAll ? 0 : userId, isArchived);
             projectMembersByUserSpec.Includes.Add(p => p.ProjectMemberRole);
             var projectMembers = await _projectMemberRepository.GetBySpec(projectMembersByUserSpec, cancellationToken);
             var projects = projectMembers.Select(m => (m.Project, m.ProjectMemberRole)).ToList();

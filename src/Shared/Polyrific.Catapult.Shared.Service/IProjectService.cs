@@ -26,8 +26,9 @@ namespace Polyrific.Catapult.Shared.Service
         /// Get list of projects that user has access to
         /// </summary>
         /// <param name="status">Status of the project (all | active | archived)</param>
+        /// <param name="getAll">Indicates whether to get all projects</param>
         /// <returns>List of projects</returns>
-        Task<List<ProjectDto>> GetProjects(string status = null);
+        Task<List<ProjectDto>> GetProjects(string status = null, bool getAll = false);
 
         /// <summary>
         /// 
