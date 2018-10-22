@@ -47,7 +47,7 @@ namespace AspNetCoreMvc.Helpers
             return message;
         }
 
-        public void AddFileToProject(string projectName, string filePath, string contents, bool overwrite = false)
+        public void AddFileToProject(string projectName, string filePath, string contents, bool overwrite = true)
         {
             var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);
             var file = new FileInfo(fullFilePath);

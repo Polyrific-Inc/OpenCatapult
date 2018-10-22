@@ -605,7 +605,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Entities/{model.Name}.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Entities/{model.Name}.cs", sb.ToString());
         }
 
         private void GenerateBaseModel()

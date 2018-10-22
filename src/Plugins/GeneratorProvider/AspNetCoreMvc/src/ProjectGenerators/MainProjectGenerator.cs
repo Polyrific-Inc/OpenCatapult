@@ -101,7 +101,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    </div>");
             sb.AppendLine("</div>");
 
-            _projectHelper.AddFileToProject(Name, $"Views/Home/Index.cshtml", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Views/Home/Index.cshtml", sb.ToString());
         }
 
         #region view models
@@ -176,7 +176,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Models/{model.Name}ViewModel.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Models/{model.Name}ViewModel.cs", sb.ToString());
         }
 
         private void GenerateAutoMapperProfile(ProjectDataModelDto model)
@@ -199,7 +199,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString());
         }
 
         private void GenerateAdminBaseViewModel()
@@ -256,7 +256,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/{model.Name}ViewModel.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/{model.Name}ViewModel.cs", sb.ToString());
         }
 
         private void GenerateAdminAutoMapperProfile(ProjectDataModelDto model)
@@ -279,7 +279,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString());
         }
         #endregion
 
@@ -1002,7 +1002,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Startup.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Startup.cs", sb.ToString());
             return Task.FromResult("Startup class generated");
         }
 
@@ -1041,7 +1041,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Program.cs", sb.ToString(), true);
+            _projectHelper.AddFileToProject(Name, $"Program.cs", sb.ToString());
             return Task.FromResult("Program class generated");
         }
         #endregion
