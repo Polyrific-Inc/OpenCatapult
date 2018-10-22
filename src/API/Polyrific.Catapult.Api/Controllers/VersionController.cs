@@ -19,6 +19,7 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         [Authorize]
+        [HttpGet]
         public IActionResult Get()
         {
             _logger.LogDebug("Checking versions");
