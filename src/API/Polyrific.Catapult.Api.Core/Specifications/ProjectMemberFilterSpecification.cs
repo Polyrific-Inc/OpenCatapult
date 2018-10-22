@@ -23,7 +23,14 @@ namespace Polyrific.Catapult.Api.Core.Specifications
             RoleId = roleId;
 
             if (projectId == 0)
+            {
                 Includes.Add(m => m.Project);
+            }                
+            else
+            {
+                Includes.Add(m => m.ProjectMemberRole);
+                Includes.Add(m => m.User);
+            }                
         }
     }
 }

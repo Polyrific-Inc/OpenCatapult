@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Api.Data
             Db = dbContext;
         }
 
-        public async Task<int> CountBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<int> CountBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Api.Data
             return await secondaryResult.CountAsync(spec.Criteria, cancellationToken);
         }
 
-        public async Task<int> Create(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<int> Create(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Api.Data
             return entity.Id;
         }
 
-        public async Task Delete(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task Delete(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -58,14 +58,14 @@ namespace Polyrific.Catapult.Api.Data
             await Db.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetById(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TEntity> GetById(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return await Db.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task<IEnumerable<TEntity>> GetBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<IEnumerable<TEntity>> GetBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -95,7 +95,7 @@ namespace Polyrific.Catapult.Api.Data
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<TEntity> GetSingleBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TEntity> GetSingleBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Api.Data
                 .FirstOrDefaultAsync(spec.Criteria, cancellationToken);
         }
 
-        public async Task Update(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task Update(TEntity entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 

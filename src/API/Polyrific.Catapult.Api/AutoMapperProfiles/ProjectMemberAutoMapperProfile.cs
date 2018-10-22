@@ -10,7 +10,9 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
     {
         public ProjectMemberAutoMapperProfile()
         {
-            CreateMap<ProjectMember, ProjectMemberDto>();
+            CreateMap<ProjectMember, ProjectMemberDto>()
+                .ForMember(dest => dest.ProjectMemberRoleName, opt => opt.MapFrom(src => src.ProjectMemberRole.Name))
+                .ForMember(dest => dest.Username, opt => opt.MapFrom(src => src.User.UserName));
             CreateMap<NewProjectMemberDto, ProjectMemberDto>();
         }
     }

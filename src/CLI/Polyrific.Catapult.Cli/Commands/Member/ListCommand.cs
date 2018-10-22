@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
@@ -42,7 +43,12 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                 var roleId = MemberRole.GetMemberRoleId(Role ?? string.Empty);
                 var projectMembers = _projectMemberService.GetProjectMembers(project.Id, roleId).Result;
 
-                message = projectMembers.ToListCliString($"Found {projectMembers.Count} project member(s):");
+                message = projectMembers.Select(m => new MemberListViewModel
+                {
+                    UserId = m.UserId,
+                    Username = m.Username,
+                    Role = m.ProjectMemberRoleName
+                }).ToListCliString($"Found {projectMembers.Count} project member(s):");
             }
             else
             {
@@ -51,5 +57,12 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
             return message;
         }
+    }
+
+    public class MemberListViewModel
+    {
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        public string Role { get; set; }
     }
 }

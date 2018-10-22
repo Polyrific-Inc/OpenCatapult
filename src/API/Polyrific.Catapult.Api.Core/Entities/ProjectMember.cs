@@ -18,6 +18,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Id of the user
         /// </summary>
         public int UserId { get; set; }
+
+        /// <summary>
+        /// User object
+        /// </summary>
+        public virtual User User { get; set; }
         
         /// <summary>
         /// Id of the project member role

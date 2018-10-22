@@ -24,8 +24,18 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectMember
         public int UserId { get; set; }
 
         /// <summary>
+        /// Username (email) of the user
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
         /// Id of the project member role
         /// </summary>
         public int ProjectMemberRoleId { get; set; }
+
+        /// <summary>
+        /// Name of the project member role
+        /// </summary>
+        public string ProjectMemberRoleName { get; set; }
     }
 }
