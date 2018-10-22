@@ -8,3 +8,8 @@ additional-configs:
     type: string
     is-required: true
     is-secret: true
+  - name: AdminEmail
+    label: Admin Email
+    type: string
+    is-required: true
+    is-secret: false
