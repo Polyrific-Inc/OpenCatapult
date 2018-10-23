@@ -200,6 +200,12 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (!string.IsNullOrEmpty(engine))
             {
+                if (job == null)
+                {
+                    var pendingJobSpec = new JobQueueFilterSpecification(JobStatus.Queued, engine);
+                    job = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
+                }
+
                 try
                 {
                     job.CatapultEngineId = engine;

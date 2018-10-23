@@ -46,7 +46,12 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                     _jobQueueService.UpdateJobQueue(queue.Id, new UpdateJobDto
                     {
                         Id = Number,
-                        Status = JobStatus.Queued
+                        Status = JobStatus.Queued,
+                        CatapultEngineId = queue.CatapultEngineId,
+                        CatapultEngineIPAddress = queue.CatapultEngineIPAddress,
+                        CatapultEngineMachineName = queue.CatapultEngineMachineName,
+                        JobTasksStatus = queue.JobTasksStatus,
+                        JobType = queue.JobType
                     }).Wait();
 
                     message = $"Queue {Number} restarted";

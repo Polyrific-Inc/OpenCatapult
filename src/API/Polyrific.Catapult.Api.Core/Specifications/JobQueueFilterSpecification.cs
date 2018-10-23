@@ -12,6 +12,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public string Status { get; set; }
         public string[] StatusArray { get; set; }
         public bool UnassignedOnly { get; set; }
+        public string EngineId { get; set; }
 
         /// <summary>
         /// Filter to get unassigned queued job only
@@ -37,10 +38,11 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// Filter by the status
         /// </summary>
         /// <param name="status"></param>
-        public JobQueueFilterSpecification(string status)
-            : base(m => m.Status == status, m => m.Created)
+        public JobQueueFilterSpecification(string status, string engineId = null)
+            : base(m => m.Status == status && (engineId == null || m.CatapultEngineId == engineId), m => m.Created)
         {
             Status = status;
+            EngineId = engineId;
         }
 
         /// <summary>
