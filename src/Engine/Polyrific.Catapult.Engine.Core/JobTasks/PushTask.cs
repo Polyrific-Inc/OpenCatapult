@@ -57,7 +57,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (!string.IsNullOrEmpty(result.errorMessage))
                 return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.remoteUrl, result.outputValues);
+            // stop the next process if we're creating a pull request
+            return new TaskRunnerResult(true, result.remoteUrl, result.outputValues, TaskConfig.CreatePullRequest);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

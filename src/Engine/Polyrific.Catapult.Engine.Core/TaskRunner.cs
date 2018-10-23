@@ -120,6 +120,20 @@ namespace Polyrific.Catapult.Engine.Core
                         break;
                     }
 
+                    // check if there's a need to postpone the next task
+                    if (result.IsSuccess && result.StopTheProcess)
+                    {
+                        _logger.LogInformation($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} require the job to be halted. Run the restart command in order to restart the job");
+                        jobTaskStatus.Status = JobTaskStatusType.Success;
+
+                        int currentTaskStatusIdx = jobTaskStatuses.IndexOf(jobTaskStatus);
+                        var nextTaskStatus = currentTaskStatusIdx == jobTaskStatuses.Count - 1 ? null : jobTaskStatuses[currentTaskStatusIdx + 1];
+                        nextTaskStatus.Status = JobTaskStatusType.Pending;
+
+                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        break;
+                    }
+
                     jobTaskStatus.Status = JobTaskStatusType.Success;
                     job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                     await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto

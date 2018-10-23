@@ -12,17 +12,19 @@ namespace Polyrific.Catapult.Engine.Core
         public TaskRunnerResult()
         {
         }
-        
+
         /// <summary>
         /// Instantiate <see cref="TaskRunnerResult"/>
         /// </summary>
         /// <param name="isSuccess">Is the process success?</param>
         /// <param name="returnValue">Value to return</param>
-        public TaskRunnerResult(bool isSuccess, string returnValue)
+        /// <param name="stopTheProcess">Indicates whether to stop the next process</param>
+        public TaskRunnerResult(bool isSuccess, string returnValue, bool stopTheProcess = false)
         {
             IsProcessed = true;
             IsSuccess = isSuccess;
             ReturnValue = returnValue;
+            StopTheProcess = stopTheProcess;
         }
 
         /// <summary>
@@ -31,12 +33,14 @@ namespace Polyrific.Catapult.Engine.Core
         /// <param name="isSuccess">Is the process success?</param>
         /// <param name="returnValue">Value to return</param>
         /// <param name="outputValues">Output values to be used by the next task</param>
-        public TaskRunnerResult(bool isSuccess, string returnValue, Dictionary<string, string> outputValues)
+        /// <param name="stopTheProcess">Indicates whether to stop the next process</param>
+        public TaskRunnerResult(bool isSuccess, string returnValue, Dictionary<string, string> outputValues, bool stopTheProcess = false)
         {
             IsProcessed = true;
             IsSuccess = isSuccess;
             ReturnValue = returnValue;
             OutputValues = outputValues;
+            StopTheProcess = stopTheProcess;
         }
 
         /// <summary>

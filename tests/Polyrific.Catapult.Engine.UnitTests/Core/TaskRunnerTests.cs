@@ -171,5 +171,55 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             Assert.True(results[3].IsProcessed);
             Assert.True(results[4].IsProcessed);
         }
+
+        [Fact]
+        public async void Run_SuccessOne_PendingTheNext()
+        {
+            _data.Clear();
+
+            _data.AddRange(new List<JobTaskDefinitionDto>
+            {
+                new JobTaskDefinitionDto
+                {
+                    Id = 1, Name = "Generate web app", Type = JobTaskDefinitionType.Generate, JobDefinitionId = 1, Sequence = 1
+                },
+                new JobTaskDefinitionDto
+                {
+                    Id = 2, Name = "Push code to GitHub", Type = JobTaskDefinitionType.Push, JobDefinitionId = 1, Sequence = 2, Configs = new Dictionary<string, string>
+                    {
+                        { "CreatePullRequest", "true" }
+                    }
+                },
+                new JobTaskDefinitionDto
+                {
+                    Id = 3, Name = "Merge PR to GitHub", Type = JobTaskDefinitionType.Push, JobDefinitionId = 1, Sequence = 3
+                },
+                new JobTaskDefinitionDto
+                {
+                    Id = 4, Name = "Build web app", Type = JobTaskDefinitionType.Build, JobDefinitionId = 1, Sequence = 4
+                },
+                new JobTaskDefinitionDto
+                {
+                    Id = 5, Name = "Deploy web app", Type = JobTaskDefinitionType.Deploy, JobDefinitionId = 1, Sequence = 5
+                }
+            });
+
+            _generateTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, "", true));
+
+            var job = new JobDto { Id = 1, Code = "20180817.1" };
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var results = await runner.Run(1, job, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+
+            Assert.Equal(_data.Count, results.Count);
+            Assert.True(results[1].IsSuccess);
+            Assert.True(results[2].IsSuccess);
+            Assert.True(results[2].StopTheProcess);
+            Assert.False(results[3].IsProcessed);
+            Assert.False(results[4].IsProcessed);
+            Assert.False(results[5].IsProcessed);
+
+            Assert.Contains(JobTaskStatusType.Pending, job.JobTasksStatus);
+        }
     }
 }

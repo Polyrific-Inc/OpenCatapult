@@ -60,6 +60,8 @@ namespace Polyrific.Catapult.Engine.Core
 
                     if (result.Values.Any(t => !t.IsSuccess))
                         jobQueue.Status = JobStatus.Error;
+                    else if (result.Values.Any(t => t.IsSuccess && t.StopTheProcess))
+                        jobQueue.Status = JobStatus.Pending;
                     else
                         jobQueue.Status = JobStatus.Completed;
                 }
