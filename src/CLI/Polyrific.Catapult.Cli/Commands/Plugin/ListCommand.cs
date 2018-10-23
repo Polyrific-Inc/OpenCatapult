@@ -32,6 +32,8 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
 
         public override string Execute()
         {
+            Console.WriteLine("Trying to get list of plugins...");
+
             if (string.IsNullOrEmpty(PluginType))
                 PluginType = "all";
 
@@ -39,7 +41,7 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             if (!plugins.Any())
                 return PluginType == "all" ? "No registered plugins found." : $"No registered plugins with type {PluginType} found.";
             
-            return plugins.ToListCliString("Registered plugins:");
+            return plugins.ToListCliString($"Found {plugins.Count} plugin(s):");
         }
     }
 }

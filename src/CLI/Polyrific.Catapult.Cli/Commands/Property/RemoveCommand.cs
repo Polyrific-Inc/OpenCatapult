@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
@@ -41,7 +41,9 @@ namespace Polyrific.Catapult.Cli.Commands.Property
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove property {Name} from model {Model}?", false)))
                 return string.Empty;
 
-            string message = string.Empty;
+            Console.WriteLine($"Trying to remove property \"{Name}\" from model {Model}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -57,14 +59,14 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                     {
                         _projectDataModelService.DeleteProjectDataModelProperty(project.Id, model.Id, property.Id).Wait();
 
-                        message = $"Property {Name} was removed";
+                        message = $"Property {Name} has been removed successfully";
                         Logger.LogInformation(message);
                         return message;
                     }
                 }
             }
 
-            message = $"Failed removing property {Name}. Make sure the project, model, and property names are correct.";
+            message = $"Failed to remove property {Name}. Make sure the project, model, and property names are correct.";
 
             return message;
         }

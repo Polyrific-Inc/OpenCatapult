@@ -25,6 +25,8 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
 
         public override string Execute()
         {
+            Console.WriteLine("Trying to register the plugin...");
+
             if (!File.Exists(MetadataFile))
                 return $"Could not find \"{MetadataFile}\".";
 

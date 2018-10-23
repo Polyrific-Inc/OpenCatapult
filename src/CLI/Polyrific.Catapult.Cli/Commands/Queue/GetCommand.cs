@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
@@ -32,7 +32,9 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get queue \"{Number}\" in project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -46,22 +48,21 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                     {
                         case JobStatus.Processing:
                             _jobQueueLogListener.Listen(queue.Id, OnLogReceived, OnLogError).Wait();
-                            break;
+                            message = "";
+                            return message;
                         case JobStatus.Completed:
                         case JobStatus.Error:
                         case JobStatus.Pending:
                         case JobStatus.Cancelled:
                             message = _jobQueueService.GetJobLogs(project.Id, queue.Id).Result;
-                            break;
+                            return message;
                         case JobStatus.Queued:
                             message = $"Queue {Number} is queued";
-                            break;
+                            return message;
                         default:
                             message = $"Queue {Number} has unknown status";
                             return message;
                     }
-
-                    return message;
                 }
             }
 

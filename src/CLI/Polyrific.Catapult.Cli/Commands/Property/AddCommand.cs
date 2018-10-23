@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
@@ -60,7 +60,8 @@ namespace Polyrific.Catapult.Cli.Commands.Property
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add property \"{Name}\" to model {Model}...");
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -81,7 +82,7 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                     }
                     else
                     {
-                        message = $"Related model {Relational} is not found";
+                        message = $"Related model {Relational} was not found";
                         return message;
                     }
                 }
@@ -106,7 +107,7 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                 }
             }
 
-            message = $"Failed to add property. Make sure the project and model names are correct.";
+            message = $"Failed to add property {Name}. Make sure the project and model names are correct.";
 
             return message;
         }

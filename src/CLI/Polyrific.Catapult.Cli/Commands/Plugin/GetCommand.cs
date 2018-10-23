@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
 
         public override string Execute()
         {
+            Console.WriteLine($"Trying to get plugin {PluginName}...");
             var plugin = _pluginService.GetPluginByName(PluginName).Result;
             return plugin == null ? $"Plugin {PluginName} was not found." : plugin.ToCliString($"Plugin {PluginName}:");
         }

@@ -62,7 +62,9 @@ namespace Polyrific.Catapult.Cli.Commands.Property
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to update property \"{Name}\"...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -87,7 +89,7 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                         }
                         else
                         {
-                            message = $"Related model {Relational} is not found";
+                            message = $"Related model {Relational} was not found";
                             Logger.LogInformation(message);
                             return message;
                         }
@@ -107,13 +109,13 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                             RelationalType = relationalType ?? property.RelationalType
                         }).Wait();
 
-                        message = $"Property {Name} was updated";
+                        message = $"Property {Name} has been updated successfully";
                         return message;
                     }
                 }
             }
 
-            message = $"Failed updating property {Name}. Make sure the project, model, and property names are correct.";
+            message = $"Failed to update property {Name}. Make sure the project, model, and property names are correct.";
 
             return message;
         }

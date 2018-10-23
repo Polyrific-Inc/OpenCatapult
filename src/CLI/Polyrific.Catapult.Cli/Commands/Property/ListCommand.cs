@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
@@ -31,7 +31,8 @@ namespace Polyrific.Catapult.Cli.Commands.Property
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get properties of model {Model}...");
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -43,12 +44,13 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                 {
                     var properties = _projectDataModelService.GetProjectDataModelProperties(project.Id, model.Id).Result;
 
-                    message = properties.ToListCliString($"Properties in model {Model}:");
+                    message = properties.ToListCliString(properties.Count == 1 ? 
+                        "Found 1 property:" : $"Found {properties.Count} properties:");
                     return message;
                 }
             }
 
-            message = $"Failed fetching properties. Make sure the project and model names are correct.";
+            message = $"Failed to fetch properties. Make sure the project and model names are correct.";
 
             return message;
         }

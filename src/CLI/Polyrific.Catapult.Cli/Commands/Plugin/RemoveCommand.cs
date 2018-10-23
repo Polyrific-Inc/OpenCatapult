@@ -28,6 +28,8 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove plugin {PluginName}?", false)))
                 return string.Empty;
 
+            Console.WriteLine($"Trying to remove plugin \"{PluginName}\"...");
+
             var plugin = _pluginService.GetPluginByName(PluginName).Result;
             if (plugin == null)
                 return $"Plugin {PluginName} was not found.";

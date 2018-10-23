@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
@@ -36,7 +36,9 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to queue job \"{Job}\" in project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -53,13 +55,13 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                         OriginUrl = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Last(a => a.AddressFamily == AddressFamily.InterNetwork).ToString()
                     }).Result;
 
-                    message = queue.ToCliString($"Job {Job} queued:");
+                    message = queue.ToCliString($"Job {Job} has been queued successfully:");
                     Logger.LogInformation(message);
                     return message;
                 }
             }
 
-            message = $"Failed to add queue. Make sure the project and job definition names are correct.";
+            message = $"Failed to queue job {Job}. Make sure the project and job definition names are correct.";
 
             return message;
         }

@@ -21,14 +21,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class PluginCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IPluginService> _pluginService;
         private readonly ITestOutputHelper _output;
 
         public PluginCommandTests(ITestOutputHelper output)
         {
             _output = output;
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
 
             _pluginService = new Mock<IPluginService>();
         }
@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Plugin_Execute_ReturnsEmpty()
         {
-            var command = new PluginCommand(_console.Object, LoggerMock.GetLogger<PluginCommand>().Object);
+            var command = new PluginCommand(_console, LoggerMock.GetLogger<PluginCommand>().Object);
 
             var message = command.Execute();
 
@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
                 .ReturnsAsync((string pluginName) => new PluginDto {Id = 1, Name = pluginName});
 
-            var command = new GetCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<GetCommand>().Object)
+            var command = new GetCommand(_pluginService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
             {
                 PluginName = "APlugin01"
             };
@@ -65,7 +65,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
                 .ReturnsAsync((PluginDto)null);
 
-            var command = new GetCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<GetCommand>().Object)
+            var command = new GetCommand(_pluginService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
             {
                 PluginName = "APlugin01"
             };
@@ -83,11 +83,11 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 new PluginDto {Id = 1, Name = "APlugin01"}
             });
 
-            var command = new ListCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<ListCommand>().Object);
+            var command = new ListCommand(_pluginService.Object, _console, LoggerMock.GetLogger<ListCommand>().Object);
 
             var message = command.Execute();
 
-            Assert.StartsWith("Registered plugins:", message);
+            Assert.StartsWith("Found 1 plugin(s):", message);
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             _pluginService.Setup(s => s.GetPlugins(It.IsAny<string>())).ReturnsAsync(new List<PluginDto>());
 
-            var command = new ListCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<ListCommand>().Object);
+            var command = new ListCommand(_pluginService.Object, _console, LoggerMock.GetLogger<ListCommand>().Object);
 
             var message = command.Execute();
 
@@ -129,7 +129,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 Version = dto.Version
             });
 
-            var command = new RegisterCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<RegisterCommand>().Object)
+            var command = new RegisterCommand(_pluginService.Object, _console, LoggerMock.GetLogger<RegisterCommand>().Object)
             {
                 MetadataFile = testFile
             };
@@ -147,7 +147,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             if (File.Exists(testFile))
                 File.Delete(testFile);
             
-            var command = new RegisterCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<RegisterCommand>().Object)
+            var command = new RegisterCommand(_pluginService.Object, _console, LoggerMock.GetLogger<RegisterCommand>().Object)
             {
                 MetadataFile = testFile
             };
@@ -167,7 +167,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             File.WriteAllText(testFile, "");
             
-            var command = new RegisterCommand(_pluginService.Object, _console.Object, LoggerMock.GetLogger<RegisterCommand>().Object)
+            var command = new RegisterCommand(_pluginService.Object, _console, LoggerMock.GetLogger<RegisterCommand>().Object)
             {
                 MetadataFile = testFile
             };

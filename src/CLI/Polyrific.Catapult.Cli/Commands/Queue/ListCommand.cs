@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
@@ -31,7 +31,9 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get queues of project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -39,7 +41,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
             {
                 var queueList = _jobQueueService.GetJobQueues(project.Id, Status).Result;
 
-                message = queueList.ToListCliString($"Queues in project {Project}:");
+                message = queueList.ToListCliString($"Found {queueList.Count} queue(s):");
                 return message;
             }
             else
