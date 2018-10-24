@@ -1,3 +1,5 @@
+# Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
 param(
     [switch]$noPrompt = $false,
     [string]$configuration = "Release",

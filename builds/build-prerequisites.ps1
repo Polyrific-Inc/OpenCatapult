@@ -1,3 +1,5 @@
+# Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
 $dotnetSdkVersion = [System.Version]"2.1.403"
 $allGood = $true
 
