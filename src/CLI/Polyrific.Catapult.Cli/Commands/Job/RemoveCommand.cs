@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
@@ -37,6 +37,8 @@ namespace Polyrific.Catapult.Cli.Commands.Job
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove job {Name} from project {Project}?", false)))
                 return string.Empty;
 
+            Console.WriteLine($"Trying to remove job definition \"{Name}\" from project {Project}...");
+
             string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
@@ -49,13 +51,13 @@ namespace Polyrific.Catapult.Cli.Commands.Job
                 {
                     _jobDefinitionService.DeleteJobDefinition(project.Id, job.Id).Wait();
 
-                    message = $"Job definition {Name} has been removed";
+                    message = $"Job definition {Name} has been removed successfully";
                     Logger.LogInformation(message);
                     return message;
                 }
             }
 
-            message = $"Failed removing job definition {Name}. Make sure the project and job definition names are correct.";
+            message = $"Failed to remove job definition {Name}. Make sure the project and job definition names are correct.";
 
             return message;
         }

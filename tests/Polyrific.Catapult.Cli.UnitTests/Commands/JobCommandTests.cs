@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class JobCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly ITestOutputHelper _output;
@@ -45,7 +45,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
 
             _jobDefinitionService = new Mock<IJobDefinitionService>();
             _jobDefinitionService.Setup(s => s.CreateJobDefinition(It.IsAny<int>(), It.IsAny<CreateJobDefinitionDto>())).ReturnsAsync((int projectId, CreateJobDefinitionDto dto) => new JobDefinitionDto
@@ -70,7 +70,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Job_Execute_ReturnsEmpty()
         {
-            var command = new JobCommand(_console.Object, LoggerMock.GetLogger<JobCommand>().Object);
+            var command = new JobCommand(_console, LoggerMock.GetLogger<JobCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -79,7 +79,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void JobAdd_Execute_ReturnsSuccessMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Project = "Project 1",
                 Name = "Default 2"
@@ -87,13 +87,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Job definition Default 2 added to project Project 1:", resultMessage);
+            Assert.StartsWith("Job definition has been added", resultMessage);
         }
 
         [Fact]
         public void JobAdd_Execute_ReturnsNotFoundMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Project = "Project 2",
                 Name = "Default 2"
@@ -101,33 +101,33 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
         public void JobList_Execute_ReturnsSuccessMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Project = "Project 1"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Job definitions in project Project 1:", resultMessage);
+            Assert.StartsWith("Found 1 job definition(s):", resultMessage);
         }
 
         [Fact]
         public void JobList_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Project = "Project 2"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Project Project 2 is not found", resultMessage);
+            Assert.Equal("Project Project 2 was not found", resultMessage);
         }
 
         [Fact]
@@ -142,7 +142,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Job definition Default has been removed", resultMessage);
+            Assert.Equal("Job definition Default has been removed successfully", resultMessage);
         }
 
         [Fact]
@@ -157,7 +157,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed removing job definition Default. Make sure the project and job definition names are correct.", resultMessage);
+            Assert.Equal("Failed to remove job definition Default. Make sure the project and job definition names are correct.", resultMessage);
         }
     }
 }

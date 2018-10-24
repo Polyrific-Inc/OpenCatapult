@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
@@ -27,18 +27,20 @@ namespace Polyrific.Catapult.Cli.Commands.Job
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get job definitions for project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
             if (project != null)
             {
                 var jobs = _jobDefinitionService.GetJobDefinitions(project.Id).Result;
-                message = jobs.ToListCliString($"Job definitions in project {Project}:");
+                message = jobs.ToListCliString($"Found {jobs.Count} job definition(s):");
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;

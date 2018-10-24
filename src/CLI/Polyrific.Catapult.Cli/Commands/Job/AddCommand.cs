@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
@@ -32,7 +32,9 @@ namespace Polyrific.Catapult.Cli.Commands.Job
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add new job definition to project {Project}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -43,12 +45,12 @@ namespace Polyrific.Catapult.Cli.Commands.Job
                     Name = Name
                 }).Result;
 
-                message = job.ToCliString($"Job definition {Name} added to project {Project}:");
+                message = job.ToCliString($"Job definition has been added:");
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Project {Project} is not found";
+                message = $"Project {Project} was not found";
             }
 
             return message;
