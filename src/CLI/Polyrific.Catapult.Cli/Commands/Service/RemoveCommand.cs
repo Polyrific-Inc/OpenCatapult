@@ -30,19 +30,21 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove external service {Name}?", false)))
                 return string.Empty;
 
-            string message = string.Empty;
+            Console.WriteLine($"Trying to remove external service \"{Name}\"...");
+
+            string message;
 
             var service = _externalServiceService.GetExternalServiceByName(Name).Result;
 
             if (service != null)
             {
                 _externalServiceService.DeleteExternalService(service.Id).Wait();
-                message = $"External Service {Name} was removed";
+                message = $"External Service {Name} has been removed successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"External Service {Name} is not found";
+                message = $"External Service {Name} was not found";
             }
 
             return message;

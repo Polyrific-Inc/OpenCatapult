@@ -19,11 +19,13 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine("Trying to get list of external services...");
+
+            string message;
 
             var services = _externalServiceService.GetExternalServices().Result;
 
-            message = services.ToListCliString($"Your external services:");
+            message = services.ToListCliString($"Found {services.Count} external service(s):");
 
             return message;
         }

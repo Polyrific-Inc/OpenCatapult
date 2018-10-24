@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
@@ -34,7 +33,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to update external service \"{Name}\"...");
+
+            string message;
 
             var service = _externalServiceService.GetExternalServiceByName(Name).Result;
 
@@ -77,12 +78,12 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                     Description = Description ?? service.Description,
                     Config = service.Config
                 }).Wait();
-                message = $"External Service {Name} was updated";
+                message = $"External Service {Name} has been updated successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"External Service {Name} is not found";
+                message = $"External Service {Name} was not found";
             }
 
             return message;

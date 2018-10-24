@@ -112,7 +112,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("External service GitHub-account created:", resultMessage);
+            Assert.StartsWith("External service has been added:", resultMessage);
         }
 
         [Fact]
@@ -128,7 +128,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Service type VSTS is not found", resultMessage);
+            Assert.Equal("Service type VSTS was not found", resultMessage);
         }
 
         [Fact]
@@ -156,7 +156,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("External Service Default-VSTS is not found", resultMessage);
+            Assert.Equal("External Service Default-VSTS was not found", resultMessage);
         }
 
         [Fact]
@@ -167,7 +167,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Your external services:", resultMessage);
+            Assert.StartsWith("Found 1 external service(s):", resultMessage);
         }
 
         [Fact]
@@ -181,7 +181,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("External Service Default-Github was updated", resultMessage);
+            Assert.Equal("External Service Default-Github has been updated successfully", resultMessage);
         }
 
         [Fact]
@@ -195,7 +195,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("External Service Default-VSTS is not found", resultMessage);
+            Assert.Equal("External Service Default-VSTS was not found", resultMessage);
         }
 
         [Fact]
@@ -209,7 +209,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("External Service Default-Github was removed", resultMessage);
+            Assert.Equal("External Service Default-Github has been removed successfully", resultMessage);
         }
 
         [Fact]
@@ -223,7 +223,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("External Service Default-VSTS is not found", resultMessage);
+            Assert.Equal("External Service Default-VSTS was not found", resultMessage);
         }
     }
 }

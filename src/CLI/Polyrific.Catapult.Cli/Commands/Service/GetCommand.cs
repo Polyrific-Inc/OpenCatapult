@@ -27,7 +27,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get external service {Name}...");
+
+            string message;
 
             var service = _externalServiceService.GetExternalServiceByName(Name).Result;
             
@@ -38,7 +40,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             }
             else
             {
-                message = $"External Service {Name} is not found";
+                message = $"External Service {Name} was not found";
             }
 
             return message;

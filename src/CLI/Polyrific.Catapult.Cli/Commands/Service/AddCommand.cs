@@ -38,7 +38,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add external service \"{Name}\"...");
+
+            string message;
 
             var serviceType = _externalServiceTypeService.GetExternalServiceTypeByName(Type).Result;
 
@@ -89,7 +91,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                         Config = config
                     }).Result;
 
-                    message = service.ToCliString($"External service {Name} created:", secretProperties.ToArray());
+                    message = service.ToCliString($"External service has been added:", secretProperties.ToArray());
                     Logger.LogInformation(message);
                 }
                 else
@@ -99,7 +101,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             }
             else
             {
-                message = $"Service type {Type} is not found";
+                message = $"Service type {Type} was not found";
             }            
 
             return message;
@@ -107,6 +109,8 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string GetHelpFooter()
         {
+            Console.WriteLine("Trying to get types of external service...");
+
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("Types of the external service:");
 
@@ -126,7 +130,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             }
             catch
             {
-                sb.AppendLine("Failed retrieving external service types. Please try to login into application");
+                sb.AppendLine("Failed to retrieve external service types. Please try to login into application");
             }
 
             return sb.ToString();
