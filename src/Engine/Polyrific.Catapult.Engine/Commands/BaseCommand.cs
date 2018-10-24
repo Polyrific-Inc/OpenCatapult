@@ -35,9 +35,9 @@ namespace Polyrific.Catapult.Engine.Commands
 
         protected virtual int OnExecute(CommandLineApplication app)
         {
-            Console.WriteLine("-----------------------------");
-            Console.WriteLine("= Polyrific Catapult Engine =");
-            Console.WriteLine("-----------------------------");
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("|     OpenCatapult Engine     |");
+            Console.WriteLine("-------------------------------");
             Console.WriteLine();
             
             try
@@ -51,14 +51,14 @@ namespace Polyrific.Catapult.Engine.Commands
                 if (!string.IsNullOrEmpty(message))
                     Console.WriteLine(message);
 
-                return 1;
+                return 0;
             }
             catch (Exception ex)
             {
                 Logger.LogError(ex, ex.Message);
                 Console.Error.WriteLine(ex.Message);
 
-                return 0;
+                return 1;
             }
         }
 

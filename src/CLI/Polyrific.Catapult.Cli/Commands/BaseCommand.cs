@@ -46,31 +46,31 @@ namespace Polyrific.Catapult.Cli.Commands
             Console.WriteLine("----------------------------");
             Console.WriteLine();
 
-            var (resultMessage, errorMessage) = ("", "");
-
             try
             {
                 #if DEBUG
                 DebugPreprocessing();
                 #endif
 
-                resultMessage = Execute();
+                var resultMessage = Execute();
+
+                if (!string.IsNullOrEmpty(resultMessage))
+                    Console.WriteLine(resultMessage);
+
+                Console.WriteLine();
+
+                return 0;
             }
             catch (Exception ex)
             {
-                errorMessage = ex.GetLastInnerExceptionMessage();
+                var errorMessage = ex.GetLastInnerExceptionMessage();
                 Logger.LogError(ex, errorMessage);
-            }
 
-            if (!string.IsNullOrEmpty(resultMessage))
-                Console.WriteLine(resultMessage);
-
-            if (!string.IsNullOrEmpty(errorMessage))
                 Console.Error.WriteLine(errorMessage);
+                Console.WriteLine();
 
-            Console.WriteLine();
-
-            return 0;
+                return 1;
+            }
         }
 
         #if DEBUG

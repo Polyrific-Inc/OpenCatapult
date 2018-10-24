@@ -80,9 +80,9 @@ namespace Polyrific.Catapult.Engine
 
         private void OnExecute(CommandLineApplication app)
         {
-            Console.WriteLine("-----------------------------");
-            Console.WriteLine("= Polyrific Catapult Engine =");
-            Console.WriteLine("-----------------------------");
+            Console.WriteLine("-------------------------------");
+            Console.WriteLine("|     OpenCatapult Engine     |");
+            Console.WriteLine("-------------------------------");
             Console.WriteLine();
 
             app.ShowHelp();

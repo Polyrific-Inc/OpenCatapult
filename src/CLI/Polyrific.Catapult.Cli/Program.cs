@@ -82,9 +82,9 @@ namespace Polyrific.Catapult.Cli
 
         private void OnExecute(CommandLineApplication app)
         {
-            Console.WriteLine("--------------------------");
-            Console.WriteLine("= Polyrific Catapult CLI =");
-            Console.WriteLine("--------------------------");
+            Console.WriteLine("----------------------------");
+            Console.WriteLine("|     OpenCatapult CLI     |");
+            Console.WriteLine("----------------------------");
             Console.WriteLine();
 
             app.ShowHelp();
