@@ -529,5 +529,37 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             Assert.Equal("The entered external service is not a GitHub service", resultMessage);
         }
+
+        [Fact]
+        public void TaskRemove_Execute_ReturnsSuccessMessage()
+        {
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 1",
+                Job = "Default",
+                Name = "Generate",
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Task Generate has been removed successfully", resultMessage);
+        }
+
+        [Fact]
+        public void TaskRemove_Execute_ReturnsNotFoundMessage()
+        {
+            var console = new TestConsole(_output, "y");
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 1",
+                Job = "Product",
+                Name = "Push",
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to remove task Push. Make sure the project, job definition, and task names are correct.", resultMessage);
+        }
     }
 }

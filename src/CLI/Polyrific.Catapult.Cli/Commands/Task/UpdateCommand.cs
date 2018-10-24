@@ -55,13 +55,13 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test, IgnoreCase = true)]
         public string Type { get; set; }
 
-        [Option("-prov|--Provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
+        [Option("-prov|--provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
         public string Provider { get; set; }
 
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
-        [Option("-s|--Sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
+        [Option("-s|--sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
         public int? Sequence { get; set; }
 
         public override string Execute()

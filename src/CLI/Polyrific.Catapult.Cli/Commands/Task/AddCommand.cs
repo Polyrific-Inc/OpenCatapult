@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-n|--name <NAME>", "Name of the job task definition", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
-        [Option("-prov|--Provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
+        [Option("-prov|--provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
         public string Provider { get; set; }
 
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
-        [Option("-s|--Sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
+        [Option("-s|--sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
         public int? Sequence { get; set; }
 
         public override string Execute()

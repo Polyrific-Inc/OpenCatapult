@@ -11,6 +11,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand("get", typeof(GetCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("update", typeof(UpdateCommand))]
+    [Subcommand("remove", typeof(RemoveCommand))]
     public class TaskCommand : BaseCommand
     {
         public TaskCommand(IConsole console, ILogger<TaskCommand> logger) : base(console, logger)
