@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
-using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
@@ -39,7 +38,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get task {Name} in job definition {Job}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -62,7 +63,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
             }
 
-            message = $"Failed fetching task {Name}. Make sure the project, job definition, and task names are correct.";
+            message = $"Failed to fetch task {Name}. Make sure the project, job definition, and task names are correct.";
 
             return message;
         }

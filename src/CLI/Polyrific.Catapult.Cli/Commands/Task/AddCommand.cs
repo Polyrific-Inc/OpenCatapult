@@ -1,14 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
@@ -62,7 +62,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to add new task to job definition {Job}...");
+
+            string message;
 
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -102,7 +104,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                                 if (externalService == null)
                                 {
-                                    message = $"The external service {externalServiceName} is not found.";
+                                    message = $"The external service {externalServiceName} was not found.";
                                     return message;
                                 }
 
@@ -157,13 +159,13 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         AdditionalConfigs = additionalConfigs
                     }).Result;
 
-                    message = task.ToCliString($"Task {Name} added to job {Job}:", secretProperties.ToArray());
+                    message = task.ToCliString($"Task has been added:", secretProperties.ToArray());
                     Logger.LogInformation(message);
                     return message;
                 }
             }
 
-            message = $"Failed adding task {Name}. Make sure the project and job definition names are correct.";
+            message = $"Failed to add task {Name}. Make sure the project and job definition names are correct.";
 
             return message;
         }

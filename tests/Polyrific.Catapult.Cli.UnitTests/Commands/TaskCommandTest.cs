@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class TaskCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<IConsoleReader> _consoleReader;
         private readonly ITestOutputHelper _output;
         private readonly Mock<IProjectService> _projectService;
@@ -153,7 +153,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
 
             _jobDefinitionService = new Mock<IJobDefinitionService>();
             _jobDefinitionService.Setup(s => s.GetJobDefinitionByName(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync((int projectId, string name) => jobs.FirstOrDefault(u => u.ProjectId == projectId && u.Name == name));
@@ -184,7 +184,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Task_Execute_ReturnsEmpty()
         {
-            var command = new TaskCommand(_console.Object, LoggerMock.GetLogger<TaskCommand>().Object);
+            var command = new TaskCommand(_console, LoggerMock.GetLogger<TaskCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -207,13 +207,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Task Deploy added to job Default:", resultMessage);
+            Assert.StartsWith("Task has been added:", resultMessage);
         }
 
         [Fact]
         public void TaskAdd_Execute_ReturnsNotFoundMessage()
         {
-            var command = new AddCommand(_console.Object, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2",
@@ -223,7 +223,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed adding task Push. Make sure the project and job definition names are correct.", resultMessage);
+            Assert.Equal("Failed to add task Push. Make sure the project and job definition names are correct.", resultMessage);
         }
 
         [Fact]
@@ -277,7 +277,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("The external service test is not found.", resultMessage);
+            Assert.Equal("The external service test was not found.", resultMessage);
         }
 
         [Fact]
@@ -302,7 +302,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskGet_Execute_ReturnsSuccessMessage()
         {
             _pluginService.Setup(x => x.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<PluginAdditionalConfigDto>());
-            var command = new GetCommand(_console.Object, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -317,7 +317,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskGet_Execute_ReturnsNotFoundMessage()
         {
-            var command = new GetCommand(_console.Object, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2",
@@ -326,14 +326,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed fetching task Push. Make sure the project, job definition, and task names are correct.", resultMessage);
+            Assert.Equal("Failed to fetch task Push. Make sure the project, job definition, and task names are correct.", resultMessage);
         }
 
         [Fact]
         public void TaskList_Execute_ReturnsSuccessMessage()
         {
             _pluginService.Setup(x => x.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<PluginAdditionalConfigDto>());
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
             {
                 Project = "Project 1",
                 Job = "Default"
@@ -341,13 +341,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Job task definitions in job Default:", resultMessage);
+            Assert.StartsWith("Found 1 task(s):", resultMessage);
         }
 
         [Fact]
         public void TaskList_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2"
@@ -355,7 +355,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed fetching tasks. Make sure the project and job names are correct.", resultMessage);
+            Assert.Equal("Failed to fetch tasks. Make sure the project and job names are correct.", resultMessage);
         }
 
         [Fact]
@@ -390,7 +390,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Task Deploy was updated", resultMessage);
+            Assert.Equal("Task Deploy has been updated successfully", resultMessage);
             _jobDefinitionService.Verify(x => x.UpdateJobTaskDefinition(1, 1, 1, It.Is<UpdateJobTaskDefinitionDto>(t => t.AdditionalConfigs.Count == 2)), Times.Once);
         }
 
@@ -412,14 +412,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Task Generate was updated", resultMessage);
+            Assert.Equal("Task Generate has been updated successfully", resultMessage);
             _jobDefinitionService.Verify(x => x.UpdateJobTaskDefinition(1, 1, 1, It.Is<UpdateJobTaskDefinitionDto>(t => t.AdditionalConfigs.Count == 2)), Times.Once);
         }
 
         [Fact]
         public void TaskUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new UpdateCommand(_console.Object, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -428,7 +428,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Failed updating task Push. Make sure the project and job definition names are correct.", resultMessage);
+            Assert.Equal("Failed to update task Push. Make sure the project and job definition names are correct.", resultMessage);
         }
 
         [Fact]
@@ -500,7 +500,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("The external service test is not found.", resultMessage);
+            Assert.Equal("The external service test was not found.", resultMessage);
         }
 
         [Fact]

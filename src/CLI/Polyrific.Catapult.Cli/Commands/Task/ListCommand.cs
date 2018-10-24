@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
@@ -35,7 +35,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to get tasks for job definition {Job}...");
+
+            string message;
             
             var project = _projectService.GetProjectByName(Project).Result;
 
@@ -54,12 +56,12 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         secretConfig.AddRange(configs.Where(c => c.IsSecret).Select(c => c.Name));
                     }
 
-                    message = tasks.ToListCliString($"Job task definitions in job {Job}:", secretConfig.ToArray());
+                    message = tasks.ToListCliString($"Found {tasks.Count} task(s):", secretConfig.ToArray());
                     return message;
                 }
             }
 
-            message = $"Failed fetching tasks. Make sure the project and job names are correct.";
+            message = $"Failed to fetch tasks. Make sure the project and job names are correct.";
 
             return message;
         }
