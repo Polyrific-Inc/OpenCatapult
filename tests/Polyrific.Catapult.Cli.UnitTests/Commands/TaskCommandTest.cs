@@ -553,7 +553,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Project = "Project 1",
-                Job = "Product",
+                Job = "Default",
                 Name = "Push",
             };
 
