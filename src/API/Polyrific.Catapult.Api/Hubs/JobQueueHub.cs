@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Api.Hubs
         {
             var group = GetGroupName(jobQueueId.ToString());
             List<string> groups = new List<string>() { group };
-            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", taskName, message);
+            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", taskName ?? "job", message);
             await Clients.Groups(groups).SendAsync("ReceiveMessage", taskName, message);
         }
 
