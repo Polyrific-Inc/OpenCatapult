@@ -58,10 +58,10 @@ namespace Polyrific.Catapult.Engine.Core
                     var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
                     var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.PluginsLocation, workingLocation);
 
-                    if (result.Values.Any(t => !t.IsSuccess))
-                        jobQueue.Status = JobStatus.Error;
-                    else if (result.Values.Any(t => t.IsSuccess && t.StopTheProcess))
+                    if (result.Values.Any(t => t.IsSuccess && t.StopTheProcess))
                         jobQueue.Status = JobStatus.Pending;
+                    else if (result.Values.Any(t => !t.IsSuccess))
+                        jobQueue.Status = JobStatus.Error;
                     else
                         jobQueue.Status = JobStatus.Completed;
                 }
@@ -80,7 +80,8 @@ namespace Polyrific.Catapult.Engine.Core
                     CatapultEngineVersion = jobQueue.CatapultEngineVersion,
                     JobType = jobQueue.JobType,
                     Status = jobQueue.Status,
-                    JobTasksStatus = jobQueue.JobTasksStatus
+                    JobTasksStatus = jobQueue.JobTasksStatus,
+                    OutputValues = jobQueue.OutputValues
                 });
                 
                 await _jobLogWriter.EndJobLog(jobQueue.Id);

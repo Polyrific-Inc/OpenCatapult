@@ -93,6 +93,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 job.Status = updatedJob.Status;
                 job.JobTasksStatus = updatedJob.JobTasksStatus;
                 job.JobType = updatedJob.JobType;
+                job.OutputValues = updatedJob.OutputValues;
                 await _jobQueueRepository.Update(job, cancellationToken);
             }
         }

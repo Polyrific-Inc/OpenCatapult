@@ -219,7 +219,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             Assert.False(results[4].IsProcessed);
             Assert.False(results[5].IsProcessed);
 
-            Assert.Contains(JobTaskStatusType.Pending, job.JobTasksStatus);
+            Assert.Contains(job.JobTasksStatus, j => j.Status == JobTaskStatusType.Pending);
         }
     }
 }

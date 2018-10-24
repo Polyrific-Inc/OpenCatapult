@@ -51,48 +51,53 @@ namespace Polyrific.Catapult.Engine.Core
 
             var orderedJobTasks = jobTasks.OrderBy(t => t.Sequence).ToList();
 
-            _logger.LogInformation($"[Queue \"{job.Code}\"] Attempting to run {orderedJobTasks.Count} job tasks");
+            _logger.LogInformation("[Queue {Code}] Attempting to run {Count} job tasks", job.Code, orderedJobTasks.Count);
 
             var results = orderedJobTasks.Select(t => (t.Id, new TaskRunnerResult())).ToDictionary(r => r.Item1, r => r.Item2);
 
             _compositionContainer = GetPluginsCompositionContainer(pluginsLocation, orderedJobTasks.Select(t => t.Type).ToArray());
 
-            var outputValues = new Dictionary<string, string>();
-            var jobTaskStatuses = orderedJobTasks.Select((t, idx) => new JobTaskStatusDto
-            {
-                TaskName = t.Name,
-                Sequence = idx + 1,
-                Status = JobTaskStatusType.NotExecuted
-            }).ToList();
+            var outputValues = job.OutputValues ?? new Dictionary<string, string>();
+            job.JobTasksStatus = job.JobTasksStatus?.Count > 0 ? job.JobTasksStatus :
+                orderedJobTasks.Select((t, idx) => new JobTaskStatusDto
+                {
+                    TaskName = t.Name,
+                    Sequence = idx + 1,
+                    Status = JobTaskStatusType.NotExecuted
+                }).ToList();
             foreach (var jobTask in orderedJobTasks)
             {
                 using (_logger.BeginScope(new TaskScope(jobTask.Name)))
                 {
-                    var jobTaskStatus = jobTaskStatuses.First(t => t.TaskName == jobTask.Name);
+                    var jobTaskStatus = job.JobTasksStatus.First(t => t.TaskName == jobTask.Name);
+                    if (jobTaskStatus.Status == JobTaskStatusType.Success)
+                    {
+                        results[jobTask.Id] = new TaskRunnerResult(true, "");
+                        continue;
+                    }
+
                     var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
 
                     // pre-processing
-                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} pre-processing task");
+                    _logger.LogInformation("[Queue {Code}] Running {Type} pre-processing task", job.Code, jobTask.Type);
                     var preResult = await taskObj.RunPreprocessingTask();
                     if (!preResult.IsSuccess && preResult.StopTheProcess)
                     {
-                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} pre-processing task was failed, stopping the next task execution.");
+                        _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution.", job.Code, jobTask.Type);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
                         jobTaskStatus.Remarks = preResult.ErrorMessage;
-                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                         break;
                     }
 
                     // main process
-                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} task");
+                    _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
                     var result = await taskObj.RunMainTask(outputValues);
                     results[jobTask.Id] = result;
                     if (!result.IsSuccess && result.StopTheProcess)
                     {
-                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} task was failed, stopping the next task execution.");
+                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution.", job.Code, jobTask.Type);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
-                        jobTaskStatus.Remarks = preResult.ErrorMessage;
-                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        jobTaskStatus.Remarks = result.ErrorMessage;
                         break;
                     }
 
@@ -109,33 +114,29 @@ namespace Polyrific.Catapult.Engine.Core
                     }
 
                     // post-processing
-                    _logger.LogInformation($"[Queue \"{job.Code}\"] Running {jobTask.Type} post-processing task");
+                    _logger.LogInformation("[Queue {Code}] Running {Type} post-processing task", job.Code, jobTask.Type);
                     var postResult = await taskObj.RunPostprocessingTask();
                     if (!postResult.IsSuccess && postResult.StopTheProcess)
                     {
-                        _logger.LogError($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} post-processing task was failed, stopping the next task execution.");
+                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution.", job.Code, jobTask.Type);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
-                        jobTaskStatus.Remarks = preResult.ErrorMessage;
-                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
+                        jobTaskStatus.Remarks = postResult.ErrorMessage;
                         break;
                     }
-
+                                        
                     // check if there's a need to postpone the next task
                     if (result.IsSuccess && result.StopTheProcess)
                     {
-                        _logger.LogInformation($"[Queue \"{job.Code}\"] Execution of {jobTask.Type} require the job to be halted. Run the restart command in order to restart the job");
+                        _logger.LogInformation("[Queue {Code}] Execution of {Type} require the job to be halted. Run the restart command in order to restart the job", job.Code, jobTask.Type);
                         jobTaskStatus.Status = JobTaskStatusType.Success;
 
-                        int currentTaskStatusIdx = jobTaskStatuses.IndexOf(jobTaskStatus);
-                        var nextTaskStatus = currentTaskStatusIdx == jobTaskStatuses.Count - 1 ? null : jobTaskStatuses[currentTaskStatusIdx + 1];
+                        int currentTaskStatusIdx = job.JobTasksStatus.IndexOf(jobTaskStatus);
+                        var nextTaskStatus = currentTaskStatusIdx == job.JobTasksStatus.Count - 1 ? null : job.JobTasksStatus[currentTaskStatusIdx + 1];
                         nextTaskStatus.Status = JobTaskStatusType.Pending;
-
-                        job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                         break;
                     }
 
                     jobTaskStatus.Status = JobTaskStatusType.Success;
-                    job.JobTasksStatus = JsonConvert.SerializeObject(jobTaskStatuses);
                     await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
                     {
                         Id = job.Id,
@@ -145,12 +146,15 @@ namespace Polyrific.Catapult.Engine.Core
                         CatapultEngineVersion = job.CatapultEngineVersion,
                         JobTasksStatus = job.JobTasksStatus,
                         JobType = job.JobType,
-                        Status = job.Status
+                        Status = job.Status,
+                        OutputValues = outputValues
                     });
                 }
             }
 
-            _logger.LogInformation($"[Queue \"{job.Code}\"] Job tasks execution complete with the following result: {results}");
+            job.OutputValues = outputValues;
+
+            _logger.LogInformation("[Queue {Code}] Job tasks execution complete with the following result: {@results}", job.Code, results);
 
             return results;
         }

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Shared.Dto.JobQueue
@@ -43,8 +44,13 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         public string CatapultEngineVersion { get; set; }
 
         /// <summary>
-        /// Json string of the job task status
+        /// Status of the job tasks
         /// </summary>
-        public string JobTasksStatus { get; set; }
+        public List<JobTaskStatusDto> JobTasksStatus { get; set; }
+        
+        /// <summary>
+        /// Output values of the job
+        /// </summary>
+        public Dictionary<string, string> OutputValues { get; set; }
     }
 }
