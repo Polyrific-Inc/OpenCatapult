@@ -11,9 +11,16 @@ $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = $true
 $rootPath = Split-Path $PSScriptRoot
 $appSettingsPath = "$rootPath\src\API\Polyrific.Catapult.Api\appsettings.json"
 $apiCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj"
+$dataCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj"
 
 # read connection string in appsettings.json
-$appSettingsFile = ([System.IO.File]::ReadAllText($appSettingsPath)  | ConvertFrom-Json)
+try {
+    $appSettingsFile = ([System.IO.File]::ReadAllText($appSettingsPath) | ConvertFrom-Json)
+}
+catch {
+    Write-Error -Message "[ERROR] $_" -ErrorAction Stop
+}
+
 $currentConnString = $appSettingsFile.ConnectionStrings.DefaultConnection
 
 # ask for new connection string
@@ -23,7 +30,7 @@ if ($connString -eq "") {
     Write-Output "Current connection string is `"$currentConnString`""
 
     if (!$noPrompt) {
-        $enteredConnString = Read-Host -Prompt "Please enter new connection string, or just ENTER if you want to use current value"
+        $enteredConnString = Read-Host -Prompt "Please enter new connection string, or just ENTER if you want to use current value"    
         if ($enteredConnString -ne "") {
             $connString = $enteredConnString
         }
@@ -33,9 +40,24 @@ if ($connString -eq "") {
 # update connection string
 if ($connString -ne $currentConnString) {
     $appSettingsFile.ConnectionStrings.DefaultConnection = $connString
-    $appSettingsFile | ConvertTo-Json | Out-File -FilePath $appSettingsPath -Encoding utf8 -Force
+
+    try {
+        $appSettingsFile | ConvertTo-Json | Out-File -FilePath $appSettingsPath -Encoding utf8 -Force    
+    }
+    catch {
+        Write-Error -Message "[ERROR] $_" -ErrorAction Stop
+    }
 
     Write-Output "Connection string has been updated"
+}
+
+# apply migration
+Write-Output "Applying migration..."
+Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath"
+$result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath
+if ($LASTEXITCODE -ne 0) {
+    Write-Error -Message "[ERROR] $result"
+    break
 }
 
 # check for dev cert
@@ -50,4 +72,8 @@ if ($certCheck -eq "No valid certificate found."){
 # run the API
 Write-Output "Running API..."
 Write-Output "dotnet run -p $apiCsprojPath -c $configuration --urls $url"
-dotnet run -p $apiCsprojPath -c $configuration --urls $url
+$result = dotnet run -p $apiCsprojPath -c $configuration --urls $url
+if ($LASTEXITCODE -ne 0) {
+    Write-Error -Message "[ERROR] $result"
+    break
+}
