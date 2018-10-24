@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.CatapultEngine;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
@@ -25,13 +25,15 @@ namespace Polyrific.Catapult.Cli.Commands.Engine
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to register new engine {Name}...");
+
+            string message;
             var engine = _engineService.RegisterEngine(new RegisterCatapultEngineDto
             {
                 Name = Name
             }).Result;
 
-            message = engine.ToCliString($"Engine registered:");
+            message = engine.ToCliString($"Engine has been registered:");
             Logger.LogInformation(message);
 
             return message;

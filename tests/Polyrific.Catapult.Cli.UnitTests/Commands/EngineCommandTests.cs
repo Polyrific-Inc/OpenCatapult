@@ -17,7 +17,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 {
     public class EngineCommandTests
     {
-        private readonly Mock<IConsole> _console;
+        private readonly IConsole _console;
         private readonly Mock<ICatapultEngineService> _engineService;
         private readonly Mock<ITokenService> _tokenService;
         private readonly ITestOutputHelper _output;
@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            _console = new Mock<IConsole>();
+            _console = new TestConsole(output);
             _tokenService = new Mock<ITokenService>();
             _tokenService.Setup(t => t.RequestEngineToken(It.IsAny<int>(), It.IsAny<RequestEngineTokenDto>())).ReturnsAsync("testToken");
 
@@ -53,7 +53,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Engine_Execute_ReturnsEmpty()
         {
-            var command = new EngineCommand(_console.Object, LoggerMock.GetLogger<EngineCommand>().Object);
+            var command = new EngineCommand(_console, LoggerMock.GetLogger<EngineCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
@@ -62,27 +62,27 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void EngineActivate_Execute_ReturnsSuccessMessage()
         {
-            var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _engineService.Object)
+            var command = new ActivateCommand(_console, LoggerMock.GetLogger<ActivateCommand>().Object, _engineService.Object)
             {
                 Name = "Engine01"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine01 has been activated", resultMessage);
+            Assert.Equal("Engine Engine01 has been activated successfully", resultMessage);
         }
 
         [Fact]
         public void EngineActivate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ActivateCommand(_console.Object, LoggerMock.GetLogger<ActivateCommand>().Object, _engineService.Object)
+            var command = new ActivateCommand(_console, LoggerMock.GetLogger<ActivateCommand>().Object, _engineService.Object)
             {
                 Name = "Engine02"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine02 is not found", resultMessage);
+            Assert.Equal("Engine Engine02 was not found", resultMessage);
         }
 
         [Fact]
@@ -91,14 +91,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _engineService.Setup(s => s.RegisterEngine(It.IsAny<RegisterCatapultEngineDto>()))
                 .ReturnsAsync(new RegisterCatapultEngineResponseDto());
 
-            var command = new RegisterCommand(_console.Object, LoggerMock.GetLogger<RegisterCommand>().Object, _engineService.Object)
+            var command = new RegisterCommand(_console, LoggerMock.GetLogger<RegisterCommand>().Object, _engineService.Object)
             {
                 Name = "Engine02"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Engine registered:", resultMessage);
+            Assert.StartsWith("Engine has been registered:", resultMessage);
         }
 
         [Fact]
@@ -112,7 +112,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine01 has been removed", resultMessage);
+            Assert.Equal("Engine Engine01 has been removed successfully", resultMessage);
         }
 
         [Fact]
@@ -126,39 +126,39 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine02 is not found", resultMessage);
+            Assert.Equal("Engine Engine02 was not found", resultMessage);
         }
 
         [Fact]
         public void EngineSuspend_Execute_ReturnsSuccessMessage()
         {
-            var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _engineService.Object)
+            var command = new SuspendCommand(_console, LoggerMock.GetLogger<SuspendCommand>().Object, _engineService.Object)
             {
                 Name = "Engine01"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine01 has been suspended", resultMessage);
+            Assert.Equal("Engine Engine01 has been suspended successfully", resultMessage);
         }
 
         [Fact]
         public void EngineSuspend_Execute_ReturnsNotFoundMessage()
         {
-            var command = new SuspendCommand(_console.Object, LoggerMock.GetLogger<SuspendCommand>().Object, _engineService.Object)
+            var command = new SuspendCommand(_console, LoggerMock.GetLogger<SuspendCommand>().Object, _engineService.Object)
             {
                 Name = "Engine02"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine02 is not found", resultMessage);
+            Assert.Equal("Engine Engine02 was not found", resultMessage);
         }
 
         [Fact]
         public void EngineGet_Execute_ReturnsSuccessMessage()
         {
-            var command = new GetCommand(_console.Object, LoggerMock.GetLogger<GetCommand>().Object, _engineService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _engineService.Object)
             {
                 Name = "Engine01"
             };
@@ -171,30 +171,30 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void EngineGet_Execute_ReturnsNotFoundMessage()
         {
-            var command = new GetCommand(_console.Object, LoggerMock.GetLogger<GetCommand>().Object, _engineService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _engineService.Object)
             {
                 Name = "Engine02"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine02 is not found", resultMessage);
+            Assert.Equal("Engine Engine02 was not found", resultMessage);
         }
 
         [Fact]
         public void EngineList_Execute_ReturnsSuccessMessage()
         {
-            var command = new ListCommand(_console.Object, LoggerMock.GetLogger<ListCommand>().Object, _engineService.Object);
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _engineService.Object);
 
             var resultMessage = command.Execute();
 
-            Assert.StartsWith("Registered engines (all):", resultMessage);
+            Assert.StartsWith("Found 1 engine(s):", resultMessage);
         }
 
         [Fact]
         public void EngineToken_Execute_ReturnsSuccessMessage()
         {
-            var command = new TokenCommand(_console.Object, LoggerMock.GetLogger<TokenCommand>().Object, _tokenService.Object, _engineService.Object)
+            var command = new TokenCommand(_console, LoggerMock.GetLogger<TokenCommand>().Object, _tokenService.Object, _engineService.Object)
             {
                 Name = "Engine01"
             };
@@ -207,14 +207,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void EngineToken_Execute_ReturnsNotFoundMessage()
         {
-            var command = new TokenCommand(_console.Object, LoggerMock.GetLogger<TokenCommand>().Object, _tokenService.Object, _engineService.Object)
+            var command = new TokenCommand(_console, LoggerMock.GetLogger<TokenCommand>().Object, _tokenService.Object, _engineService.Object)
             {
                 Name = "Engine02"
             };
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("Engine Engine02 is not found", resultMessage);
+            Assert.Equal("Engine Engine02 was not found", resultMessage);
         }
     }
 }

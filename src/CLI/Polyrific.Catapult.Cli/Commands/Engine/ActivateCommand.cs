@@ -1,9 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Shared.Service;
-using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
@@ -23,18 +23,20 @@ namespace Polyrific.Catapult.Cli.Commands.Engine
 
         public override string Execute()
         {
-            string message = string.Empty;
+            Console.WriteLine($"Trying to activate engine {Name}...");
+
+            string message;
             var engine = _engineService.GetCatapultEngineByName(Name).Result;
 
             if (engine != null)
             {
                 _engineService.Reactivate(engine.Id).Wait();
-                message = $"Engine {Name} has been activated";
+                message = $"Engine {Name} has been activated successfully";
                 Logger.LogInformation(message);
             }
             else
             {
-                message = $"Engine {Name} is not found";
+                message = $"Engine {Name} was not found";
             }
 
             return message;

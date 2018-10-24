@@ -24,8 +24,9 @@ namespace Polyrific.Catapult.Cli.Commands.Engine
 
         public override string Execute()
         {
+            Console.WriteLine($"Trying to get engines with status = \"{Status}\"...");
             var engines = _engineService.GetCatapultEngines(Status).Result;
-            return engines.ToListCliString($"Registered engines ({Status}):");
+            return engines.ToListCliString($"Found {engines.Count} engine(s):");
 
         }
     }
