@@ -2,12 +2,10 @@
 ///<OpenCatapultModelId>1</OpenCatapultModelId>
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc.Helpers
 {
