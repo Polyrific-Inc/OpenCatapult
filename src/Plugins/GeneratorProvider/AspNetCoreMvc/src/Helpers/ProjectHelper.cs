@@ -17,6 +17,7 @@ namespace AspNetCoreMvc.Helpers
         private readonly string _outputLocation;
         private readonly ILogger _logger;
 
+        private const int _maxSearchLine = 10;
         private const string ModelIdLine = "///OpenCatapultModelId:";
         private const string ModelIdCshtmlLine = "<!--OpenCatapultModelId:";
         public const string GenericGeneratedCodeBlockBeginLine = "/*** Generated Code Begin ***/";
@@ -174,29 +175,10 @@ namespace AspNetCoreMvc.Helpers
                 return;
 
             var files = file.Directory.EnumerateFiles();
-            string line;
-            int maxSearchLine = 10;
             foreach (var otherFile in files)
             {
-                int counter = 0;
-                int fileModelId = 0;
-                using (var fs = new StreamReader(otherFile.FullName))
-                {
-                    while (counter <= maxSearchLine && (line = fs.ReadLine()) != null)
-                    {
-                        fileModelId = GetModelId(line, otherFile);
-                        if (fileModelId > 0)
-                            break;
-
-                        counter++;
-                    }
-                }
-
-                if (fileModelId == modelId)
-                {
-                    File.Delete(otherFile.FullName);
+                if (DeleteFileByModelId(otherFile, modelId))
                     break;
-                }                    
             }
         }
 
@@ -206,15 +188,51 @@ namespace AspNetCoreMvc.Helpers
                 return;
 
             var otherDirs = file.Directory.Parent.EnumerateDirectories();
-            foreach(var otherDir in otherDirs)
+            foreach (var otherDir in otherDirs)
             {
                 if (file.Directory.Name == otherDir.Name)
                     continue;
 
                 var otherFiles = otherDir.EnumerateFiles();
+                bool cleaned = false;
                 foreach (var otherFile in otherFiles)
-                    CleanUpRenamedFile(otherFile, modelId);
+                {
+                    if (file.Name == otherFile.Name)
+                    {
+                        cleaned = DeleteFileByModelId(otherFile, modelId);
+                        break;
+                    }
+                }
+
+                if (cleaned)
+                    break;
             }
+        }
+
+        private bool DeleteFileByModelId(FileInfo file, int modelId)
+        {
+            string line;
+            int counter = 0;
+            int fileModelId = 0;
+            using (var fs = new StreamReader(file.FullName))
+            {
+                while (counter <= _maxSearchLine && (line = fs.ReadLine()) != null)
+                {
+                    fileModelId = GetModelId(line, file);
+                    if (fileModelId > 0)
+                        break;
+
+                    counter++;
+                }
+            }
+
+            if (fileModelId == modelId)
+            {
+                File.Delete(file.FullName);
+                return true;
+            }
+
+            return false;
         }
         
         private int GetModelId(string line, FileSystemInfo file)
