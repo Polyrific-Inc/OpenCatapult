@@ -82,5 +82,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             return new TaskRunnerResult(true, "");
         }
+
+        public override void ReloadProject()
+        {
+            base.ReloadProject();
+            _dataModels = null;
+        }
     }
 }

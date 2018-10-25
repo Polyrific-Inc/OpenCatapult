@@ -79,8 +79,10 @@ namespace AspNetCoreMvc.ProjectGenerators
                 else
                     GenerateRepositoryInterface(model);
             }
-
+            
             GenerateUserRepositoryInterface();
+
+            CleanUpRepositoryInterfaces();
 
             return Task.FromResult($"{_models.Count} repository interface(s) generated");
         }
@@ -98,7 +100,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Repositories/I{model.Name}Repository.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Repositories/I{model.Name}Repository.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateUserRepositoryInterface()
@@ -247,6 +249,11 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             _projectHelper.AddFileToProject(Name, $"Specifications/BaseSpecification.cs", sb.ToString());
         }
+
+        private void CleanUpRepositoryInterfaces()
+        {
+            _projectHelper.CleanUpFiles(Name, "Repositories", _models.Select(m => m.Id).ToArray());
+        }
         #endregion // repositories
 
         #region services
@@ -263,6 +270,8 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             GenerateUserServiceInterface();
             GenerateUserServiceClass();
+
+            CleanUpServices();
 
             return Task.FromResult($"{_models.Count} service(s) generated");
         }
@@ -288,7 +297,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Services/I{model.Name}Service.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Services/I{model.Name}Service.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateUserServiceInterface()
@@ -405,7 +414,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Services/{model.Name}Service.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Services/{model.Name}Service.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateUserServiceClass()
@@ -549,6 +558,10 @@ namespace AspNetCoreMvc.ProjectGenerators
             _projectHelper.AddFileToProject(Name, $"Services/UserService.cs", sb.ToString());
         }
 
+        private void CleanUpServices()
+        {
+            _projectHelper.CleanUpFiles(Name, "Services", _models.Select(m => m.Id).ToArray());
+        }
         #endregion //services
 
         #region Models
@@ -560,6 +573,8 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             GenerateUserRoleConstant();
             GenerateSignInResult();
+
+            CleanUpModels();
 
             return Task.FromResult($"{_models.Count} model(s) generated");
         }
@@ -605,7 +620,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Entities/{model.Name}.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Entities/{model.Name}.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateBaseModel()
@@ -662,6 +677,11 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
 
             _projectHelper.AddFileToProject(Name, $"Entities/SignInResult.cs", sb.ToString());
+        }
+
+        private void CleanUpModels()
+        {
+            _projectHelper.CleanUpFiles(Name, "Entities", _models.Select(m => m.Id).ToArray());
         }
         #endregion // models
     }

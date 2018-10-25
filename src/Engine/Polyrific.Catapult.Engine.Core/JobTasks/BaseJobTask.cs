@@ -93,7 +93,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Reload the project of task instance
         /// </summary>
-        public void ReloadProject()
+        public virtual void ReloadProject()
         {
             _project = null;
         }

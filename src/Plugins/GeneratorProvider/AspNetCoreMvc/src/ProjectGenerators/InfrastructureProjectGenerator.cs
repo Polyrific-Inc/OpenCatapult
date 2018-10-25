@@ -1,10 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreMvc.Helpers;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace AspNetCoreMvc.ProjectGenerators
@@ -93,7 +95,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"RepositoryInjection.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"RepositoryInjection.cs", sb.ToString(), true);
 
             return Task.FromResult("RepositoryInjection generated");
         }

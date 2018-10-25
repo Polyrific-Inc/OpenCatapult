@@ -54,8 +54,11 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateEntityConfigs()
         {
             GenerateBaseEntityConfig();
+
             foreach (var model in _models)
                 GenerateEntityConfig(model);
+
+            CleanUpEntityConfigs();
 
             return Task.FromResult($"{_models.Count} entity config(s) generated");
         }
@@ -93,7 +96,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"EntityConfigs/{model.Name}Config.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"EntityConfigs/{model.Name}Config.cs", sb.ToString(), modelId: model.Id);
+        }
+
+        private void CleanUpEntityConfigs()
+        {
+            _projectHelper.CleanUpFiles(Name, "EntityConfigs", _models.Select(m => m.Id).ToArray());
         }
 
         public Task<string> GenerateDbContext()
@@ -139,7 +147,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, "ApplicationDbContext.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, "ApplicationDbContext.cs", sb.ToString(), true);
 
             return Task.FromResult("Db context generated");
         }
@@ -147,10 +155,13 @@ namespace AspNetCoreMvc.ProjectGenerators
         public Task<string> GenerateRepositoryClass()
         {
             GenerateBaseRepositoryClass();
+
             foreach (var model in _models)
                 GenerateRepositoryClass(model);
 
             GenerateUserRepository();
+
+            CleanUpRepositories();
 
             return Task.FromResult($"{_models.Count} repository class(es) generated");
         }
@@ -172,7 +183,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"{model.Name}Repository.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"{model.Name}Repository.cs", sb.ToString(), modelId: model.Id);
+        }
+
+        private void CleanUpRepositories()
+        {
+            _projectHelper.CleanUpFiles(Name, "", _models.Select(m => m.Id).ToArray());
         }
 
         private void GenerateBaseRepositoryClass()

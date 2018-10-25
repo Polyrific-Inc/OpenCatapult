@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -117,7 +118,9 @@ namespace AspNetCoreMvc.ProjectGenerators
 
                 GenerateAdminViewModel(model);
                 GenerateAdminAutoMapperProfile(model);
-            }                
+            }
+
+            CleanUpViewModels();
 
             return Task.FromResult($"{_models.Count} view model(s) generated");
         }
@@ -176,7 +179,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Models/{model.Name}ViewModel.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Models/{model.Name}ViewModel.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAutoMapperProfile(ProjectDataModelDto model)
@@ -199,7 +202,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminBaseViewModel()
@@ -216,7 +219,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Areas/AdminModels/BaseViewModel.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/BaseViewModel.cs", sb.ToString());
         }
 
         private void GenerateAdminViewModel(ProjectDataModelDto model)
@@ -256,7 +259,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/{model.Name}ViewModel.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Models/{model.Name}ViewModel.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminAutoMapperProfile(ProjectDataModelDto model)
@@ -279,7 +282,15 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/AutoMapperProfiles/{model.Name}AutoMapperProfile.cs", sb.ToString(), modelId: model.Id);
+        }
+
+        private void CleanUpViewModels()
+        {
+            _projectHelper.CleanUpFiles(Name, "Models", _models.Select(m => m.Id).ToArray());
+            _projectHelper.CleanUpFiles(Name, "AutoMapperProfiles", _models.Select(m => m.Id).ToArray());
+            _projectHelper.CleanUpFiles(Name, "Areas/Admin/Models", _models.Select(m => m.Id).ToArray());
+            _projectHelper.CleanUpFiles(Name, "Areas/Admin/AutoMapperProfiles", _models.Select(m => m.Id).ToArray());
         }
         #endregion
 
@@ -331,7 +342,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Controllers/{model.Name}Controller.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Controllers/{model.Name}Controller.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminController(ProjectDataModelDto model)
@@ -438,7 +449,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Controllers/{model.Name}Controller.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Controllers/{model.Name}Controller.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateHomeAdminController()
@@ -461,6 +472,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
             _projectHelper.AddFileToProject(Name, "Areas/Admin/Controllers/HomeController.cs", sb.ToString());
+        }
+
+        private void CleanUpControllers()
+        {
+            _projectHelper.CleanUpFiles(Name, "Controllers", _models.Select(m => m.Id).ToArray());
+            _projectHelper.CleanUpFiles(Name, "Areas/Admin/Controllers", _models.Select(m => m.Id).ToArray());
         }
         #endregion
 
@@ -517,7 +534,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine("</table>");
 
-            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Index.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Views/{model.Name}/Index.cshtml", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminIndexView(ProjectDataModelDto model)
@@ -559,7 +576,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine("</table>");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Index.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Index.cshtml", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminCreateView(ProjectDataModelDto model)
@@ -577,7 +594,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("<div>");
             sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
             sb.AppendLine("</div>");
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Create.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Create.cshtml", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminEditView(ProjectDataModelDto model)
@@ -595,7 +612,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("<div>");
             sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
             sb.AppendLine("</div>");
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Edit.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Edit.cshtml", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateAdminDeleteView(ProjectDataModelDto model)
@@ -613,7 +630,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("<div>");
             sb.AppendLine("    <a asp-action=\"Index\">Back to List</a>");
             sb.AppendLine("</div>");
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Delete.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/{model.Name}/Delete.cshtml", sb.ToString(), modelId: model.Id);
         }
 
         private void UpdateMenuAndFooter()
@@ -778,7 +795,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
-            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_Layout.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_Layout.cshtml", sb.ToString(), true);
         }
 
         private void GenerateAdminViewImports()
@@ -891,6 +908,12 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("</div>");
             _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Home/Index.cshtml", sb.ToString());
         }
+
+        private void CleanUpViews()
+        {
+            _projectHelper.CleanUpFolders(Name, "Views", _models.Select(m => m.Id).ToArray());
+            _projectHelper.CleanUpFolders(Name, "Areas/Admin/Views", _models.Select(m => m.Id).ToArray());
+        }
         #endregion
 
         #region startup
@@ -914,7 +937,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
-            _projectHelper.AddFileToProject(Name, $"ServiceInjection.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"ServiceInjection.cs", sb.ToString(), true);
 
             return Task.FromResult("ServiceInjection generated");
         }
