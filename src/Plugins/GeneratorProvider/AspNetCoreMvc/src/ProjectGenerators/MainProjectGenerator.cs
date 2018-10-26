@@ -305,6 +305,8 @@ namespace AspNetCoreMvc.ProjectGenerators
 
             GenerateHomeAdminController();
 
+            CleanUpControllers();
+
             return Task.FromResult($"{_models.Count} controller(s) generated");
         }
 
@@ -501,6 +503,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateAdminViewStart();
             GenerateAdminLoginPartial();
             GenerateAdminIndexView();
+
+            CleanUpViews();
 
             return Task.FromResult($"{_models.Count} view(s) generated");
         }
