@@ -80,7 +80,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             var project = _projectService.CreateProject(projectDto).Result;
 
-            message = project.ToCliString("Project created:", null, 1);
+            message = project.ToCliString("Project created:");
             Logger.LogInformation(message);
             
             return message;

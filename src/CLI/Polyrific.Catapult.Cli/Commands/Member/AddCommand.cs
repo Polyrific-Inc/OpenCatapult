@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                     ProjectMemberRoleId = roleId
                 }).Result;
 
-                message = projectMember.ToCliString($"User has been added to project {Project}:", null, 1);
+                message = projectMember.ToCliString($"User has been added to project {Project}:");
                 Logger.LogInformation(message);
             }
             else

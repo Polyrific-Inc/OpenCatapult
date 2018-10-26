@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     NewProjectName = Name
                 }).Result;
 
-                message = clonedProject.ToCliString("Project cloned:", null, 1);
+                message = clonedProject.ToCliString("Project cloned:");
                 Logger.LogInformation(message);
             }
             else

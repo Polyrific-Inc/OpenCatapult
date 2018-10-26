@@ -12,15 +12,15 @@ namespace Polyrific.Catapult.Cli.Extensions
 {
     public static class CatapultCliExtensions
     {
-        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0)
+        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 1)
         {
+            string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
+
             if (obj is string stringValue)
-                return stringValue;
+                return $"{indentationString}{stringValue}";
 
             PropertyInfo[] propertyInfos = null;
             propertyInfos = obj.GetType().GetProperties();
-
-            string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
 
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -64,7 +64,7 @@ namespace Polyrific.Catapult.Cli.Extensions
                 empty = false;
                 sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1));
             }
-
+            
             if (empty)
             {
                 string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
