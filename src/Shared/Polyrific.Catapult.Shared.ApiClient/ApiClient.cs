@@ -90,6 +90,7 @@ namespace Polyrific.Catapult.Shared.ApiClient
                 case HttpStatusCode.BadGateway:
                 case HttpStatusCode.Forbidden:
                 case HttpStatusCode.NotFound:
+                    throw new Exception($"Failed to connect to \"{response.RequestMessage.RequestUri}\". Http Error {(int)response.StatusCode} - {response.ReasonPhrase}");
                 case HttpStatusCode.Unauthorized:
                     throw new Exception($"Error: {response.ReasonPhrase}");
                 default:
