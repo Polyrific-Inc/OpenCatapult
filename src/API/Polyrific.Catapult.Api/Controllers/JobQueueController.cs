@@ -19,12 +19,14 @@ namespace Polyrific.Catapult.Api.Controllers
     public class JobQueueController : ControllerBase
     {
         private readonly IJobQueueService _jobQueueService;
+        private readonly ICatapultEngineService _engineService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public JobQueueController(IJobQueueService jobQueueService, IMapper mapper, ILogger<JobQueueController> logger)
+        public JobQueueController(IJobQueueService jobQueueService, ICatapultEngineService engineService, IMapper mapper, ILogger<JobQueueController> logger)
         {
             _jobQueueService = jobQueueService;
+            _engineService = engineService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -162,6 +164,10 @@ namespace Polyrific.Catapult.Api.Controllers
 
             var job = await _jobQueueService.GetFirstUnassignedQueuedJob(engineName);
             var result = _mapper.Map<JobDto>(job);
+
+            // update engine's last seen
+            await _engineService.UpdateLastSeen(engineName);
+
             return Ok(result);
         }
 

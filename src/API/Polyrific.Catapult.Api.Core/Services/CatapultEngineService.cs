@@ -1,15 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Shared.Dto.Constants;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {
@@ -158,6 +157,18 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _catapultEngineRepository.ValidateCatapultEnginePassword(catapultEngineName, password, cancellationToken);
+        }
+
+        public async Task UpdateLastSeen(string engineName, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var engine = await _catapultEngineRepository.GetByCatapultEngineName(engineName, cancellationToken);
+            if (engine != null)
+            {
+                engine.LastSeen = DateTime.UtcNow;
+                await _catapultEngineRepository.Update(engine, cancellationToken);
+            }
         }
     }
 }

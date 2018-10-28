@@ -1,16 +1,17 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Shared.Dto.Constants;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services
@@ -19,7 +20,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
     {
         private readonly List<CatapultEngine> _data;
         private readonly Mock<ICatapultEngineRepository> _catapultEngineRepository;
-        private readonly Mock<IJobQueueService> _jobQueueService;
 
         public CatapultEngineServiceTests()
         {
@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync("test");
             _catapultEngineRepository.Setup(r => r.ValidateCatapultEnginePassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
-            _catapultEngineRepository.Setup(r => r.GetAll(It.IsAny<bool?>(), It.IsAny<System.DateTime?>(), It.IsAny<CancellationToken>()))
+            _catapultEngineRepository.Setup(r => r.GetAll(It.IsAny<bool?>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_data);
             _catapultEngineRepository.Setup(r => r.Create(It.IsAny<CatapultEngine>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2).Callback((CatapultEngine entity, CancellationToken cancellationToken) =>
@@ -70,8 +70,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                         _data.Add(entity);
                     }
                 });
-
-            _jobQueueService = new Mock<IJobQueueService>();
         }
 
         [Fact]
@@ -202,6 +200,21 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var result = await catapultEngineService.GetCatapultEngineRole(1);
 
             Assert.Equal(UserRole.Engine, result);
+        }
+
+        [Fact]
+        public async void UpdateLastSeen_Success()
+        {
+            var date1 = DateTime.UtcNow;
+
+            var catapultEngineService = new CatapultEngineService(_catapultEngineRepository.Object);
+            await catapultEngineService.UpdateLastSeen("test");
+
+            var date2 = DateTime.UtcNow;
+            var testEngine = _data.First();
+
+            Assert.NotNull(testEngine.LastSeen);
+            Assert.InRange(testEngine.LastSeen.Value, date1, date2);
         }
     }
 }
