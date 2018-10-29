@@ -55,7 +55,11 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                         OriginUrl = Dns.GetHostEntry(Dns.GetHostName()).AddressList.Last(a => a.AddressFamily == AddressFamily.InterNetwork).ToString()
                     }).Result;
 
-                    message = queue.ToCliString($"Job {Job} has been queued successfully:");
+                    message = queue.ToCliString($"Job {Job} has been queued successfully:", excludedFields: new string[]
+                    {
+                        "ProjectId",
+                        "JobDefinitionId"
+                    });
                     Logger.LogInformation(message);
                     return message;
                 }

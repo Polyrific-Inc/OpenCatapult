@@ -45,7 +45,9 @@ namespace Polyrific.Catapult.Cli.Commands.Job
                     Name = Name
                 }).Result;
 
-                message = job.ToCliString($"Job definition has been added:");
+                message = job.ToCliString($"Job definition has been added:", excludedFields: new string[] {
+                    "ProjectId"
+                });
                 Logger.LogInformation(message);
             }
             else

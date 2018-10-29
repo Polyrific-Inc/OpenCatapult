@@ -101,7 +101,11 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                             RelationalType = relationalType
                         }).Result;
 
-                    message = newProperty.ToCliString($"Property {Name} was added to model {Model}:");
+                    message = newProperty.ToCliString($"Property {Name} was added to model {Model}:", excludedFields: new string[]
+                        {
+                            "ProjectDataModelId",
+                            "RelatedProjectDataModelId"
+                        });
                     Logger.LogInformation(message);
                     return message;
                 }

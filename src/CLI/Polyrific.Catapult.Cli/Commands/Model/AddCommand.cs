@@ -52,7 +52,10 @@ namespace Polyrific.Catapult.Cli.Commands.Model
                     Label = Label
                 }).Result;
 
-                message = model.ToCliString($"Model has been added:");
+                message = model.ToCliString($"Model has been added:", excludedFields: new string[]
+                    {
+                        "ProjectId"
+                    });
                 Logger.LogInformation(message);
             }
             else

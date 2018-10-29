@@ -12,7 +12,7 @@ namespace Polyrific.Catapult.Cli.Extensions
 {
     public static class CatapultCliExtensions
     {
-        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 1)
+        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 1, string[] excludedFields = null)
         {
             string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
 
@@ -26,6 +26,9 @@ namespace Polyrific.Catapult.Cli.Extensions
             sb.AppendLine();
             foreach (var item in propertyInfos)
             {
+                if (excludedFields?.Contains(item.Name) ?? false)
+                    continue;
+
                 var prop = item.GetValue(obj);
 
                 if (prop == null)
@@ -42,7 +45,7 @@ namespace Polyrific.Catapult.Cli.Extensions
                 }
                 else if (prop is IEnumerable enumProp && !(prop is string))
                 {
-                    sb.AppendLine(enumProp.ToListCliString($"{indentationString}{item.Name}:", obfuscatedFields, indentation));
+                    sb.AppendLine(enumProp.ToListCliString($"{indentationString}{item.Name}:", obfuscatedFields, indentation, excludedFields));
                 }
                 else
                 {
@@ -53,7 +56,7 @@ namespace Polyrific.Catapult.Cli.Extensions
             return sb.ToString();
         }
 
-        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0)
+        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0, string[] excludedFields = null)
         {
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -62,7 +65,7 @@ namespace Polyrific.Catapult.Cli.Extensions
             foreach (var listitem in list)
             {
                 empty = false;
-                sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1));
+                sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1, excludedFields));
             }
             
             if (empty)

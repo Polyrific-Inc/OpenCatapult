@@ -25,7 +25,11 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             var services = _externalServiceService.GetExternalServices().Result;
 
-            message = services.ToListCliString($"Found {services.Count} external service(s):");
+            message = services.ToListCliString($"Found {services.Count} external service(s):", excludedFields: new string[]
+                {
+                    "Config",
+                    "ExternalServiceTypeId"
+                });
 
             return message;
         }

@@ -47,7 +47,11 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                 queue = !string.IsNullOrEmpty(code) ? _jobQueueService.GetJobQueue(project.Id, code).Result : _jobQueueService.GetJobQueue(project.Id, id).Result;
                 if (queue != null)
                 {
-                    message = queue.ToCliString($"Job Queue {Number}");
+                    message = queue.ToCliString($"Job Queue {Number}", excludedFields: new string[]
+                    {
+                        "ProjectId",
+                        "JobDefinitionId"
+                    });
                 }
             }
 

@@ -63,5 +63,47 @@ namespace Polyrific.Catapult.Api.Data
 
             return result;
         }
+
+        public override async Task<ProjectMember> GetSingleBySpec(ISpecification<ProjectMember> spec, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            // fetch a Queryable that includes all expression-based includes
+            var queryableResultWithIncludes = spec.Includes.Where(p => p.Body.Type != typeof(User))
+                .Aggregate(Db.Set<ProjectMember>().AsQueryable(),
+                    (current, include) => current.Include(include));
+
+            // modify the IQueryable to include any string-based include statements
+            var secondaryResult = spec.IncludeStrings.Where(i => i != "User")
+                .Aggregate(queryableResultWithIncludes,
+                    (current, include) => current.Include(include));
+
+            // add order by to query
+            if (spec.OrderBy != null)
+            {
+                secondaryResult = secondaryResult.OrderBy(spec.OrderBy);
+            }
+            else if (spec.OrderByDescending != null)
+            {
+                secondaryResult = secondaryResult.OrderByDescending(spec.OrderByDescending);
+            }
+
+            var result = await secondaryResult
+                .FirstOrDefaultAsync(spec.Criteria, cancellationToken);
+            
+            if (result != null)
+            {
+                var userInclude = spec.Includes.FirstOrDefault(p => p.Body.Type == typeof(User));
+                var userIncludeString = spec.IncludeStrings.FirstOrDefault(i => i == "User");
+
+                var userId = result.UserId;
+                if (userInclude != null || userIncludeString != null)
+                {
+                    result.User = _mapper.Map<User>(await Db.Set<ApplicationUser>().FindAsync(userId));
+                }
+            }
+
+            return result;
+        }
     }
 }

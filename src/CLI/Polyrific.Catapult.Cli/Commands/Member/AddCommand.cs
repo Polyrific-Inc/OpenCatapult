@@ -57,7 +57,14 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                     ProjectMemberRoleId = roleId
                 }).Result;
 
-                message = projectMember.ToCliString($"User has been added to project {Project}:");
+                var addedMember = new MemberViewModel
+                {
+                    UserId = projectMember.UserId,
+                    Username = projectMember.Username,
+                    Role = projectMember.ProjectMemberRoleName
+                };
+
+                message = addedMember.ToCliString($"User has been added to project {Project}:");
                 Logger.LogInformation(message);
             }
             else
@@ -66,6 +73,13 @@ namespace Polyrific.Catapult.Cli.Commands.Member
             }
 
             return message;
+        }
+
+        public class MemberViewModel
+        {
+            public int UserId { get; set; }
+            public string Username { get; set; }
+            public string Role { get; set; }
         }
     }
 }

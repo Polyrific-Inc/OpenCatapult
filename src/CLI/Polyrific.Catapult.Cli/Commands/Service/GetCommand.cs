@@ -36,7 +36,10 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             if (service != null)
             {
                 var serviceType = _externalServiceTypeService.GetExternalServiceType(service.ExternalServiceTypeId).Result;
-                message = service.ToCliString($"External Service {Name}:", serviceType?.ExternalServiceProperties?.Where(x => x.IsSecret).Select(x => x.Name).ToArray());
+                message = service.ToCliString($"External Service {Name}:", serviceType?.ExternalServiceProperties?.Where(x => x.IsSecret).Select(x => x.Name).ToArray(), excludedFields: new string[]
+                {
+                    "ExternalServiceTypeId"
+                });
             }
             else
             {

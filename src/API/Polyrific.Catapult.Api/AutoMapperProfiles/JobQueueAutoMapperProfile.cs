@@ -14,7 +14,8 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
         {
             CreateMap<JobQueue, JobDto>()
                 .ForMember(dest => dest.JobTasksStatus, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<List<JobTaskStatusDto>>(src.JobTasksStatus)))
-                .ForMember(dest => dest.OutputValues, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.OutputValues)));
+                .ForMember(dest => dest.OutputValues, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.OutputValues)))
+                .ForMember(dest => dest.JobDefinitionName, opt => opt.MapFrom(src => src.JobDefinition.Name));
 
             CreateMap<NewJobDto, JobDto>();
 

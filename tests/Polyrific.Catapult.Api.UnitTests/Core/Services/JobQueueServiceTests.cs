@@ -207,6 +207,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueueById_ReturnItem()
         {
+            _jobQueueRepository.Setup(r =>
+                    r.GetSingleBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
+                    _data.FirstOrDefault(spec.Criteria.Compile()));
+
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
             var entity = await jobQueueService.GetJobQueueById(1);
 
@@ -217,6 +222,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueueById_ReturnNull()
         {
+            _jobQueueRepository.Setup(r =>
+                    r.GetSingleBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
+                    _data.FirstOrDefault(spec.Criteria.Compile()));
+
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
             var jobQueue = await jobQueueService.GetJobQueueById(2);
 
