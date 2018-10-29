@@ -42,7 +42,12 @@ namespace Polyrific.Catapult.Cli.Commands.Model
 
                 if (model != null)
                 {
-                    message = model.ToCliString($"Data model {Name}");
+                    message = model.ToCliString($"Data model {Name}", excludedFields: new string[]
+                        {
+                            "ProjectId",
+                            "ProjectDataModelId",
+                            "RelatedProjectDataModelId"
+                        });
                     return message;
                 }                
             }

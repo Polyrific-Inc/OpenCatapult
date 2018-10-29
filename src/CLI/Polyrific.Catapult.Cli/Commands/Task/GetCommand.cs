@@ -56,7 +56,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     {
                         var configs = _pluginService.GetPluginAdditionalConfigByPluginName(task.Provider).Result;
                         var secretConfigs = configs.Where(c => c.IsSecret).Select(c => c.Name).ToArray();
-                        message = task.ToCliString($"Task {Name} in job {Job}:", secretConfigs);
+                        message = task.ToCliString($"Task {Name} in job {Job}:", secretConfigs, excludedFields: new string[]
+                        {
+                            "JobDefinitionId"
+                        });
                         return message;
                     }
                 }

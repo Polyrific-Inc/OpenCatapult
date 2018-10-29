@@ -58,7 +58,11 @@ namespace Polyrific.Catapult.Cli.Commands.Job
                         }
                     }
 
-                    message = job.ToCliString($"Job definition {Name}", secretConfig.ToArray());
+                    message = job.ToCliString($"Job definition {Name}", secretConfig.ToArray(), excludedFields: new string[]
+                        {
+                            "ProjectId",
+                            "JobDefinitionId"
+                        });
                     return message;
                 }
             }

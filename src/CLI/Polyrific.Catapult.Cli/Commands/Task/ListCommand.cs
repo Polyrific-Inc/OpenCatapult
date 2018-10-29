@@ -56,7 +56,12 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         secretConfig.AddRange(configs.Where(c => c.IsSecret).Select(c => c.Name));
                     }
 
-                    message = tasks.ToListCliString($"Found {tasks.Count} task(s):", secretConfig.ToArray());
+                    message = tasks.ToListCliString($"Found {tasks.Count} task(s):", secretConfig.ToArray(), excludedFields: new string[]
+                        {
+                            "JobDefinitionId",
+                            "Configs",
+                            "AdditionalConfigs"
+                        });
                     return message;
                 }
             }
