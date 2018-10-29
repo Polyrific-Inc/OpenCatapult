@@ -34,11 +34,11 @@ namespace Polyrific.Catapult.Shared.ApiClient
             await Api.Post<object>(path, null);
         }
 
-        public async Task<RegisterCatapultEngineResponseDto> RegisterEngine(RegisterCatapultEngineDto dto)
+        public async Task<CatapultEngineDto> RegisterEngine(RegisterCatapultEngineDto dto)
         {
             var path = $"engine/register";
 
-            return await Api.Post<RegisterCatapultEngineDto, RegisterCatapultEngineResponseDto>(path, dto);
+            return await Api.Post<RegisterCatapultEngineDto, CatapultEngineDto>(path, dto);
         }
 
         public async Task RemoveCatapultEngine(int engineId)

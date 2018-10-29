@@ -42,7 +42,6 @@ namespace Polyrific.Catapult.Api.Controllers
             _logger.LogInformation("Registering engine. Request body: {@dto}", dto);
 
             int catapultEngineId = 0;
-            string confirmToken = "";
 
             try
             {
@@ -52,14 +51,13 @@ namespace Polyrific.Catapult.Api.Controllers
                     catapultEngineId = createdCatapultEngine.Id;
 
                     var token = await _catapultEngineService.GenerateConfirmationToken(createdCatapultEngine.Id);
-                    confirmToken = HttpUtility.UrlEncode(token);
                     await _catapultEngineService.ConfirmRegistration(catapultEngineId, token);
                 }
 
-                return Ok(new RegisterCatapultEngineResponseDto
+                return Ok(new CatapultEngineDto
                 {
-                    EngineId = catapultEngineId,
-                    ConfirmToken = confirmToken
+                    Id = catapultEngineId,
+                    Name = dto.Name
                 });
             }
             catch (DuplicateCatapultEngineException nex)

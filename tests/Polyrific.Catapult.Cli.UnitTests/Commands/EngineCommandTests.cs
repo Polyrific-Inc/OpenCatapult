@@ -89,7 +89,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void EngineRegister_Execute_ReturnsSuccessMessage()
         {
             _engineService.Setup(s => s.RegisterEngine(It.IsAny<RegisterCatapultEngineDto>()))
-                .ReturnsAsync(new RegisterCatapultEngineResponseDto());
+                .ReturnsAsync(new CatapultEngineDto());
 
             var command = new RegisterCommand(_console, LoggerMock.GetLogger<RegisterCommand>().Object, _engineService.Object)
             {

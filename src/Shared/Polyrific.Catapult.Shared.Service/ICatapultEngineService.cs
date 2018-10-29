@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <param name="dto">DTO containing the engine details</param>
         /// <returns>DTO containing registration result</returns>
-        Task<RegisterCatapultEngineResponseDto> RegisterEngine(RegisterCatapultEngineDto dto);
+        Task<CatapultEngineDto> RegisterEngine(RegisterCatapultEngineDto dto);
 
         /// <summary>
         /// Suspend an engine
