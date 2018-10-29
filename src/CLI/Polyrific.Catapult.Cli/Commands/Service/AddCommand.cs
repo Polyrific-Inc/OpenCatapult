@@ -109,10 +109,10 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string GetHelpFooter()
         {
-            Console.WriteLine("Trying to get available external service...");
+            Console.WriteLine("Trying to get available external services...");
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("Available external service:");
+            sb.AppendLine("Available external services:");
 
             try
             {
