@@ -23,7 +23,7 @@ namespace Polyrific.Catapult.Api.Infrastructure
 
             NotificationConfig.InitConfigFile().Wait();
             services.AddTransient<NotificationConfig>();
-            services.AddTransient<NotificationProvider>();
+            services.AddTransient<INotificationProvider, NotificationProvider>();
         }
     }
 }

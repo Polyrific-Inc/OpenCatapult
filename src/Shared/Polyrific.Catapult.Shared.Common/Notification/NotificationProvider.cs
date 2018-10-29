@@ -11,7 +11,7 @@ using Polyrific.Catapult.Shared.Common.Interface;
 
 namespace Polyrific.Catapult.Shared.Common.Notification
 {
-    public class NotificationProvider
+    public class NotificationProvider : INotificationProvider
     {
         private readonly IEnumerable<INotificationSender> _notificationSenders;
         private readonly NotificationConfig _notificationConfig;
@@ -26,7 +26,7 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             _logger = loggerFactory.CreateLogger<NotificationProvider>();
         }
 
-        public async Task SendNotification(SendNotificationRequest request, Dictionary<string, string> messageParameters)
+        public virtual async Task SendNotification(SendNotificationRequest request, Dictionary<string, string> messageParameters)
         {
             foreach (var sender in _notificationSenders)
             {

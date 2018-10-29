@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using AutoMapper;
@@ -25,10 +24,10 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
-        private readonly NotificationProvider _notificationProvider;
+        private readonly INotificationProvider _notificationProvider;
         private readonly ILogger _logger;
 
-        public AccountController(IUserService service, IMapper mapper, NotificationProvider notificationProvider, ILogger<AccountController> logger)
+        public AccountController(IUserService service, IMapper mapper, INotificationProvider notificationProvider, ILogger<AccountController> logger)
         {
             _userService = service;
             _mapper = mapper;

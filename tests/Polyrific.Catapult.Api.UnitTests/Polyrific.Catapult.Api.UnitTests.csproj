@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\API\Polyrific.Catapult.Api.Core\Polyrific.Catapult.Api.Core.csproj" />
+    <ProjectReference Include="..\..\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj" />
   </ItemGroup>
 
 </Project>
