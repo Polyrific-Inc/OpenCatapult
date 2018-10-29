@@ -159,5 +159,33 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             Assert.Equal("Failed to remove job definition Default. Make sure the project and job definition names are correct.", resultMessage);
         }
+
+        [Fact]
+        public void JobUpdate_Execute_ReturnsSuccessMessage()
+        {
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 1",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Job definition Default has been updated successfully", resultMessage);
+        }
+
+        [Fact]
+        public void JobUpdate_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 2",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to update job definition Default. Make sure the project and job definition names are correct.", resultMessage);
+        }
     }
 }
