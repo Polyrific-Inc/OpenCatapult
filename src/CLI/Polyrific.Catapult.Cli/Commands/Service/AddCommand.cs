@@ -91,7 +91,11 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                         Config = config
                     }).Result;
 
-                    message = service.ToCliString($"External service has been added:", secretProperties.ToArray());
+                    message = service.ToCliString($"External service has been added:", secretProperties.ToArray(), excludedFields: new string[]
+                    {
+                        "ExternalServiceTypeId"
+                    });
+
                     Logger.LogInformation(message);
                 }
                 else
