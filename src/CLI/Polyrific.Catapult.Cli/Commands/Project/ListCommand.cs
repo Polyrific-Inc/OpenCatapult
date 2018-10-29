@@ -31,7 +31,10 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             var projects = _projectService.GetProjects(Status, GetAll).Result;
 
-            return projects.ToListCliString($"Found {projects.Count} project(s):");
+            return projects.ToListCliString($"Found {projects.Count} project(s):", excludedFields: new string[]
+                {
+                    "Config"
+                });
         }
     }
 }

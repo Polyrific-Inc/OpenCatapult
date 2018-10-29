@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
     public class JobQueueFilterSpecification : BaseSpecification<JobQueue>
     {
         public int ProjectId { get; set; }
+        public int JobQueueId { get; set; }
         public string QueueCode { get; set; }
         public string Status { get; set; }
         public string[] StatusArray { get; set; }
@@ -26,25 +27,13 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         }
 
         /// <summary>
-        /// Filter by the project
+        /// Filter by the job queue id
         /// </summary>
-        /// <param name="projectId"></param>
-        public JobQueueFilterSpecification(int projectId)
-            : base(m => m.ProjectId == projectId)
+        /// <param name="jobQueueId"></param>
+        public JobQueueFilterSpecification(int jobQueueId)
+            : base(m => m.Id == jobQueueId)
         {
-            ProjectId = projectId;
-        }
-
-        /// <summary>
-        /// Filter by the project and certain status
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="status"></param>
-        public JobQueueFilterSpecification(int projectId, string status)
-            : base(m => m.ProjectId == projectId && m.Status == status)
-        {
-            ProjectId = projectId;
-            Status = status;
+            JobQueueId = jobQueueId;
         }
 
         /// <summary>
@@ -53,7 +42,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// <param name="projectId"></param>
         /// <param name="statusArray"></param>
         public JobQueueFilterSpecification(int projectId, string[] statusArray)
-            : base(m => m.ProjectId == projectId && statusArray.Contains(m.Status))
+            : base(m => m.ProjectId == projectId && (statusArray == null || statusArray.Contains(m.Status)))
         {
             ProjectId = projectId;
             StatusArray = statusArray;

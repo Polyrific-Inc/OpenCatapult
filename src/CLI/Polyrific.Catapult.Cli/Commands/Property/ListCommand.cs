@@ -45,7 +45,11 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                     var properties = _projectDataModelService.GetProjectDataModelProperties(project.Id, model.Id).Result;
 
                     message = properties.ToListCliString(properties.Count == 1 ? 
-                        "Found 1 property:" : $"Found {properties.Count} properties:");
+                        "Found 1 property:" : $"Found {properties.Count} properties:", excludedFields: new string[]
+                        {
+                            "ProjectDataModelId",
+                            "RelatedProjectDataModelId"
+                        });
                     return message;
                 }
             }

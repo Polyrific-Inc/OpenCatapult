@@ -110,6 +110,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var propertyByDataModelSpec = new ProjectDataModelPropertyFilterSpecification(dataModelId);
+            propertyByDataModelSpec.Includes.Add(p => p.RelatedProjectDataModel);
             var properties = await _dataModelPropertyRepository.GetBySpec(propertyByDataModelSpec, cancellationToken);
 
             return properties.ToList();

@@ -62,6 +62,11 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         public int? JobDefinitionId { get; set; }
 
         /// <summary>
+        /// Name of the job definition
+        /// </summary>
+        public string JobDefinitionName { get; set; }
+
+        /// <summary>
         /// Status of the job tasks
         /// </summary>
         public List<JobTaskStatusDto> JobTasksStatus { get; set; }

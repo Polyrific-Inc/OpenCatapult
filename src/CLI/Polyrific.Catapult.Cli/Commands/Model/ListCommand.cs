@@ -36,7 +36,11 @@ namespace Polyrific.Catapult.Cli.Commands.Model
             {
                 var models = _projectDataModelService.GetProjectDataModels(project.Id).Result;
                 
-                message = models.ToListCliString($"Found {models.Count} data model(s):");
+                message = models.ToListCliString($"Found {models.Count} data model(s):", excludedFields: new string[]
+                    {
+                        "ProjectId",
+                        "Properties"
+                    });
             }
             else
             {

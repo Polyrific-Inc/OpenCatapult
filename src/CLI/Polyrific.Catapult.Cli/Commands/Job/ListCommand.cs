@@ -36,7 +36,9 @@ namespace Polyrific.Catapult.Cli.Commands.Job
             if (project != null)
             {
                 var jobs = _jobDefinitionService.GetJobDefinitions(project.Id).Result;
-                message = jobs.ToListCliString($"Found {jobs.Count} job definition(s):");
+                message = jobs.ToListCliString($"Found {jobs.Count} job definition(s):", excludedFields: new string[] {
+                    "ProjectId"
+                });
             }
             else
             {

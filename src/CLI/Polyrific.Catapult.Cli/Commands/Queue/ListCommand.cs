@@ -41,7 +41,13 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
             {
                 var queueList = _jobQueueService.GetJobQueues(project.Id, Status).Result;
 
-                message = queueList.ToListCliString($"Found {queueList.Count} queue(s):");
+                message = queueList.ToListCliString($"Found {queueList.Count} queue(s):", excludedFields: new string[]
+                    {
+                        "ProjectId",
+                        "JobDefinitionId",
+                        "JobTasksStatus",
+                        "OutputValues"
+                    });
                 return message;
             }
             else

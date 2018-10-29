@@ -54,7 +54,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 jobType = JobType.Create;
 
-                var hasBeenCreatedBefore = (await _jobQueueRepository.CountBySpec(new JobQueueFilterSpecification(projectId, JobStatus.Completed))) > 0;
+                var hasBeenCreatedBefore = (await _jobQueueRepository.CountBySpec(new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Completed }))) > 0;
 
                 if (hasBeenCreatedBefore)
                 {
@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             switch (filter?.ToLower())
             {
                 case JobQueueFilterType.All:
-                    queueSpec = new JobQueueFilterSpecification(projectId);
+                    queueSpec = new JobQueueFilterSpecification(projectId, null);
                     break;
                 case JobQueueFilterType.Current:
                     queueSpec = new JobQueueFilterSpecification(projectId, _inProgressJobStatus);
@@ -133,14 +133,16 @@ namespace Polyrific.Catapult.Api.Core.Services
                     queueSpec = new JobQueueFilterSpecification(projectId, _pastJobStatus);
                     break;
                 case JobQueueFilterType.Succeeded:
-                    queueSpec = new JobQueueFilterSpecification(projectId, JobStatus.Completed);
+                    queueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Completed });
                     break;
                 case JobQueueFilterType.Failed:
-                    queueSpec = new JobQueueFilterSpecification(projectId, JobStatus.Error);
+                    queueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Error });
                     break;
                 default:
                     throw new FilterTypeNotFoundException(filter);
             }
+
+            queueSpec.Includes.Add(q => q.JobDefinition);
 
             var jobQueues = await _jobQueueRepository.GetBySpec(queueSpec, cancellationToken);
 
@@ -158,7 +160,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _jobQueueRepository.GetById(id, cancellationToken);
+            var queueSpec = new JobQueueFilterSpecification(id);
+            queueSpec.Includes.Add(q => q.JobDefinition);
+            var queue = await _jobQueueRepository.GetSingleBySpec(queueSpec, cancellationToken);
+
+            return queue;
         }
 
         public async Task<JobQueue> GetJobQueueByCode(string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken))
@@ -166,6 +172,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var queueSpec = new JobQueueFilterSpecification(jobQueueCode, null);
+            queueSpec.Includes.Add(q => q.JobDefinition);
             var queue = await _jobQueueRepository.GetSingleBySpec(queueSpec, cancellationToken);
 
             return queue;
