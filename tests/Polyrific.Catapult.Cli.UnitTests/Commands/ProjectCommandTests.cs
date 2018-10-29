@@ -479,5 +479,31 @@ jobs:
 
             Assert.Equal("Project Project 2 was not found", resultMessage);
         }
+
+        [Fact]
+        public void ProjectGet_Execute_ReturnsSuccessMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object)
+            {
+                Name = "Project 1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Project Project 1", resultMessage);
+        }
+
+        [Fact]
+        public void ProjectGete_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object)
+            {
+                Name = "Project 2"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Project Project 2 was not found", resultMessage);
+        }
     }
 }

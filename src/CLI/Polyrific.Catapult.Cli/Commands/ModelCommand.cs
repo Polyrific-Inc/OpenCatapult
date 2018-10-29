@@ -8,6 +8,7 @@ namespace Polyrific.Catapult.Cli.Commands
 {
     [Command(Description = "Project data model related command")]
     [Subcommand("add", typeof(AddCommand))]
+    [Subcommand("get", typeof(GetCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("remove", typeof(RemoveCommand))]
     [Subcommand("update", typeof(UpdateCommand))]

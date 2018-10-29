@@ -189,5 +189,33 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             Assert.Equal("Failed to update model Tag. Make sure the project and model names are correct.", resultMessage);
         }
+
+        [Fact]
+        public void ModelGet_Execute_ReturnsSuccessMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _projectModelService.Object)
+            {
+                Project = "Project 1",
+                Name = "Product"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Data model Product", resultMessage);
+        }
+
+        [Fact]
+        public void ModelGet_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _projectModelService.Object)
+            {
+                Project = "Project 1",
+                Name = "Tag"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to get model Tag. Make sure the project and model names are correct.", resultMessage);
+        }
     }
 }

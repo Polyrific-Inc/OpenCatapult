@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Command(Description = "Project related command")]
     [Subcommand("archive", typeof(ArchiveCommand))]
     [Subcommand("create", typeof(CreateCommand))]
+    [Subcommand("get", typeof(GetCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("remove", typeof(RemoveCommand))]
     [Subcommand("restore", typeof(RestoreCommand))]

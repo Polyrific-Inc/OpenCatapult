@@ -21,6 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly IConsole _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
+        private readonly Mock<IPluginService> _pluginService;
         private readonly ITestOutputHelper _output;
 
         public JobCommandTests(ITestOutputHelper output)
@@ -41,7 +42,16 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 {
                     Id = 1,
                     ProjectId = 1,
-                    Name = "Default"
+                    Name = "Default",
+                    Tasks = new List<JobTaskDefinitionDto>
+                    {
+                        new JobTaskDefinitionDto
+                        {
+                            Id = 1,
+                            Name = "Generate",
+                            Type = "Generate"
+                        }
+                    }
                 }
             };
 
@@ -65,6 +75,9 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _projectService = new Mock<IProjectService>();
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
+
+            _pluginService = new Mock<IPluginService>();
+            _pluginService.Setup(s => s.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Plugin.PluginAdditionalConfigDto>());
         }
 
         [Fact]
@@ -158,6 +171,34 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.Equal("Failed to remove job definition Default. Make sure the project and job definition names are correct.", resultMessage);
+        }
+
+        [Fact]
+        public void JobGet_Execute_ReturnsSuccessMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            {
+                Project = "Project 1",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Job definition Default", resultMessage);
+        }
+
+        [Fact]
+        public void JobGet_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            {
+                Project = "Project 2",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to get job definition Default. Make sure the project and job definition names are correct.", resultMessage);
         }
     }
 }
