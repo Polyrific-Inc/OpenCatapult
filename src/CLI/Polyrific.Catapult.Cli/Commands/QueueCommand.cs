@@ -9,6 +9,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Command(Description = "Job queue related command")]
     [Subcommand("add", typeof(AddCommand))]
     [Subcommand("get", typeof(GetCommand))]
+    [Subcommand("log", typeof(LogCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("restart", typeof(RestartCommand))]
     public class QueueCommand : BaseCommand

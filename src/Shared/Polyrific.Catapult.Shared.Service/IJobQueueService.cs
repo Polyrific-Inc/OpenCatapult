@@ -25,6 +25,14 @@ namespace Polyrific.Catapult.Shared.Service
         Task<JobDto> GetJobQueue(int projectId, int queueId);
 
         /// <summary>
+        /// Get a job in queue
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="queueCode">Code of the job queue</param>
+        /// <returns></returns>
+        Task<JobDto> GetJobQueue(int projectId, string queueCode);
+
+        /// <summary>
         /// Add a job to queue
         /// </summary>
         /// <param name="projectId">Id of the project</param>

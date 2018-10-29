@@ -32,6 +32,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 new JobQueue
                 {
                     Id = 1,
+                    Code = "20180817.1",
                     ProjectId = 1,
                     JobType = JobType.Create,
                     Status = JobStatus.Completed
@@ -220,6 +221,25 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var jobQueue = await jobQueueService.GetJobQueueById(2);
 
             Assert.Null(jobQueue);
+        }
+
+        [Fact]
+        public async void GetJobQueueByCode_ReturnItem()
+        {
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
+            var entity = await jobQueueService.GetJobQueueByCode("20180817.1");
+
+            Assert.NotNull(entity);
+            Assert.Equal(1, entity.Id);
+        }
+
+        [Fact]
+        public async void GetJobQueueByCode_ReturnNull()
+        {
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
+            var entity = await jobQueueService.GetJobQueueByCode("20180817.2");
+
+            Assert.Null(entity);
         }
 
         [Fact]

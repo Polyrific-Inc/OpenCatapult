@@ -3,23 +3,22 @@
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Cli.Extensions;
+using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
-    [Command(Description = "Get complete logs of a queued job")]
+    [Command(Description = "Get a job queue")]
     public class GetCommand : BaseCommand
     {
         private readonly IProjectService _projectService;
         private readonly IJobQueueService _jobQueueService;
-        private readonly IJobQueueLogListener _jobQueueLogListener;
 
-        public GetCommand(IConsole console, ILogger<GetCommand> logger, IProjectService projectService, IJobQueueService jobQueueService, IJobQueueLogListener jobQueueLogListener) : base(console, logger)
+        public GetCommand(IProjectService projectService, IJobQueueService jobQueueService, IConsole console, ILogger<GetCommand> logger) : base(console, logger)
         {
             _projectService = projectService;
             _jobQueueService = jobQueueService;
-            _jobQueueLogListener = jobQueueLogListener;
         }
 
         [Required]
@@ -28,57 +27,34 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
         [Required]
         [Option("-n|--number <NUMBER>", "Queue number", CommandOptionType.SingleValue)]
-        public int Number { get; set; }
+        public string Number { get; set; }
 
         public override string Execute()
         {
             Console.WriteLine($"Trying to get queue \"{Number}\" in project {Project}...");
 
-            string message;
+            var message = "";
+
+            var code = "";
+            if (!int.TryParse(Number, out var id))
+                code = Number;
+
+            JobDto queue = null;
 
             var project = _projectService.GetProjectByName(Project).Result;
-
             if (project != null)
             {
-                var queue = _jobQueueService.GetJobQueue(project.Id, Number).Result;
-
+                queue = !string.IsNullOrEmpty(code) ? _jobQueueService.GetJobQueue(project.Id, code).Result : _jobQueueService.GetJobQueue(project.Id, id).Result;
                 if (queue != null)
                 {
-                    switch (queue.Status)
-                    {
-                        case JobStatus.Processing:
-                            _jobQueueLogListener.Listen(queue.Id, OnLogReceived, OnLogError).Wait();
-                            message = "";
-                            return message;
-                        case JobStatus.Completed:
-                        case JobStatus.Error:
-                        case JobStatus.Pending:
-                        case JobStatus.Cancelled:
-                            message = _jobQueueService.GetJobLogs(project.Id, queue.Id).Result;
-                            return message;
-                        case JobStatus.Queued:
-                            message = $"Queue {Number} is queued";
-                            return message;
-                        default:
-                            message = $"Queue {Number} has unknown status";
-                            return message;
-                    }
+                    message = queue.ToCliString($"Job Queue {Number}");
                 }
             }
 
-            message = $"Failed getting queue {Number}. Make sure the project name and queue number are correct.";
+            if (queue == null)
+                message = $"Failed getting queue {Number}. Make sure the project name and queue number are correct.";
 
             return message;
-        }
-        
-        private void OnLogReceived(string logMessage)
-        {
-            Console.WriteLine(logMessage);
-        }
-
-        private void OnLogError(string errorMessage)
-        {
-            Console.WriteLine(errorMessage);
         }
     }
 }

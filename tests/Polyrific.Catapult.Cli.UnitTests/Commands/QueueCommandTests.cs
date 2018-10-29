@@ -119,12 +119,40 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void QueueGet_Execute_JobQueuedReturnsSuccessMessage()
+        public void QueueGet_Execute_ReturnsSuccessMessage()
         {
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
+            var command = new GetCommand(_projectService.Object, _jobQueueService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
             {
                 Project = "Project 1",
-                Number = 1
+                Number = "1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Job Queue 1", resultMessage);
+        }
+
+        [Fact]
+        public void QueueGet_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new GetCommand(_projectService.Object, _jobQueueService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
+            {
+                Project = "Project 1",
+                Number = "2"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed getting queue 2. Make sure the project name and queue number are correct.", resultMessage);
+        }
+
+        [Fact]
+        public void QueueLog_Execute_JobQueuedReturnsSuccessMessage()
+        {
+            var command = new LogCommand(_console, LoggerMock.GetLogger<LogCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
+            {
+                Project = "Project 1",
+                Number = "1"
             };
 
             var resultMessage = command.Execute();
@@ -133,7 +161,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void QueueGet_Execute_JobCompletedReturnsSuccessMessage()
+        public void QueueLog_Execute_JobCompletedReturnsSuccessMessage()
         {
             _jobQueueService.Setup(s => s.GetJobQueue(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(new JobDto
             {
@@ -143,10 +171,10 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
             _jobQueueService.Setup(s => s.GetJobLogs(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync("test logs");
 
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
+            var command = new LogCommand(_console, LoggerMock.GetLogger<LogCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
             {
                 Project = "Project 1",
-                Number = 1
+                Number = "1"
             };
 
             var resultMessage = command.Execute();
@@ -155,7 +183,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void QueueGet_Execute_JobProcessingReturnsSuccessMessage()
+        public void QueueLog_Execute_JobProcessingReturnsSuccessMessage()
         {
             _jobQueueService.Setup(s => s.GetJobQueue(It.IsAny<int>(), It.IsAny<int>())).ReturnsAsync(new JobDto
             {
@@ -165,24 +193,24 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
             _jobQueueLogListener.Setup(s => s.Listen(1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
+            var command = new LogCommand(_console, LoggerMock.GetLogger<LogCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
             {
                 Project = "Project 1",
-                Number = 1
+                Number = "1"
             };
 
-            var resultMessage = command.Execute();
+            command.Execute();
 
             _jobQueueLogListener.Verify(s => s.Listen(1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>()), Times.Once);
         }
 
         [Fact]
-        public void QueueGet_Execute_ReturnsNotFoundMessage()
+        public void QueueLog_Execute_ReturnsNotFoundMessage()
         {
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
+            var command = new LogCommand(_console, LoggerMock.GetLogger<LogCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
             {
                 Project = "Project 1",
-                Number = 2
+                Number = "2"
             };
 
             var resultMessage = command.Execute();

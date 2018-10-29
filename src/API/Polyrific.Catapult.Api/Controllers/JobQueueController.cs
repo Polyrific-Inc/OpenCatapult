@@ -73,6 +73,23 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Get a job queue by code
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="queueCode">Code of the job queue</param>
+        /// <returns>The job queue object</returns>
+        [HttpGet("Project/{projectId}/queue/code/{queueCode}", Name = "GetJobQueueByCode")]
+        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        public async Task<IActionResult> GetJobQueueByCode(int projectId, string queueCode)
+        {
+            _logger.LogInformation("Getting job queue {queueCode} in project {projectId}", queueCode, projectId);
+
+            var job = await _jobQueueService.GetJobQueueByCode(queueCode);
+            var result = _mapper.Map<JobDto>(job);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Create a job queue
         /// </summary>
         /// <param name="projectId">Id of the project</param>

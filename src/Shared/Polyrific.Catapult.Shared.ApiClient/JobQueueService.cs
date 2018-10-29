@@ -48,6 +48,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<JobDto>(path);
         }
 
+        public async Task<JobDto> GetJobQueue(int projectId, string queueCode)
+        {
+            var path = $"project/{projectId}/queue/code/{queueCode}";
+
+            return await Api.Get<JobDto>(path);
+        }
+
         public async Task<List<JobDto>> GetJobQueues(int projectId, string filter)
         {
             var path = $"project/{projectId}/queue?filter={filter}";

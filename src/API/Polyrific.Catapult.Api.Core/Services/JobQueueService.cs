@@ -149,7 +149,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<List<JobQueue>> GetJobQueuesByStatus(string status, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var queueSpec = new JobQueueFilterSpecification(status);
+            var queueSpec = new JobQueueFilterSpecification(null, status);
             var jobQueues = await _jobQueueRepository.GetBySpec(queueSpec, cancellationToken);
             return jobQueues.ToList();
         }
@@ -159,6 +159,16 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _jobQueueRepository.GetById(id, cancellationToken);
+        }
+
+        public async Task<JobQueue> GetJobQueueByCode(string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var queueSpec = new JobQueueFilterSpecification(jobQueueCode, null);
+            var queue = await _jobQueueRepository.GetSingleBySpec(queueSpec, cancellationToken);
+
+            return queue;
         }
 
         public async Task<List<JobTaskStatus>> GetJobTaskStatus(int id, string filter, CancellationToken cancellationToken = default(CancellationToken))
@@ -203,7 +213,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 if (job == null)
                 {
-                    var pendingJobSpec = new JobQueueFilterSpecification(JobStatus.Queued, engine);
+                    var pendingJobSpec = new JobQueueFilterSpecification(null, JobStatus.Queued, engine);
                     job = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
                 }
 
