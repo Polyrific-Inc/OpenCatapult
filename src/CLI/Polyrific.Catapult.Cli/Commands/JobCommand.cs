@@ -11,6 +11,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand("get", typeof(GetCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("remove", typeof(RemoveCommand))]
+    [Subcommand("update", typeof(UpdateCommand))]
     public class JobCommand : BaseCommand
     {
         public JobCommand(IConsole console, ILogger<JobCommand> logger) : base(console, logger)

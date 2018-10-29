@@ -109,17 +109,17 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
         public override string GetHelpFooter()
         {
-            Console.WriteLine("Trying to get types of external service...");
+            Console.WriteLine("Trying to get available external services...");
 
             var sb = new System.Text.StringBuilder();
-            sb.AppendLine("Types of the external service:");
+            sb.AppendLine("Available external services:");
 
             try
             {
                 var serviceTypes = _externalServiceTypeService.GetExternalServiceTypes(true).Result;
                 foreach (var serviceType in serviceTypes)
                 {
-                    sb.AppendLine($"  - {serviceType.Name}");
+                    sb.AppendLine($"  - Type: {serviceType.Name}");
                     if (serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0)
                     {
                         sb.AppendLine("    Properties:");
