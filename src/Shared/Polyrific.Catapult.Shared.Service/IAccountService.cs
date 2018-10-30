@@ -13,7 +13,7 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <param name="dto">DTO containing new user details</param>
         /// <returns>DTO containing registration result</returns>
-        Task<RegisterUserResultDto> RegisterUser(RegisterUserDto dto);
+        Task<UserDto> RegisterUser(RegisterUserDto dto);
 
         /// <summary>
         /// Confirm user email which was used for registration

@@ -54,7 +54,8 @@ namespace Polyrific.Catapult.Cli.Commands.Model
 
                 message = model.ToCliString($"Model has been added:", excludedFields: new string[]
                     {
-                        "ProjectId"
+                        "ProjectId",
+                        "Properties"
                     });
                 Logger.LogInformation(message);
             }

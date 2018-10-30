@@ -111,19 +111,20 @@ namespace Polyrific.Catapult.Api.Controllers
                     _logger.LogWarning("Project Id doesn't match");
                     return BadRequest("Project Id doesn't match.");
                 }
-
-                var newQueue = _mapper.Map<JobDto>(newJobQueue);
-
-                newQueue.Id = await _jobQueueService.AddJobQueue(newJobQueue.ProjectId,
+                
+                var queueId = await _jobQueueService.AddJobQueue(newJobQueue.ProjectId,
                     newJobQueue.OriginUrl,
                     newJobQueue.JobType,
                     newJobQueue.JobDefinitionId);
 
+                var job = await _jobQueueService.GetJobQueueById(queueId);
+                var result = _mapper.Map<JobDto>(job);
+
                 return CreatedAtRoute("GetJobQueueById", new
                 {
                     projectId = newJobQueue.ProjectId,
-                    queueId = newQueue.Id
-                }, newQueue);
+                    queueId
+                }, result);
             }
             catch (JobQueueInProgressException jobEx)
             {

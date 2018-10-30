@@ -95,7 +95,8 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _projectMemberRepository.GetById(id, cancellationToken);
+            var projectMemberSpec = new ProjectMemberFilterSpecification(id);
+            return await _projectMemberRepository.GetSingleBySpec(projectMemberSpec, cancellationToken);
         }
 
         public async Task<ProjectMember> GetProjectMemberByUserId(int projectId, int userId,

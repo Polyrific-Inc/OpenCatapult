@@ -58,7 +58,13 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                     message = queue.ToCliString($"Job {Job} has been queued successfully:", excludedFields: new string[]
                     {
                         "ProjectId",
-                        "JobDefinitionId"
+                        "JobDefinitionId",
+                        "JobTasksStatus",
+                        "OutputValues",
+                        "CatapultEngineId",
+                        "CatapultEngineMachineName",
+                        "CatapultEngineIPAddress",
+                        "CatapultEngineVersion"
                     });
                     Logger.LogInformation(message);
                     return message;

@@ -54,6 +54,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         LastName = lastName
                     });
             _userService.Setup(s => s.GenerateConfirmationToken(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("xxx");
+            _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(new User
+            {
+                Id = 1
+            });
             _notificationProvider.Setup(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()))
                 .Returns(Task.CompletedTask);
 
@@ -74,8 +78,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var result = await controller.RegisterUser(dto);
             
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<RegisterUserResultDto>(okActionResult.Value);
-            Assert.Equal(1, returnValue.UserId);
+            var returnValue = Assert.IsType<UserDto>(okActionResult.Value);
+            Assert.Equal("1", returnValue.Id);
             _notificationProvider.Verify(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
         }
 

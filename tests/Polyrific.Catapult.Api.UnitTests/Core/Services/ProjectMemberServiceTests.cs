@@ -50,17 +50,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectMemberRepository.Setup(r =>
                     r.GetSingleBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
-                    _data.FirstOrDefault(d => d.ProjectId == spec.ProjectId && d.UserId == spec.UserId));
+                    _data.FirstOrDefault(spec.Criteria.Compile()));
             _projectMemberRepository.Setup(r =>
                     r.CountBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
-                    _data.Count(d => d.ProjectId == spec.ProjectId && d.UserId == spec.UserId));
+                    _data.Count(spec.Criteria.Compile()));
             _projectMemberRepository.Setup(s =>
                     s.GetBySpec(It.IsAny<ProjectMemberFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ProjectMemberFilterSpecification spec, CancellationToken cancellationToken) =>
-                    _data.Where(m =>
-                        (spec.ProjectId == 0 || m.ProjectId == spec.ProjectId) &&
-                        (spec.UserId == 0 || m.UserId == spec.UserId)));
+                    _data.Where(spec.Criteria.Compile()));
             _projectMemberRepository.Setup(r => r.Create(It.IsAny<ProjectMember>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2).Callback((ProjectMember entity, CancellationToken cancellationToken) =>
                 {

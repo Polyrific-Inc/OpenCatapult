@@ -10,7 +10,8 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public int UserId { get; set; }
         public bool? IsArchived { get; set; }
         public int RoleId { get; set; }
-        
+        public int MemberId { get; set; }
+
         public ProjectMemberFilterSpecification(int projectId, int userId, bool? isArchived = null, int roleId = 0) 
             : base(m => (projectId == 0 || m.ProjectId == projectId) 
                         && (userId == 0 || m.UserId == userId) 
@@ -31,6 +32,14 @@ namespace Polyrific.Catapult.Api.Core.Specifications
                 Includes.Add(m => m.ProjectMemberRole);
                 Includes.Add(m => m.User);
             }                
+        }
+
+        public ProjectMemberFilterSpecification(int memberId)
+            : base(m => m.Id == memberId)
+        {
+            MemberId = memberId;
+            Includes.Add(m => m.ProjectMemberRole);
+            Includes.Add(m => m.User);
         }
     }
 }

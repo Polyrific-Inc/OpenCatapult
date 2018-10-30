@@ -91,7 +91,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void AccountRegister_Execute_ReturnsSuccessMessage()
         {
             _accountService.Setup(s => s.RegisterUser(It.IsAny<RegisterUserDto>()))
-                .ReturnsAsync(new RegisterUserResultDto());
+                .ReturnsAsync(new UserDto());
 
             var command = new RegisterCommand(_console, LoggerMock.GetLogger<RegisterCommand>().Object, _accountService.Object)
             {

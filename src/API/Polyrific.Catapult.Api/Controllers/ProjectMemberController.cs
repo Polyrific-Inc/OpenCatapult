@@ -85,13 +85,11 @@ namespace Polyrific.Catapult.Api.Controllers
                         newProjectMember.ProjectMemberRoleId);
                 }
 
-                var projectMember = _mapper.Map<ProjectMemberDto>(newProjectMember);
-                projectMember.Id = newProjectMemberId;
-                if (newUserId > 0)
-                    projectMember.UserId = newUserId;
+                var projectMember = await _projectMemberService.GetProjectMemberById(newProjectMemberId);
+                var result = _mapper.Map<ProjectMemberDto>(projectMember);
 
                 return CreatedAtRoute("GetProjectMemberById", new { projectId = newProjectMember.ProjectId,
-                    memberId = newProjectMemberId }, projectMember);
+                    memberId = newProjectMemberId }, result);
             }
             catch (UserNotFoundException userEx)
             {

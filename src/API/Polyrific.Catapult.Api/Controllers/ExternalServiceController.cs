@@ -103,18 +103,20 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var currentUserId = User.GetUserId();
-                var newExternalService = _mapper.Map<ExternalServiceDto>(dto);
 
-                newExternalService.Id = await _externalServiceService.AddExternalService(dto.Name,
+                var serviceId = await _externalServiceService.AddExternalService(dto.Name,
                     dto.Description,
                     dto.ExternalServiceTypeId,
                     JsonConvert.SerializeObject(dto.Config),
                     currentUserId);
 
+                var externalService = await _externalServiceService.GetExternalService(serviceId);
+                var result = _mapper.Map<ExternalServiceDto>(externalService);
+
                 return CreatedAtRoute("GetExternalServiceById", new
                 {
-                    serviceId = newExternalService.Id
-                }, newExternalService);
+                    serviceId
+                }, result);
             }
             catch (DuplicateExternalServiceException ex)
             {

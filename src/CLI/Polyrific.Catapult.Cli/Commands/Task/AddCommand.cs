@@ -156,7 +156,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         AdditionalConfigs = additionalConfigs
                     }).Result;
 
-                    message = task.ToCliString($"Task has been added:", secretProperties.ToArray());
+                    message = task.ToCliString($"Task has been added:", secretProperties.ToArray(), excludedFields: new string[]
+                        {
+                            "JobDefinitionId"
+                        });
                     Logger.LogInformation(message);
                     return message;
                 }

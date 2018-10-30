@@ -55,11 +55,11 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<List<UserDto>>(path);
         }
 
-        public async Task<RegisterUserResultDto> RegisterUser(RegisterUserDto dto)
+        public async Task<UserDto> RegisterUser(RegisterUserDto dto)
         {
             var path = "account/register";
 
-            return await Api.Post<RegisterUserDto, RegisterUserResultDto>(path, dto);
+            return await Api.Post<RegisterUserDto, UserDto>(path, dto);
         }
 
         public async Task RemoveUser(int userId)

@@ -61,16 +61,17 @@ namespace Polyrific.Catapult.Api.Controllers
 
             try
             {
-                var projectDataModelDto = _mapper.Map<ProjectDataModelDto>(newProjectDataModel);
-                projectDataModelDto.ProjectId = projectId;
-                projectDataModelDto.Id = await _projectDataModelService.AddProjectDataModel(projectId,
+                var modelId = await _projectDataModelService.AddProjectDataModel(projectId,
                     newProjectDataModel.Name, newProjectDataModel.Description, newProjectDataModel.Label);
+
+                var projectDataModel = await _projectDataModelService.GetProjectDataModelById(modelId);
+                var result = _mapper.Map<ProjectDataModelDto>(projectDataModel);
 
                 return CreatedAtRoute("GetProjectDataModelById", new
                 {
                     projectId,
-                    modelId = projectDataModelDto.Id
-                }, projectDataModelDto);
+                    modelId
+                }, result);
             }
             catch (DuplicateProjectDataModelException dupEx)
             {
@@ -200,9 +201,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
             try
             {
-                var newPropertyResponse = _mapper.Map<ProjectDataModelPropertyDto>(newProperty);
-                newPropertyResponse.ProjectDataModelId = modelId;
-                newPropertyResponse.Id = await _projectDataModelService.AddDataModelProperty(modelId,
+                var propertyId = await _projectDataModelService.AddDataModelProperty(modelId,
                     newProperty.Name,
                     newProperty.Label,
                     newProperty.DataType,
@@ -211,12 +210,15 @@ namespace Polyrific.Catapult.Api.Controllers
                     newProperty.RelatedProjectDataModelId,
                     newProperty.RelationalType);
 
+                var property = await _projectDataModelService.GetProjectDataModelPropertyByName(modelId, newProperty.Name);
+                var result = _mapper.Map<ProjectDataModelPropertyDto>(property);
+
                 return CreatedAtRoute("GetProjectDataModelPropertyById", new
                 {
                     projectId,
                     modelId,
-                    propertyId = newPropertyResponse.Id
-                }, newPropertyResponse);
+                    propertyId
+                }, result);
             }
             catch (DuplicateProjectDataModelPropertyException dupEx)
             {
@@ -243,7 +245,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting property {propertyId} in data model {modelId}, project {projectId}", propertyId, modelId, projectId);
 
-            var property = await _projectDataModelService.GetProjectDataModelPropertyById(modelId);
+            var property = await _projectDataModelService.GetProjectDataModelPropertyById(propertyId);
             var result = _mapper.Map<ProjectDataModelPropertyDto>(property);
             return Ok(result);
         }

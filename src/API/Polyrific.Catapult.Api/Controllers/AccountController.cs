@@ -81,10 +81,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 return BadRequest(uex.GetExceptionMessageList());
             }
 
-            return Ok(new RegisterUserResultDto
-            {
-                UserId = userId
-            });
+            var user = await _userService.GetUserById(userId);
+
+            var result = _mapper.Map<UserDto>(user);
+
+            return Ok(result);
         }
 
         /// <summary>
