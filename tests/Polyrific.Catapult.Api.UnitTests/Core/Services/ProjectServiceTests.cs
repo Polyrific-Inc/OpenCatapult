@@ -1,17 +1,17 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoMapper;
 using Moq;
-using Polyrific.Catapult.Api.Core.AutoMapperProfiles;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Core.Specifications;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Polyrific.Catapult.Api.UnitTests.Utilities;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services
@@ -99,13 +99,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectDataModelPropertyRepository = new Mock<IProjectDataModelPropertyRepository>();
 
             _jobDefinitionService = new Mock<IJobDefinitionService>();
-
-            Mapper.Reset();
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<ProjectTemplateAutoMapperProfile>();
-            });
-            _mapper = Mapper.Instance;
+            
+            _mapper = AutoMapperUtils.GetMapper();
         }
 
         [Fact]

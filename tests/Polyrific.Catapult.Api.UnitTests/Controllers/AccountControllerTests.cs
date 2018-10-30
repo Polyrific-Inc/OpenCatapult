@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Polyrific.Catapult.Api.AutoMapperProfiles;
 using Polyrific.Catapult.Api.Controllers;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Services;
@@ -31,13 +30,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public AccountControllerTests()
         {
             _userService = new Mock<IUserService>();
-
-            Mapper.Reset();
-            Mapper.Initialize(cfg =>
-            {
-                cfg.AddProfile<UserAutoMapperProfile>();
-            });
-            _mapper = Mapper.Instance;
+            
+            _mapper = AutoMapperUtils.GetMapper();
             
             _notificationProvider = new Mock<INotificationProvider>();
 
