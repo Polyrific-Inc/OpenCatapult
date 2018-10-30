@@ -49,6 +49,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     JobDefinitionId = 1,
                     Name = "Generate",
                     Type = JobTaskDefinitionType.Generate,
+                    Provider = "AspNetCoreMvc",
                     ConfigString = "test"
                 }
             };
@@ -279,7 +280,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddJobTaskDefinition_ValidItem()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider, RequiredServicesString = "GitHub" });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -324,7 +325,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_ConfigNull_ExternalServiceRequiredException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider, RequiredServicesString = "GitHub" });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -342,7 +343,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_ExternalServiceRequiredException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider, RequiredServicesString = "GitHub" });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -360,7 +361,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_ExternalServiceNotFoundException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider, RequiredServicesString = "GitHub" });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -378,7 +379,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_IncorrectExternalServiceTypeException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider, RequiredServicesString = "GitHub" });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -420,7 +421,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_AdditionalConfigNull_AdditionalConfigRequiredException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider });
 
             _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PluginAdditionalConfig>
@@ -449,7 +450,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobTaskDefinition_AdditionalConfigNotExist_AdditionalConfigRequiredException()
         {
             _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.BuildProvider });
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider });
 
             _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<PluginAdditionalConfig>
@@ -475,22 +476,118 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public void AddJobTaskDefinition_DuplicateJobTaskDefinitionException()
+        {
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Name = "Generate",
+                Type = JobTaskDefinitionType.Push,
+                AdditionalConfigString = "{}",
+                Provider = "GitHubProvider"
+            }));
+
+            Assert.IsType<DuplicateJobTaskDefinitionException>(exception?.Result);
+        }
+
+        [Fact]
+        public void AddJobTaskDefinition_InvalidPluginTypeException()
+        {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = "InvalidType" });
+
+            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PluginAdditionalConfig>
+                {
+                    new PluginAdditionalConfig
+                    {
+                        Id = 1,
+                        Name = "testconfig",
+                        IsRequired = true
+                    }
+                });
+
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Type = JobTaskDefinitionType.Push,
+                AdditionalConfigString = "{}",
+                Provider = "GitHubProvider"
+            }));
+
+            Assert.IsType<InvalidPluginTypeException>(exception?.Result);
+        }
+
+        [Fact]
+        public void AddJobTaskDefinition_IncorrectTaskType_InvalidPluginTypeException()
+        {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "VstsBuildProvider", Type = PluginType.BuildProvider });
+
+            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PluginAdditionalConfig>
+                {
+                    new PluginAdditionalConfig
+                    {
+                        Id = 1,
+                        Name = "testconfig",
+                        IsRequired = true
+                    }
+                });
+
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Type = JobTaskDefinitionType.Push,
+                AdditionalConfigString = "{}",
+                Provider = "VstsBuildProvider"
+            }));
+
+            Assert.IsType<InvalidPluginTypeException>(exception?.Result);
+
+            var invalidPluginTypeException = exception?.Result as InvalidPluginTypeException;
+            Assert.NotEmpty(invalidPluginTypeException.TaskTypes);
+        }
+
+        [Fact]
         public async void AddJobTaskDefinitions_ValidItem()
         {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            
+            _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(
+                new ExternalService
+                {
+                    Id = 3,
+                    Name = "github-default",
+                    ExternalServiceTypeId = 1,
+                    ExternalServiceType = new ExternalServiceType
+                    {
+                        Id = 1,
+                        Name = "GitHub"
+                    }
+                });
+
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
             var newIds = await projectJobDefinitionService.AddJobTaskDefinitions(1, new List<JobTaskDefinition>
             {
                 new JobTaskDefinition
                 {
                     JobDefinitionId = 1,
-                    Type = JobTaskDefinitionType.Push,
-                    ConfigString = "test"
+                    Type = JobTaskDefinitionType.Clone,
+                    Provider = "GitHubProvider",
+                    ConfigString = @"{""GitHubExternalService"":""github-default""}"
                 },
                 new JobTaskDefinition
                 {
                     JobDefinitionId = 1,
-                    Type = JobTaskDefinitionType.Build,
-                    ConfigString = "test2"
+                    Type = JobTaskDefinitionType.Push,
+                    Provider = "GitHubProvider",
+                    ConfigString = @"{""GitHubExternalService"":""github-default""}"
                 }
             });
 
@@ -592,12 +689,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskDefinition_ValidItem()
         {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "AspMvcNetCore", Type = PluginType.GeneratorProvider });
+
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.UpdateJobTaskDefinition(new JobTaskDefinition
             {
                 Id = 1,
                 JobDefinitionId = 1,
                 Type = JobTaskDefinitionType.Generate,
+                Provider = "AspMvcNetCore",
                 ConfigString = "testUpdated"
             });
 
@@ -609,6 +710,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskConfig_ValidItem()
         {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "AspMvcNetCore", Type = PluginType.GeneratorProvider });
+
             var updatedConfig = new Dictionary<string, string>()
             {
                 {"config1", "config 1 value"}

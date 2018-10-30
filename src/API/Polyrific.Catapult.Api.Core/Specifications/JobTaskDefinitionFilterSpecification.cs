@@ -7,6 +7,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
     public class JobTaskDefinitionFilterSpecification : BaseSpecification<JobTaskDefinition>
     {
         public int JobDefinitionId { get; set; }
+        public int ExcludedJobTaskDefinitionId { get; set; }
         public string Name { get; set; }
 
         /// <summary>
@@ -24,11 +25,13 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// </summary>
         /// <param name="jobDefinitionId">Id of the job definition</param>
         /// <param name="name">Name of the job task definition</param>
-        public JobTaskDefinitionFilterSpecification(int jobDefinitionId, string name)
-           : base(m => m.JobDefinitionId == jobDefinitionId && m.Name == name)
+        /// <param name="excludedJobTaskDefinitionId">Id of the excluded job task definition</param>
+        public JobTaskDefinitionFilterSpecification(int jobDefinitionId, string name, int excludedJobTaskDefinitionId)
+           : base(m => m.JobDefinitionId == jobDefinitionId && m.Name == name && (excludedJobTaskDefinitionId == 0 || m.Id != excludedJobTaskDefinitionId))
         {
             JobDefinitionId = jobDefinitionId;
             Name = name;
+            ExcludedJobTaskDefinitionId = excludedJobTaskDefinitionId;
         }
     }
 }

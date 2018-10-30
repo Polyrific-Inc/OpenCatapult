@@ -200,7 +200,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                         foreach (var task in job.Tasks)
                         {
                             task.Created = DateTime.UtcNow;
-                            await _jobDefinitionService.ValidateTaskConfig(task);
+                            await _jobDefinitionService.ValidateJobTaskDefinition(task);
                         }
                     }
                 }

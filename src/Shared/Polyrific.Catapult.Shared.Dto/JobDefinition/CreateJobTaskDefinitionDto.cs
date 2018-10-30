@@ -16,11 +16,13 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         /// <summary>
         /// Type of the job task definition
         /// </summary>
+        [Required]
         public string Type { get; set; }
 
         /// <summary>
         /// Provider of the job task definition
         /// </summary>
+        [Required]
         public string Provider { get; set; }
 
         /// <summary>
