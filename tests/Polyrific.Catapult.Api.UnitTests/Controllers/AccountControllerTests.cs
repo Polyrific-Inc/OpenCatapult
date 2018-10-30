@@ -120,6 +120,40 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void GetUser_ReturnUser()
+        {
+            _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+                (int id, CancellationToken cancellationToken) => new User
+                {
+                    Id = id
+                });
+            
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, "1"),
+                        new Claim(ClaimTypes.Role, UserRole.Administrator)
+                    })
+                })
+            };
+
+            var controller =
+                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                {
+                    ControllerContext = new ControllerContext {HttpContext = httpContext}
+                };
+
+            var result = await controller.GetUser(2);
+
+            var okActionResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<UserDto>(okActionResult.Value);
+            Assert.Equal("2", returnValue.Id);
+        }
+
+        [Fact]
         public async void GetCurrentUser_ReturnUser()
         {
             _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(
