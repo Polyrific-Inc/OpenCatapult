@@ -201,6 +201,16 @@ namespace Polyrific.Catapult.Api.Controllers
                     taskId = newJobTaskDefinitionResponse.Id
                 }, newJobTaskDefinitionResponse);
             }
+            catch (DuplicateJobTaskDefinitionException dupTaskEx)
+            {
+                _logger.LogWarning(dupTaskEx, "Duplicate task name");
+                return BadRequest(dupTaskEx.Message);
+            }
+            catch (InvalidPluginTypeException pluginTypeEx)
+            {
+                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
+                return BadRequest(pluginTypeEx.Message);
+            }
             catch (JobDefinitionNotFoundException modEx)
             {
                 _logger.LogWarning(modEx, "Job definition not found");
@@ -264,6 +274,16 @@ namespace Polyrific.Catapult.Api.Controllers
                     projectId,
                     jobId,
                 }, newTasksResponse);
+            }
+            catch (DuplicateJobTaskDefinitionException dupTaskEx)
+            {
+                _logger.LogWarning(dupTaskEx, "Duplicate task name");
+                return BadRequest(dupTaskEx.Message);
+            }
+            catch (InvalidPluginTypeException pluginTypeEx)
+            {
+                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
+                return BadRequest(pluginTypeEx.Message);
             }
             catch (JobDefinitionNotFoundException modEx)
             {
@@ -379,6 +399,16 @@ namespace Polyrific.Catapult.Api.Controllers
                 await _jobDefinitionService.UpdateJobTaskDefinition(entity);
 
                 return Ok();
+            }
+            catch (DuplicateJobTaskDefinitionException dupTaskEx)
+            {
+                _logger.LogWarning(dupTaskEx, "Duplicate task name");
+                return BadRequest(dupTaskEx.Message);
+            }
+            catch (InvalidPluginTypeException pluginTypeEx)
+            {
+                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
+                return BadRequest(pluginTypeEx.Message);
             }
             catch (ProviderNotInstalledException provEx)
             {

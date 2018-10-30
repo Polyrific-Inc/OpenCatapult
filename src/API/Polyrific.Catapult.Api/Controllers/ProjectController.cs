@@ -150,6 +150,16 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(modelEx, "Project data model not found");
                 return BadRequest(modelEx.Message);
             }
+            catch (DuplicateJobTaskDefinitionException dupTaskEx)
+            {
+                _logger.LogWarning(dupTaskEx, "Duplicate task name");
+                return BadRequest(dupTaskEx.Message);
+            }
+            catch (InvalidPluginTypeException pluginTypeEx)
+            {
+                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
+                return BadRequest(pluginTypeEx.Message);
+            }
             catch (ProviderNotInstalledException provEx)
             {
                 _logger.LogWarning(provEx, "Provider not installed");

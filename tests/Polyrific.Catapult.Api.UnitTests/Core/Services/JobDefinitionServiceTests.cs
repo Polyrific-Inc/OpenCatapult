@@ -578,6 +578,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 new JobTaskDefinition
                 {
                     JobDefinitionId = 1,
+                    Name = "Clone",
                     Type = JobTaskDefinitionType.Clone,
                     Provider = "GitHubProvider",
                     ConfigString = @"{""GitHubExternalService"":""github-default""}"
@@ -585,6 +586,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 new JobTaskDefinition
                 {
                     JobDefinitionId = 1,
+                    Name = "Push",
                     Type = JobTaskDefinitionType.Push,
                     Provider = "GitHubProvider",
                     ConfigString = @"{""GitHubExternalService"":""github-default""}"

@@ -156,6 +156,15 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new JobDefinitionNotFoundException(jobDefinitionId);
             }
 
+            var duplicateTasks = jobTaskDefinitions.GroupBy(x => x.Name.ToLower())
+              .Where(g => g.Count() > 1)
+              .Select(y => y.Key)
+              .ToList();
+            if (duplicateTasks.Count > 0)
+            {
+                throw new DuplicateJobTaskDefinitionException(string.Join(DataDelimiter.Comma.ToString(), duplicateTasks));
+            }
+
             foreach (var task in jobTaskDefinitions)
                 await ValidateJobTaskDefinition(task, cancellationToken);
 
@@ -172,6 +181,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (jobTaskDefinition != null)
             {
+                jobTaskDefinition.Name = editedJobTaskDefinition.Name;
                 jobTaskDefinition.Type = editedJobTaskDefinition.Type;
                 jobTaskDefinition.Provider = editedJobTaskDefinition.Provider;
                 jobTaskDefinition.ConfigString = editedJobTaskDefinition.ConfigString;

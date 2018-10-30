@@ -182,7 +182,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                             Sequence = Sequence ?? task.Sequence,
                             Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : task.Configs,
                             AdditionalConfigs = task.AdditionalConfigs
-                        });
+                        }).Wait();
 
                         message = $"Task {Name} has been updated successfully";
                         Logger.LogInformation(message);
