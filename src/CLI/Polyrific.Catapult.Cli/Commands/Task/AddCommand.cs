@@ -46,9 +46,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-n|--name <NAME>", "Name of the job task definition", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Required]
         [Option("-prov|--provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
         public string Provider { get; set; }
 
+        [Required]
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
         [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build, 
             JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test, IgnoreCase = true)]
@@ -59,6 +61,8 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         [Option("-s|--sequence <SEQUENCE>", "Sequence order of the job task definition", CommandOptionType.SingleValue)]
         public int? Sequence { get; set; }
+
+        private bool _firstConfigPrompt = false;
 
         public override string Execute()
         {
@@ -74,81 +78,74 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                 if (job != null)
                 {
-                    var properties = new List<(string, string)>();
                     var secretProperties = new List<string>();
                     Dictionary<string, string> additionalConfigs = null;
-                    if (!string.IsNullOrEmpty(Provider))
+                    
+                    var plugin = _pluginService.GetPluginByName(Provider).Result;
+                    if (plugin == null)
                     {
-                        var plugin = _pluginService.GetPluginByName(Provider).Result;
+                        message = $"The provider \"{Provider}\" is not installed";
+                        return message;
+                    }
 
-                        if (plugin == null)
-                        {
-                            message = $"The provider \"{Provider}\" is not installed";
-                            return message;
-                        }
+                    var properties = PromptTaskConfig();
 
-                        if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                    if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                    {
+                        Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
+                        foreach (var service in plugin.RequiredServices)
                         {
-                            Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
-                            foreach (var service in plugin.RequiredServices)
+                            var externalServiceName = Console.GetString($"{service} external service name:");
+
+                            if (string.IsNullOrEmpty(externalServiceName))
                             {
-                                var externalServiceName = Console.GetString($"{service} external service name:");
-
-                                if (string.IsNullOrEmpty(externalServiceName))
-                                {
-                                    message = $"The {service} external service is required for the provider {Provider}. If you do not have it in the system, please add them using \"service add\" command";
-                                    return message;
-                                }
-
-                                var externalService = _externalServiceService.GetExternalServiceByName(externalServiceName).Result;
-
-                                if (externalService == null)
-                                {
-                                    message = $"The external service {externalServiceName} was not found.";
-                                    return message;
-                                }
-
-                                if (externalService.ExternalServiceTypeName != service)
-                                {
-                                    message = $"The entered external service is not a {service} service";
-                                    return message;
-                                }
-
-                                properties.Add(($"{service}ExternalService", externalServiceName));
+                                message = $"The {service} external service is required for the provider {Provider}. If you do not have it in the system, please add them using \"service add\" command";
+                                return message;
                             }
-                        }
 
-                        if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
-                        {
-                            additionalConfigs = new Dictionary<string, string>();
-                            Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
-                            foreach (var additionalConfig in plugin.AdditionalConfigs)
+                            var externalService = _externalServiceService.GetExternalServiceByName(externalServiceName).Result;
+
+                            if (externalService == null)
                             {
-                                string input = string.Empty;
-                                string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : ":")}";
+                                message = $"The external service {externalServiceName} was not found.";
+                                return message;
+                            }
 
-                                do
-                                {
-                                    if (additionalConfig.IsSecret)
-                                        input = _consoleReader.GetPassword(prompt);
-                                    else
-                                        input = Console.GetString(prompt);
+                            if (externalService.ExternalServiceTypeName != service)
+                            {
+                                message = $"The entered external service is not a {service} service";
+                                return message;
+                            }
 
-                                } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
+                            properties.Add(($"{service}ExternalService", externalServiceName));
+                        }
+                    }
 
-                                additionalConfigs.Add(additionalConfig.Name, input);
+                    if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                    {
+                        additionalConfigs = new Dictionary<string, string>();
+                        Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
+                        foreach (var additionalConfig in plugin.AdditionalConfigs)
+                        {
+                            string input = string.Empty;
+                            string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : ":")}";
 
+                            do
+                            {
                                 if (additionalConfig.IsSecret)
-                                    secretProperties.Add(additionalConfig.Name);
-                            }
+                                    input = _consoleReader.GetPassword(prompt);
+                                else
+                                    input = Console.GetString(prompt);
+
+                            } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
+
+                            additionalConfigs.Add(additionalConfig.Name, input);
+
+                            if (additionalConfig.IsSecret)
+                                secretProperties.Add(additionalConfig.Name);
                         }
                     }
-
-                    if (Property != null)
-                    {
-                        properties.InsertRange(0, Property);
-                    }
-
+                    
                     var task = _jobDefinitionService.CreateJobTaskDefinition(project.Id, job.Id, new CreateJobTaskDefinitionDto
                     {
                         Name = Name,
@@ -168,6 +165,158 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             message = $"Failed to add task {Name}. Make sure the project and job definition names are correct.";
 
             return message;
+        }
+
+        public override string GetHelpFooter()
+        {
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("Available task:");
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Clone}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - Repository");
+            sb.AppendLine("      - IsPrivateRepository (\"true\" or \"false\")");
+            sb.AppendLine("      - CloneLocation");
+            sb.AppendLine("      - BaseBranch");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Generate}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - OutputLocation");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Push}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - SourceLocation");
+            sb.AppendLine("      - Repository");
+            sb.AppendLine("      - Branch");
+            sb.AppendLine("      - CreatePullRequest (\"true\" or \"false\")");
+            sb.AppendLine("      - PullRequestTargetBranch");
+            sb.AppendLine("      - CommitMessage");
+            sb.AppendLine("      - Author");
+            sb.AppendLine("      - Email");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Merge}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - Repository");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Build}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - SourceLocation");
+            sb.AppendLine("      - OutputArtifactLocation");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.PublishArtifact}");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Deploy}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - ArtifactLocation");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.DeployDb}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - MigrationLocation");
+
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Test}");
+            sb.AppendLine("    Properties:");
+            sb.AppendLine("      - TestLocation");
+            sb.AppendLine("      - ContinueWhenFailed (\"true\" or \"false\")");
+
+            sb.AppendLine();
+            sb.AppendLine("Available task providers:");
+            var providers = _pluginService.GetPlugins().Result;
+            foreach (var provider in providers)
+                sb.AppendLine($"  - Provider: {provider.Name}");
+
+            return sb.ToString();
+        }
+
+        private List<(string, string)> PromptTaskConfig()
+        {
+            var taskConfigs = Property?.ToList() ?? new List<(string, string)>();
+
+            var typeCapitalized = Type.First().ToString().ToUpper() + Type.Substring(1).ToLower();
+
+            if (Type.ToLower() == JobTaskDefinitionType.Clone.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "Repository", true);
+                PromptIfNotSet(taskConfigs, "IsPrivateRepository", true, new string[] { "true", "false" });
+                PromptIfNotSet(taskConfigs, "CloneLocation");
+                PromptIfNotSet(taskConfigs, "BaseBranch");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Generate.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "OutputLocation");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Push.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "Repository", true);
+                PromptIfNotSet(taskConfigs, "SourceLocation");
+                PromptIfNotSet(taskConfigs, "Branch");
+                PromptIfNotSet(taskConfigs, "CreatePullRequest", allowedValues: new string[] { "true", "false" });
+                PromptIfNotSet(taskConfigs, "PullRequestTargetBranch");
+                PromptIfNotSet(taskConfigs, "CommitMessage");
+                PromptIfNotSet(taskConfigs, "Author");
+                PromptIfNotSet(taskConfigs, "Email");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Merge.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "Repository", true);
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Build.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "SourceLocation");
+                PromptIfNotSet(taskConfigs, "OutputArtifactLocation");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Deploy.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "ArtifactLocation");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.DeployDb.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "MigrationLocation");
+            }
+            else if (Type.ToLower() == JobTaskDefinitionType.Test.ToLower())
+            {
+                PromptIfNotSet(taskConfigs, "TestLocation");
+                PromptIfNotSet(taskConfigs, "ContinueWhenFailed", allowedValues: new string[] { "true", "false" });
+            }
+
+            if (_firstConfigPrompt)
+                Console.WriteLine();
+
+            return taskConfigs;
+        }
+
+        private void PromptIfNotSet(List<(string, string)> properties, string propertyName, bool required = false, string[] allowedValues = null)
+        {
+            string input = null;
+            bool validInput;
+
+            string prompt = $"{propertyName}{(required ? " (Required):" : ":")}";
+            if (!properties.Any(p => p.Item1 == propertyName))
+            {
+                if (!_firstConfigPrompt)
+                {
+                    Console.WriteLine($"{Type} task config:");
+                    _firstConfigPrompt = true;
+                }                    
+
+                do
+                {
+                    input = Console.GetString(prompt);
+
+                    if (allowedValues != null && allowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !allowedValues.Contains(input))
+                    {
+                        Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', allowedValues)}");
+                        validInput = false;
+                    }
+                    else
+                    {
+                        validInput = true;
+                    }
+                } while (!validInput || (required && string.IsNullOrEmpty(input)));
+
+                if (!string.IsNullOrEmpty(input))
+                {
+                    properties.Add((propertyName, input));
+                }
+            }
         }
     }
 }

@@ -247,7 +247,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskAdd_Execute_ReturnsServiceRequiredMessage()
         {
-            var console = new TestConsole(_output);
+            var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "true", "master", "commit", "opencatapult", "test@opencatapult.net", "");
             var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
@@ -265,7 +265,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskAdd_Execute_ReturnsServiceNotFoundMessage()
         {
-            var console = new TestConsole(_output, "test");
+            var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "true", "master", "commit", "opencatapult", "test@opencatapult.net", "test");
             var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
@@ -283,7 +283,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskAdd_Execute_ReturnsServiceTypeIncorrectMessage()
         {
-            var console = new TestConsole(_output, "azure-default");
+            var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "true", "master", "commit", "opencatapult", "test@opencatapult.net", "azure-default");
             var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
