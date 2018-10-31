@@ -13,6 +13,8 @@ $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = $true
 $rootPath = Split-Path $PSScriptRoot
 $appSettingsPath = "$rootPath\src\API\Polyrific.Catapult.Api\appsettings.json"
 $apiCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj"
+$apiPublishPath = "$rootPath\publish\api"
+$apiDll = "$apiPublishPath\Polyrific.Catapult.Api.dll"
 $dataCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj"
 
 # read connection string in appsettings.json
@@ -71,10 +73,20 @@ if ($certCheck -eq "No valid certificate found."){
     Write-Output $certCheck
 }
 
+# publish API
+Write-Output "Publishing API..."
+Write-Output "dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath"
+$result = dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath
+if ($LASTEXITCODE -ne 0) {
+    Write-Error -Message "[ERROR] $result"
+    break
+}
+
 # run the API
 Write-Output "Running API..."
-Write-Output "dotnet run -p $apiCsprojPath -c $configuration --urls $url"
-$result = dotnet run -p $apiCsprojPath -c $configuration --urls $url
+Write-Output "dotnet $apiDll --urls $url"
+Set-Location $apiPublishPath
+$result = dotnet $apiDll --urls $url
 if ($LASTEXITCODE -ne 0) {
     Write-Error -Message "[ERROR] $result"
     break

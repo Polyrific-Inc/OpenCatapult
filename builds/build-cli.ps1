@@ -8,12 +8,13 @@ param(
 
 $rootPath = Split-Path $PSScriptRoot
 $cliCsprojPath = "$rootPath\src\CLI\Polyrific.Catapult.Cli\Polyrific.Catapult.Cli.csproj"
-$cliDll = "$rootPath\src\CLI\Polyrific.Catapult.Cli\bin\$configuration\occli.dll"
+$cliPublishPath = "$rootPath\publish\cli"
+$cliDll = "$cliPublishPath\occli.dll"
 
 # build CLI
-Write-Output "Building the CLI..."
-Write-Output "dotnet build $cliCsprojPath -c $configuration"
-$result = dotnet build $cliCsprojPath -c $configuration
+Write-Output "Publishing the CLI..."
+Write-Output "dotnet publish $cliCsprojPath -c $configuration -o $cliPublishPath"
+$result = dotnet publish $cliCsprojPath -c $configuration -o $cliPublishPath
 if ($LASTEXITCODE -ne 0) {
     Write-Error -Message "[ERROR] $result"
     break
