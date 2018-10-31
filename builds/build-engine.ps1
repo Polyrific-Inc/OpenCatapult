@@ -47,4 +47,8 @@ foreach ($p in $plugins) {
     }
 }
 
+# Copy GitHub assemblies
+Write-Output "Copying required files..."
+Copy-Item "$enginePublishPath\plugins\RepositoryProvider\GitHub\runtimes\win-x64\native\*" -Destination "$enginePublishPath\plugins\RepositoryProvider\GitHub\" -Force
+
 Write-Output "Engine is ready. Please run: dotnet $engineDll [command] [options]"
