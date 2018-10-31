@@ -139,17 +139,12 @@ namespace Polyrific.Catapult.Api.Data
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = await _userManager.Users.Include(u => u.CatapultEngineProfile).FirstOrDefaultAsync(u => u.Id == entity.Id, cancellationToken);
-            if (user != null)
+            if (user != null && user.CatapultEngineProfile != null)
             {
-                _mapper.Map(entity, user);
-
-                await _userManager.UpdateAsync(user);
-
-                if (user.CatapultEngineProfile != null)
-                {
-                    _mapper.Map(entity, user.CatapultEngineProfile);
-                    await _profileRepository.Update(user.CatapultEngineProfile, cancellationToken);
-                }
+                user.CatapultEngineProfile.LastSeen = entity.LastSeen;
+                user.CatapultEngineProfile.Updated = DateTime.UtcNow;
+                user.CatapultEngineProfile.ConcurrencyStamp = Guid.NewGuid().ToString();
+                await _profileRepository.Update(user.CatapultEngineProfile, cancellationToken);
             }
         }
 
