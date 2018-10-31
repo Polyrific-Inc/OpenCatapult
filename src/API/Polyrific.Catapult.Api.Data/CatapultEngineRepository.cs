@@ -141,7 +141,7 @@ namespace Polyrific.Catapult.Api.Data
             var user = await _userManager.Users.Include(u => u.CatapultEngineProfile).FirstOrDefaultAsync(u => u.Id == entity.Id, cancellationToken);
             if (user != null && user.CatapultEngineProfile != null)
             {
-                user.CatapultEngineProfile.LastSeen = entity.LastSeen;
+                _mapper.Map(entity, user.CatapultEngineProfile);
                 user.CatapultEngineProfile.Updated = DateTime.UtcNow;
                 user.CatapultEngineProfile.ConcurrencyStamp = Guid.NewGuid().ToString();
                 await _profileRepository.Update(user.CatapultEngineProfile, cancellationToken);
