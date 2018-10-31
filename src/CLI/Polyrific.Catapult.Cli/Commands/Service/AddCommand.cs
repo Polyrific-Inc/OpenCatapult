@@ -77,7 +77,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                                     Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', property.AllowedValues)}");
                                     validInput = false;
                                 }
-                                else if (string.IsNullOrEmpty(input))
+                                else if (string.IsNullOrEmpty(input) && isRequired)
                                 {
                                     input = property.AllowedValues[0];
                                 }
