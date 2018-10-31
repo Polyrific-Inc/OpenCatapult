@@ -305,15 +305,22 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Request reset password token
         /// </summary>
-        /// <param name="userId">Id of the user</param>
+        /// <param name="email">Email of the user</param>
         /// <returns>The reset password token</returns>
-        [HttpGet("{userId}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(int userId)
+        [HttpGet("email/{email}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string email)
         {
-            _logger.LogInformation("Requesting reset password token for user {userId}", userId);
+            _logger.LogInformation("Requesting reset password token for user {email}", email);
 
-            var token = await _userService.GetResetPasswordToken(userId);
-            var user = await _userService.GetUserById(userId);
+            var user = await _userService.GetUserByEmail(email);
+
+            if (user == null)
+            {
+                _logger.LogWarning("User {email} was not found.", email);
+                return Ok();
+            }                
+
+            var token = await _userService.GetResetPasswordToken(user.Id);
 
             await _notificationProvider.SendNotification(new SendNotificationRequest
             {
@@ -333,17 +340,24 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Reset the password to a new one
         /// </summary>
-        /// <param name="userId">Id of the user</param>
+        /// <param name="email">Email of the user</param>
         /// <param name="dto">The request body for reset password</param>
         /// <returns></returns>
-        [HttpPost("{userId}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(int userId, ResetPasswordDto dto)
+        [HttpPost("email/{email}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string email, ResetPasswordDto dto)
         {
-            _logger.LogInformation("Resetting password for user {userId}", userId);
+            _logger.LogInformation("Resetting password for user {email}", email);
 
             try
             {
-                await _userService.ResetPassword(userId, dto.Token, dto.NewPassword);
+                var user = await _userService.GetUserByEmail(email);
+                if (user == null)
+                {
+                    _logger.LogWarning("User {email} was not found.", email);
+                    return BadRequest("Reset password failed");
+                }
+
+                await _userService.ResetPassword(user.Id, dto.Token, dto.NewPassword);
 
                 return Ok("Reset password success");
             }

@@ -1,16 +1,15 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Polyrific.Catapult.Api.Core.Entities;
-using Polyrific.Catapult.Api.Core.Exceptions;
-using Polyrific.Catapult.Api.Core.Repositories;
-using Polyrific.Catapult.Shared.Dto.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using Polyrific.Catapult.Api.Core.Entities;
+using Polyrific.Catapult.Api.Core.Exceptions;
+using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {

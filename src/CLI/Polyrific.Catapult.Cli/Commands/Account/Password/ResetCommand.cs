@@ -32,27 +32,16 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
         {
             Console.WriteLine($"Trying to reset password for user {User}...");
 
-            string message = "Reset password failed. Please make sure to input the correct reset password token";
-
-            var user = _accountService.GetUserByEmail(User).Result;
-            if (user != null)
+            string message;
+            _accountService.ResetPassword(User, new ResetPasswordDto
             {
-                var userId = int.Parse(user.Id);
-                _accountService.ResetPassword(userId, new ResetPasswordDto
-                {
-                    Id = userId,
-                    Token = Token,
-                    NewPassword = _consoleReader.GetPassword("Enter new password:"),
-                    ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
-                }).Wait();
+                Token = Token,
+                NewPassword = _consoleReader.GetPassword("Enter new password:"),
+                ConfirmNewPassword = _consoleReader.GetPassword("Re-enter new password:")
+            }).Wait();
 
-                message = $"Password for user {User} has been reset";
-                Logger.LogInformation(message);
-            }
-            else
-            {
-                Logger.LogWarning($"Reset password was attempted for a user {User} that doesn't exist");
-            }
+            message = $"Password for user {User} has been reset";
+            Logger.LogInformation(message);
 
             return message;
         }

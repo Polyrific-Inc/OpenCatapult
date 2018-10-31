@@ -388,15 +388,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("xxx");
-            _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, CancellationToken cancellationToken) => new User() {Id = id});
+            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
             _notificationProvider.Setup(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
-            var result = await controller.ResetPassword(1);
+            var result = await controller.ResetPassword("test@test.com");
 
             Assert.IsType<OkResult>(result);
             _notificationProvider.Verify(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
@@ -405,6 +405,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void ResetPassword_POST_ReturnSuccess()
         {
+            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
             _userService
                 .Setup(s => s.ResetPassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
@@ -412,7 +414,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
-            var result = await controller.ResetPassword(1, new ResetPasswordDto());
+            var result = await controller.ResetPassword("test@test.com", new ResetPasswordDto());
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Reset password success", okActionResult.Value);

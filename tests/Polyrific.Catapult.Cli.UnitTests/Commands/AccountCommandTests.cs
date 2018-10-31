@@ -232,19 +232,6 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
-        public void AccountPasswordReset_Execute_ReturnsFailedMessage()
-        {
-            var command = new ResetCommand(_console, LoggerMock.GetLogger<ResetCommand>().Object, _accountService.Object, _consoleReader.Object)
-            {
-                User = "user2@opencatapult.net"
-            };
-
-            var resultMessage = command.Execute();
-
-            Assert.Equal("Reset password failed. Please make sure to input the correct reset password token", resultMessage);
-        }
-
-        [Fact]
         public void AccountSetRole_Execute_ReturnsSuccessMessage()
         {
             var command = new SetRoleCommand(_console, LoggerMock.GetLogger<SetRoleCommand>().Object, _accountService.Object)

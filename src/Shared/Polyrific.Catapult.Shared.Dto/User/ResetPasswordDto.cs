@@ -7,12 +7,6 @@ namespace Polyrific.Catapult.Shared.Dto.User
     public class ResetPasswordDto
     {
         /// <summary>
-        /// Id of the user
-        /// </summary>
-        [Required]
-        public int Id { get; set; }
-
-        /// <summary>
         /// Reset password token
         /// </summary>
         [Required]
