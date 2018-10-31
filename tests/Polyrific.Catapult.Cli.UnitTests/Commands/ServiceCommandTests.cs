@@ -63,7 +63,38 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                         {
                             Name = "AuthToken",
                             Description = "Auth token",
-                            IsSecret = true
+                            IsSecret = true,
+                            AdditionalLogic = new AdditionalLogicDto
+                            {
+                                RequiredCondition = new PropertyConditionDto
+                                {
+                                    PropertyName = "RemoteAuthType",
+                                    PropertyValue = "authToken"
+                                },
+                                HideCondition = new PropertyConditionDto
+                                {
+                                    PropertyName = "RemoteAuthType",
+                                    PropertyValue = "userPassword"
+                                }
+                            }
+                        },
+                        new ExternalServicePropertyDto
+                        {
+                            Name = "Username",
+                            Description = "Username",
+                            AdditionalLogic = new AdditionalLogicDto
+                            {
+                                RequiredCondition = new PropertyConditionDto
+                                {
+                                    PropertyName = "RemoteAuthType",
+                                    PropertyValue = "userPassword"
+                                },
+                                HideCondition = new PropertyConditionDto
+                                {
+                                    PropertyName = "RemoteAuthType",
+                                    PropertyValue = "authToken"
+                                }
+                            }
                         }
                     }
                 }

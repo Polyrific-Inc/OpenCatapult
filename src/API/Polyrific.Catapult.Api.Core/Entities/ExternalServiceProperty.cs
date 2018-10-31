@@ -14,6 +14,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
 
         public bool IsSecret { get; set; }
 
+        public string AdditionalLogic { get; set; }
+
+        public int Sequence { get; set; }
+
         public int? ExternalServiceTypeId { get; set; }
     }
 }

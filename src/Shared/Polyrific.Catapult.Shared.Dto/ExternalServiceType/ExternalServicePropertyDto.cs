@@ -28,5 +28,15 @@ namespace Polyrific.Catapult.Shared.Dto.ExternalServiceType
         /// Indicates whether the external service property is a secret property that needs to be obfuscated in UI
         /// </summary>
         public bool IsSecret { get; set; }
+
+        /// <summary>
+        /// Sequence of the external service property
+        /// </summary>
+        public int Sequence { get; set; }
+
+        /// <summary>
+        /// Additional logic of the external service property
+        /// </summary>
+        public AdditionalLogicDto AdditionalLogic { get; set; }
     }
 }

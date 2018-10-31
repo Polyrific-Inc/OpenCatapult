@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
+using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
@@ -45,6 +47,13 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                 var serviceType = _externalServiceTypeService.GetExternalServiceType(service.ExternalServiceTypeId).Result;
                 foreach (var property in serviceType.ExternalServiceProperties)
                 {
+                    if (CheckPropertyCondition(property.AdditionalLogic?.HideCondition, service.Config))
+                    {
+                        // clear the value if now it's hidden
+                        service.Config.Remove(property.Name);
+                        continue;
+                    }
+
                     string input = null;
                     string prompt = $"{(!string.IsNullOrEmpty(property.Description) ? property.Description : property.Name)}:";
 
@@ -87,6 +96,15 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             }
 
             return message;
+        }
+
+        private bool CheckPropertyCondition(PropertyConditionDto condition, Dictionary<string, string> properties)
+        {
+            if (condition == null || properties == null)
+                return false;
+
+            var propertyValue = properties.GetValueOrDefault(condition.PropertyName);
+            return propertyValue == condition.PropertyValue;
         }
     }
 }

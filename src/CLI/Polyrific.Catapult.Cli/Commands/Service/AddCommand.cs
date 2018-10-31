@@ -7,6 +7,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
+using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
@@ -54,28 +55,35 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                     var secretProperties = new List<string>();
                     foreach (var property in serviceType.ExternalServiceProperties)
                     {
-                        string input = string.Empty;
-                        string prompt = $"{(!string.IsNullOrEmpty(property.Description) ? property.Description : property.Name)}{(property.IsRequired ? " (Required):" : ":")}";
+                        if (CheckPropertyCondition(property.AdditionalLogic?.HideCondition, config))
+                            continue;
 
-                        bool validInput;
+                        var isRequired = property.IsRequired || CheckPropertyCondition(property.AdditionalLogic?.RequiredCondition, config);
+                        string input = string.Empty;
+                        string prompt = $"{(!string.IsNullOrEmpty(property.Description) ? property.Description : property.Name)}{(isRequired ? " (Required):" : ":")}";
+
+                        bool validInput = true;
                         do
                         {
                             if (property.IsSecret)
                                 input = _consoleReader.GetPassword(prompt);
                             else
                                 input = Console.GetString(prompt);
-
-                            if (property.AllowedValues != null && property.AllowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !property.AllowedValues.Contains(input))
+                            
+                            if (property.AllowedValues != null && property.AllowedValues.Length > 0)
                             {
-                                Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', property.AllowedValues)}");
-                                validInput = false;
-                            }
-                            else
-                            {
-                                validInput = true;
+                                if (!string.IsNullOrEmpty(input) && !property.AllowedValues.Contains(input))
+                                {
+                                    Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', property.AllowedValues)}");
+                                    validInput = false;
+                                }
+                                else if (string.IsNullOrEmpty(input))
+                                {
+                                    input = property.AllowedValues[0];
+                                }
                             }
 
-                        } while (!validInput || (property.IsRequired && string.IsNullOrEmpty(input)));
+                        } while (!validInput || (isRequired && string.IsNullOrEmpty(input)));
 
                         config.Add(property.Name, input);
 
@@ -138,6 +146,15 @@ namespace Polyrific.Catapult.Cli.Commands.Service
             }
 
             return sb.ToString();
+        }
+
+        private bool CheckPropertyCondition(PropertyConditionDto condition, Dictionary<string, string> properties)
+        {
+            if (condition == null || properties == null)
+                return false;
+
+            var propertyValue = properties.GetValueOrDefault(condition.PropertyName);
+            return propertyValue == condition.PropertyValue;
         }
     }
 }
