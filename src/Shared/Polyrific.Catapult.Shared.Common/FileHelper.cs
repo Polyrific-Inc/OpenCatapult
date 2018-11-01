@@ -26,6 +26,8 @@ namespace Polyrific.Catapult.Shared.Common
             using (var writer = File.CreateText(path))
             {
                 await writer.WriteAsync(content);
+
+                await writer.FlushAsync();
             }
         }
 
@@ -34,6 +36,8 @@ namespace Polyrific.Catapult.Shared.Common
             using (var writer = File.AppendText(path))
             {
                 await writer.WriteAsync(content);
+
+                await writer.FlushAsync();
             }
         }
     }
