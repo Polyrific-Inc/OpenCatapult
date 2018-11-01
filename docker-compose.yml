@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  polyrific.catapult.api:
+    image: polyrific/opencatapultapi
+    build:
+      context: .
+      dockerfile: src/API/Polyrific.Catapult.Api/Dockerfile
