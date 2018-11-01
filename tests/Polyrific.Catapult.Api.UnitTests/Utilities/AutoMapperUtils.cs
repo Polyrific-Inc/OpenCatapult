@@ -21,6 +21,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Utilities
                     {
                         cfg.AddProfile<ProjectTemplateAutoMapperProfile>();
                         cfg.AddProfile<UserAutoMapperProfile>();
+                        cfg.AddProfile<ExternalServiceAutoMapperProfile>();
+                        cfg.AddProfile<JobDefinitionAutoMapperProfile>();
+                        cfg.AddProfile<JobTaskDefinitionAutoMapperProfile>();
+                        cfg.AddProfile<JobQueueAutoMapperProfile>();
+                        cfg.AddProfile<PluginAdditionalConfigAutoMapperProfile>();
+                        cfg.AddProfile<PluginAutoMapperProfile>();
                     });
 
                     _isInitialized = true;
