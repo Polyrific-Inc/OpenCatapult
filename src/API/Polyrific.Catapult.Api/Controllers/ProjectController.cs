@@ -22,14 +22,12 @@ namespace Polyrific.Catapult.Api.Controllers
     public class ProjectController : ControllerBase
     {
         private readonly IProjectService _projectService;
-        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ProjectController(IProjectService projectService, IUserService userService, IMapper mapper, ILogger<ProjectController> logger)
+        public ProjectController(IProjectService projectService, IMapper mapper, ILogger<ProjectController> logger)
         {
             _projectService = projectService;
-            _userService = userService;
             _mapper = mapper;
             _logger = logger;
         }

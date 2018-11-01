@@ -21,15 +21,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
     public class ExternalServiceControllerTests
     {
         private readonly Mock<IExternalServiceService> _externalServiceService;
-        private readonly Mock<IUserService> _userService;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<ExternalServiceController>> _logger;
 
         public ExternalServiceControllerTests()
         {
             _externalServiceService = new Mock<IExternalServiceService>();
-
-            _userService = new Mock<IUserService>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -57,7 +54,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 })
             };
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper,
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper,
                 _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
@@ -81,7 +78,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = "my connection"
                     });
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper,
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetExternalService(1);
@@ -102,7 +99,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = serviceName
                     });
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper,
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetExternalService("my connection");
@@ -134,7 +131,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 })
             };
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper, _logger.Object)
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -155,7 +152,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _externalServiceService.Setup(s => s.UpdateExternalService(It.IsAny<ExternalService>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper, _logger.Object);
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper, _logger.Object);
 
             var result = await controller.UpdateExternalService(1, new UpdateExternalServiceDto());
 
@@ -168,7 +165,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _externalServiceService.Setup(s => s.DeleteExternalService(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new ExternalServiceController(_externalServiceService.Object, _userService.Object, _mapper, _logger.Object);
+            var controller = new ExternalServiceController(_externalServiceService.Object, _mapper, _logger.Object);
 
             var result = await controller.DeleteExternalService(1);
 

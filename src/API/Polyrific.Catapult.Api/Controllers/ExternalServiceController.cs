@@ -20,14 +20,12 @@ namespace Polyrific.Catapult.Api.Controllers
     public class ExternalServiceController : ControllerBase
     {
         private readonly IExternalServiceService _externalServiceService;
-        private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ExternalServiceController(IExternalServiceService externalServiceService, IUserService userService, IMapper mapper, ILogger<ExternalServiceController> logger)
+        public ExternalServiceController(IExternalServiceService externalServiceService, IMapper mapper, ILogger<ExternalServiceController> logger)
         {
             _externalServiceService = externalServiceService;
-            _userService = userService;
             _mapper = mapper;
             _logger = logger;
         }
