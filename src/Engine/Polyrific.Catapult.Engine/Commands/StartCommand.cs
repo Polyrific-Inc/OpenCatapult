@@ -61,7 +61,20 @@ namespace Polyrific.Catapult.Engine.Commands
             {
                 Console.WriteLine($"Job queue {jobQueue.Code} is ready to be executed.");
                 _engine.ExecuteJob(jobQueue).Wait();
-                Console.WriteLine($"Job queue {jobQueue.Code} execution has completed {(jobQueue.Status == JobStatus.Error ? "with error. Please check the job queue's log." : ".")}");
+
+                switch (jobQueue.Status)
+                {
+                    case JobStatus.Pending:
+                        Console.WriteLine($"Job queue {jobQueue.Code} execution is being halted. Please restart the job when it's ready.");
+                        break;
+                    case JobStatus.Completed:
+                        Console.WriteLine($"Job queue {jobQueue.Code} execution has completed.");
+                        break;
+                    default:
+                        Console.WriteLine($"Job queue {jobQueue.Code} execution has completed with error. Please check the job queue's log.");
+                        break;
+                }
+
                 Console.WriteLine("Engine is waiting for a job to execute..");
             }
             else
