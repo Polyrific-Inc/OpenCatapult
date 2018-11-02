@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 ProjectDataModelId = dataModelId,
                 Name = name,
-                Label = label,
+                Label = string.IsNullOrEmpty(label) ? TextHelper.SplitTextOnCapitalLetters(name) : label,
                 DataType = dataType,
                 ControlType = controlType,
                 RelatedProjectDataModelId = relatedDataModelId,
@@ -128,7 +128,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var dataModelByNameSpec = new ProjectDataModelFilterSpecification(modelName, projectId);
-            dataModelByNameSpec.Includes.Add(d => d.Properties);
+            dataModelByNameSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
 
             return await _dataModelRepository.GetSingleBySpec(dataModelByNameSpec, cancellationToken);
         }
