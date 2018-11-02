@@ -297,7 +297,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Services/I{model.Name}Service.cs", sb.ToString(), modelId: model.Id);
+            _projectHelper.AddFileToProject(Name, $"Services/Interface/I{model.Name}Service.cs", sb.ToString(), modelId: model.Id);
         }
 
         private void GenerateUserServiceInterface()
@@ -347,7 +347,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    }");
             sb.AppendLine("}");
             
-            _projectHelper.AddFileToProject(Name, $"Services/IUserService.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Services/Interface/IUserService.cs", sb.ToString());
         }
 
         private void GenerateServiceClass(ProjectDataModelDto model)
