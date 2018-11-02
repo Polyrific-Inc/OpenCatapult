@@ -1092,33 +1092,38 @@ namespace AspNetCoreMvc.ProjectGenerators
         {
             string line = null;
             var appSettingFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "appsettings.json");
-            var updatedContent = new StringBuilder();
-            using (var reader = new StreamReader(appSettingFile))
+            var appsetting = File.ReadAllText(appSettingFile);
+            
+            if (!appsetting.Contains("\"SmtpSetting\""))
             {
-                int lineNo = 0;
-                while ((line = reader.ReadLine()) != null)
+                var updatedContent = new StringBuilder();
+                using (var reader = new StreamReader(appSettingFile))
                 {
-                    lineNo++;
-                    if (lineNo == 1)
+                    int lineNo = 0;
+                    while ((line = reader.ReadLine()) != null)
                     {
-                        updatedContent.AppendLine(line);
-                        updatedContent.AppendLine("  \"SmtpSetting\": {");
-                        updatedContent.AppendLine($"    \"Server\": \"localhost\",");
-                        updatedContent.AppendLine($"    \"Port\": 0,");
-                        updatedContent.AppendLine($"    \"Username\": \"username\",");
-                        updatedContent.AppendLine($"    \"Password\": \"password\",");
-                        updatedContent.AppendLine($"    \"SenderEmail\": \"localhost\"");
-                        updatedContent.AppendLine("  },");
-                    }
-                    else
-                    {
-                        updatedContent.AppendLine(line);
+                        lineNo++;
+                        if (lineNo == 1)
+                        {
+                            updatedContent.AppendLine(line);
+                            updatedContent.AppendLine("  \"SmtpSetting\": {");
+                            updatedContent.AppendLine($"    \"Server\": \"localhost\",");
+                            updatedContent.AppendLine($"    \"Port\": 0,");
+                            updatedContent.AppendLine($"    \"Username\": \"username\",");
+                            updatedContent.AppendLine($"    \"Password\": \"password\",");
+                            updatedContent.AppendLine($"    \"SenderEmail\": \"localhost\"");
+                            updatedContent.AppendLine("  },");
+                        }
+                        else
+                        {
+                            updatedContent.AppendLine(line);
+                        }
                     }
                 }
-            }
-            using (var writer = new StreamWriter(appSettingFile))
-            {
-                writer.Write(updatedContent.ToString());
+                using (var writer = new StreamWriter(appSettingFile))
+                {
+                    writer.Write(updatedContent.ToString());
+                }
             }
         }
 
