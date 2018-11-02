@@ -291,7 +291,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             string input = null;
             bool validInput;
 
-            string prompt = $"{propertyName}{(required ? " (Required):" : ":")}";
+            string prompt = $"{propertyName}{(required ? " (Required):" : " (Leave blank to use default value):")}";
             if (!properties.Any(p => p.Item1 == propertyName))
             {
                 if (!_firstConfigPrompt)

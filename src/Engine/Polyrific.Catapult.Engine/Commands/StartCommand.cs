@@ -3,6 +3,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Engine.Core;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using System;
 using System.Timers;
 
@@ -60,7 +61,8 @@ namespace Polyrific.Catapult.Engine.Commands
             {
                 Console.WriteLine($"Job queue {jobQueue.Code} is ready to be executed.");
                 _engine.ExecuteJob(jobQueue).Wait();
-                Console.WriteLine($"Job queue {jobQueue.Code} execution has completed.");
+                Console.WriteLine($"Job queue {jobQueue.Code} execution has completed {(jobQueue.Status == JobStatus.Error ? "with error. Please check the job queue's log." : ".")}");
+                Console.WriteLine("Engine is waiting for a job to execute..");
             }
             else
             {
