@@ -46,7 +46,7 @@ if ($connString -ne $currentConnString) {
     $appSettingsFile.ConnectionStrings.DefaultConnection = $connString
 
     try {
-        $appSettingsFile | ConvertTo-Json | Out-File -FilePath $appSettingsPath -Encoding utf8 -Force    
+        $appSettingsFile | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsPath -Encoding utf8 -Force    
     }
     catch {
         Write-Error -Message "[ERROR] $_" -ErrorAction Stop
