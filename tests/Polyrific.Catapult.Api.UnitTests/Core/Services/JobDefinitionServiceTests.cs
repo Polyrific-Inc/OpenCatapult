@@ -419,7 +419,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     ExternalServiceType = new ExternalServiceType
                     {
                         Id = 1,
-                        Name = ExternalServiceTypeName.GenericService
+                        Name = ExternalServiceTypeName.Generic
                     }
                 });
 

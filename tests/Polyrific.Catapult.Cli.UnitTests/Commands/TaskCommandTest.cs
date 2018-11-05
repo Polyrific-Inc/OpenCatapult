@@ -306,7 +306,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             {
                 Id = 1,
                 Name = name,
-                ExternalServiceTypeName = ExternalServiceTypeName.GenericService
+                ExternalServiceTypeName = ExternalServiceTypeName.Generic
             });
 
             var console = new TestConsole(_output, "generic-service");
@@ -564,7 +564,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             {
                 Id = 1,
                 Name = name,
-                ExternalServiceTypeName = ExternalServiceTypeName.GenericService
+                ExternalServiceTypeName = ExternalServiceTypeName.Generic
             });
             _jobDefinitionService.Setup(x => x.GetJobTaskDefinitionByName(1, 1, "Deploy")).ReturnsAsync((int projectId, int jobId, string taskName) => new JobTaskDefinitionDto
             {

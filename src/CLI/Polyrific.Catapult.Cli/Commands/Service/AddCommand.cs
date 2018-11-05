@@ -51,7 +51,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             if (serviceType != null)
             {
-                if ((serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0) || Type.ToLower() == ExternalServiceTypeName.GenericService.ToLower())
+                if ((serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0) || Type.ToLower() == ExternalServiceTypeName.Generic.ToLower())
                 {
                     Console.WriteLine("Please enter the service properties:");
                     var config = Property?.ToDictionary(x => x.Item1, x => x.Item2) ?? new Dictionary<string, string>();

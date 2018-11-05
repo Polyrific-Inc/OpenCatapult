@@ -10,7 +10,7 @@ using Polyrific.Catapult.Api.Data;
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    [Migration("20181105034847_GenericExternalService")]
+    [Migration("20181105123424_GenericExternalService")]
     partial class GenericExternalService
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,9 +118,9 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.ToTable("ExternalServiceTypes");
 
                     b.HasData(
-                        new { Id = 1, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce96", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "GitHub" },
-                        new { Id = 2, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce97", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "AzureAppService" },
-                        new { Id = 3, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce98", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "GenericService" }
+                        new { Id = 1, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce98", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "Generic" },
+                        new { Id = 2, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce96", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "GitHub" },
+                        new { Id = 3, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce97", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "AzureAppService" }
                     );
                 });
 

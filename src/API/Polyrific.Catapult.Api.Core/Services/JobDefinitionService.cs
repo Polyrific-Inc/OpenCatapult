@@ -299,7 +299,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                         throw new ExternalServiceNotFoundException(serviceName);
                     }
 
-                    if (service.ExternalServiceType.Name != requiredService && service.ExternalServiceType.Name.ToLower() != ExternalServiceTypeName.GenericService.ToLower())
+                    if (service.ExternalServiceType.Name != requiredService && service.ExternalServiceType.Name.ToLower() != ExternalServiceTypeName.Generic.ToLower())
                     {
                         throw new IncorrectExternalServiceTypeException(serviceName, requiredService);
                     }
