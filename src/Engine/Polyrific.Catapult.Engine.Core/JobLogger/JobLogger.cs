@@ -34,6 +34,9 @@ namespace Polyrific.Catapult.Engine.Core.JobLogger
                 var message = formatter(state, exception);
                 message = $"[{DateTime.UtcNow.ToString("o")}] {message}";
 
+                if (exception != null)
+                    message += $"{Environment.NewLine}{exception.ToString()}";
+
                 _provider.WriteLog(message);
             }
                 
