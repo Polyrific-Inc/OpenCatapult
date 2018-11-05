@@ -35,10 +35,7 @@ namespace AspNetCoreMvc.Tests
                 OutputLocation = outputLocation
             };
 
-            var additionalConfig = new Dictionary<string, string>
-            {
-                { "ConnectionString", "Server=localhost;Database=generated.db;User ID=sa;Password=samprod;" }
-            };
+            var additionalConfig = new Dictionary<string, string>();
             
             if (Directory.Exists(outputLocation))
                 Directory.Delete(outputLocation, true);

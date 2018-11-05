@@ -19,7 +19,6 @@ namespace AspNetCoreMvc.ProjectGenerators
         private string _projectName;
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
-        private readonly string _connectionString;
         private readonly ILogger _logger;
 
         private string Name => $"{_projectName}";
@@ -35,12 +34,13 @@ namespace AspNetCoreMvc.ProjectGenerators
             }
         }
 
-        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string connectionString, ILogger logger)
+        private const string _connectionString = "Server=localhost;Database=opencatapult;User ID=sa;Password=samprod;";
+
+        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, ILogger logger)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
-            _connectionString = connectionString;
             _logger = logger;
         }
 
@@ -1029,7 +1029,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Startup.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Startup.cs", sb.ToString(), true);
             return Task.FromResult("Startup class generated");
         }
 
@@ -1068,7 +1068,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("}");
             sb.AppendLine();
 
-            _projectHelper.AddFileToProject(Name, $"Program.cs", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Program.cs", sb.ToString(), true);
             return Task.FromResult("Program class generated");
         }
         #endregion

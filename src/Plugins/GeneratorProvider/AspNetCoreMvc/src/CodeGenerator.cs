@@ -24,7 +24,7 @@ namespace AspNetCoreMvc
         private readonly MainProjectGenerator _mainProjectGenerator;
         private readonly ILogger _logger;
         
-        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models, string connectionString, 
+        public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models,
             string adminEmail, ILogger logger = null)
         {
             _projectName = TextHelper.Pascalize(projectName.Replace("-", "_"));
@@ -34,7 +34,7 @@ namespace AspNetCoreMvc
             _coreProjectGenerator = new CoreProjectGenerator(_projectName, _projectHelper, _models, logger);
             _dataProjectGenerator = new DataProjectGenerator(_projectName, _projectHelper, _models, adminEmail, logger);
             _infrastructureProjectGenerator = new InfrastructureProjectGenerator(_projectName, _projectHelper, _models, logger);
-            _mainProjectGenerator = new MainProjectGenerator(_projectName, _projectHelper, _models, connectionString, logger);
+            _mainProjectGenerator = new MainProjectGenerator(_projectName, _projectHelper, _models, logger);
             _logger = logger;
         }
 
