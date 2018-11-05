@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
@@ -46,7 +47,7 @@ namespace GitHub
 
         public async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone(CloneTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetGitAutomationConfig(config.CloneLocation, config.Repository, additionalConfigs, config.IsPrivateRepository);
+            var repoConfig = GetGitAutomationConfig(config.CloneLocation ?? config.WorkingLocation, config.Repository, additionalConfigs, config.IsPrivateRepository);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
@@ -73,7 +74,7 @@ namespace GitHub
 
         public async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push(PushTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var repoConfig = GetGitAutomationConfig(config.SourceLocation, config.Repository, additionalConfigs);
+            var repoConfig = GetGitAutomationConfig(config.SourceLocation ?? config.WorkingLocation, config.Repository, additionalConfigs);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
@@ -134,19 +135,18 @@ namespace GitHub
 
         private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool isPrivateRepository = false)
         {
-            var remoteUrlCleaned = remoteUrl?.Trim(' ', '/');
             var config = new GitAutomationConfig
             {
                 LocalRepository = localRepository,
-                RemoteUrl = remoteUrlCleaned,
+                RemoteUrl = remoteUrl,
                 IsPrivateRepository = isPrivateRepository,
             };
 
-            var remoteUrlBrokenDown = remoteUrlCleaned?.Split('/');
-            if (remoteUrlBrokenDown.Length >= 2)
+            var remoteUrlBrokenDown = new Uri(remoteUrl).AbsolutePath?.Trim(' ', '/').Split('/');
+            if (remoteUrlBrokenDown.Length == 2)
             {
-                config.ProjectName = remoteUrlBrokenDown.Last();
-                config.RepoOwner = remoteUrlBrokenDown[remoteUrlBrokenDown.Length - 2];
+                config.RepoOwner = remoteUrlBrokenDown[0];
+                config.ProjectName = remoteUrlBrokenDown[1];
             }
 
             if (additionalConfigs != null)

@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
         [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build,
-            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test, IgnoreCase = true)]
+            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test)]
         public string Type { get; set; }
 
         [Option("-prov|--provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]
@@ -93,6 +93,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 message = $"The provider \"{provider}\" is not installed";
                                 return message;
                             }
+
+                            // making sure it's equal case sensitive
+                            provider = plugin.Name;
 
                             if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
                             {
