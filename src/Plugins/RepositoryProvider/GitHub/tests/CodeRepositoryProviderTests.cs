@@ -32,7 +32,7 @@ namespace GitHub.Tests
             var taskConfig = new CloneTaskConfig
             {
                 CloneLocation = cloneLocation,
-                Repository = "https//github.com/polyrific-inc/opencatapult"
+                Repository = "https://github.com/polyrific-inc/opencatapult"
             };
             var additionalConfigs = new Dictionary<string, string>();
             
@@ -48,7 +48,7 @@ namespace GitHub.Tests
         [Fact]
         public async void Push_Success()
         {
-            var remoteUrl = "https//github.com/polyrific-inc/opencatapult";
+            var remoteUrl = "https://github.com/polyrific-inc/opencatapult";
 
             _gitHubUtils.Setup(u => u.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
@@ -75,7 +75,7 @@ namespace GitHub.Tests
         [Fact]
         public async void Merge_Success()
         {
-            var remoteUrl = "https//github.com/polyrific-inc/opencatapult";
+            var remoteUrl = "https://github.com/polyrific-inc/opencatapult";
 
             _gitHubUtils.Setup(u => u.MergePullRequest(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(true);
