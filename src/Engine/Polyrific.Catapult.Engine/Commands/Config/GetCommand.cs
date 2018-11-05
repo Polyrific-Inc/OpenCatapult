@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Engine.Core;
-using Polyrific.Catapult.Engine.Core.Exceptions;
-using System.Text;
 
 namespace Polyrific.Catapult.Engine.Commands.Config
 {
@@ -18,9 +17,6 @@ namespace Polyrific.Catapult.Engine.Commands.Config
         {
             _engineConfig = engineConfig;
         }
-
-        [Option("-a|--all", "Display all configuration items", CommandOptionType.NoValue)]
-        public bool GetAll { get; set; }
         
         [Option("-n|--name <NAME>", "Name of the config", CommandOptionType.SingleValue)]
         public string ConfigName { get; set; }
@@ -31,7 +27,13 @@ namespace Polyrific.Catapult.Engine.Commands.Config
             
             _engineConfig.Load();
 
-            if (GetAll)
+            if (!string.IsNullOrEmpty(ConfigName))
+            {
+                var value = _engineConfig.GetValue(ConfigName);
+                if (!string.IsNullOrEmpty(value))
+                    message = $"{ConfigName}: {value}";
+            }
+            else
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Available Engine configs:");
@@ -41,12 +43,6 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                 }
 
                 message = sb.ToString();
-            }
-            else if (!string.IsNullOrEmpty(ConfigName))
-            {
-                var value = _engineConfig.GetValue(ConfigName);
-                if (!string.IsNullOrEmpty(value))
-                    message = $"{ConfigName}: {value}";
             }
 
             return message;

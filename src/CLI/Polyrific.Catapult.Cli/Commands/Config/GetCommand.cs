@@ -17,9 +17,6 @@ namespace Polyrific.Catapult.Cli.Commands.Config
             _cliConfig = cliConfig;
         }
 
-        [Option("-a|--all", "Display all configuration items", CommandOptionType.NoValue)]
-        public bool GetAll { get; set; }
-
         [Option("-n|--name <NAME>", "Name of the config", CommandOptionType.SingleValue)]
         public string ConfigName { get; set; }
 
@@ -29,7 +26,13 @@ namespace Polyrific.Catapult.Cli.Commands.Config
 
             _cliConfig.Load();
 
-            if (GetAll)
+            if (!string.IsNullOrEmpty(ConfigName))
+            {
+                var value = _cliConfig.GetValue(ConfigName);
+                if (!string.IsNullOrEmpty(value))
+                    message = $"{ConfigName}: {value}";
+            }
+            else
             {
                 var sb = new StringBuilder();
                 sb.AppendLine("Available CLI configs:");
@@ -39,12 +42,6 @@ namespace Polyrific.Catapult.Cli.Commands.Config
                 }
 
                 message = sb.ToString();
-            }
-            else if (!string.IsNullOrEmpty(ConfigName))
-            {
-                var value = _cliConfig.GetValue(ConfigName);
-                if (!string.IsNullOrEmpty(value))
-                    message = $"{ConfigName}: {value}";
             }
 
             return message;

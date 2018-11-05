@@ -65,10 +65,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Commands
         public void ConfigGet_GetAll_Execute_ReturnsItems()
         {
             var console = new TestConsole(_output);
-            var command = new GetCommand(_engineConfig.Object, console, (new Mock<ILogger<GetCommand>>()).Object)
-            {
-                GetAll = true
-            };
+            var command = new GetCommand(_engineConfig.Object, console, (new Mock<ILogger<GetCommand>>()).Object);
 
             var message = command.Execute();
 
@@ -185,10 +182,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Commands
         public void ConfigSet_SetAll_Execute_ReturnsSuccess()
         {
             var console = new TestConsole(_output, "config value edited");
-            var command = new SetCommand(_engineConfig.Object, console, (new Mock<ILogger<SetCommand>>()).Object)
-            {
-                SetAll = true
-            };
+            var command = new SetCommand(_engineConfig.Object, console, (new Mock<ILogger<SetCommand>>()).Object);
 
             var message = command.Execute();
 

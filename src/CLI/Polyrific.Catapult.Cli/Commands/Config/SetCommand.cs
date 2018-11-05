@@ -22,9 +22,6 @@ namespace Polyrific.Catapult.Cli.Commands.Config
             _cliConfig = cliConfig;
         }
 
-        [Option("-a|--all", "Set all configurations", CommandOptionType.NoValue)]
-        public bool SetAll { get; set; }
-
         [Option("-n|--name <NAME>", "Name of the config", CommandOptionType.SingleValue)]
         public string ConfigName { get; set; }
 
@@ -37,7 +34,20 @@ namespace Polyrific.Catapult.Cli.Commands.Config
 
             _cliConfig.Load();
 
-            if (SetAll)
+            if (!string.IsNullOrEmpty(ConfigName) && !string.IsNullOrEmpty(ConfigValue))
+            {
+
+                _cliConfig.SetValue(ConfigName, ConfigValue);
+                _cliConfig.Save();
+
+                message = $"The value of \"{ConfigName}\" has been set to \"{ConfigValue}\".";
+                Logger.LogInformation(message);
+            }
+            else if (!string.IsNullOrEmpty(ConfigName) || !string.IsNullOrEmpty(ConfigValue))
+            {
+                return message;
+            }
+            else
             {
                 Console.WriteLine("Please enter the value for each config item below, or press ENTER if no changes needed:");
 
@@ -72,15 +82,6 @@ namespace Polyrific.Catapult.Cli.Commands.Config
 
                 message = "Config values have been saved successfully.";
                 Logger.LogInformation($"Config values have been modified: {JsonConvert.SerializeObject(modifiedConfigs)}");
-            }
-            else if (!string.IsNullOrEmpty(ConfigName) && !string.IsNullOrEmpty(ConfigValue))
-            {
-
-                _cliConfig.SetValue(ConfigName, ConfigValue);
-                _cliConfig.Save();
-
-                message = $"The value of \"{ConfigName}\" has been set to \"{ConfigValue}\".";
-                Logger.LogInformation(message);
             }
 
             return message;
