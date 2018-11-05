@@ -33,6 +33,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         [Option("-d|--description <DESCRIPTION>", "Description of the external service", CommandOptionType.SingleValue)]
         public string Description { get; set; }
 
+        [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the external service", CommandOptionType.MultipleValue)]
+        public (string, string)[] Property { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to update external service \"{Name}\"...");
@@ -55,28 +58,35 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                     }
 
                     string input = null;
-                    string prompt = $"{(!string.IsNullOrEmpty(property.Description) ? property.Description : property.Name)}:";
 
-
-                    bool validInput;
-                    do
+                    if (IsPropertySet(property.Name))
                     {
-                        if (property.IsSecret)
-                            input = _consoleReader.GetPassword(prompt);
-                        else
-                            input = Console.GetString(prompt);
+                        input = Property.First(p => p.Item1 == property.Name).Item2;
+                    }
+                    else
+                    {
+                        string prompt = $"{(!string.IsNullOrEmpty(property.Description) ? property.Description : property.Name)}:";
 
-                        if (property.AllowedValues != null && property.AllowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !property.AllowedValues.Contains(input))
+                        bool validInput;
+                        do
                         {
-                            Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', property.AllowedValues)}");
-                            validInput = false;
-                        }
-                        else
-                        {
-                            validInput = true;
-                        }
+                            if (property.IsSecret)
+                                input = _consoleReader.GetPassword(prompt);
+                            else
+                                input = Console.GetString(prompt);
 
-                    } while (!validInput);
+                            if (property.AllowedValues != null && property.AllowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !property.AllowedValues.Contains(input))
+                            {
+                                Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', property.AllowedValues)}");
+                                validInput = false;
+                            }
+                            else
+                            {
+                                validInput = true;
+                            }
+
+                        } while (!validInput);
+                    }
 
                     if (!string.IsNullOrEmpty(input))
                         service.Config[property.Name] = input;
@@ -105,6 +115,11 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             var propertyValue = properties.GetValueOrDefault(condition.PropertyName);
             return propertyValue == condition.PropertyValue;
+        }
+
+        private bool IsPropertySet(string propertyName)
+        {
+            return Property?.Any(p => p.Item1 == propertyName) ?? false;
         }
     }
 }

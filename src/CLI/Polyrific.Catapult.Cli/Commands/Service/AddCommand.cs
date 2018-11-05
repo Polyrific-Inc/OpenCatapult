@@ -6,6 +6,7 @@ using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
 using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
 using Polyrific.Catapult.Shared.Service;
@@ -37,6 +38,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         [Option("-d|--description <DESCRIPTION>", "Description of the external service", CommandOptionType.SingleValue)]
         public string Description { get; set; }
 
+        [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the external service", CommandOptionType.MultipleValue)]
+        public (string, string)[] Property { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to add external service \"{Name}\"...");
@@ -47,15 +51,15 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             if (serviceType != null)
             {
-                if (serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0)
+                if ((serviceType.ExternalServiceProperties != null && serviceType.ExternalServiceProperties.Count > 0) || Type.ToLower() == ExternalServiceTypeName.GenericService.ToLower())
                 {
                     Console.WriteLine("Please enter the service properties:");
-                    var config = new Dictionary<string, string>();
+                    var config = Property?.ToDictionary(x => x.Item1, x => x.Item2) ?? new Dictionary<string, string>();
 
                     var secretProperties = new List<string>();
                     foreach (var property in serviceType.ExternalServiceProperties)
                     {
-                        if (CheckPropertyCondition(property.AdditionalLogic?.HideCondition, config))
+                        if (IsPropertySet(property.Name) || CheckPropertyCondition(property.AdditionalLogic?.HideCondition, config))
                             continue;
 
                         var isRequired = property.IsRequired || CheckPropertyCondition(property.AdditionalLogic?.RequiredCondition, config);
@@ -155,6 +159,11 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             var propertyValue = properties.GetValueOrDefault(condition.PropertyName);
             return propertyValue == condition.PropertyValue;
+        }
+
+        private bool IsPropertySet(string propertyName)
+        {
+            return Property?.Any(p => p.Item1 == propertyName) ?? false;
         }
     }
 }
