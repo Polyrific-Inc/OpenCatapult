@@ -7,19 +7,12 @@ Usage:
 dotnet occli.dll model add --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the data model
-    * Usage: `--name` (alias: `-n`)
-* description
-    * Description of the data model
-    * Usage: `--description` (alias: `-d`)
-* label
-    * Label of the data model
-    * Usage: `--label` (alias: `-l`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the data model ||| Yes |
+| --description | -d | Description of the data model ||| No |
+| --label | -l | Label of the data model ||| No |
 
 # Get
 Get a single project data model detailed record
@@ -29,13 +22,10 @@ Usage:
 dotnet occli.dll model get --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the data model
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the data model ||| Yes |
 
 # List
 List data models in a project
@@ -45,10 +35,9 @@ Usage:
 dotnet occli.dll model list --project [project]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
 
 # Remove
 Remove a project data model
@@ -58,16 +47,11 @@ Usage:
 dotnet occli.dll model remove --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the data model
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the data model ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
 # Update
 Update a project data model
@@ -77,19 +61,10 @@ Usage:
 dotnet occli.dll model update --project [project] --name [name] --rename [newname]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the data model
-    * Usage: `--name` (alias: `-n`)
-* rename
-    * New name of the data model
-    * Usage: `--rename` (alias: `-r`)
-* description
-    * Description of the data model
-    * Usage: `--description` (alias: `-d`)
-* label
-    * Label of the data model
-    * Usage: `--label` (alias: `-l`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the data model ||| Yes |
+| --rename | -rn | New name of the data model ||| No |
+| --description | -d | Description of the data model ||| No |
+| --label | -l | Label of the data model ||| No |

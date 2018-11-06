@@ -7,10 +7,9 @@ Usage:
 dotnet occli.dll project archive --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the project to be archived
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the active project ||| Yes |
 
 # Clone
 Clone a project
@@ -20,19 +19,12 @@ Usage:
 dotnet occli.dll project clone --project [project] --name [name] --includemember --includejob
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project to be cloned
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the new project
-    * Usage: `--name` (alias: `-n`)
-* includemember
-    * Include project members
-    * Usage: `--includemember` (alias: `-m`)
-* includejob
-    * Include job definitions
-    * Usage: `--includejob` (alias: `-j`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project to be cloned ||| Yes |
+| --name | -n | Name of the new project ||| Yes |
+| --includemember | -m | Include project members || false | No |
+| --includejob | -j | Include job definitions || false | No |
 
 # Create
 Create a project
@@ -42,20 +34,12 @@ Usage:
 dotnet occli.dll project create --name [name] --client [client] --template [template] --property [propname]:[propvalue]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the new project
-    * Usage: `--name` (alias: `-n`)
-* client
-    * Client of the new project
-    * Usage: `--client` (alias: `-c`)
-* template
-    * Project template name or path to template file (.yaml)
-    * Usage: `--template` (alias: `-t`)
-* property
-    * Project properties
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the new project ||| Yes |
+| --client | -c | Client of the project ||| No |
+| --template | -t | Project template name or path to template file (.yaml) ||| No |
+| --property [name]:[value] | -prop | Project properties | allowed multiple || No |
 
 # Get
 Get a single project detailed record
@@ -65,10 +49,9 @@ Usage:
 dotnet occli.dll project get --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the project
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the project ||| Yes |
 
 # Update
 Update a project
@@ -78,17 +61,11 @@ Usage:
 dotnet occli.dll project update --name [name] --client [client] --property [propname]:[propvalue]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the new project
-    * Usage: `--name` (alias: `-n`)
-* client
-    * Client of the new project
-    * Usage: `--client` (alias: `-c`)
-* property
-    * Project properties
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the project ||| Yes |
+| --client | -c | Client of the project ||| No |
+| --property [name]:[value] | -prop | Project properties | allowed multiple || No |
 
 # Export
 Export project into a yaml file
@@ -98,13 +75,10 @@ Usage:
 dotnet occli.dll project export --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the project to be exported
-    * Usage: `--name` (alias: `-n`)
-* output
-    * Output file location
-    * Usage: `--output` (alias: `-o`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the project ||| Yes |
+| --output | -o | Location of the output file || /Templates/{project}.yaml | No |
 
 # List
 List projects which the user has access to
@@ -114,15 +88,10 @@ Usage:
 dotnet occli.dll project list --status [status] --all
 ```
 
-**Options**
-* status
-    * Filter the projects by their status
-    * Usage: `--status` (alias: `-s`)
-    * Allowed values: `all` | `active` | `archived`
-    * Default value: `all`
-* all
-    * Retrieve all projects including the ones the current user are not the member (for administrator only)
-    * Usage: `--all` (alias: `-a`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --status | -s | Filter the projects by their status | all, active, archived | all | No |
+| --all | -a | Retrieve all projects including the ones the current user is not the member (for administrator only) || false | No |
 
 # Remove
 Remove a project
@@ -132,15 +101,12 @@ Usage:
 dotnet occli.dll project remove --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the project to be removed
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the project ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
-# restore
+# Restore
 Restore an archived project
 
 Usage: 
@@ -148,7 +114,6 @@ Usage:
 dotnet occli.dll project restore --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the project to be restored
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the archived project ||| Yes |

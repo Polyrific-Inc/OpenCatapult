@@ -299,6 +299,32 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
+        public void TaskAdd_ExecuteGenericService_ReturnsSuccessMessage()
+        {
+            _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
+            _externalServiceService.Setup(s => s.GetExternalServiceByName("generic-service")).ReturnsAsync((string name) => new ExternalServiceDto
+            {
+                Id = 1,
+                Name = name,
+                ExternalServiceTypeName = ExternalServiceTypeName.Generic
+            });
+
+            var console = new TestConsole(_output, "generic-service");
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            {
+                Project = "Project 1",
+                Job = "Default",
+                Name = "Deploy",
+                Type = JobTaskDefinitionType.Deploy,
+                Provider = "AzureAppService",
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Task has been added:", resultMessage);
+        }
+
+        [Fact]
         public void TaskGet_Execute_ReturnsSuccessMessage()
         {
             _pluginService.Setup(x => x.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<PluginAdditionalConfigDto>());
@@ -528,6 +554,49 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.Equal("The entered external service is not a GitHub service", resultMessage);
+        }
+
+
+        [Fact]
+        public void TaskUpdate_ExecuteGenericService_ReturnsSuccessMessage()
+        {
+            _externalServiceService.Setup(s => s.GetExternalServiceByName("generic-service")).ReturnsAsync((string name) => new ExternalServiceDto
+            {
+                Id = 1,
+                Name = name,
+                ExternalServiceTypeName = ExternalServiceTypeName.Generic
+            });
+            _jobDefinitionService.Setup(x => x.GetJobTaskDefinitionByName(1, 1, "Deploy")).ReturnsAsync((int projectId, int jobId, string taskName) => new JobTaskDefinitionDto
+            {
+                Id = 1,
+                Type = "Deploy",
+                JobDefinitionId = jobId,
+                Name = taskName,
+                Provider = "AzureAppService",
+                Configs = new Dictionary<string, string>
+                {
+                    {"AzureAppServiceExternalService", "azure-default" }
+                },
+                AdditionalConfigs = new Dictionary<string, string>
+                {
+                    {"SubscriptionId", "test" },
+                    {"AppKey", "test" }
+                }
+            });
+            _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
+
+            var console = new TestConsole(_output, "generic-service");
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            {
+                Project = "Project 1",
+                Job = "Default",
+                Name = "Deploy"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Task Deploy has been updated successfully", resultMessage);
+            _jobDefinitionService.Verify(x => x.UpdateJobTaskDefinition(1, 1, 1, It.Is<UpdateJobTaskDefinitionDto>(t => t.AdditionalConfigs.Count == 2)), Times.Once);
         }
 
         [Fact]

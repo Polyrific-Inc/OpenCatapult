@@ -111,7 +111,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 return message;
                             }
 
-                            if (externalService.ExternalServiceTypeName != service)
+                            if (externalService.ExternalServiceTypeName != service && externalService.ExternalServiceTypeName.ToLower() != ExternalServiceTypeName.Generic.ToLower())
                             {
                                 message = $"The entered external service is not a {service} service";
                                 return message;

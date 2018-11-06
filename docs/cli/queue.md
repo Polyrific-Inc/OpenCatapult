@@ -7,13 +7,10 @@ Usage:
 dotnet occli.dll queue add --project [project] --job [job]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
 
 # Get
 Get a single job queue detailed record
@@ -23,13 +20,10 @@ Usage:
 dotnet occli.dll queue get --project [project] --number [number]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* number (mandatory)
-    * Queue number (Id or Code)
-    * Usage: `--number` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --number | -n | Identifier of the queue (Id or Code) ||| Yes |
 
 # List
 List queued jobs
@@ -39,10 +33,10 @@ Usage:
 dotnet occli.dll queue list --project [project]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --status | -s | Filter the queued jobs by their status | all, current, succeeded, failed | all | No |
 
 # Log
 Get complete log of a queued job
@@ -52,13 +46,10 @@ Usage:
 dotnet occli.dll queue log --project [project] --number [number]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* number (mandatory)
-    * Queue number (Id or Code)
-    * Usage: `--number` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --number | -n | Identifier of the queue (Id or Code) ||| Yes |
 
 # Restart
 Restart the pending queue
@@ -68,10 +59,7 @@ Usage:
 dotnet occli.dll queue restart --project [project] --number [number]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* number (mandatory)
-    * Queue number (Id or Code)
-    * Usage: `--number` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --number | -n | Identifier of the queue (Id or Code) ||| Yes |

@@ -7,13 +7,10 @@ Usage:
 dotnet occli.dll job add --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the new job definition
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the engine ||| Yes |
 
 # List
 List project's job definition
@@ -23,6 +20,10 @@ Usage:
 dotnet occli.dll job list --project [project]
 ```
 
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+
 # Get
 Get a single job definition detailed record
 
@@ -31,13 +32,10 @@ Usage:
 dotnet occli.dll job get --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the new job definition
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the engine ||| Yes |
 
 # Remove
 Remove a job definition
@@ -47,16 +45,11 @@ Usage:
 dotnet occli.dll job remove --project [project] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the job definition to be removed
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the engine ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
 # Update
 Update a job definition
@@ -66,13 +59,8 @@ Usage:
 dotnet occli.dll job update --project [project] --name [name] --rename [new name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* name (mandatory)
-    * Name of the job definition to be updated
-    * Usage: `--name` (alias: `-n`)
-* rename
-    * New name of the job definition
-    * Usage: `--rename` (alias: `-rn`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --name | -n | Name of the engine ||| Yes |
+| --rename | -rn | New name of the job definition ||| No |

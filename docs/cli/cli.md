@@ -1,32 +1,49 @@
 # Command Line Interface
 
+`Opencatapult` provides command line interface as a way for user to interact with the system. In most of the time, it will make API calls and display back the result based on the API response. So it is important to make sure that the right API Url has been set in the config.
+
 ## Architecture
 
 ![Architecture](../img/cli-arch.jpeg)
 
-
 ## Commands
-Opencatapult provide a command line interface to interact with the API. Following are the commands available:
+
+Following are the available commands in CLI:
 
 ### Login
-Login to catapult. You will be prompted to input the user's password.
+Login to `OpenCatapult`. You will be prompted to input the user's password.
 
 Usage:
 ```sh
 dotnet occli.dll login --user [user]
 ```
 
-**Options:**
-* user (mandatory)
-    * The user email used for login
-    * Usage: `--user` (alias: `-u`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --user | -u | Username of the suspended user ||| Yes |
 
 ### Logout
-Logout from catapult
+Logout from `OpenCatapult`.
 
 Usage:
 ```sh
 dotnet occli.dll logout
+```
+
+### Current User
+Check current logged-in user.
+
+Usage:
+```sh
+dotnet occli.dll currentuser
+```
+
+### Version
+Check version of the components
+
+Usage:
+```sh
+dotnet occli.dll version
 ```
 
 ### Account		

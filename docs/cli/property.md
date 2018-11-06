@@ -7,37 +7,16 @@ Usage:
 dotnet occli.dll property add --project [project] --model [model] --name [name] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* model (mandatory)
-    * Name of the data model
-    * Usage: `--model` (alias: `-m`)
-* name (mandatory)
-    * Name of the data model property
-    * Usage: `--name` (alias: `-n`)
-* label
-    * Label of the data model property
-    * Usage: `--label` (alias: `-l`)
-* type
-    * Data type of the property
-    * Usage: `--type` (alias: `-t`)
-    * Allowed values: `string` | `int` | `short` | `float` | `double` | `decimal` | `bool` | `datetime` |`byte` | `guid` | `dbgeography`
-    * Default value: `string`
-* controltype
-    * Control type of the property
-    * Usage: `--controltype` (alias: `-ct`)
-    * Allowed values: `input-text` | `input-number` | `input-file` | `textarea` | `checkbox` | `select` | `radio` | `calendar` |`image`
-    * Default value: `input-text`
-* relational
-    * Name of the related data model
-    * Usage: `--relational` (alias: `-r`)
-* relationaltype
-    * Relationship type
-    * Usage: `--relationaltype` (alias: `-rt`)
-    * Allowed values: `one-to-one` | `one-to-many` | `many-to-many`
-    * Default value: `one-to-one`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --model | -m | Name of the data model ||| Yes |
+| --name | -n | Name of the data model property ||| Yes |
+| --label | -l | Label of the data model property || same as the name| No |
+| --type | -t | Data type of the property | string, int, short, float, double, decimal, bool, datetime, byte, guid, dbgeography | string | No |
+| --controltype | -ct | Control type of the property | input-text, input-number, input-file, textarea, checkbox, select, radio, calendar, image | input-text | No |
+| --relational | -r | Name of the related data model ||| No |
+| --relationaltype | -rt | Type of the relationship | one-to-one, one-to-many | one-to-one | No |
 
 # List
 List properties in a data model
@@ -47,13 +26,10 @@ Usage:
 dotnet occli.dll property list --project [project] --model [model]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* model (mandatory)
-    * Name of the data model
-    * Usage: `--model` (alias: `-m`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --model | -m | Name of the data model ||| Yes |
 
 # Remove
 Remove a project data model property
@@ -63,19 +39,12 @@ Usage:
 dotnet occli.dll property remove --project [project] --model [model] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* model (mandatory)
-    * Name of the data model
-    * Usage: `--model` (alias: `-m`)
-* name (mandatory)
-    * Name of the data model property
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --model | -m | Name of the data model ||| Yes |
+| --name | -n | Name of the data model property ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
 # Update
 Update a project data model property
@@ -85,34 +54,14 @@ Usage:
 dotnet occli.dll property update --project [project] --name [name] --rename [newname] --label [label] --type [type] --controltype [controltype] --relational [relational] --relationaltype [relationaltype]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* model (mandatory)
-    * Name of the data model
-    * Usage: `--model` (alias: `-m`)
-* name (mandatory)
-    * Name of the data model property
-    * Usage: `--name` (alias: `-n`)
-* rename
-    * New name of the data model property
-    * Usage: `--rename` (alias: `-r`)
-* label
-    * Label of the data model property
-    * Usage: `--label` (alias: `-l`)
-* type
-    * Data type of the property
-    * Usage: `--type` (alias: `-t`)
-    * Allowed values: `string` | `int` | `short` | `float` | `double` | `decimal` | `bool` | `datetime` |`byte` | `guid` | `dbgeography`
-* controltype
-    * Control type of the property
-    * Usage: `--controltype` (alias: `-ct`)
-    * Allowed values: `input-text` | `input-number` | `input-file` | `textarea` | `checkbox` | `select` | `radio` | `calendar` |`image`
-* relational
-    * Name of the related data model
-    * Usage: `--relational` (alias: `-r`)
-* relationaltype
-    * Relationship type
-    * Usage: `--relationaltype` (alias: `-rt`)
-    * Allowed values: `one-to-one` | `one-to-many` | `many-to-many`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --model | -m | Name of the data model ||| Yes |
+| --name | -n | Name of the data model property ||| Yes |
+| --rename | -rn | New name of the data model property ||| No |
+| --label | -l | Label of the data model property ||| No |
+| --type | -t | Data type of the property | string, int, short, float, double, decimal, bool, datetime, byte, guid, dbgeography | | No |
+| --controltype | -ct | Control type of the property | input-text, input-number, input-file, textarea, checkbox, select, radio, calendar, image || No |
+| --relational | -r | Name of the related data model ||| No |
+| --relationaltype | -rt | Type of the relationship | one-to-one, one-to-many || No |

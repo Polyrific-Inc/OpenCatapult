@@ -6,13 +6,11 @@ Usage:
 dotnet ocengine.dll config get --name [name]
 ```
 
-**Options**
-* all
-    * Display all configuration items
-    * Usage: `--all` (alias: `-a`)
-* name
-    * Name of the configuration item
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Mandatory |
+| --- | --- | --- | --- |
+| --name | -n | Name of the configuration item | No |
+
+Note: If the `--name` option is not included, it will display all configuration items.
 
 # Import
 Import configuration from a config file
@@ -22,10 +20,9 @@ Usage:
 dotnet ocengine.dll config import --file [file]
 ```
 
-**Options**
-* file (mandatory)
-    * Full path of the file
-    * Usage: `--file` (alias: `-f`)
+| Option | Alias | Description | Mandatory |
+| --- | --- | --- | --- |
+| --file | -f | Path to the config file | Yes |
 
 # Remove
 Remove configurations
@@ -35,13 +32,12 @@ Usage:
 dotnet ocengine.dll config remove --name [name]
 ```
 
-**Options**
-* all
-    * Display all configuration items
-    * Usage: `--all` (alias: `-a`)
-* name
-    * Name of the configuration item
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Mandatory |
+| --- | --- | --- | --- |
+| --all | -a | Remove all configuration items | No |
+| --name | -n | Name of the configuration item | No |
+
+Note: either `--all` or `--name` option needs to be included in the command
 
 # Set
 Set configurations
@@ -51,13 +47,11 @@ Usage:
 dotnet ocengine.dll config set --name [name] --value [value]
 ``` 
 
-**Options**
-* all
-    * Set all configurations in wizard mode
-    * Usage: `--all` (alias: `-a`)
-* name
-    * Name of the configuration item
-    * Usage: `--name` (alias: `-n`)
-* value
-    * Value of the configuration item
-    * Usage: `--value` (alias: `-v`)
+| Option | Alias | Description | Mandatory |
+| --- | --- | --- | --- |
+| --name | -n | Name of the configuration item | No |
+| --value | -v | Value of the configuration item | No |
+
+Note:
+- If the `--name` option is not included, it will enter "wizard-mode" which will prompt user with all configuration items to configure
+- If the `--name` option is included, the `--value` option needs to be included as well

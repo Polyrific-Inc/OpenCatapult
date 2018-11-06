@@ -404,6 +404,51 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public async void AddJobTaskDefinition_GenericService_ValidItem()
+        {
+            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+
+            _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(
+                new ExternalService
+                {
+                    Id = 3,
+                    Name = "generic",
+                    ExternalServiceTypeId = 1,
+                    ExternalServiceType = new ExternalServiceType
+                    {
+                        Id = 1,
+                        Name = ExternalServiceTypeName.Generic
+                    }
+                });
+
+            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<PluginAdditionalConfig>
+                {
+                    new PluginAdditionalConfig
+                    {
+                        Id = 1,
+                        Name = "testconfig",
+                        IsRequired = true
+                    }
+                });
+
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            int newId = await projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Type = JobTaskDefinitionType.Push,
+                ConfigString = @"{""GitHubExternalService"":""github-default""}",
+                AdditionalConfigString = @"{""testconfig"":""testvalue""}",
+                Provider = "GitHubProvider"
+            });
+
+            Assert.True(newId > 1);
+            Assert.True(_dataTask.Count > 1);
+        }
+
+        [Fact]
         public void AddJobTaskDefinition_InvalidJobDefinition()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);

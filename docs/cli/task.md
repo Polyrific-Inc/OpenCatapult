@@ -7,31 +7,15 @@ Usage:
 dotnet occli.dll task add --project [project] --job [job] --name [name] --type [type] --provider [provider] --property [propname]:[propvalue]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
-* name (mandatory)
-    * Name of the new job task definition
-    * Usage: `--name` (alias: `-n`)
-* type
-    * Type of the task
-    * Usage: `--type` (alias: `-t`)
-    * Allowed values: `Clone` | `Generate` | `Push` | `Merge` | `Build` | `PublishArtifact` | `Deploy` | `DeployDb` | `Test`
-    * Default value: `Generate`
-* provider
-    * Name of the provider used in the task
-    * Usage: `--provider` (alias: `-prov`)
-* property
-    * Property of the task
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
-* sequence
-    * The sequence of the task when run by engine
-    * Usage: `--sequence` (alias: `-s`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
+| --name | -n | Name of the new job task ||| Yes |
+| --provider | -prov | Name of the provider for the task ||| Yes |
+| --type | -t | Type of the job task | Clone, Generate, Push, Merge, Build, PublishArtifact, Deploy, DeployDb, Test | Generate | No |
+| --property [key]:[value] | -prop | Property of the job task || Allowed multiple | No |
+| --sequence | -s | The sequence of the task when run by engine ||| No |
 
 # Get
 Get a single job task definition
@@ -41,16 +25,11 @@ Usage:
 dotnet occli.dll task get --project [project] --job [job] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
-* name (mandatory)
-    * Name of the new job task definition
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
+| --name | -n | Name of the job task ||| Yes |
 
 # List
 List job task definitions
@@ -60,13 +39,10 @@ Usage:
 dotnet occli.dll task list --project [project] --job [job]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
 
 # Remove
 Remove a job task definition
@@ -76,19 +52,12 @@ Usage:
 dotnet occli.dll task remove --project [project] --job [job] --name [name]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
-* name (mandatory)
-    * Name of the new job task definition
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
+| --name | -n | Name of the job task ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
 # Update
 Update a job task definition
@@ -98,30 +67,13 @@ Usage:
 dotnet occli.dll task update --project [project] --job [job] --name [name] --rename [newname] --type [type] --provider [provider] --property [propname]:[propvalue]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* job (mandatory)
-    * Name of the job definition
-    * Usage: `--job` (alias: `-j`)
-* name (mandatory)
-    * Name of the new job task definition
-    * Usage: `--name` (alias: `-n`)
-* rename
-    * New name of the new job task definition
-    * Usage: `--rename` (alias: `-rn`)
-* type
-    * Type of the task
-    * Usage: `--type` (alias: `-t`)
-    * Allowed values: `Clone` | `Generate` | `Push` | `Merge` | `Build` | `PublishArtifact` | `Deploy` | `DeployDb` | `Test`
-* provider
-    * Name of the provider used in the task
-    * Usage: `--provider` (alias: `-prov`)
-* property
-    * Property of the task
-    * Usage: `--property [propname]:[propvalue]` (alias: `-prop`)
-    * Allows multiple values
-* sequence
-    * The sequence of the task when run by engine
-    * Usage: `--sequence` (alias: `-s`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --job | -j | Name of the job definition ||| Yes |
+| --name | -n | Name of the job task ||| Yes |
+| --rename | -rn | New name of the job task ||| No |
+| --provider | -prov | Name of the provider for the task ||| No |
+| --type | -t | Type of the job task | Clone, Generate, Push, Merge, Build, PublishArtifact, Deploy, DeployDb, Test || No |
+| --property [key]:[value] | -prop | Property of the job task || Allowed multiple | No |
+| --sequence | -s | The sequence of the task when run by engine ||| No |

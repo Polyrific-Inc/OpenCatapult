@@ -7,18 +7,11 @@ Usage:
 dotnet occli.dll member add --project [project] --user [user] --role [role]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* user (mandatory)
-    * Username (email) of the user
-    * Usage: `--user` (alias: `-u`)
-* role
-    * Role of the project member
-    * Usage: `--role` (alias: `-r`)
-    * Allowed values: `member` | `contributor` | `maintainer` | `owner`
-    * Default value: `member`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --user | -u | Username of the user ||| Yes |
+| --role | -r | Role of the project member | member, contributor, maintainer, owner | member | No |
 
 # List
 List members of the project
@@ -28,15 +21,10 @@ Usage:
 dotnet occli.dll member list --project [project]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* role
-    * Role of the project member
-    * Usage: `--role` (alias: `-r`)
-    * Allowed values: `all` | `member` | `contributor` | `maintainer` | `owner`
-    * Default value: `all`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --role | -r | Role of the project member | all, member, contributor, maintainer, owner | all | No |
 
 # Remove
 Remove a project member
@@ -46,16 +34,11 @@ Usage:
 dotnet occli.dll member remove --project [project] --user [user]
 ```
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* user (mandatory)
-    * Username (email) of the user
-    * Usage: `--user` (alias: `-u`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --user | -u | Username of the user ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |
 
 # Update
 Update the role of a project member
@@ -65,14 +48,8 @@ Usage:
 dotnet occli.dll member update --project [project] --user [user] --role [role]
 ``` 
 
-**Options**
-* project (mandatory)
-    * Name of the project
-    * Usage: `--project` (alias: `-p`)
-* user (mandatory)
-    * Username (email) of the user
-    * Usage: `--user` (alias: `-u`)
-* role
-    * Role of the project member
-    * Usage: `--role` (alias: `-r`)
-    * Allowed values: `member` | `contributor` | `maintainer` | `owner`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --project | -p | Name of the project ||| Yes |
+| --user | -u | Username of the user ||| Yes |
+| --role | -r | Role of the project member | member, contributor, maintainer, owner || Yes |

@@ -3,127 +3,141 @@
 These endpoints provide methods to add, edit, and delete account related data
 
 ## Register
-Method: `POST`
 
-Uri: `/Account/Register`
+Register a new application user.
 
-Authorization: `Anonymous`
-
-Register a new user to authenticate into the Catapult API.
-
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/Register` |
+| Authorization | `Anonymous` |
 
 ## Confirm Email
-Method: `GET`
 
-Uri: `/Account/{userId}/Confirm?token={token}`
+Confirm the registered email using the confirmation token.
 
-Authorization: `Anonymous`
-
-Confirm the email using the confirmation token.
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account/{userId}/Confirm?token={token}` |
+| Authorization | `Anonymous` |
 
 ## Get Users
-Method: `GET`
 
-Uri: `/Account?status={status}`
+Get the list of application users. Optionally filter it by status (`active` | `suspended`)
 
-Authorization: `UserRoleAdminAccess`
-
-Get the list of users within the system. Optionally filter it by status (`active` | `suspended`)
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account?status={status}` |
+| Authorization | `UserRoleAdminAccess` |
 
 ## Get User By Id
-Method: `GET`
-
-Uri: `/Account/{userId}`
-
-Authorization: `Authenticated`
 
 Get a user by user Id. Only administrator would be able to call this endpoint for other user Id. The rest would only be accepted if the supplied `userId` is of the current user.
 
-## Update User Profile
-Method: `PUT`
-
-Uri: `/Account/{userId}`
-
-Authorization: `Authenticated`
-
-Update user profile (i.e. First Name and Last Name). Only administrator would be able to call this endpoint for other user Id. The rest would only be accepted if the supplied `userId` is of the current user.
-
-## Delete User
-Method: `DELETE`
-
-Uri: `/Account/{userId}`
-
-Authorization: `UserRoleAdminAccess`
-
-Delete a user.
-
-## Get Current user
-Method: `GET`
-
-Uri: `/Account/CurrentUser`
-
-Authorization: `Authenticated`
-
-Get the current user data.
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account/{userId}` |
+| Authorization | `Authenticated` |
 
 ## Get User By Email
-Method: `GET`
-
-Uri: `/Account/email/{email}`
-
-Authorization: `Authenticated`
 
 Get a user by its email. Only administrator would be able to call this endpoint for other user email. The rest would only be accepted if the supplied `email` is of the current user.
 
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account/email/{email}` |
+| Authorization | `Authenticated` |
+
+## Get Current user
+
+Get the current user data.
+
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account/CurrentUser` |
+| Authorization | `Authenticated` |
+
+## Update User Profile
+
+Update user profile (i.e. First Name and Last Name). Only administrator would be able to call this endpoint for other user Id. The rest would only be accepted if the supplied `userId` is of the current user.
+
+|||
+| --- | --- |
+| Method | `PUT` |
+| Uri | `/Account/{userId}` |
+| Authorization | `Authenticated` |
+
+## Delete User
+
+Delete a user.
+
+|||
+| --- | --- |
+| Method | `DELETE` |
+| Uri | `/Account/{userId}` |
+| Authorization | `UserRoleAdminAccess` |
+
 ## Suspend user
-Method: `POST`
 
-Uri: `/Account/{userId}/suspend`
+Suspend a user to prevent her to login into the application.
 
-Authorization: `UserRoleAdminAccess`
-
-Suspend a user to reject its access temporarily
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/{userId}/suspend` |
+| Authorization | `UserRoleAdminAccess` |
 
 ## Reactivate user
-Method: `POST`
 
-Uri: `/Account/{userId}/activate`
+Reactivate a suspended user to allow her to regain access to the application.
 
-Authorization: `UserRoleAdminAccess`
-
-Reactivate a suspended user so that it can regain access to the application
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/{userId}/activate` |
+| Authorization | `UserRoleAdminAccess` |
 
 ## Update password
-Method: `POST`
-
-Uri: `/Account/{userId}/password`
-
-Authorization: `Authenticated`
 
 Update a user password. Only administrator would be able to call this endpoint for other user Id. The rest would only be accepted if the supplied `userId` is of the current user.
 
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/{userId}/password` |
+| Authorization | `Authenticated` |
+
 ## Request reset password
-Method: `GET`
 
-Uri: `/Account/email/{email}/resetpassword`
+Request for a reset password token to be sent to user email address.
 
-Authorization: `Anonymous`
-
-Send a request password token to the email of the user
+|||
+| --- | --- |
+| Method | `GET` |
+| Uri | `/Account/email/{email}/resetpassword` |
+| Authorization | `Anonymous` |
 
 ## Reset password
 
-Method: `POST`
+Update user's password by specifying the request password token.
 
-Uri: `/Account/email/{email}/resetpassword`
-
-Authorization: `Anonymous`
-
-Update the user's password into a new one by specifying the request password token.
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/email/{email}/resetpassword` |
+| Authorization | `Anonymous` |
 
 ## Set User Role
-Method: `POST`
 
-Uri: `/Account/{userId}/role`
+Set role of the user. Available roles are: `Administrator`, `Basic`, or `Guest`
 
-Set the role of the user. Available roles are: `Administrator`, `Basic`, or `Guest`
+|||
+| --- | --- |
+| Method | `POST` |
+| Uri | `/Account/{userId}/role` |
+| Authorization | `UserRoleAdminAccess` |

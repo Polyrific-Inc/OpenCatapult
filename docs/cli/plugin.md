@@ -6,10 +6,9 @@ Usage:
 dotnet occli.dll plugin get --name [name]
 ```
 
-**Options**
-* name (mandatory)
-    * Name of the plugin
-    * Usage: `--name` (alias: `-n`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the plugin ||| Yes |
 
 # List
 List all registered plugins
@@ -19,12 +18,9 @@ Usage:
 dotnet occli.dll plugin list --type [type]
 ```
 
-**Options**
-* type
-    * Type of the plugins
-    * Usage: `--type` (alias: `-t`)
-    * Allowed values: `all` | `BuildProvider` | `DatabaseProvider` | `GeneratorProvider` | `HostingProvider` | `RepositoryProvider` | `StorageProvider` | `TestProvider`
-    * Default value: `all`
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --type | -t | Type of the plugins | all, BuildProvider, DatabaseProvider, GeneratorProvider, HostingProvider, RepositoryProvider, StorageProvider, TestProvider | all | No |
 
 # Register
 Register a plugin
@@ -34,10 +30,9 @@ Usage:
 dotnet occli.dll plugin register --file [path to plugin.yml file]
 ``` 
 
-**Options**
-* file (mandatory)
-    * Name of the plugin
-    * Usage: `--file` (alias: `-f`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --file | -f | Path to the `plugin.yml` file ||| Yes |
 
 # Remove
 Remove a plugin
@@ -47,10 +42,7 @@ Usage:
 dotnet occli.dll plugin remove --name [name]
 ``` 
 
-**Options**
-* name (mandatory)
-    * Name of the plugin
-    * Usage: `--name` (alias: `-n`)
-* autoconfirm
-    * Perform the removal without asking for confirmation
-    * Usage: `--autoconfirm` (alias: `-ac`)
+| Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
+| --- | --- | --- | --- | --- | --- |
+| --name | -n | Name of the plugin ||| Yes |
+| --autoconfirm | -ac | Perform the removal without asking for confirmation || false | No |

@@ -5,7 +5,7 @@
 ![Architecture](../img/api-arch-2.jpeg)
 
 ## Endpoints
-The following sections explain the details for each endpoints
+The following sections explain the details for each endpoints:
 - [Account](account.md)
 - [Catapult Engine](catapult-engine.md)
 - [External Service](external-service.md)
@@ -19,8 +19,10 @@ The following sections explain the details for each endpoints
 - [Project Member](project-member.md)
 - [Token](token.md)
 
+Note: In most of the time, users don't need to access the API endpoints directly. They can interact with them via [CLI](../cli.cli.md).
+
 ## Endpoint Authorization
-Each endpoint could define the needed authorization in order to access them. Following are the authorizations available in the API:
+Each endpoint is defined with certain access authorization. Following are the authorizations available in the API:
 - `ProjectAccess`: The user is a member in the current project, regardless of its role
 - `ProjectOwnerAccess`: The user is a member with `Owner` role in the current project
 - `ProjectMaintainerAccess`: The user is a member with `Maintainer` or higher role in the current project
