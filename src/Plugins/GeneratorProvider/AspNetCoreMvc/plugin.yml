@@ -3,11 +3,6 @@ type: 'GeneratorProvider'
 author: 'Polyrific'
 version: '1.0'
 additional-configs:
-  - name: ConnectionString
-    label: Connection String
-    type: string
-    is-required: true
-    is-secret: true
   - name: AdminEmail
     label: Admin Email
     type: string
