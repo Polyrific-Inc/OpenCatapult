@@ -35,7 +35,11 @@ namespace Polyrific.Catapult.Api.SecretVault
         public async Task<string> Get(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             var protectedValue = await _textWriter.Read(FolderName, name);
-            return _protector.Unprotect(protectedValue);
+
+            if (!string.IsNullOrEmpty(protectedValue))
+                return _protector.Unprotect(protectedValue);
+            else
+                return null;
         }
 
         public async Task Update(string name, string value, CancellationToken cancellationToken = default(CancellationToken))

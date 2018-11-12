@@ -23,7 +23,10 @@ namespace Polyrific.Catapult.Shared.Common
             var folderPath = GetFolderPath(folderName);
             var filePath = Path.Combine(folderPath, fileName);
 
-            return Task.Run(() => File.Delete(filePath));
+            if (File.Exists(filePath))
+                return Task.Run(() => File.Delete(filePath));
+            else
+                return Task.CompletedTask;
         }
 
         public async Task<string> Read(string folderName, string fileName)
@@ -34,7 +37,10 @@ namespace Polyrific.Catapult.Shared.Common
             {
                 var filePath = Path.Combine(folderPath, fileName);
 
-                return await FileHelper.ReadAllTextAsync(filePath);
+                if (File.Exists(filePath))
+                    return await FileHelper.ReadAllTextAsync(filePath);
+                else
+                    return null;
             }
             else
             {
