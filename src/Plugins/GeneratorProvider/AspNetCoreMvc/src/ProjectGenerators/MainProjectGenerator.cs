@@ -67,7 +67,7 @@ namespace AspNetCoreMvc.ProjectGenerators
 
         public async Task<string> UpdateMigrationScript()
         {
-            var args = $"ef migrations add {DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s {_projectHelper.GetProjectFullPath(Name)} -p {_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}")}";
+            var args = $"ef migrations add {DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")}_CatapultUpdate -s \"{_projectHelper.GetProjectFullPath(Name)}\" -p \"{_projectHelper.GetProjectFullPath($"{_projectName}.{DataProjectGenerator.DataProject}\"")}";
             return await CommandHelper.RunDotnet(args, new Dictionary<string, string>
             {
                 { "ConnectionStrings__DefaultConnection", _connectionString }

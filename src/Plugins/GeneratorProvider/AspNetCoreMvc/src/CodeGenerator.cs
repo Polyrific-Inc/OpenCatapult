@@ -40,7 +40,7 @@ namespace AspNetCoreMvc
 
         public async Task<string> InitSolution()
         {
-            var args = $"new sln -n {_projectName} -o {_outputLocation}";
+            var args = $"new sln -n {_projectName} -o \"{_outputLocation}\"";
             return await CommandHelper.RunDotnet(args);
         }
 

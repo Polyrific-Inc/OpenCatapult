@@ -17,7 +17,7 @@ namespace AspNetCoreMvc.ProjectGenerators
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
         private readonly ILogger _logger;
-        private readonly List<ProjectDataModelDto> _builtInModel = new List<ProjectDataModelDto>
+        private static readonly List<ProjectDataModelDto> _builtInModel = new List<ProjectDataModelDto>
         {
             new ProjectDataModelDto
             {
@@ -49,6 +49,7 @@ namespace AspNetCoreMvc.ProjectGenerators
         public const string UserModel = "User";
 
         private string Name => $"{_projectName}.{CoreProject}";
+        public static List<string> UserModelProperties => _builtInModel.First(m => m.Name == UserModel).Properties.Select(p => p.Name).ToList();
 
         public CoreProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, ILogger logger)
         {
@@ -317,6 +318,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine("        Task<User> CreateUser(string email, string password, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine();
+            sb.AppendLine("        Task<User> CreateUser(User user, CancellationToken cancellationToken = default(CancellationToken));");
+            sb.AppendLine();
             sb.AppendLine("        Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken));");
             sb.AppendLine();
             sb.AppendLine("        Task DeleteUser(int userId, CancellationToken cancellationToken = default(CancellationToken));");
@@ -463,6 +466,17 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            };");
             sb.AppendLine();
             sb.AppendLine("            var id = await _userRepository.Create(user, password, cancellationToken);");
+            sb.AppendLine("            if (id > 0)");
+            sb.AppendLine("                user.Id = id;");
+            sb.AppendLine();
+            sb.AppendLine("            return user;");
+            sb.AppendLine("        }");
+            sb.AppendLine();
+            sb.AppendLine("        public async Task<User> CreateUser(User user, CancellationToken cancellationToken = default(CancellationToken))");
+            sb.AppendLine("        {");
+            sb.AppendLine("            cancellationToken.ThrowIfCancellationRequested();");
+            sb.AppendLine();
+            sb.AppendLine("            var id = await _userRepository.Create(user, null, cancellationToken);");
             sb.AppendLine("            if (id > 0)");
             sb.AppendLine("                user.Id = id;");
             sb.AppendLine();

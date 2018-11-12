@@ -34,7 +34,7 @@ namespace AspNetCoreMvc.Helpers
             if (!Directory.Exists(projectFolder))
                 Directory.CreateDirectory(projectFolder);
 
-            var args = $"new {template} -n {projectName} -o {projectFolder}";
+            var args = $"new {template} -n {projectName} -o \"{projectFolder}\"";
 
             var message = await CommandHelper.RunDotnet(args, null, _logger);
             DeleteFileToProject(projectName, "Class1.cs");
@@ -43,15 +43,15 @@ namespace AspNetCoreMvc.Helpers
 
             if (projectReferences != null)
                 foreach (var projectReference in projectReferences)
-                    await CommandHelper.RunDotnet($"add {projectFile} reference {projectReference}", null, _logger);
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger);
 
             if (packages != null)
                 foreach (var package in packages)
-                    await CommandHelper.RunDotnet($"add {projectFile} package {package.name} -v {package.version}", null, _logger);
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" package {package.name} -v {package.version}", null, _logger);
 
             // add project to solution
             var solutionFile = Path.Combine(_outputLocation, $"{_projectName}.sln");
-            await CommandHelper.RunDotnet($"sln {solutionFile} add {projectFile}", null, _logger);
+            await CommandHelper.RunDotnet($"sln \"{solutionFile}\" add \"{projectFile}\"", null, _logger);
 
             return message;
         }

@@ -56,7 +56,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateBaseEntityConfig();
 
             foreach (var model in _models)
-                GenerateEntityConfig(model);
+                if (model.Name != CoreProjectGenerator.UserModel)
+                    GenerateEntityConfig(model);
 
             CleanUpEntityConfigs();
 
@@ -123,7 +124,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             foreach (var model in _models)
-                sb.AppendLine($"        public virtual DbSet<{model.Name}> {TextHelper.Pluralize(model.Name)} {{ get; set; }}");            
+                if (model.Name != CoreProjectGenerator.UserModel)
+                    sb.AppendLine($"        public virtual DbSet<{model.Name}> {TextHelper.Pluralize(model.Name)} {{ get; set; }}");            
 
             sb.AppendLine();
             sb.AppendLine("        protected override void OnModelCreating(ModelBuilder modelBuilder)");
@@ -132,7 +134,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
 
             foreach (var model in _models)
-                sb.AppendLine($"            modelBuilder.ApplyConfiguration(new {model.Name}Config());");
+                if (model.Name != CoreProjectGenerator.UserModel)
+                    sb.AppendLine($"            modelBuilder.ApplyConfiguration(new {model.Name}Config());");
 
             sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationUserConfig());");
             sb.AppendLine($"            modelBuilder.ApplyConfiguration(new ApplicationRoleConfig());");
@@ -157,7 +160,8 @@ namespace AspNetCoreMvc.ProjectGenerators
             GenerateBaseRepositoryClass();
 
             foreach (var model in _models)
-                GenerateRepositoryClass(model);
+                if (model.Name != CoreProjectGenerator.UserModel)
+                    GenerateRepositoryClass(model);
 
             GenerateUserRepository();
 
@@ -391,6 +395,9 @@ namespace AspNetCoreMvc.ProjectGenerators
             {
                 foreach (var property in userModel.Properties)
                 {
+                    if (CoreProjectGenerator.UserModelProperties.Contains(property.Name))
+                        continue;
+
                     if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
                     {
                         if (property.RelationalType == PropertyRelationalType.OneToOne)
