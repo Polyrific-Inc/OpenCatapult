@@ -20,6 +20,8 @@ namespace GitHub
         private const string DefaultAuthor = "OpenCatapult";
         private const string DefaultEmail = "admin@opencatapult.net";
         private const string DefaultCommitMessage = "Changes by OpenCatapult";
+        private const string DefaultBaseBranch = "master";
+        private const string DefaultWorkingBranch = "OpenCatapultGenerated";
 
         public CodeRepositoryProvider()
         {
@@ -79,11 +81,14 @@ namespace GitHub
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, logger);
 
-            var commitError = await _gitAutomation.Commit(config.PullRequestTargetBranch, config.Branch, config.CommitMessage ?? DefaultCommitMessage, config.Author ?? DefaultAuthor, config.Email ?? DefaultEmail);
+            string baseBranch = config.PullRequestTargetBranch ?? DefaultBaseBranch;
+            string workingBranch = config.Branch ?? (config.CreatePullRequest ? DefaultWorkingBranch : DefaultBaseBranch);
+
+            var commitError = await _gitAutomation.Commit(baseBranch, workingBranch, config.CommitMessage ?? DefaultCommitMessage, config.Author ?? DefaultAuthor, config.Email ?? DefaultEmail);
             if (!string.IsNullOrEmpty(commitError))
                 return ("", null, commitError);
 
-            var error = await _gitAutomation.Push(config.Branch);
+            var error = await _gitAutomation.Push(workingBranch);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
@@ -91,7 +96,7 @@ namespace GitHub
 
             if (config.CreatePullRequest)
             {
-                var prNumber = await _gitAutomation.SubmitPullRequest(config.Branch, config.PullRequestTargetBranch);
+                var prNumber = await _gitAutomation.SubmitPullRequest(workingBranch, baseBranch);
                 if (prNumber > 0)
                 {
                     outputValues = new Dictionary<string, string>

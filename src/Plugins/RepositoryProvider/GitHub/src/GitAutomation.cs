@@ -102,7 +102,7 @@ namespace GitHub
 
         public async Task<int> SubmitPullRequest(string branch, string targetBranch)
         {
-            if (branch == "master")
+            if (branch == targetBranch)
                 return 0;
 
             var prTitle = $"PR Branch {branch}";
