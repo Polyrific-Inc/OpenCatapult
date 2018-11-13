@@ -13,6 +13,8 @@
     <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/Polyrific-Inc/OpenCatapult/master/LICENSE</PackageLicenseUrl>
     <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
+    <PackageIconUrl>https://opencatapult.net/img/opencatapult-logo.png</PackageIconUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <ItemGroup>
