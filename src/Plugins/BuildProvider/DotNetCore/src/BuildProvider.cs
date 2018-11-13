@@ -36,14 +36,14 @@ namespace DotNetCore
 
         public async Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build(string projectName, BuildTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
-            var csprojLocation = Path.Combine(config.SourceLocation, $"{projectName}.csproj");
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("CsprojLocation"))
+            var csprojLocation = Path.Combine(config.SourceLocation ?? config.WorkingLocation, projectName, $"{projectName}.csproj");
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("CsprojLocation") && !string.IsNullOrEmpty(additionalConfigs["CsprojLocation"]))
                 csprojLocation = additionalConfigs["CsprojLocation"];
             if (!Path.IsPathRooted(csprojLocation))
                 csprojLocation = Path.Combine(config.WorkingLocation, csprojLocation);
 
             var buildConfiguration = "Release";
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration") && !string.IsNullOrEmpty(additionalConfigs["Configuration"]))
                 buildConfiguration = additionalConfigs["Configuration"];
 
             var buildOutputLocation = Path.Combine(config.WorkingLocation, "publish");

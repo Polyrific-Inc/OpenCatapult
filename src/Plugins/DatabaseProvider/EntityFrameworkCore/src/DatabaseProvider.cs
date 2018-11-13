@@ -37,7 +37,7 @@ namespace EntityFrameworkCore
         public async Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase(string projectName, DeployDbTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             var startupProjectName = projectName;
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("StartupProjectName"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("StartupProjectName") && !string.IsNullOrEmpty(additionalConfigs["StartupProjectName"]))
                 startupProjectName = additionalConfigs["StartupProjectName"];
 
             var startupProjectPath = Path.Combine(config.MigrationLocation, startupProjectName);
@@ -45,7 +45,7 @@ namespace EntityFrameworkCore
                 startupProjectPath = Path.Combine(config.WorkingLocation, startupProjectPath);
 
             var dataProjectName = $"{projectName}.Data";
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("DatabaseProjectName"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("DatabaseProjectName") && !string.IsNullOrEmpty(additionalConfigs["DatabaseProjectName"]))
                 dataProjectName = additionalConfigs["DatabaseProjectName"];
 
             var dataProjectPath = Path.Combine(config.MigrationLocation, dataProjectName);
@@ -53,11 +53,11 @@ namespace EntityFrameworkCore
                 dataProjectPath = Path.Combine(config.WorkingLocation, dataProjectPath);
 
             var buildConfiguration = "Release";
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("Configuration") && !string.IsNullOrEmpty(additionalConfigs["Configuration"]))
                 buildConfiguration = additionalConfigs["Configuration"];
 
             string connectionString = "";
-            if (additionalConfigs != null && additionalConfigs.ContainsKey("ConnectionString"))
+            if (additionalConfigs != null && additionalConfigs.ContainsKey("ConnectionString") && !string.IsNullOrEmpty(additionalConfigs["ConnectionString"]))
                 connectionString = additionalConfigs["ConnectionString"];
 
             if (_databaseCommand == null)

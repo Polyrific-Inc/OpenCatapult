@@ -154,7 +154,8 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
                         } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
 
-                        task.AdditionalConfigs.Add(additionalConfig.Name, input);
+                        if (!string.IsNullOrEmpty(input))
+                            task.AdditionalConfigs.Add(additionalConfig.Name, input);
                     }
                 }
             }

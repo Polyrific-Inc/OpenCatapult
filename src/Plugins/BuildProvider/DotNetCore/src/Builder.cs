@@ -13,7 +13,10 @@ namespace DotNetCore
     {
         public async Task<string> Build(string csprojLocation, string buildOutputLocation, string configuration = "Debug")
         {
-            var args = $"publish {csprojLocation} --output {buildOutputLocation} --configuration {configuration}";
+            if (!Directory.Exists(buildOutputLocation))
+                Directory.CreateDirectory(buildOutputLocation);
+
+            var args = $"publish \"{csprojLocation}\" --output \"{buildOutputLocation}\" --configuration {configuration}";
             return await RunDotnet(args);
         }
 
@@ -30,6 +33,9 @@ namespace DotNetCore
             {
                 Directory.CreateDirectory(dir);
             }
+
+            if (File.Exists(destinationArtifact))
+                File.Delete(destinationArtifact);
 
             try
             {
