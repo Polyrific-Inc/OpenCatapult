@@ -45,7 +45,7 @@ namespace AzureAppService.Tests
             var taskConfig = new DeployTaskConfig
             {
                 ArtifactLocation = artifact,
-
+                WorkingLocation = artifact,
             };
             var additionalConfigs = new Dictionary<string, string>
             {
