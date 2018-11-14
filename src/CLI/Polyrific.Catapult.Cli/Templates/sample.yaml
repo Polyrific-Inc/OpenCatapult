@@ -4,11 +4,6 @@ models:
   - name: User
     label: User
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: UserName
         label: User name
         data-type: string
@@ -37,11 +32,6 @@ models:
   - name: Category
     label: Category
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: Description
         label: Description
         data-type: string
@@ -61,11 +51,6 @@ models:
   - name: Customer
     label: Customer
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: Name
         label: Name
         data-type: string
@@ -80,11 +65,6 @@ models:
   - name: Order
     label: Order
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: OrderDate
         label: Order Date
         data-type: datetime
@@ -105,11 +85,6 @@ models:
   - name: Product
     label: Product
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: Title
         label: Title
         data-type: string
@@ -128,11 +103,6 @@ models:
   - name: Sale
     label: Sale
     properties:
-      - name: Id
-        label: Id
-        data-type: int
-        control-type: input-number
-        is-required: true
       - name: Description
         label: Description
         data-type: string
@@ -162,6 +132,13 @@ models:
 jobs:
 - name: Default
   tasks:
+  - name: Clone
+    type: Clone
+    provider: GitHubRepositoryProvider
+    configs:
+      GitHubExternalService: github-default
+      Repository: https://github.com/sample/project-sample
+      IsPrivateRepository: true
   - name: Generate
     type: Generate
     provider: AspNetCoreMvc
@@ -169,8 +146,15 @@ jobs:
     type: Push
     provider: GitHubRepositoryProvider
     configs:
-      Branch: master
       GitHubExternalService: github-default
+      Repository: https://github.com/sample/project-sample
+      CreatePullRequest: true
+  - name: Merge
+    type: Merge
+    provider: GitHubRepositoryProvider
+    configs:
+      GitHubExternalService: github-default
+      Repository: https://github.com/sample/project-sample
   - name: Build
     type: Build
     provider: DotNetCoreBuildProvider
