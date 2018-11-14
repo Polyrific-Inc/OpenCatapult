@@ -44,17 +44,17 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities
 
         public string[] RequiredServices => new string[0];
 
-        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<string> BeforeDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_preProcessError);
         }
 
-        public Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_deployResult);
         }
 
-        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<string> AfterDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult(_postProcessError);
         }

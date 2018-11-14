@@ -9,9 +9,10 @@ namespace AzureAppService.Helpers
 {
     public class CommandHelper
     {
-        public static Task<string> Execute(string fileName, string args, ILogger logger = null)
+        public static async Task<(string output, string error)> Execute(string fileName, string args, ILogger logger = null)
         {
             var returnValue = new StringBuilder();
+            var error = "";
 
             var info = new ProcessStartInfo(fileName)
             {
@@ -19,6 +20,7 @@ namespace AzureAppService.Helpers
                 Arguments = args,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
+                RedirectStandardError = true,
                 CreateNoWindow = true
             };
 
@@ -29,16 +31,18 @@ namespace AzureAppService.Helpers
                     var reader = process.StandardOutput;
                     while (!reader.EndOfStream)
                     {
-                        var line = reader.ReadLine();
+                        var line = await reader.ReadLineAsync();
 
                         logger?.LogDebug(line);
 
                         returnValue.AppendLine(line);
                     }
+
+                    error = await process.StandardError.ReadToEndAsync();
                 }
             }
 
-            return Task.FromResult(returnValue.ToString());
+            return (returnValue.ToString(), error);
         }
     }
 }

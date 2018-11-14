@@ -81,6 +81,16 @@ namespace AzureAppService
             return ExecuteWithRetry(() => deployTarget.GetPublishingProfile());
         }
 
+        public IWebAppBase SetConnectionString(IWebAppBase deployTarget, string connectionStringName, string connectionString)
+        {
+            if (deployTarget is IWebApp webApp)
+                return ExecuteWithRetry(() => webApp.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
+            else if (deployTarget is IDeploymentSlot slot)
+                return ExecuteWithRetry(() => slot.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
+            else
+                return null;
+        }
+
         #region Private Methods
         private T ExecuteWithRetry<T>(Func<T> function)
         {

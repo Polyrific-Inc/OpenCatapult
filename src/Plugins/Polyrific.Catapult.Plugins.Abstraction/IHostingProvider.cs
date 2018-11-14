@@ -22,28 +22,31 @@ namespace Polyrific.Catapult.Plugins.Abstraction
         /// <summary>
         /// Process to run before executing deploy
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<string> BeforeDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Deploy artifact
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns></returns>
-        Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
 
         /// <summary>
         /// Process to run after executing deploy
         /// </summary>
+        /// <param name="projectName">Name of the project</param>
         /// <param name="config">Deploy task configuration</param>
         /// <param name="additionalConfigs">Additional configurations for specific provider</param>
         /// <param name="logger">Instance of <see cref="ILogger"/></param>
         /// <returns>Error message</returns>
-        Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
+        Task<string> AfterDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger);
     }
 }

@@ -37,5 +37,14 @@ namespace AzureAppService
         /// <param name="deployTarget">Azure website or slot</param>
         /// <returns>The publish profile</returns>
         IPublishingProfile GetPublishingProfile(IWebAppBase deployTarget);
+
+        /// <summary>
+        /// Set a web or slot connection string
+        /// </summary>
+        /// <param name="deployTarget">Azure website or slot</param>
+        /// <param name="connectionStringName">Connection string name</param>
+        /// <param name="connectionString">Connection string</param>
+        /// <returns>The updated web or slot</returns>
+        IWebAppBase SetConnectionString(IWebAppBase deployTarget, string connectionStringName, string connectionString);
     }
 }

@@ -20,17 +20,24 @@ namespace EntityFrameworkCore
         public async Task<string> Update(string dataProject, string startupProject, string configuration = "Debug")
         {
             var args = $"ef database update --project \"{dataProject}\" --startup-project \"{startupProject}\" --configuration {configuration}";
-            return await RunDotnet(args);
+            var result = await RunDotnet(args);
+
+            if (!string.IsNullOrEmpty(result.error))
+                return result.error;
+            else if (!result.output.EndsWith("Done.\r\n"))
+                return "Failed updating database";
+            else
+                return "";
         }
 
-        private async Task<string> RunDotnet(string args)
+        private async Task<(string output, string error)> RunDotnet(string args)
         {
             var result = await CommandHelper.Execute("dotnet", args, new System.Collections.Generic.Dictionary<string, string>
             {
                 { "ConnectionStrings__DefaultConnection", _connectionString }
             }, _logger);
 
-            return result.error;
+            return result;
         }
     }
 }
