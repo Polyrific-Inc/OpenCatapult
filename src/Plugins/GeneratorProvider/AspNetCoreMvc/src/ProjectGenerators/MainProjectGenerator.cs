@@ -102,7 +102,7 @@ namespace AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    </div>");
             sb.AppendLine("</div>");
 
-            _projectHelper.AddFileToProject(Name, $"Views/Home/Index.cshtml", sb.ToString());
+            _projectHelper.AddFileToProject(Name, $"Views/Home/Index.cshtml", sb.ToString(), true);
         }
 
         #region view models
