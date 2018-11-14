@@ -10,6 +10,7 @@ using Polyrific.Catapult.Engine.Infrastructure;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using Polyrific.Catapult.Engine.Utility;
 
 namespace Polyrific.Catapult.Engine
 {
@@ -74,6 +75,8 @@ namespace Polyrific.Catapult.Engine
             app.Conventions
                 .UseDefaultConventions()
                 .UseConstructorInjection(serviceProvider);
+
+            app.ValueParsers.Add(new CatapultOptionParser());
 
             app.RegisterCommands();
         }
