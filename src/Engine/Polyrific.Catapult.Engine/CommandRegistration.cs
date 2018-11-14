@@ -12,6 +12,7 @@ namespace Polyrific.Catapult.Engine
             app.Command<StartCommand>("start", _ => { });
             app.Command<CheckCommand>("check", _ => { });
             app.Command<ConfigCommand>("config", _ => { });
+            app.Command<TaskCommand>("task", _ => { });
         }
     }
 }

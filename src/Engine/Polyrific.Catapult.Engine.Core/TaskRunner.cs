@@ -159,6 +159,59 @@ namespace Polyrific.Catapult.Engine.Core
             return results;
         }
 
+        public async Task<TaskRunnerResult> Run(JobTaskDefinitionDto jobTask, string pluginsLocation, string workingLocation)
+        {
+            const string jobCode = "001";
+
+            var taskRunnerResult = new TaskRunnerResult();
+
+            _compositionContainer = GetPluginsCompositionContainer(pluginsLocation, new[] {jobTask.Type});
+            
+            using (_logger.BeginScope(new TaskScope(jobTask.Name)))
+            {
+                
+                var taskObj = GetJobTaskInstance(0, jobCode, jobTask, workingLocation);
+
+                var stop = false;
+
+                // pre-processing
+                _logger.LogInformation("[Queue {Code}] Running {Type} pre-processing task", jobCode, jobTask.Type);
+                var preResult = await taskObj.RunPreprocessingTask();
+                if (!preResult.IsSuccess && preResult.StopTheProcess)
+                {
+                    _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                    stop = true;
+                }
+
+                if (!stop)
+                {
+                    // main process
+                    _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", jobCode, jobTask.Type);
+                    taskRunnerResult = await taskObj.RunMainTask(new Dictionary<string, string>());
+                    if (!taskRunnerResult.IsSuccess && taskRunnerResult.StopTheProcess)
+                    {
+                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                        stop = true;
+                    }
+                }
+
+                if (!stop)
+                {
+                    // post-processing
+                    _logger.LogInformation("[Queue {Code}] Running {Type} post-processing task", jobCode, jobTask.Type);
+                    var postResult = await taskObj.RunPostprocessingTask();
+                    if (!postResult.IsSuccess && postResult.StopTheProcess)
+                    {
+                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                    }
+                }
+            }
+
+            _logger.LogInformation("[Queue {Code}] Job tasks execution complete with the following result: {@results}", jobCode, taskRunnerResult);
+
+            return taskRunnerResult;
+        }
+
         private IJobTask GetJobTaskInstance(int projectId, string queueCode, JobTaskDefinitionDto jobTask, string workingLocation)
         {
             IJobTask task;

@@ -23,5 +23,16 @@ namespace Polyrific.Catapult.Engine.Core
             List<JobTaskDefinitionDto> jobTask,
             string pluginsLocation, 
             string workingLocation);
+
+        /// <summary>
+        /// Run a task
+        /// </summary>
+        /// <param name="jobTask">Job tasks to run</param>
+        /// <param name="pluginsLocation">Location of the plugins folder</param>
+        /// <param name="workingLocation">Location of the working directory</param>
+        /// <returns></returns>
+        Task<TaskRunnerResult> Run(JobTaskDefinitionDto jobTask, 
+            string pluginsLocation,
+            string workingLocation);
     }
 }

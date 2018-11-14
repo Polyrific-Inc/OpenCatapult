@@ -1,12 +1,15 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Engine.Core.JobLogger;
+using Polyrific.Catapult.Engine.Core.Utils;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using Polyrific.Catapult.Shared.Service;
 
@@ -85,6 +88,44 @@ namespace Polyrific.Catapult.Engine.Core
                 });
                 
                 await _jobLogWriter.EndJobLog(jobQueue.Id);
+            }
+        }
+
+        public async Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs)
+        {
+            const string jobQueueCode = "001";
+
+            using (_logger.BeginScope(new JobScope(1)))
+            {
+                var builtInConfigs = new Dictionary<string, string>();
+                var additionalConfigs = new Dictionary<string, string>();
+
+                var taskConfigNames = JobTaskConfigUtil.GetTaskConfigNames(taskType);
+                foreach (var config in configs)
+                {
+                    if (taskConfigNames.Contains(config.Key))
+                        builtInConfigs.Add(config.Key, config.Value);
+                    else
+                        additionalConfigs.Add(config.Key, config.Value);
+                }
+
+                var jobTask = new JobTaskDefinitionDto
+                {
+                    Type = taskType,
+                    Provider = providerName,
+                    Configs = builtInConfigs,
+                    AdditionalConfigs = additionalConfigs
+                };
+                var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueueCode);
+
+                try
+                {
+                    await _taskRunner.Run(jobTask, _engineConfig.PluginsLocation, workingLocation);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, ex.Message);
+                }
             }
         }
 

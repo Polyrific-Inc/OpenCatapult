@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 
@@ -25,5 +26,11 @@ namespace Polyrific.Catapult.Engine.Core
         /// <param name="jobQueue">Job in queue</param>
         /// <returns></returns>
         Task ExecuteJob(JobDto jobQueue);
+
+        /// <summary>
+        /// Execute a job task
+        /// </summary>
+        /// <returns></returns>
+        Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs);
     }
 }
