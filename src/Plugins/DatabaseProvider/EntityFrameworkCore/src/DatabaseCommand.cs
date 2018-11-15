@@ -1,5 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using EntityFrameworkCore.Helpers;
 using Microsoft.Extensions.Logging;
@@ -19,7 +22,19 @@ namespace EntityFrameworkCore
 
         public async Task<string> Update(string dataProject, string startupProject, string configuration = "Debug")
         {
-            var args = $"ef database update --project \"{dataProject}\" --startup-project \"{startupProject}\" --configuration {configuration}";
+            var pathToEfDll = GetPathToEfDll();
+            if (string.IsNullOrEmpty(pathToEfDll))
+                return "Failed getting ef.dll for migration";
+
+            var efMigrationsDllDepsJson = startupProject.Replace("dll", "deps.json");
+            if (!File.Exists(efMigrationsDllDepsJson))
+                return "Failed getting .deps.json file";
+
+            var efMigrationsDllRuntimeConfig = startupProject.Replace("dll", "runtimeconfig.json");
+            if (!File.Exists(efMigrationsDllRuntimeConfig))
+                return "Failed getting .runtimeconfig.json file";
+
+            var args = $"exec --depsfile \"{efMigrationsDllDepsJson}\" --runtimeconfig \"{efMigrationsDllRuntimeConfig}\" \"{pathToEfDll}\" database update --assembly \"{dataProject}\" --startup-assembly \"{startupProject}\" --verbose";
             var result = await RunDotnet(args);
 
             if (!string.IsNullOrEmpty(result.error))
@@ -38,6 +53,38 @@ namespace EntityFrameworkCore
             }, _logger);
 
             return result;
+        }
+
+        private string GetPathToEfDll()
+        {
+            string pathToDotnet = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "sdk");
+            var latestDotnet = Directory.EnumerateDirectories(pathToDotnet, "2.1*").LastOrDefault();
+            string pathToEf = "";
+
+            if (latestDotnet != null)
+            {
+                // option 1
+                var dotnetEfFolder = Path.Combine(latestDotnet, "DotnetTools", "dotnet-ef");
+                var latestEf = Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault();
+                pathToEf = Path.Combine(latestEf, "tools\\netcoreapp2.1\\any\\tools\\netcoreapp2.0\\any", "ef.dll");
+
+                if (File.Exists(pathToEf))
+                {
+                    return pathToEf;
+                }
+
+                // option 2
+                dotnetEfFolder = Path.Combine(pathToDotnet, "NuGetFallbackFolder", "microsoft.entityframeworkcore.tools.dotnet");
+                latestEf = Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault();
+                pathToEf = Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll");
+
+                if (File.Exists(pathToEf))
+                {
+                    return pathToEf;
+                }
+            }
+
+            return null;
         }
     }
 }
