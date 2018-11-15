@@ -57,28 +57,39 @@ namespace EntityFrameworkCore
 
         private string GetPathToEfDll()
         {
+            // option 1
+            string pathToNuget = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".nuget", "packages");
+            var dotnetEfFolder = Path.Combine(pathToNuget, "microsoft.entityframeworkcore.tools.dotnet");
+            var latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
+            var pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll") : null;
+            if (pathToEf != null && File.Exists(pathToEf))
+            {
+                return pathToEf;
+            }
+
             string pathToDotnet = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "sdk");
             var latestDotnet = Directory.EnumerateDirectories(pathToDotnet, "2.1*").LastOrDefault();
-            string pathToEf = "";
 
             if (latestDotnet != null)
             {
-                // option 1
-                var dotnetEfFolder = Path.Combine(latestDotnet, "DotnetTools", "dotnet-ef");
-                var latestEf = Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault();
-                pathToEf = Path.Combine(latestEf, "tools\\netcoreapp2.1\\any\\tools\\netcoreapp2.0\\any", "ef.dll");
+                // option 2
+                dotnetEfFolder = Path.Combine(latestDotnet, "DotnetTools", "dotnet-ef");
+                latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
+                pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.1\\any\\tools\\netcoreapp2.0\\any", "ef.dll") : null;
 
-                if (File.Exists(pathToEf))
+                if (pathToEf != null && File.Exists(pathToEf))
                 {
                     return pathToEf;
                 }
-
-                // option 2
+            }
+            else
+            {             
+                // option 3
                 dotnetEfFolder = Path.Combine(pathToDotnet, "NuGetFallbackFolder", "microsoft.entityframeworkcore.tools.dotnet");
-                latestEf = Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault();
-                pathToEf = Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll");
+                latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
+                pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll") : null;
 
-                if (File.Exists(pathToEf))
+                if (pathToEf != null && File.Exists(pathToEf))
                 {
                     return pathToEf;
                 }
