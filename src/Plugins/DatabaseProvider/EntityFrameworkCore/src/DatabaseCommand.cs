@@ -68,7 +68,7 @@ namespace EntityFrameworkCore
             }
 
             string pathToDotnet = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "sdk");
-            var latestDotnet = Directory.EnumerateDirectories(pathToDotnet, "2.1*").LastOrDefault();
+            var latestDotnet = Directory.Exists(pathToDotnet) ? Directory.EnumerateDirectories(pathToDotnet, "2.1*").LastOrDefault() : null;
 
             if (latestDotnet != null)
             {
@@ -82,17 +82,15 @@ namespace EntityFrameworkCore
                     return pathToEf;
                 }
             }
-            else
-            {             
-                // option 3
-                dotnetEfFolder = Path.Combine(pathToDotnet, "NuGetFallbackFolder", "microsoft.entityframeworkcore.tools.dotnet");
-                latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
-                pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll") : null;
 
-                if (pathToEf != null && File.Exists(pathToEf))
-                {
-                    return pathToEf;
-                }
+            // option 3
+            dotnetEfFolder = Path.Combine(pathToDotnet, "NuGetFallbackFolder", "microsoft.entityframeworkcore.tools.dotnet");
+            latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
+            pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.0", "ef.dll") : null;
+
+            if (pathToEf != null && File.Exists(pathToEf))
+            {
+                return pathToEf;
             }
 
             return null;
