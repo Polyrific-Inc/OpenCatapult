@@ -25,11 +25,6 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
-  - name: CsprojLocation
-    label: Csproj Location
-    type: string
-    is-required: true
-    is-secret: false
   - name: ConnectionString
     label: Connection String
     type: string

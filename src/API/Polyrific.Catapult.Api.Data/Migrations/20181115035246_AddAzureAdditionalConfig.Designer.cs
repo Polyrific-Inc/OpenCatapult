@@ -10,7 +10,7 @@ using Polyrific.Catapult.Api.Data;
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    [Migration("20181114073345_AddAzureAdditionalConfig")]
+    [Migration("20181115035246_AddAzureAdditionalConfig")]
     partial class AddAzureAdditionalConfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -330,8 +330,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         new { Id = 9, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225f", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "Resource Group", Name = "ResourceGroupName", PluginId = 6, Type = "string" },
                         new { Id = 10, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382260", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "App Service", Name = "AppServiceName", PluginId = 6, Type = "string" },
                         new { Id = 11, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382261", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Deployment Slot", Name = "DeploymentSlot", PluginId = 6, Type = "string" },
-                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Csproj Location", Name = "CsprojLocation", PluginId = 6, Type = "string" },
-                        new { Id = 13, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = true, Label = "Connection String", Name = "ConnectionString", PluginId = 6, Type = "string" }
+                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = true, Label = "Connection String", Name = "ConnectionString", PluginId = 6, Type = "string" }
                     );
                 });
 

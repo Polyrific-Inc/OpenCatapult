@@ -16,11 +16,11 @@ namespace AzureAppService
         {
             _config = config;
             _azureUtils = azureUtils ?? new AzureUtils(config.ApplicationId, config.ApplicationKey, config.TenantId, logger);
-            _deployUtils = deployUtils ?? new DotnetDeployUtils(logger);
+            _deployUtils = deployUtils ?? new KuduDeployUtils(logger);
             _logger = logger;
         }
 
-        public async Task<(string, string)> DeployWebsite(string csProjToDeploy, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString)
+        public async Task<(string, string)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString)
         {
             var hostLocation = "";
 
@@ -43,7 +43,7 @@ namespace AzureAppService
                     _azureUtils.SetConnectionString(slot, "DefaultConnection", connectionString);
 
                 var publishProfile = _azureUtils.GetPublishingProfile(slot);
-                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, csProjToDeploy)))
+                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
                 {
                     var error = $"Failed to deploy website to {appServiceName}-{deploymentSlot}.";
                     _logger.LogError(error);
@@ -59,7 +59,7 @@ namespace AzureAppService
                 if (!string.IsNullOrEmpty(connectionString))
                     _azureUtils.SetConnectionString(website, "DefaultConnection", connectionString);
 
-                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(appServiceName, publishProfile.GitUsername, publishProfile.GitPassword, csProjToDeploy)))
+                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
                 {
                     var error = $"Failed to deploy website to {appServiceName}.";
                     _logger.LogError(error);

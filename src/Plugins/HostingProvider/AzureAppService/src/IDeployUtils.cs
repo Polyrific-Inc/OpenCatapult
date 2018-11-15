@@ -9,11 +9,11 @@ namespace AzureAppService
         /// <summary>
         /// Execute ms deploy
         /// </summary>
-        /// <param name="appServiceName">Azure AppService name</param>
+        /// <param name="url">Url of the target server</param>
         /// <param name="username">Username used to authenticate to the target server</param>
         /// <param name="password">Password used to authenticate to the target server</param>
-        /// <param name="csProjToDeploy">Location of the csproj file to be deployed</param>
+        /// <param name="artifactLocation">Location of the artifact package</param>
         /// <returns></returns>
-        Task<bool> ExecuteDeployWebsiteAsync(string appServiceName, string username, string password, string csProjToDeploy);
+        Task<bool> ExecuteDeployWebsiteAsync(string url, string username, string password, string artifactLocation);
     }
 }

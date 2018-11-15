@@ -63,17 +63,15 @@ namespace AzureAppService
             if (additionalConfigs.ContainsKey("DeploymentSlot") && !string.IsNullOrEmpty(additionalConfigs["DeploymentSlot"]))
                 deploymentSlot = additionalConfigs["DeploymentSlot"];
 
-            var csProjToDeploy = Path.Combine(config.WorkingLocation, projectName, $"{projectName}.csproj");
-            if (additionalConfigs.ContainsKey("CsprojLocation") && !string.IsNullOrEmpty(additionalConfigs["CsprojLocation"]))
-                csProjToDeploy = additionalConfigs["CsprojLocation"];
-            if (!Path.IsPathRooted(csProjToDeploy))
-                csProjToDeploy = Path.Combine(config.WorkingLocation, csProjToDeploy);
-
             var connectionString = "";
             if (additionalConfigs.ContainsKey("ConnectionString") && !string.IsNullOrEmpty(additionalConfigs["ConnectionString"]))
                 connectionString = additionalConfigs["ConnectionString"];
-            
-            var (hostLocation, error) = await _azure.DeployWebsite(csProjToDeploy, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString);
+
+            var artifactLocation = config.ArtifactLocation ?? Path.Combine(config.WorkingLocation, "artifact", $"{projectName}.zip");
+            if (!Path.IsPathRooted(artifactLocation))
+                artifactLocation = Path.Combine(config.WorkingLocation, artifactLocation);
+
+            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
