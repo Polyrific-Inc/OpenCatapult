@@ -67,6 +67,8 @@ namespace Polyrific.Catapult.Engine
             services.AddEngineCore();
             services.AddCatapultApi(configuration);
 
+            services.AddTransient<IProjectTemplateReader, ProjectTemplateReader>();
+
             services.AddOptions();
         }
 

@@ -11,6 +11,7 @@ using Polyrific.Catapult.Engine.Core.Utils;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
+using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core
@@ -91,7 +92,7 @@ namespace Polyrific.Catapult.Engine.Core
             }
         }
 
-        public async Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs)
+        public async Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs, NewProjectDto project = null)
         {
             const string jobQueueCode = "001";
 
@@ -120,7 +121,7 @@ namespace Polyrific.Catapult.Engine.Core
 
                 try
                 {
-                    await _taskRunner.Run(jobTask, _engineConfig.PluginsLocation, workingLocation);
+                    await _taskRunner.Run(project, jobTask, _engineConfig.PluginsLocation, workingLocation);
                 }
                 catch (Exception ex)
                 {

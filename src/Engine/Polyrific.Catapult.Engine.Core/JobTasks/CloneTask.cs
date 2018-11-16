@@ -14,7 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class CloneTask : BaseJobTask<CloneTaskConfig>, ICloneTask
     {
-        public CloneTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger<CloneTask> logger) : base(projectService, externalServiceService, logger)
+        public CloneTask(IProjectService projectService, IProjectDataModelService dataModelService, IExternalServiceService externalServiceService, ILogger<CloneTask> logger) 
+            : base(projectService, dataModelService, externalServiceService, logger)
         {
         }
 

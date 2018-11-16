@@ -3,11 +3,9 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
 using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -45,13 +43,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-
             var providers = new List<ICodeGeneratorProvider>
             {
                 new FakeCodeGeneratorProvider("good-result", null, "")
             };
 
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -66,13 +63,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-
             var providers = new List<ICodeGeneratorProvider>
             {
                 new FakeCodeGeneratorProvider("", null, "error-message")
             };
 
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object) {GeneratorProviders = providers};
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -87,8 +83,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object);
+            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 

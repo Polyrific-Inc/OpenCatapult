@@ -3,11 +3,9 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
 using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 using Xunit;
@@ -18,6 +16,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     {
         private readonly Mock<ILogger<DeployTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<IProjectDataModelService> _projectDataModelService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
 
         public DeployTaskTests()
@@ -25,6 +24,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _logger = new Mock<ILogger<DeployTask>>();
 
             _projectService = new Mock<IProjectService>();
+            _projectDataModelService = new Mock<IProjectDataModelService>();
             _externalServiceService = new Mock<IExternalServiceService>();
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
@@ -41,7 +41,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeHostingProvider("good-result", null, "")
             };
 
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {HostingProviders = providers};
+            var task = new DeployTask(_projectService.Object, _projectDataModelService.Object, _externalServiceService.Object , _logger.Object) {HostingProviders = providers};
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
 
@@ -62,7 +62,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeHostingProvider("", null, "error-message")
             };
 
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {HostingProviders = providers};
+            var task = new DeployTask(_projectService.Object, _projectDataModelService.Object, _externalServiceService.Object , _logger.Object) {HostingProviders = providers};
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
 
@@ -77,8 +77,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object , _logger.Object);
+            var task = new DeployTask(_projectService.Object, _projectDataModelService.Object, _externalServiceService.Object , _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
 

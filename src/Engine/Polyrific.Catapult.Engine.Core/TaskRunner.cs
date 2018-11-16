@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Core.JobTasks;
@@ -15,6 +14,7 @@ using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
+using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core
@@ -76,7 +76,7 @@ namespace Polyrific.Catapult.Engine.Core
                         continue;
                     }
 
-                    var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
+                    var taskObj = GetJobTaskInstance(projectId, null, job.Code, jobTask, workingLocation);
 
                     // pre-processing
                     _logger.LogInformation("[Queue {Code}] Running {Type} pre-processing task", job.Code, jobTask.Type);
@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Engine.Core
             return results;
         }
 
-        public async Task<TaskRunnerResult> Run(JobTaskDefinitionDto jobTask, string pluginsLocation, string workingLocation)
+        public async Task<TaskRunnerResult> Run(NewProjectDto project, JobTaskDefinitionDto jobTask, string pluginsLocation, string workingLocation)
         {
             const string jobCode = "001";
 
@@ -170,7 +170,7 @@ namespace Polyrific.Catapult.Engine.Core
             using (_logger.BeginScope(new TaskScope(jobTask.Name)))
             {
                 
-                var taskObj = GetJobTaskInstance(0, jobCode, jobTask, workingLocation);
+                var taskObj = GetJobTaskInstance(0, project, jobCode, jobTask, workingLocation);
 
                 var stop = false;
 
@@ -212,7 +212,7 @@ namespace Polyrific.Catapult.Engine.Core
             return taskRunnerResult;
         }
 
-        private IJobTask GetJobTaskInstance(int projectId, string queueCode, JobTaskDefinitionDto jobTask, string workingLocation)
+        private IJobTask GetJobTaskInstance(int projectId, NewProjectDto newProject, string queueCode, JobTaskDefinitionDto jobTask, string workingLocation)
         {
             IJobTask task;
             switch (jobTask.Type)
@@ -255,6 +255,10 @@ namespace Polyrific.Catapult.Engine.Core
             task.JobQueueCode = queueCode;
             task.SetConfig(jobTask.Configs, workingLocation);
             task.AdditionalConfigs = jobTask.AdditionalConfigs;
+
+            if (newProject != null)
+                task.SetDataModels(newProject.Models);
+            
             _compositionContainer.ComposeParts(task);
 
             return task;

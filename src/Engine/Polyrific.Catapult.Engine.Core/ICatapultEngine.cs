@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
+using Polyrific.Catapult.Shared.Dto.Project;
 
 namespace Polyrific.Catapult.Engine.Core
 {
@@ -31,6 +32,6 @@ namespace Polyrific.Catapult.Engine.Core
         /// Execute a job task
         /// </summary>
         /// <returns></returns>
-        Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs);
+        Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs, NewProjectDto project = null);
     }
 }

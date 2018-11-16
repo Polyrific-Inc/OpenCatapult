@@ -14,7 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class PublishArtifactTask : BaseJobTask<PublishArtifactTaskConfig>, IPublishArtifactTask
     {
-        public PublishArtifactTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger<PublishArtifactTask> logger) : base(projectService, externalServiceService, logger)
+        public PublishArtifactTask(IProjectService projectService, IProjectDataModelService dataModelService, IExternalServiceService externalServiceService, ILogger<PublishArtifactTask> logger) 
+            : base(projectService, dataModelService, externalServiceService, logger)
         {
         }
 

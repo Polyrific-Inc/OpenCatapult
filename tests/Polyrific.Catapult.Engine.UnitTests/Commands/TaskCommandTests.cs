@@ -8,7 +8,9 @@ using Polyrific.Catapult.Engine.Commands;
 using Polyrific.Catapult.Engine.Commands.Task;
 using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.UnitTests.Commands.Utilities;
+using Polyrific.Catapult.Engine.Utility;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.Project;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -18,11 +20,13 @@ namespace Polyrific.Catapult.Engine.UnitTests.Commands
     {
         private readonly IConsole _console;
         private readonly Mock<ICatapultEngine> _engine;
+        private readonly Mock<IProjectTemplateReader> _templateReader;
 
         public TaskCommandTests(ITestOutputHelper output)
         {
             _console = new TestConsole(output);
             _engine = new Mock<ICatapultEngine>();
+            _templateReader = new Mock<IProjectTemplateReader>();
         }
 
         [Fact]
@@ -38,10 +42,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Commands
         public void TaskRun_Execute_ReturnsCompleted()
         {
             _engine.Setup(e =>
-                    e.ExecuteTask(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>()))
+                    e.ExecuteTask(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<NewProjectDto>()))
                 .Returns(Task.CompletedTask);
 
-            var command = new RunCommand(_engine.Object, _console, LoggerMock.GetLogger<RunCommand>().Object)
+            var command = new RunCommand(_engine.Object, _templateReader.Object, _console, LoggerMock.GetLogger<RunCommand>().Object)
             {
                 Type = JobTaskDefinitionType.Build,
                 Provider = "DotNetCore"
