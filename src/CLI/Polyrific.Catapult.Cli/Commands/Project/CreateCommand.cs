@@ -126,7 +126,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
                 {
                     if (string.IsNullOrEmpty(isPrivateRepository))
-                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository");
+                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository", allowedValues: new string[] { "true", "false" });
 
                     task.Configs["IsPrivateRepository"] = isPrivateRepository;
                 }
