@@ -137,8 +137,6 @@ jobs:
     provider: GitHubRepositoryProvider
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
-      IsPrivateRepository: true
   - name: Generate
     type: Generate
     provider: AspNetCoreMvc
@@ -147,14 +145,12 @@ jobs:
     provider: GitHubRepositoryProvider
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
       CreatePullRequest: true
   - name: Merge
     type: Merge
     provider: GitHubRepositoryProvider
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
   - name: Build
     type: Build
     provider: DotNetCoreBuildProvider

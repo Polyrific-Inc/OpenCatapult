@@ -7,6 +7,7 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
@@ -97,6 +98,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             string message = string.Empty;
 
             var tasks = jobs.SelectMany(j => j.Tasks);
+
+            string repository = null;
+            string isPrivateRepository = null;
             foreach (var task in tasks)
             {
                 var plugin = _pluginService.GetPluginByName(task.Provider).Result;
@@ -105,6 +109,26 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 {
                     message = $"The provider \"{task.Provider}\" is not installed";
                     return message;
+                }
+
+                // prompt for Repository config
+                if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
+                    task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
+                    task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower()) && !task.Configs.ContainsKey("Repository"))
+                {
+                    if (string.IsNullOrEmpty(repository))
+                        repository = PromptTaskConfig("Repository");
+
+                    task.Configs["Repository"] = repository;
+                }
+
+                // prompt for IsPrivateRepository config
+                if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
+                {
+                    if (string.IsNullOrEmpty(isPrivateRepository))
+                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository");
+
+                    task.Configs["IsPrivateRepository"] = isPrivateRepository;
                 }
 
                 if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
@@ -161,6 +185,31 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             }
 
             return message;
+        }
+
+        private string PromptTaskConfig(string propertyName, string[] allowedValues = null)
+        {
+            string input = null;
+            bool validInput;
+
+            string prompt = $"{propertyName} (Required):";
+
+            do
+            {
+                input = Console.GetString(prompt);
+
+                if (allowedValues != null && allowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !allowedValues.Contains(input))
+                {
+                    Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', allowedValues)}");
+                    validInput = false;
+                }
+                else
+                {
+                    validInput = true;
+                }
+            } while (!validInput || string.IsNullOrEmpty(input));
+
+            return input;
         }
     }
 }
