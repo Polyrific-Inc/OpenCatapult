@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Threading.Tasks;
+
 namespace AzureAppService
 {
-    public interface IMsDeployUtils
+    public interface IDeployUtils
     {
         /// <summary>
         /// Execute ms deploy
@@ -10,8 +12,8 @@ namespace AzureAppService
         /// <param name="url">Url of the target server</param>
         /// <param name="username">Username used to authenticate to the target server</param>
         /// <param name="password">Password used to authenticate to the target server</param>
-        /// <param name="packagePath">The package path to be deployed</param>
+        /// <param name="artifactLocation">Location of the artifact package</param>
         /// <returns></returns>
-        bool ExecuteDeployWebsite(string url, string username, string password, string packagePath);
+        Task<bool> ExecuteDeployWebsiteAsync(string url, string username, string password, string artifactLocation);
     }
 }

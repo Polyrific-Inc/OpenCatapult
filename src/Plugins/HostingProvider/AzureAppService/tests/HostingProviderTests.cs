@@ -15,13 +15,13 @@ namespace AzureAppService.Tests
     {
         private readonly Mock<ILogger> _logger;
         private readonly Mock<IAzureUtils> _azureUtils;
-        private readonly Mock<IMsDeployUtils> _msDeployUtils;
+        private readonly Mock<IDeployUtils> _deployUtils;
 
         public HostingProviderTests()
         {
             _logger = new Mock<ILogger>();
             _azureUtils = new Mock<IAzureUtils>();
-            _msDeployUtils = new Mock<IMsDeployUtils>();
+            _deployUtils = new Mock<IDeployUtils>();
         }
 
         [Theory]
@@ -38,14 +38,14 @@ namespace AzureAppService.Tests
             _azureUtils.Setup(x => x.GetWebsite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(webSite.Object);
             _azureUtils.Setup(x => x.GetSlot(It.IsAny<IWebApp>(), slotName)).Returns(slot.Object);
             _azureUtils.Setup(x => x.GetPublishingProfile(It.IsAny<IWebAppBase>())).Returns(new Mock<IPublishingProfile>().Object);
-            _msDeployUtils.Setup(x => x.ExecuteDeployWebsite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(true);
+            _deployUtils.Setup(x => x.ExecuteDeployWebsiteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);
 
             var artifact = Path.Combine(AppContext.BaseDirectory, "working", "20180817.1");
             
             var taskConfig = new DeployTaskConfig
             {
                 ArtifactLocation = artifact,
-
+                WorkingLocation = artifact,
             };
             var additionalConfigs = new Dictionary<string, string>
             {
@@ -58,9 +58,9 @@ namespace AzureAppService.Tests
                 { "DeploymentSlot", slotName }
             };
 
-            var provider = new HostingProvider(_azureUtils.Object, _msDeployUtils.Object);
+            var provider = new HostingProvider(_azureUtils.Object, _deployUtils.Object);
 
-            var result = await provider.Deploy(taskConfig, additionalConfigs, _logger.Object);
+            var result = await provider.Deploy("testProject", taskConfig, additionalConfigs, _logger.Object);
 
             Assert.Equal("https://test.azurewebsites.net", result.hostLocation);
             Assert.Equal("", result.errorMessage);

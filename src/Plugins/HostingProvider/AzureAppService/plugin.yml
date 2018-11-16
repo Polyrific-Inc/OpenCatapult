@@ -25,3 +25,8 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
+  - name: ConnectionString
+    label: Connection String
+    type: string
+    is-required: false
+    is-secret: true

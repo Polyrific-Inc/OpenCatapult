@@ -43,7 +43,7 @@ namespace DotNetCore.Tests
             var result = await provider.DeployDatabase("MyProject", taskConfig, additionalConfig, _logger.Object);
 
             Assert.Equal("", result.errorMessage);
-            Assert.Equal("MyProject.Data", result.databaseLocation);
+            Assert.Equal("MyProject.Data.dll", result.databaseLocation);
         }
     }
 }

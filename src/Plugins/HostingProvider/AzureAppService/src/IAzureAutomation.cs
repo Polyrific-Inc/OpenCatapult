@@ -15,9 +15,8 @@ namespace AzureAppService
         /// <param name="resourceGroupName">Name of the resource group</param>
         /// <param name="appServiceName">Name of the App Service</param>
         /// <param name="deploymentSlot">Deployment slot. If empty, it will deploy to production slot.</param>
-        /// <param name="config">Deploy task configuration</param>
-        /// <param name="hostLocation">Location of the host</param>
-        /// <returns>Error message</returns>
-        Task<string> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, DeployTaskConfig config, out string hostLocation);
+        /// <param name="config">The connection string</param>
+        /// <returns>Host location and Error message if any</returns>
+        Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString);
     }
 }

@@ -143,7 +143,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     foreach (var additionalConfig in plugin.AdditionalConfigs)
                     {
                         string input = string.Empty;
-                        string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : ":")}";
+                        string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : " (Leave blank to use default value):")}";
 
                         do
                         {

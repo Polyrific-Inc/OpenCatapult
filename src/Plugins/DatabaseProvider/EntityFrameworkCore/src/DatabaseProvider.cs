@@ -39,16 +39,20 @@ namespace EntityFrameworkCore
             var startupProjectName = projectName;
             if (additionalConfigs != null && additionalConfigs.ContainsKey("StartupProjectName") && !string.IsNullOrEmpty(additionalConfigs["StartupProjectName"]))
                 startupProjectName = additionalConfigs["StartupProjectName"];
+            startupProjectName = $"{startupProjectName}.dll";
 
-            var startupProjectPath = Path.Combine(config.MigrationLocation, startupProjectName);
+            var migrationLocation = config.MigrationLocation ?? Path.Combine(config.WorkingLocation, "publish");
+
+            var startupProjectPath = Path.Combine(migrationLocation, startupProjectName);
             if (!Path.IsPathRooted(startupProjectPath))
                 startupProjectPath = Path.Combine(config.WorkingLocation, startupProjectPath);
 
             var dataProjectName = $"{projectName}.Data";
             if (additionalConfigs != null && additionalConfigs.ContainsKey("DatabaseProjectName") && !string.IsNullOrEmpty(additionalConfigs["DatabaseProjectName"]))
                 dataProjectName = additionalConfigs["DatabaseProjectName"];
+            dataProjectName = $"{dataProjectName}.dll";
 
-            var dataProjectPath = Path.Combine(config.MigrationLocation, dataProjectName);
+            var dataProjectPath = Path.Combine(migrationLocation, dataProjectName);
             if (!Path.IsPathRooted(dataProjectPath))
                 dataProjectPath = Path.Combine(config.WorkingLocation, dataProjectPath);
 

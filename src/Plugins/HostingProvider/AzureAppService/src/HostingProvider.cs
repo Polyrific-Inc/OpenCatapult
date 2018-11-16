@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Abstraction;
@@ -14,7 +15,7 @@ namespace AzureAppService
     {
         private IAzureAutomation _azure;
         private readonly IAzureUtils _azureUtils;
-        private readonly IMsDeployUtils _msDeployUtils;
+        private readonly IDeployUtils _msDeployUtils;
 
         public HostingProvider()
         {
@@ -26,7 +27,7 @@ namespace AzureAppService
             _azure = azure;
         }
 
-        public HostingProvider(IAzureUtils azureUtils, IMsDeployUtils msDeployUtils)
+        public HostingProvider(IAzureUtils azureUtils, IDeployUtils msDeployUtils)
         {
             _azureUtils = azureUtils;
             _msDeployUtils = msDeployUtils;
@@ -36,40 +37,48 @@ namespace AzureAppService
 
         public string[] RequiredServices => new[] {"AzureAppService"};
 
-        public Task<string> BeforeDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<string> BeforeDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
 
-        public async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             if (_azure == null)
                 _azure = new AzureAutomation(GetAzureAppServiceConfig(additionalConfigs), _azureUtils, _msDeployUtils, logger);
 
             var subscriptionId = "";
-            if (additionalConfigs.ContainsKey("SubscriptionId"))
+            if (additionalConfigs.ContainsKey("SubscriptionId") && !string.IsNullOrEmpty(additionalConfigs["SubscriptionId"]))
                 subscriptionId = additionalConfigs["SubscriptionId"];
 
             var resourceGroupName = "";
-            if (additionalConfigs.ContainsKey("ResourceGroupName"))
+            if (additionalConfigs.ContainsKey("ResourceGroupName") && !string.IsNullOrEmpty(additionalConfigs["ResourceGroupName"]))
                 resourceGroupName = additionalConfigs["ResourceGroupName"];
 
             var appServiceName = "";
-            if (additionalConfigs.ContainsKey("AppServiceName"))
+            if (additionalConfigs.ContainsKey("AppServiceName") && !string.IsNullOrEmpty(additionalConfigs["AppServiceName"]))
                 appServiceName = additionalConfigs["AppServiceName"];
 
             var deploymentSlot = "";
-            if (additionalConfigs.ContainsKey("DeploymentSlot"))
+            if (additionalConfigs.ContainsKey("DeploymentSlot") && !string.IsNullOrEmpty(additionalConfigs["DeploymentSlot"]))
                 deploymentSlot = additionalConfigs["DeploymentSlot"];
 
-            var error = await _azure.DeployWebsite(config.ArtifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, config, out var hostLocation);
+            var connectionString = "";
+            if (additionalConfigs.ContainsKey("ConnectionString") && !string.IsNullOrEmpty(additionalConfigs["ConnectionString"]))
+                connectionString = additionalConfigs["ConnectionString"];
+
+            var artifactLocation = config.ArtifactLocation ?? Path.Combine(config.WorkingLocation, "artifact", $"{projectName}.zip");
+            if (!Path.IsPathRooted(artifactLocation))
+                artifactLocation = Path.Combine(config.WorkingLocation, artifactLocation);
+
+            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
             return (hostLocation, null, "");
         }
 
-        public Task<string> AfterDeploy(DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
+        public Task<string> AfterDeploy(string projectName, DeployTaskConfig config, Dictionary<string, string> additionalConfigs, ILogger logger)
         {
             return Task.FromResult("");
         }
@@ -78,14 +87,14 @@ namespace AzureAppService
         {
             var config = new AzureAppServiceConfig();
 
-            if (additionalConfigs.ContainsKey("AzureAppService.ApplicationId"))
-                config.ApplicationId = additionalConfigs["AzureAppService.ApplicationId"];
+            if (additionalConfigs.ContainsKey("ApplicationId"))
+                config.ApplicationId = additionalConfigs["ApplicationId"];
 
-            if (additionalConfigs.ContainsKey("AzureAppService.ApplicationKey"))
-                config.ApplicationKey = additionalConfigs["AzureAppService.ApplicationKey"];
+            if (additionalConfigs.ContainsKey("ApplicationKey"))
+                config.ApplicationKey = additionalConfigs["ApplicationKey"];
 
-            if (additionalConfigs.ContainsKey("AzureAppService.TenantId"))
-                config.TenantId = additionalConfigs["AzureAppService.TenantId"];
+            if (additionalConfigs.ContainsKey("TenantId"))
+                config.TenantId = additionalConfigs["TenantId"];
 
             return config;
         }
