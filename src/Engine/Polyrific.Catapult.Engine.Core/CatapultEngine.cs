@@ -95,38 +95,35 @@ namespace Polyrific.Catapult.Engine.Core
         public async Task ExecuteTask(string taskType, string providerName, Dictionary<string, string> configs, NewProjectDto project = null)
         {
             const string jobQueueCode = "001";
+            
+            var builtInConfigs = new Dictionary<string, string>();
+            var additionalConfigs = new Dictionary<string, string>();
 
-            using (_logger.BeginScope(new JobScope(1)))
+            var taskConfigNames = JobTaskConfigUtil.GetTaskConfigNames(taskType);
+            foreach (var config in configs)
             {
-                var builtInConfigs = new Dictionary<string, string>();
-                var additionalConfigs = new Dictionary<string, string>();
+                if (taskConfigNames.Contains(config.Key))
+                    builtInConfigs.Add(config.Key, config.Value);
+                else
+                    additionalConfigs.Add(config.Key, config.Value);
+            }
 
-                var taskConfigNames = JobTaskConfigUtil.GetTaskConfigNames(taskType);
-                foreach (var config in configs)
-                {
-                    if (taskConfigNames.Contains(config.Key))
-                        builtInConfigs.Add(config.Key, config.Value);
-                    else
-                        additionalConfigs.Add(config.Key, config.Value);
-                }
+            var jobTask = new JobTaskDefinitionDto
+            {
+                Type = taskType,
+                Provider = providerName,
+                Configs = builtInConfigs,
+                AdditionalConfigs = additionalConfigs
+            };
+            var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueueCode);
 
-                var jobTask = new JobTaskDefinitionDto
-                {
-                    Type = taskType,
-                    Provider = providerName,
-                    Configs = builtInConfigs,
-                    AdditionalConfigs = additionalConfigs
-                };
-                var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueueCode);
-
-                try
-                {
-                    await _taskRunner.Run(project, jobTask, _engineConfig.PluginsLocation, workingLocation);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, ex.Message);
-                }
+            try
+            {
+                await _taskRunner.Run(project, jobTask, _engineConfig.PluginsLocation, workingLocation);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
             }
         }
 

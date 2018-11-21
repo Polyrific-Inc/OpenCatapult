@@ -179,7 +179,7 @@ namespace Polyrific.Catapult.Engine.Core
                 var preResult = await taskObj.RunPreprocessingTask();
                 if (!preResult.IsSuccess && preResult.StopTheProcess)
                 {
-                    _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                    _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed: {Reason}. Stopping the next task execution.", jobCode, jobTask.Type, preResult.ErrorMessage);
                     stop = true;
                 }
 
@@ -190,7 +190,7 @@ namespace Polyrific.Catapult.Engine.Core
                     taskRunnerResult = await taskObj.RunMainTask(new Dictionary<string, string>());
                     if (!taskRunnerResult.IsSuccess && taskRunnerResult.StopTheProcess)
                     {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed: {Reason}. Stopping the next task execution.", jobCode, jobTask.Type, taskRunnerResult.ErrorMessage);
                         stop = true;
                     }
                 }
@@ -202,7 +202,7 @@ namespace Polyrific.Catapult.Engine.Core
                     var postResult = await taskObj.RunPostprocessingTask();
                     if (!postResult.IsSuccess && postResult.StopTheProcess)
                     {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution.", jobCode, jobTask.Type);
+                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed: {Reason}. Stopping the next task execution.", jobCode, jobTask.Type, postResult.ErrorMessage);
                     }
                 }
             }
