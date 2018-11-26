@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("pre"));
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("pre"));
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
 
@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("main"));
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("main"));
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
@@ -70,7 +70,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("post"));
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("post"));
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 

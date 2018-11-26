@@ -1,15 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Security;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
-using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 
@@ -165,80 +161,6 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 else
                 {
                     throw new InvalidExternalServiceTypeException(serviceType, JobTaskId);
-                }
-            }
-        }
-
-        protected async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs)
-        {
-            Dictionary<string, object> result = null;
-
-            pluginArgs = pluginArgs.Replace("\"", "\\\"");
-
-            var startInfo = new ProcessStartInfo()
-            {
-                FileName = "dotnet",
-                Arguments = $"\"{pluginDll}\" \"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}",
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-
-            using (var process = Process.Start(startInfo))
-            {
-                if (process != null)
-                {
-                    Console.WriteLine($"[Master] Command: {process.StartInfo.FileName} {process.StartInfo.Arguments}");
-
-                    var reader = process.StandardOutput;
-                    while (!reader.EndOfStream)
-                    {
-                        var line = await reader.ReadLineAsync();
-
-                        var tags = line.GetPrefixTags();
-                        if (tags.Length > 0 && tags[0] == "OUTPUT")
-                        {
-                            var output = line.Replace("[OUTPUT] ", "");
-                            result = JsonConvert.DeserializeObject<Dictionary<string, object>>(output);
-                        } else if (tags.Length > 0 && tags[0] == "LOG")
-                        {
-                            SubmitLog(line.Replace("[LOG]", ""));
-                        }
-                        else
-                            Console.WriteLine($"[Plugin] {line}");
-                    }
-                }
-            }
-
-            return result ?? new Dictionary<string, object>();
-        }
-
-        private void SubmitLog(string logMessage)
-        {
-            var tags = logMessage.GetPrefixTags();
-            if (tags.Length > 0)
-            {
-                switch (tags[0])
-                {
-                    case "Critical":
-                        Logger.LogCritical(logMessage.Replace("[Critical]", ""));
-                        break;
-                    case "Error":
-                        Logger.LogError(logMessage.Replace("[Error]", ""));
-                        break;
-                    case "Warning":
-                        Logger.LogWarning(logMessage.Replace("[Warning]", ""));
-                        break;
-                    case "Information":
-                        Logger.LogInformation(logMessage.Replace("[Information]", ""));
-                        break;
-                    case "Debug":
-                        Logger.LogDebug(logMessage.Replace("[Debug]", ""));
-                        break;
-                    case "Trace":
-                        Logger.LogTrace(logMessage.Replace("[Trace]", ""));
-                        break;
                 }
             }
         }

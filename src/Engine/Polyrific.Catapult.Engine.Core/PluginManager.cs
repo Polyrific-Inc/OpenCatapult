@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Engine.Core
 {
@@ -66,7 +70,7 @@ namespace Polyrific.Catapult.Engine.Core
                         var info = Assembly.LoadFile(file);
                         if (info.EntryPoint != null && typeof(TaskProvider).IsAssignableFrom(info.EntryPoint.DeclaringType))
                         {
-                            var type = info.EntryPoint.DeclaringType.FullName;
+                            var type = info.EntryPoint.DeclaringType?.FullName;
                             if (type != null)
                             {
                                 var instance = (TaskProvider)info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[] { }, null, null);
@@ -88,6 +92,84 @@ namespace Polyrific.Catapult.Engine.Core
                         // skip loading file if this happen
                         _logger.LogWarning(ex, "Failed loading plugin file {file}", file);
                     }
+                }
+            }
+        }
+
+        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs)
+        {
+            var result = new Dictionary<string, object>();
+
+            pluginArgs = pluginArgs.Replace("\"", "\\\"");
+
+            var startInfo = new ProcessStartInfo()
+            {
+                FileName = "dotnet",
+                Arguments = $"\"{pluginDll}\" \"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}",
+                UseShellExecute = false,
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+
+            using (var process = Process.Start(startInfo))
+            {
+                if (process != null)
+                {
+                    // TODO: We need to think a way to print the command without exposing secret values
+                    //Console.WriteLine($"[Master] Command: {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+
+                    var reader = process.StandardOutput;
+                    while (!reader.EndOfStream)
+                    {
+                        var line = await reader.ReadLineAsync();
+
+                        var tags = line.GetPrefixTags();
+                        if (tags.Length > 0 && tags[0] == "OUTPUT")
+                        {
+                            var outputString = line.Replace("[OUTPUT] ", "");
+                            var outputDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(outputString);
+                            foreach (var key in outputDict.Keys)
+                            {
+                                if (!result.ContainsKey(key))
+                                    result.Add(key, outputDict[key]);
+                            }
+                        } else if (tags.Length > 0 && tags[0] == "LOG")
+                        {
+                            SubmitLog(line.Replace("[LOG]", ""));
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        private void SubmitLog(string logMessage)
+        {
+            var tags = logMessage.GetPrefixTags();
+            if (tags.Length > 0)
+            {
+                switch (tags[0])
+                {
+                    case "Critical":
+                        _logger.LogCritical(logMessage.Replace("[Critical]", ""));
+                        break;
+                    case "Error":
+                        _logger.LogError(logMessage.Replace("[Error]", ""));
+                        break;
+                    case "Warning":
+                        _logger.LogWarning(logMessage.Replace("[Warning]", ""));
+                        break;
+                    case "Information":
+                        _logger.LogInformation(logMessage.Replace("[Information]", ""));
+                        break;
+                    case "Debug":
+                        _logger.LogDebug(logMessage.Replace("[Debug]", ""));
+                        break;
+                    case "Trace":
+                        _logger.LogTrace(logMessage.Replace("[Trace]", ""));
+                        break;
                 }
             }
         }

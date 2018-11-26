@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
-using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
-using Polyrific.Catapult.Plugins.Abstraction;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -38,20 +36,25 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _dataModelService.Setup(s => s.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(dataModels);
 
             _logger = new Mock<ILogger<GenerateTask>>();
+
             _pluginManager = new Mock<IPluginManager>();
+            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            {
+                new PluginItem("FakeCodeGeneratorProvider", "path/to/FakeCodeGeneratorProvider.dll", new string[] { })
+            });
         }
 
         [Fact]
         public async void RunMainTask_Success()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+                {
+                    {"outputLocation", "good-result"}
+                });
+
             var config = new Dictionary<string, string>();
-
-
-            var providers = new List<ICodeGeneratorProvider>
-            {
-                new FakeCodeGeneratorProvider("good-result", null, "")
-            };
-
+            
             var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
@@ -65,14 +68,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+                {
+                    {"errorMessage", "error-message"}
+                });
+
             var config = new Dictionary<string, string>();
-
-
-            var providers = new List<ICodeGeneratorProvider>
-            {
-                new FakeCodeGeneratorProvider("", null, "error-message")
-            };
-
+            
             var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
@@ -87,16 +90,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         public async void RunMainTask_NoProvider()
         {
             var config = new Dictionary<string, string>();
-
-
+            
             var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "FakeCodeGeneratorProvider";
+            task.Provider = "NotExistCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Code generator provider \"FakeCodeGeneratorProvider\" could not be found.", result.ErrorMessage);
+            Assert.Equal("Code generator provider \"NotExistCodeGeneratorProvider\" could not be found.", result.ErrorMessage);
         }
     }
 }
