@@ -15,10 +15,10 @@ namespace Polyrific.Catapult.Plugins.GitHub
         private readonly IGitHubUtils _gitHubUtils;
         private readonly ILogger _logger;
         
-        public GitAutomation(GitAutomationConfig config, IGitHubUtils gitHubUtils, ILogger logger)
+        public GitAutomation(GitAutomationConfig config, ILogger logger)
         {
             _config = config;
-            _gitHubUtils = gitHubUtils ?? new GitHubUtils(config.RemoteCredentialType, config.RemoteCredentialType == "userPassword" ? config.RemoteUsername : config.RepoAuthToken, config.RemotePassword, logger);
+            _gitHubUtils = new GitHubUtils(config.RemoteCredentialType, config.RemoteCredentialType == "userPassword" ? config.RemoteUsername : config.RepoAuthToken, config.RemotePassword, logger);
             _logger = logger;
         }
 
@@ -71,7 +71,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
             if (success)
             {
-                _logger.LogInformation("All changes has been commited into branch {branch}", branch);
+                _logger.LogInformation("All changes has been committed into branch {branch}", branch);
                 return "";
             }
 

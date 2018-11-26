@@ -61,8 +61,8 @@ namespace Polyrific.Catapult.Plugins.Core
                             result.Add("error", error);
                         break;
                     case "main":
-                        (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Clone();
-                        result.Add("outputLocation", outputLocation);
+                        (string cloneLocation, Dictionary<string, string> outputValues, string errorMessage) = await Clone();
+                        result.Add("cloneLocation", cloneLocation);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -73,10 +73,10 @@ namespace Polyrific.Catapult.Plugins.Core
                         break;
                     default:
                         await BeforeClone();
-                        (outputLocation, outputValues, errorMessage) = await Clone();
+                        (cloneLocation, outputValues, errorMessage) = await Clone();
                         await AfterClone();
 
-                        result.Add("outputLocation", outputLocation);
+                        result.Add("cloneLocation", cloneLocation);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -92,8 +92,8 @@ namespace Polyrific.Catapult.Plugins.Core
                             result.Add("error", error);
                         break;
                     case "main":
-                        (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Push();
-                        result.Add("outputLocation", outputLocation);
+                        (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
+                        result.Add("remoteUrl", remoteUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -104,10 +104,10 @@ namespace Polyrific.Catapult.Plugins.Core
                         break;
                     default:
                         await BeforePush();
-                        (outputLocation, outputValues, errorMessage) = await Push();
+                        (remoteUrl, outputValues, errorMessage) = await Push();
                         await AfterPush();
 
-                        result.Add("outputLocation", outputLocation);
+                        result.Add("remoteUrl", remoteUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -123,8 +123,8 @@ namespace Polyrific.Catapult.Plugins.Core
                             result.Add("error", error);
                         break;
                     case "main":
-                        (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Merge();
-                        result.Add("outputLocation", outputLocation);
+                        (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Merge();
+                        result.Add("remoteUrl", remoteUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -135,10 +135,10 @@ namespace Polyrific.Catapult.Plugins.Core
                         break;
                     default:
                         await BeforeMerge();
-                        (outputLocation, outputValues, errorMessage) = await Merge();
+                        (remoteUrl, outputValues, errorMessage) = await Merge();
                         await AfterMerge();
 
-                        result.Add("outputLocation", outputLocation);
+                        result.Add("remoteUrl", remoteUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -164,7 +164,7 @@ namespace Polyrific.Catapult.Plugins.Core
         public PushTaskConfig PushTaskConfig { get; set; }
 
         /// <summary>
-        /// Clone task configuration
+        /// Merge task configuration
         /// </summary>
         public MergeTaskConfig MergeTaskConfig { get; set; }
 
@@ -191,7 +191,7 @@ namespace Polyrific.Catapult.Plugins.Core
         /// Clone the code from remote repository
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone();
+        public abstract Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone();
 
         /// <summary>
         /// Process to run after executing clone repository
@@ -215,7 +215,7 @@ namespace Polyrific.Catapult.Plugins.Core
         /// Push the code to remote repository
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Push();
+        public abstract Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push();
 
         /// <summary>
         /// Process to run after executing Push repository
@@ -239,7 +239,7 @@ namespace Polyrific.Catapult.Plugins.Core
         /// Merge the code to remote repository
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Merge();
+        public abstract Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge();
 
         /// <summary>
         /// Process to run after executing Merge repository

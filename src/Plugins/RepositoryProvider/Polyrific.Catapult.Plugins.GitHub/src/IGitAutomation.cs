@@ -26,7 +26,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
         /// <param name="branch">branch of the commit</param>
         /// <param name="commitMessage">Message of the commit</param>
         /// <param name="author">Author of the commit</param>
-        /// <param name="email">Email of the comitter</param>
+        /// <param name="email">Email of the committer</param>
         /// <returns></returns>
         Task<string> Commit(string baseBranch, string branch, string commitMessage, string author, string email);
 

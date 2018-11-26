@@ -10,7 +10,6 @@ namespace Polyrific.Catapult.Plugins.GitHub
     internal class Program : RepositoryProvider
     {
         private IGitAutomation _gitAutomation;
-        private readonly IGitHubUtils _gitHubUtils;
 
         private const string DefaultAuthor = "OpenCatapult";
         private const string DefaultEmail = "admin@opencatapult.net";
@@ -28,12 +27,12 @@ namespace Polyrific.Catapult.Plugins.GitHub
         {
         }
 
-        public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone()
+        public override async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone()
         {
             var repoConfig = GetGitAutomationConfig(CloneTaskConfig.CloneLocation ?? CloneTaskConfig.WorkingLocation, CloneTaskConfig.Repository, AdditionalConfigs, CloneTaskConfig.IsPrivateRepository);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, Logger);
 
             var error = await _gitAutomation.Clone();
             if (!string.IsNullOrEmpty(error))
@@ -45,12 +44,12 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return (CloneTaskConfig.CloneLocation, null, "");
         }
 
-        public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Push()
+        public override async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push()
         {
             var repoConfig = GetGitAutomationConfig(PushTaskConfig.SourceLocation ?? PushTaskConfig.WorkingLocation, PushTaskConfig.Repository, AdditionalConfigs);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, Logger);
 
             string baseBranch = PushTaskConfig.PullRequestTargetBranch ?? DefaultBaseBranch;
             string workingBranch = PushTaskConfig.Branch ?? (PushTaskConfig.CreatePullRequest ? DefaultWorkingBranch : DefaultBaseBranch);
@@ -80,12 +79,12 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return (repoConfig.RemoteUrl, outputValues, "");
         }
 
-        public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Merge()
+        public override async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge()
         {
             var repoConfig = GetGitAutomationConfig("", MergeTaskConfig.Repository, AdditionalConfigs);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, Logger);
 
             var success = await _gitAutomation.MergePullRequest(PrNumber);
             if (!success)
@@ -104,7 +103,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             };
 
             var remoteUrlBrokenDown = new Uri(remoteUrl).AbsolutePath?.Trim(' ', '/').Split('/');
-            if (remoteUrlBrokenDown.Length == 2)
+            if (remoteUrlBrokenDown != null && remoteUrlBrokenDown.Length == 2)
             {
                 config.RepoOwner = remoteUrlBrokenDown[0];
                 config.ProjectName = remoteUrlBrokenDown[1];

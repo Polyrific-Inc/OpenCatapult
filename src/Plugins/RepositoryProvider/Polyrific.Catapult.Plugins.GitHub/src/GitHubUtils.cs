@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             {
                 return await Task.Run(() => Repository.Clone(remoteUrl, localRepository, cloneOption));
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
                 return "";
@@ -91,7 +91,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                     return prResult.Number.ToString();
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
             }
@@ -155,7 +155,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                     return mergeResult.Merged;
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
@@ -196,7 +196,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
                 return true;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
