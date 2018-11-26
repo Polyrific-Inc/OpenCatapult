@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Plugins.Core
         public abstract string Name { get; }
 
         /// <summary>
-        /// Type of the task. It should be one of <see cref="JobTaskDefinitionType"/> constant.
+        /// Type of the task. It should be one of <see cref="PluginType"/> constant.
         /// </summary>
         public abstract string Type { get; }
 

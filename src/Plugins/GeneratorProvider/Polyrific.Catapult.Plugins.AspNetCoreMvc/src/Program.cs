@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 {
-    internal class Program : GenerateTaskProvider
+    internal class Program : CodeGeneratorProvider
     {
         public override string Name => "Polyrific.Catapult.Plugins.AspNetCoreMvc";
 

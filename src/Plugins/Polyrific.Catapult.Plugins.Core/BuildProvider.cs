@@ -8,14 +8,14 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Plugins.Core
 {
-    public abstract class BuildTaskProvider : TaskProvider
+    public abstract class BuildProvider : TaskProvider
     {
-        protected BuildTaskProvider(string[] args) : base(args)
+        protected BuildProvider(string[] args) : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => JobTaskDefinitionType.Generate;
+        public override string Type => PluginType.BuildProvider;
 
         public sealed override void ParseArguments()
         {

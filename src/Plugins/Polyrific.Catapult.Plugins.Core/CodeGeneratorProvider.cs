@@ -9,14 +9,14 @@ using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace Polyrific.Catapult.Plugins.Core
 {
-    public abstract class GenerateTaskProvider : TaskProvider
+    public abstract class CodeGeneratorProvider : TaskProvider
     {
-        protected GenerateTaskProvider(string[] args) : base(args)
+        protected CodeGeneratorProvider(string[] args) : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => JobTaskDefinitionType.Generate;
+        public override string Type => PluginType.GeneratorProvider;
 
         public sealed override void ParseArguments()
         {
