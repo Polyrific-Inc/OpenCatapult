@@ -3,11 +3,10 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json;
+using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
 using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -21,6 +20,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IProjectDataModelService> _dataModelService;
         private readonly Mock<ILogger<GenerateTask>> _logger;
+        private readonly Mock<IPluginManager> _pluginManager;
 
         public GenerateTaskTests()
         {
@@ -38,6 +38,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _dataModelService.Setup(s => s.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(dataModels);
 
             _logger = new Mock<ILogger<GenerateTask>>();
+            _pluginManager = new Mock<IPluginManager>();
         }
 
         [Fact]
@@ -51,7 +52,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeCodeGeneratorProvider("good-result", null, "")
             };
 
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -72,7 +73,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeCodeGeneratorProvider("", null, "error-message")
             };
 
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object) {GeneratorProviders = providers};
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -88,7 +89,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var config = new Dictionary<string, string>();
 
 
-            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object , _dataModelService.Object, _logger.Object);
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 

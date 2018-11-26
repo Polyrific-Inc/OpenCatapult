@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.Abstraction;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
@@ -16,16 +15,17 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public class GenerateTask : BaseJobTask<GenerateTaskConfig>, IGenerateTask
     {
         private readonly IProjectDataModelService _dataModelService;
-
+        
         /// <summary>
         /// Instantiate <see cref="GenerateTask"/>
         /// </summary>
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
         /// <param name="externalServiceService">Instance of <see cref="IExternalServiceService"/></param>
         /// <param name="dataModelService">Instance of <see cref="IProjectDataModelService"/></param>
+        /// <param name="pluginManager">Instance of <see cref="IPluginManager"/></param>
         /// <param name="logger">Logger</param>
-        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IProjectDataModelService dataModelService, ILogger<GenerateTask> logger) 
-            : base(projectService, externalServiceService, logger)
+        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IProjectDataModelService dataModelService, IPluginManager pluginManager, ILogger<GenerateTask> logger) 
+            : base(projectService, externalServiceService, pluginManager, logger)
         {
             _dataModelService = dataModelService;
         }
@@ -35,8 +35,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         private List<ProjectDataModelDto> _dataModels;
         protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId, true).Result);
 
-        [ImportMany(typeof(ICodeGeneratorProvider))]
-        public IEnumerable<ICodeGeneratorProvider> GeneratorProviders;
+        public List<PluginItem> GeneratorProviders => PluginManager.GetPlugins(Type);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
@@ -46,10 +45,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforeGenerate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
-
+            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("pre"));
+            if (result.ContainsKey("error"))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
+            
             return new TaskRunnerResult(true, "");
         }
 
@@ -61,11 +60,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
             
-            var result = await provider.Generate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
+            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("main"));
+            if (result.ContainsKey("errorMessage"))
+                return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.outputLocation, result.outputValues);
+            var outputLocation = "";
+            if (result.ContainsKey("outputLocation"))
+                outputLocation = result["outputLocation"].ToString();
+            
+            var outputValues = new Dictionary<string, string>();
+            if (result.ContainsKey("outputValues"))
+                outputValues = result["outputValues"] as Dictionary<string, string>;
+            
+            return new TaskRunnerResult(true, outputLocation, outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
@@ -76,9 +83,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterGenerate(Project.Name, DataModels, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
+            var result = await InvokeTaskProvider(provider.DllPath, GetArgString("post"));
+            if (result.ContainsKey("error"))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
@@ -87,6 +94,20 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         {
             base.ReloadProject();
             _dataModels = null;
+        }
+
+        private string GetArgString(string process)
+        {
+            var dict = new Dictionary<string, object>
+            {
+                {"process", process},
+                {"project", Project.Name},
+                {"models", DataModels},
+                {"config", TaskConfig},
+                {"additional", AdditionalConfigs}
+            };
+
+            return JsonConvert.SerializeObject(dict);
         }
     }
 }

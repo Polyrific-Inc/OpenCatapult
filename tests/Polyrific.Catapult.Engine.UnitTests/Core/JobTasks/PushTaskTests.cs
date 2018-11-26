@@ -3,11 +3,10 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Newtonsoft.Json;
+using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
 using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 using Xunit;
@@ -19,6 +18,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<ILogger<PushTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
+        private readonly Mock<IPluginManager> _pluginManager;
 
         public PushTaskTests()
         {
@@ -28,6 +28,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _externalServiceService = new Mock<IExternalServiceService>();
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
+
+            _pluginManager = new Mock<IPluginManager>();
         }
 
         [Fact]
@@ -41,7 +43,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeCodeRepositoryProvider("good-result", null, "")
             };
 
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {CodeRepositoryProviders = providers};
+            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -62,7 +64,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 new FakeCodeRepositoryProvider("", null, "error-message")
             };
 
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object , _logger.Object) {CodeRepositoryProviders = providers};
+            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -78,7 +80,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var config = new Dictionary<string, string>();
 
 
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object , _logger.Object);
+            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 

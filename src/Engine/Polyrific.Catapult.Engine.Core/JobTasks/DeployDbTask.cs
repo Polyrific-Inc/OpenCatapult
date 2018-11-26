@@ -14,7 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class DeployDbTask : BaseJobTask<DeployDbTaskConfig>, IDeployDbTask
     {
-        public DeployDbTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger<DeployDbTask> logger) : base(projectService, externalServiceService, logger)
+        public DeployDbTask(IProjectService projectService, IExternalServiceService externalServiceService, IPluginManager pluginManager, ILogger<DeployDbTask> logger) 
+            : base(projectService, externalServiceService, pluginManager, logger)
         {
         }
 

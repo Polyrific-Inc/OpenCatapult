@@ -67,6 +67,8 @@ namespace Polyrific.Catapult.Engine
             services.AddCatapultApi(configuration);
 
             services.AddOptions();
+
+            services.AddSingleton<IPluginManager, PluginManager>();
         }
 
         private static void ConfigureApplication(CommandLineApplication app, IServiceProvider serviceProvider)

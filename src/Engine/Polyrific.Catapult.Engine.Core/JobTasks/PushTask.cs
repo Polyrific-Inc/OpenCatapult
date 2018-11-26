@@ -19,9 +19,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// </summary>
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
         /// <param name="externalServiceService">Instance of <see cref="IExternalServiceService"/></param>
+        /// <param name="pluginManager"></param>
         /// <param name="logger">Logger</param>
-        public PushTask(IProjectService projectService, IExternalServiceService externalServiceService, ILogger<PushTask> logger) 
-            : base(projectService, externalServiceService, logger)
+        public PushTask(IProjectService projectService, IExternalServiceService externalServiceService, IPluginManager pluginManager, ILogger<PushTask> logger) 
+            : base(projectService, externalServiceService, pluginManager, logger)
         {
         }
 
