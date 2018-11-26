@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Plugins.Core;
 
@@ -9,15 +9,47 @@ namespace Polyrific.Catapult.Plugins.DotNetCore
 {
     internal class Program : BuildTaskProvider
     {
+        private IBuilder _builder;
+
         public override string Name => "Polyrific.Catapult.Plugins.DotNetCore";
 
         public Program(string[] args) : base(args)
         {
         }
         
-        public override Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build()
+        public override async Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build()
         {
-            throw new NotImplementedException();
+            var csprojLocation = Path.Combine(Config.SourceLocation ?? Config.WorkingLocation, ProjectName, $"{ProjectName}.csproj");
+            if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("CsprojLocation") && !string.IsNullOrEmpty(AdditionalConfigs["CsprojLocation"]))
+                csprojLocation = AdditionalConfigs["CsprojLocation"];
+            if (!Path.IsPathRooted(csprojLocation))
+                csprojLocation = Path.Combine(Config.WorkingLocation, csprojLocation);
+
+            var buildConfiguration = "Release";
+            if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("Configuration") && !string.IsNullOrEmpty(AdditionalConfigs["Configuration"]))
+                buildConfiguration = AdditionalConfigs["Configuration"];
+
+            var buildOutputLocation = Path.Combine(Config.WorkingLocation, "publish");
+
+            var artifactLocation = "artifact";
+            if (!string.IsNullOrEmpty(Config.OutputArtifactLocation))
+                artifactLocation = Config.OutputArtifactLocation;
+            if (!Path.IsPathRooted(artifactLocation))
+                artifactLocation = Path.Combine(Config.WorkingLocation, artifactLocation);
+
+            if (_builder == null)
+                _builder = new Builder();
+
+            var error = await _builder.Build(csprojLocation, buildOutputLocation, buildConfiguration);
+            if (!string.IsNullOrEmpty(error))
+                return ("", null, error);
+
+            var destinationArtifact = Path.Combine(artifactLocation, $"{ProjectName}.zip");
+            error = await _builder.CreateArtifact(buildOutputLocation, destinationArtifact);
+            if (!string.IsNullOrEmpty(error))
+                return ("", null, error);
+
+            return (destinationArtifact, null, "");
         }
 
         private static async Task Main(string[] args)
