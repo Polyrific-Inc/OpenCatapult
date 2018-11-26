@@ -13,6 +13,10 @@ namespace Polyrific.Catapult.Plugins.DotNetCore
 
         public override string Name => "Polyrific.Catapult.Plugins.DotNetCore";
 
+        public Program() : base(new string[0])
+        {
+        }
+
         public Program(string[] args) : base(args)
         {
         }

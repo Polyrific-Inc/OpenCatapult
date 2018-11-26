@@ -26,13 +26,13 @@ namespace Polyrific.Catapult.Plugins.Core
                 switch (key.ToLower())
                 {
                     case "project":
-                        ProjectName = ParsedArguments[key];
+                        ProjectName = ParsedArguments[key].ToString();
                         break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<BuildTaskConfig>(ParsedArguments[key]);
+                        Config = JsonConvert.DeserializeObject<BuildTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
-                        AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key]);
+                        AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
                         break;
                 }
             }

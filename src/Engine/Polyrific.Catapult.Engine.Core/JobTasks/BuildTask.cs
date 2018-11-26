@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var result = await InvokeTaskProvider(provider.DllPath, GetArgString("main"));
-            if (result.ContainsKey("errorMessage"))
+            if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
             var outputArtifact = "";
