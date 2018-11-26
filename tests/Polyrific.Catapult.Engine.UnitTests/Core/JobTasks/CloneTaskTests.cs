@@ -11,27 +11,28 @@ using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 {
-    public class PushTaskTests
+    public class CloneTaskTests
     {
-        private readonly Mock<ILogger<PushTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ILogger<CloneTask>> _logger;
 
-        public PushTaskTests()
+        public CloneTaskTests()
         {
-            _logger = new Mock<ILogger<PushTask>>();
-
             _projectService = new Mock<IProjectService>();
-            _externalServiceService = new Mock<IExternalServiceService>();
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
+
+            _externalServiceService = new Mock<IExternalServiceService>();
 
             _pluginManager = new Mock<IPluginManager>();
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
                 new PluginItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { })
             });
+
+            _logger = new Mock<ILogger<CloneTask>>();
         }
 
         [Fact]
@@ -40,12 +41,12 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
                 {
-                    {"remoteUrl", "good-result"}
+                    {"cloneLocation", "good-result"}
                 });
 
             var config = new Dictionary<string, string>();
                         
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new CloneTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -66,7 +67,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
 
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new CloneTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -81,7 +82,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-            var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new CloneTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistRepositoryProvider";
 
