@@ -1,11 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.Abstraction;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Plugins.Abstraction.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
@@ -21,8 +20,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Clone;
 
-        [ImportMany(typeof(ICodeRepositoryProvider))]
-        public IEnumerable<ICodeRepositoryProvider> CodeRepositoryProviders;
+        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(PluginType.RepositoryProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
@@ -32,9 +30,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.BeforeClone(TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("pre"));
+            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
@@ -47,11 +45,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await provider.Clone(TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("main"));
+            if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
+                return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.cloneLocation, result.outputValues);
+            var cloneLocation = "";
+            if (result.ContainsKey("cloneLocation"))
+                cloneLocation = result["cloneLocation"].ToString();
+
+            var outputValues = new Dictionary<string, string>();
+            if (result.ContainsKey("outputValues"))
+                outputValues = result["outputValues"] as Dictionary<string, string>;
+
+            return new TaskRunnerResult(true, cloneLocation, outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
@@ -62,11 +68,24 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var error = await provider.AfterClone(TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("post"));
+            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
+        }
+
+        private string GetArgString(string process)
+        {
+            var dict = new Dictionary<string, object>
+            {
+                {"process", process},
+                {"project", Project.Name},
+                {"cloneconfig", TaskConfig},
+                {"additional", AdditionalConfigs}
+            };
+
+            return JsonConvert.SerializeObject(dict);
         }
     }
 }

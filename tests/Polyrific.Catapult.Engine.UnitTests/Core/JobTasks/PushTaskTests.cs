@@ -30,19 +30,23 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
 
             _pluginManager = new Mock<IPluginManager>();
+            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            {
+                new PluginItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { })
+            });
         }
 
         [Fact]
         public async void RunMainTask_Success()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+                {
+                    {"remoteUrl", "good-result"}
+                });
+
             var config = new Dictionary<string, string>();
-
-
-            var providers = new List<ICodeRepositoryProvider>
-            {
-                new FakeCodeRepositoryProvider("good-result", null, "")
-            };
-
+                        
             var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
@@ -56,13 +60,13 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+                {
+                    {"errorMessage", "error-message"}
+                });
+
             var config = new Dictionary<string, string>();
-
-
-            var providers = new List<ICodeRepositoryProvider>
-            {
-                new FakeCodeRepositoryProvider("", null, "error-message")
-            };
 
             var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
@@ -79,15 +83,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-
             var task = new PushTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "FakeCodeRepositoryProvider";
+            task.Provider = "NotExistRepositoryProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Code repository provider \"FakeCodeRepositoryProvider\" could not be found.", result.ErrorMessage);
+            Assert.Equal("Code repository provider \"NotExistRepositoryProvider\" could not be found.", result.ErrorMessage);
         }
     }
 }
