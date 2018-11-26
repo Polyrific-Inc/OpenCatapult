@@ -72,11 +72,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EntityFrameworkCore.Tests",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Engine.SignalRLogger", "src\Engine\Polyrific.Catapult.Engine.SignalRLogger\Polyrific.Catapult.Engine.SignalRLogger.csproj", "{D65FD9E2-D564-4684-9A05-353BF7F1612B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polyrific.Catapult.Plugins.Core", "src\Plugins\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.Core", "src\Plugins\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.AspNetCoreMvc", "src\Plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj", "{11811214-D216-4D09-B361-EE938FA9F8D6}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.DotNetCore", "src\Plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\src\Polyrific.Catapult.Plugins.DotNetCore.csproj", "{D3645509-455D-4733-8F3B-7C7ADA180DEF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.EntityFrameworkCore", "src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj", "{18006753-4DC6-46CA-8A05-53D77E8E454A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -388,6 +390,18 @@ Global
 		{D3645509-455D-4733-8F3B-7C7ADA180DEF}.Release|x64.Build.0 = Release|Any CPU
 		{D3645509-455D-4733-8F3B-7C7ADA180DEF}.Release|x86.ActiveCfg = Release|Any CPU
 		{D3645509-455D-4733-8F3B-7C7ADA180DEF}.Release|x86.Build.0 = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|x64.Build.0 = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Debug|x86.Build.0 = Debug|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|x64.ActiveCfg = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|x64.Build.0 = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|x86.ActiveCfg = Release|Any CPU
+		{18006753-4DC6-46CA-8A05-53D77E8E454A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -426,6 +440,7 @@ Global
 		{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C} = {54E9663F-4CF2-46C2-9FBF-6620B59851B5}
 		{11811214-D216-4D09-B361-EE938FA9F8D6} = {461C9CCD-4254-445C-AE7F-A2EF116D4AF1}
 		{D3645509-455D-4733-8F3B-7C7ADA180DEF} = {F05EADFC-1BE6-4C9D-8749-1815B1F8A8EC}
+		{18006753-4DC6-46CA-8A05-53D77E8E454A} = {DE41662E-47F3-4194-90D4-67EF9C9322C0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7E5C87EB-EEBD-4A9B-A955-07A34F904FF1}
