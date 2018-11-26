@@ -1,4 +1,4 @@
-name: 'AspNetCoreMvc'
+name: 'Polyrific.Catapult.Plugins.AspNetCoreMvc'
 type: 'GeneratorProvider'
 author: 'Polyrific'
 version: '1.0'

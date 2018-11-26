@@ -1,4 +1,4 @@
-name: 'DotNetCoreBuildProvider'
+name: 'Polyrific.Catapult.Plugins.DotNetCore'
 type: 'BuildProvider'
 author: 'Polyrific'
 version: '1.0'
