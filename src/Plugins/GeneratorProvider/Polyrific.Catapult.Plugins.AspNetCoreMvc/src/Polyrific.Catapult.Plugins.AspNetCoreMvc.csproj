@@ -12,6 +12,20 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <None Remove="Resources\Images\logo.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\Images\logo.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Humanizer.Core" Version="2.5.16" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\..\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj" />
     </ItemGroup>
 
