@@ -8,14 +8,13 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Plugins.Core
 {
-    public abstract class DatabaseProvider : TaskProvider
+    public abstract class TestProvider : TaskProvider
     {
-        protected DatabaseProvider(string[] args) : base(args)
+        protected TestProvider(string[] args) : base(args)
         {
-            ParseArguments();
         }
 
-        public override string Type => JobTaskDefinitionType.DeployDb;
+        public override string Type => PluginType.TestProvider;
 
         public sealed override void ParseArguments()
         {
@@ -25,11 +24,8 @@ namespace Polyrific.Catapult.Plugins.Core
             {
                 switch (key.ToLower())
                 {
-                    case "project":
-                        ProjectName = ParsedArguments[key].ToString();
-                        break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<DeployDbTaskConfig>(ParsedArguments[key].ToString());
+                        Config = JsonConvert.DeserializeObject<TestTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
                         AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
@@ -45,27 +41,27 @@ namespace Polyrific.Catapult.Plugins.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeDeployDatabase();
+                    var error = await BeforeTest();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("error", error);
                     break;
                 case "main":
-                    (string databaseLocation, Dictionary<string, string> outputValues, string errorMessage) = await DeployDatabase();
-                    result.Add("databaseLocation", databaseLocation);
+                    (string testResultLocation, Dictionary<string, string> outputValues, string errorMessage) = await Test();
+                    result.Add("testResultLocation", testResultLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterDeployDatabase();
+                    error = await AfterTest();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("error", error);
                     break;
                 default:
-                    await BeforeDeployDatabase();
-                    (databaseLocation, outputValues, errorMessage) = await DeployDatabase();
-                    await AfterDeployDatabase();
+                    await BeforeTest();
+                    (testResultLocation, outputValues, errorMessage) = await Test();
+                    await AfterTest();
 
-                    result.Add("databaseLocation", databaseLocation);
+                    result.Add("testResultLocation", testResultLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -75,14 +71,9 @@ namespace Polyrific.Catapult.Plugins.Core
         }
 
         /// <summary>
-        /// Name of the project
+        /// Test task configuration
         /// </summary>
-        public string ProjectName { get; set; }
-
-        /// <summary>
-        /// DeployDb task configuration
-        /// </summary>
-        public DeployDbTaskConfig Config { get; set; }
+        public TestTaskConfig Config { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider
@@ -90,25 +81,25 @@ namespace Polyrific.Catapult.Plugins.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing deploy database
+        /// Process to run before executing test
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeDeployDatabase()
+        public virtual Task<string> BeforeTest()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Deploy database
+        /// Run test scenario
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase();
+        public abstract Task<(string testResultLocation, Dictionary<string, string> outputValues, string errorMessage)> Test();
 
         /// <summary>
-        /// Process to run after executing deploy database
+        /// Process to run after executing test
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterDeployDatabase()
+        public virtual Task<string> AfterTest()
         {
             return Task.FromResult("");
         }

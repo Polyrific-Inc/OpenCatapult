@@ -58,7 +58,10 @@ namespace Polyrific.Catapult.Plugins.DotNetCore
 
         private static async Task Main(string[] args)
         {
-            await new Program(args).Execute();
+            var app = new Program(args);
+            
+            var result = await app.Execute();
+            app.ReturnOutput(result);
         }
         
         
