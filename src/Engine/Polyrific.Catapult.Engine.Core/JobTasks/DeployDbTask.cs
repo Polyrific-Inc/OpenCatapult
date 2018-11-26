@@ -19,8 +19,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         }
 
         public override string Type => JobTaskDefinitionType.DeployDb;
-        
-        public List<PluginItem> DatabaseProviders;
+
+        public List<PluginItem> DatabaseProviders => PluginManager.GetPlugins(PluginType.DatabaseProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
