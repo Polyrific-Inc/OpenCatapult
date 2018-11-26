@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Plugins.Core.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
@@ -12,12 +14,15 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class TaskProvider
     {
-        protected Dictionary<string, string> ParsedArguments;
+        protected Dictionary<string, object> ParsedArguments;
         protected ILogger Logger;
 
         protected TaskProvider(string[] args)
         {
-            ParsedArguments = args.ToDictionary();
+            if (args.Contains("--attach") && Debugger.IsAttached == false)
+                Debugger.Launch();
+            
+            ParsedArguments = args.Length > 0 ? JsonConvert.DeserializeObject<Dictionary<string, object>>(args[0]) : new Dictionary<string, object>();
             Logger = new TaskLogger();
         }
 
@@ -48,7 +53,7 @@ namespace Polyrific.Catapult.Plugins.Core
         {
             var validProcessNames = new[] {"all", "pre", "main", "post"};
             if (ParsedArguments.ContainsKey("process") && validProcessNames.Contains(ParsedArguments["process"]))
-                ProcessToExecute = ParsedArguments["process"];
+                ProcessToExecute = ParsedArguments["process"].ToString();
         }
 
         /// <summary>

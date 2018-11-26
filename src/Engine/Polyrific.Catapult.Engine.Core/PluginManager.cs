@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Engine.Core
@@ -12,14 +13,18 @@ namespace Polyrific.Catapult.Engine.Core
     {
         private Dictionary<string, List<PluginItem>> _plugins;
 
+        private readonly ILogger _logger;
+
         private readonly List<string> _pluginLocations;
 
-        public PluginManager(ICatapultEngineConfig engineConfig)
+        public PluginManager(ICatapultEngineConfig engineConfig, ILogger<PluginManager> logger)
         {
             _pluginLocations = new List<string>()
             {
                 engineConfig.PluginsLocation
             };
+
+            _logger = logger;
         }
         
         public void AddPluginLocation(string location)
@@ -56,24 +61,32 @@ namespace Polyrific.Catapult.Engine.Core
                 var files = Directory.GetFiles(location, "*.dll", SearchOption.AllDirectories);
                 foreach (var file in files)
                 {
-                    var info = Assembly.LoadFile(file);
-                    if (info.EntryPoint != null && info.EntryPoint.DeclaringType?.BaseType == typeof(TaskProvider))
+                    try
                     {
-                        var type = info.EntryPoint.DeclaringType.FullName;
-                        if (type != null)
+                        var info = Assembly.LoadFile(file);
+                        if (info.EntryPoint != null && typeof(TaskProvider).IsAssignableFrom(info.EntryPoint.DeclaringType))
                         {
-                            var instance = (TaskProvider) info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[]{ }, null, null);
-                            if (instance != null)
+                            var type = info.EntryPoint.DeclaringType.FullName;
+                            if (type != null)
                             {
-                                if (!_plugins.ContainsKey(instance.Type))
-                                    _plugins.Add(instance.Type,
-                                        new List<PluginItem>
-                                            {new PluginItem(instance.Name, file, instance.RequiredServices)});
-                                else
-                                    _plugins[instance.Type]
-                                        .Add(new PluginItem(instance.Name, file, instance.RequiredServices));
+                                var instance = (TaskProvider)info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[] { }, null, null);
+                                if (instance != null)
+                                {
+                                    if (!_plugins.ContainsKey(instance.Type))
+                                        _plugins.Add(instance.Type,
+                                            new List<PluginItem>
+                                                {new PluginItem(instance.Name, file, instance.RequiredServices)});
+                                    else
+                                        _plugins[instance.Type]
+                                            .Add(new PluginItem(instance.Name, file, instance.RequiredServices));
+                                }
                             }
                         }
+                    }
+                    catch (System.BadImageFormatException ex)
+                    {
+                        // skip loading file if this happen
+                        _logger.LogWarning(ex, "Failed loading plugin file {file}", file);
                     }
                 }
             }

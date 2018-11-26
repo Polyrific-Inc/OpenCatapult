@@ -173,10 +173,12 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         {
             Dictionary<string, object> result = null;
 
+            pluginArgs = pluginArgs.Replace("\"", "\\\"");
+
             var startInfo = new ProcessStartInfo()
             {
                 FileName = "dotnet",
-                Arguments = $"\"{pluginDll}\" {pluginArgs}",
+                Arguments = $"\"{pluginDll}\" \"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}",
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
