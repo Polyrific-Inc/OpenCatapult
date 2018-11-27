@@ -141,7 +141,7 @@ jobs:
       IsPrivateRepository: true
   - name: Generate
     type: Generate
-    provider: AspNetCoreMvc
+    provider: Polyrific.Catapult.Plugins.AspNetCoreMvc
   - name: Push
     type: Push
     provider: Polyrific.Catapult.Plugins.GitHub

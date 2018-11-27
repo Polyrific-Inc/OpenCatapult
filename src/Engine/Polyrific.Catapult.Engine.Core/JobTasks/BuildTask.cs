@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Build;
 
-        public List<PluginItem> BuildProviders => PluginManager.GetPlugins(Type);
+        public List<PluginItem> BuildProviders => PluginManager.GetPlugins(PluginType.BuildProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
@@ -54,10 +54,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             var outputArtifact = "";
             if (result.ContainsKey("outputArtifact"))
                 outputArtifact = result["outputArtifact"].ToString();
-            
+
             var outputValues = new Dictionary<string, string>();
-            if (result.ContainsKey("outputValues"))
-                outputValues = result["outputValues"] as Dictionary<string, string>;
+            if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
+                outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
             return new TaskRunnerResult(true, outputArtifact, outputValues);
         }

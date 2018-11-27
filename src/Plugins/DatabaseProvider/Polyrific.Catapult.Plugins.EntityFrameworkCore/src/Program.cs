@@ -11,6 +11,10 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
     {
         private IDatabaseCommand _databaseCommand;
 
+        public Program() : base(new string[0])
+        {
+        }
+
         public Program(string[] args) : base(args)
         {
         }

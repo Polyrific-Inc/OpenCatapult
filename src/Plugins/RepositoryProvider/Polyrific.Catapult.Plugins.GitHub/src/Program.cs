@@ -19,6 +19,8 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
         public override string Name => "Polyrific.Catapult.Plugins.GitHub";
 
+        public override string[] RequiredServices => new[] { "GitHub" };
+
         public Program() : base(new string[0])
         {
         }
@@ -29,7 +31,8 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
         public override async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone()
         {
-            var repoConfig = GetGitAutomationConfig(CloneTaskConfig.CloneLocation ?? CloneTaskConfig.WorkingLocation, CloneTaskConfig.Repository, AdditionalConfigs, CloneTaskConfig.IsPrivateRepository);
+            var cloneLocation = CloneTaskConfig.CloneLocation ?? CloneTaskConfig.WorkingLocation;
+            var repoConfig = GetGitAutomationConfig(cloneLocation, CloneTaskConfig.Repository, AdditionalConfigs, CloneTaskConfig.IsPrivateRepository);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, Logger);
@@ -41,7 +44,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             if (!string.IsNullOrEmpty(CloneTaskConfig.BaseBranch))
                 await _gitAutomation.CheckoutBranch(CloneTaskConfig.BaseBranch);
 
-            return (CloneTaskConfig.CloneLocation, null, "");
+            return (cloneLocation, null, "");
         }
 
         public override async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push()

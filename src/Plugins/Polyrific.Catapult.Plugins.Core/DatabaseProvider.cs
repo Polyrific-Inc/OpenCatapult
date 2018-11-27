@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Plugins.Core
             ParseArguments();
         }
 
-        public override string Type => JobTaskDefinitionType.DeployDb;
+        public override string Type => PluginType.DatabaseProvider;
 
         public sealed override void ParseArguments()
         {

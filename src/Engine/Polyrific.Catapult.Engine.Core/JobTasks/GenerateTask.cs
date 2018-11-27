@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         private List<ProjectDataModelDto> _dataModels;
         protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId, true).Result);
 
-        public List<PluginItem> GeneratorProviders => PluginManager.GetPlugins(Type);
+        public List<PluginItem> GeneratorProviders => PluginManager.GetPlugins(PluginType.GeneratorProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {

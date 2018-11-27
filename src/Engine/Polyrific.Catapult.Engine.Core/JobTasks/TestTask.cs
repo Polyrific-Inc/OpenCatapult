@@ -52,11 +52,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             var testResultLocation = "";
             if (result.ContainsKey("testResultLocation"))
                 testResultLocation = result["testResultLocation"].ToString();
-            
+
             var outputValues = new Dictionary<string, string>();
-            if (result.ContainsKey("outputValues"))
-                outputValues = result["outputValues"] as Dictionary<string, string>;
-            
+            if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
+                outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
+
             return new TaskRunnerResult(true, testResultLocation, outputValues);
         }
 
