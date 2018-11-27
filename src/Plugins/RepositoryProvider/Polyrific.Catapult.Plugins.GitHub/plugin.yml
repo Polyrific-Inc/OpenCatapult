@@ -1,4 +1,4 @@
-name: 'Polyrific.Catapult.Plugins.GitHubRepositoryProvider'
+name: 'Polyrific.Catapult.Plugins.GitHub'
 type: 'RepositoryProvider'
 author: 'Polyrific'
 version: '1.0'

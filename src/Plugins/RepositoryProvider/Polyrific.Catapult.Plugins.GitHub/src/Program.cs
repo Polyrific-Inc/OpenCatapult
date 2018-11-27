@@ -17,7 +17,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
         private const string DefaultBaseBranch = "master";
         private const string DefaultWorkingBranch = "OpenCatapultGenerated";
 
-        public override string Name => "Polyrific.Catapult.Plugins.GitHubRepositoryProvider";
+        public override string Name => "Polyrific.Catapult.Plugins.GitHub";
 
         public Program() : base(new string[0])
         {
