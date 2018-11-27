@@ -16,6 +16,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<ILogger<BuildTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
+        private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
+        private readonly Mock<IPluginService> _pluginService;
         private readonly Mock<IPluginManager> _pluginManager;
 
         public BuildTaskTests()
@@ -32,20 +34,25 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             {
                 new PluginItem("FakeBuildProvider", "path/to/FakeBuildProvider.dll", new string[] { })
             });
+
+            _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
+            _externalServiceTypeService.Setup(s => s.GetExternalServiceTypes(It.IsAny<bool>())).ReturnsAsync(new List<Shared.Dto.ExternalServiceType.ExternalServiceTypeDto>());
+            _pluginService = new Mock<IPluginService>();
+            _pluginService.Setup(s => s.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Plugin.PluginAdditionalConfigDto>());
         }
 
         [Fact]
         public async void RunMainTask_Success()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
                     {"outputArtifact", "good-result"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
@@ -58,15 +65,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", "error-message"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
@@ -81,7 +88,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistBuildProvider";
 

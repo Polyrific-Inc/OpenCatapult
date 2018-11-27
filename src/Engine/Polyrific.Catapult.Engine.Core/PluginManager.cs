@@ -96,12 +96,12 @@ namespace Polyrific.Catapult.Engine.Core
             }
         }
 
-        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs)
+        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs, string securedPluginArgs = null)
         {
             var result = new Dictionary<string, object>();
 
             pluginArgs = pluginArgs.Replace("\"", "\\\"");
-
+            
             var startInfo = new ProcessStartInfo()
             {
                 FileName = "dotnet",
@@ -116,8 +116,8 @@ namespace Polyrific.Catapult.Engine.Core
             {
                 if (process != null)
                 {
-                    // TODO: We need to think a way to print the command without exposing secret values
-                    //Console.WriteLine($"[Master] Command: {process.StartInfo.FileName} {process.StartInfo.Arguments}");
+                    if (!string.IsNullOrEmpty(securedPluginArgs))
+                        System.Console.WriteLine($"[Master] Command: {process.StartInfo.FileName} \"{pluginDll}\" \"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}");
 
                     var reader = process.StandardOutput;
                     while (!reader.EndOfStream)

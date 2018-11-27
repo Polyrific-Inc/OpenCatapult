@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Reload the project of task instance
         /// </summary>
-        void ReloadProject();
+        void ReloadProperties();
 
         /// <summary>
         /// Run the main task

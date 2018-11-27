@@ -14,8 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public class BuildTask : BaseJobTask<BuildTaskConfig>, IBuildTask
     {
         /// <inheritdoc />
-        public BuildTask(IProjectService projectService, IExternalServiceService externalServiceService, IPluginManager pluginManager, ILogger<BuildTask> logger) 
-            : base(projectService, externalServiceService, pluginManager, logger)
+        public BuildTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger<BuildTask> logger) 
+            : base(projectService, externalServiceService, externalServiceTypeService, pluginService, pluginManager, logger)
         {
             
         }
@@ -32,7 +32,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("pre"));
+            var arg = GetArgString("pre");
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
 
@@ -47,7 +48,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("main"));
+            var arg = GetArgString("main");
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
@@ -70,14 +72,15 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, GetArgString("post"));
+            var arg = GetArgString("post");
+            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
 
-        private string GetArgString(string process)
+        private (string argString, string securedArgString) GetArgString(string process)
         {
             var dict = new Dictionary<string, object>
             {
@@ -87,7 +90,12 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 {"additional", AdditionalConfigs}
             };
 
-            return JsonConvert.SerializeObject(dict);
+            var argString = JsonConvert.SerializeObject(dict);
+
+            dict["additional"] = SecuredAdditionalConfigs;
+            var securedArgString = JsonConvert.SerializeObject(dict);
+
+            return (argString, securedArgString);
         }
     }
 }
