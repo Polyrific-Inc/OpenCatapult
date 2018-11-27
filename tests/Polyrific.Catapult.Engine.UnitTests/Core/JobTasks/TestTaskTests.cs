@@ -11,16 +11,16 @@ using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 {
-    public class DeployTaskTests
+    public class TestTaskTests
     {
-        private readonly Mock<ILogger<DeployTask>> _logger;
+        private readonly Mock<ILogger<TestTask>> _logger;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IPluginManager> _pluginManager;
 
-        public DeployTaskTests()
+        public TestTaskTests()
         {
-            _logger = new Mock<ILogger<DeployTask>>();
+            _logger = new Mock<ILogger<TestTask>>();
 
             _projectService = new Mock<IProjectService>();
             _externalServiceService = new Mock<IExternalServiceService>();
@@ -30,7 +30,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager = new Mock<IPluginManager>();
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
-                new PluginItem("FakeHostingProvider", "path/to/FakeHostingProvider.dll", new string[] { })
+                new PluginItem("FakeTestProvider", "path/to/FakeTestProvider.dll", new string[] { })
             });
         }
 
@@ -40,14 +40,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs) => new Dictionary<string, object>
                 {
-                    {"hostLocation", "good-result"}
+                    {"testResultLocation", "good-result"}
                 });
 
             var config = new Dictionary<string, string>();
 
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new TestTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "FakeHostingProvider";
+            task.Provider = "FakeTestProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
@@ -66,9 +66,9 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
             
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new TestTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "FakeHostingProvider";
+            task.Provider = "FakeTestProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
@@ -81,14 +81,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
             
-            var task = new DeployTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
+            var task = new TestTask(_projectService.Object, _externalServiceService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "NotExistHostingProvider";
+            task.Provider = "NotExistTestProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Deploy provider \"NotExistHostingProvider\" could not be found.", result.ErrorMessage);
+            Assert.Equal("Test provider \"NotExistTestProvider\" could not be found.", result.ErrorMessage);
         }
     }
 }
