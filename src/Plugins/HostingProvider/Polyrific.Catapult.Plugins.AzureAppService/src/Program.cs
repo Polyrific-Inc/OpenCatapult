@@ -5,9 +5,11 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.AzureAppService
 {
-    internal class Program : HostingProvider
+    public class Program : HostingProvider
     {
         private IAzureAutomation _azure;
+        private readonly IAzureUtils _azureUtils;
+        private readonly IDeployUtils _deployUtils;
 
         public Program() : base(new string[0])
         {
@@ -17,6 +19,13 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         {
         }
 
+        public Program(string[] args, IAzureUtils azureUtils, IDeployUtils deployUtils)
+            : this(args)
+        {
+            _azureUtils = azureUtils;
+            _deployUtils = deployUtils;
+        }
+
         public override string Name => "Polyrific.Catapult.Plugins.AzureAppService";
 
         public override string[] RequiredServices => new[] { "AzureAppService" };
@@ -24,7 +33,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         public override async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy()
         {
             if (_azure == null)
-                _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), null, null, Logger);
+                _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), _azureUtils, _deployUtils, Logger);
 
             var subscriptionId = "";
             if (AdditionalConfigs.ContainsKey("SubscriptionId") && !string.IsNullOrEmpty(AdditionalConfigs["SubscriptionId"]))

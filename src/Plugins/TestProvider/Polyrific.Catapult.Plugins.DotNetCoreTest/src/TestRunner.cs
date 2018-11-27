@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Plugins.DotNetCoreTest
         
         public async Task<(string error, string resultFilePath)> RunTest(string projectPath, string resultPath, bool continueWhenFailed)
         {
-            var args = $"test {projectPath} --logger trx;LogFileName={TestResultFile} --results-directory {resultPath}";
+            var args = $"test \"{projectPath}\" --logger trx;LogFileName={TestResultFile} --results-directory \"{resultPath}\"";
 
             var result = await RunDotnet(args);
 

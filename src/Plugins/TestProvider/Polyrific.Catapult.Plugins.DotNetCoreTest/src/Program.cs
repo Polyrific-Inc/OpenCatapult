@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.DotNetCoreTest
 {
-    internal class Program : TestProvider
+    public class Program : TestProvider
     {
         private ITestRunner _testRunner;
 

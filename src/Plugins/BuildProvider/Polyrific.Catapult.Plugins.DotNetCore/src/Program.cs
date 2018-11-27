@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.DotNetCore
 {
-    internal class Program : BuildProvider
+    public class Program : BuildProvider
     {
         private IBuilder _builder;
 
