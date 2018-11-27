@@ -1,13 +1,12 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 {
-    internal class Program : CodeGeneratorProvider
+    public class Program : CodeGeneratorProvider
     {
         public override string Name => "Polyrific.Catapult.Plugins.AspNetCoreMvc";
 
