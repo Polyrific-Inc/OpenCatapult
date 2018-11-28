@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Core.JobTasks;
