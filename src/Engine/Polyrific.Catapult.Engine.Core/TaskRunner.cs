@@ -193,7 +193,7 @@ namespace Polyrific.Catapult.Engine.Core
                     throw new InvalidJobTaskTypeException(jobTask.Type);
             }
 
-            task.ReloadProject();
+            task.ReloadProperties();
             task.ProjectId = projectId;
             task.JobTaskId = jobTask.Id;
             task.Provider = jobTask.Provider;
