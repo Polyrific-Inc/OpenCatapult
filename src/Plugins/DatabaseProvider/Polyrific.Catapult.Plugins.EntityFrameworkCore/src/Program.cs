@@ -7,7 +7,7 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
 {
-    internal class Program : DatabaseProvider
+    public class Program : DatabaseProvider
     {
         private IDatabaseCommand _databaseCommand;
 
@@ -17,6 +17,11 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
 
         public Program(string[] args) : base(args)
         {
+        }
+
+        public Program(string[] args, IDatabaseCommand databaseCommand) : this(args)
+        {
+            _databaseCommand = databaseCommand;
         }
 
         public override string Name => "Polyrific.Catapult.Plugins.EntityFrameworkCore";

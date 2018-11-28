@@ -7,9 +7,10 @@ using Polyrific.Catapult.Plugins.Core;
 
 namespace Polyrific.Catapult.Plugins.GitHub
 {
-    internal class Program : RepositoryProvider
+    public class Program : RepositoryProvider
     {
         private IGitAutomation _gitAutomation;
+        private readonly IGitHubUtils _gitHubUtils;
 
         private const string DefaultAuthor = "OpenCatapult";
         private const string DefaultEmail = "admin@opencatapult.net";
@@ -29,13 +30,19 @@ namespace Polyrific.Catapult.Plugins.GitHub
         {
         }
 
+        public Program(string[] args, IGitHubUtils gitHubUtils)
+            : this(args)
+        {
+            _gitHubUtils = gitHubUtils;
+        }
+
         public override async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone()
         {
             var cloneLocation = CloneTaskConfig.CloneLocation ?? CloneTaskConfig.WorkingLocation;
             var repoConfig = GetGitAutomationConfig(cloneLocation, CloneTaskConfig.Repository, AdditionalConfigs, CloneTaskConfig.IsPrivateRepository);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
 
             var error = await _gitAutomation.Clone();
             if (!string.IsNullOrEmpty(error))
@@ -52,7 +59,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             var repoConfig = GetGitAutomationConfig(PushTaskConfig.SourceLocation ?? PushTaskConfig.WorkingLocation, PushTaskConfig.Repository, AdditionalConfigs);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
 
             string baseBranch = PushTaskConfig.PullRequestTargetBranch ?? DefaultBaseBranch;
             string workingBranch = PushTaskConfig.Branch ?? (PushTaskConfig.CreatePullRequest ? DefaultWorkingBranch : DefaultBaseBranch);
@@ -87,7 +94,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             var repoConfig = GetGitAutomationConfig("", MergeTaskConfig.Repository, AdditionalConfigs);
 
             if (_gitAutomation == null)
-                _gitAutomation = new GitAutomation(repoConfig, Logger);
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
 
             var success = await _gitAutomation.MergePullRequest(PrNumber);
             if (!success)

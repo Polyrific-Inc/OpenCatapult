@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Engine.Core.Exceptions;
 using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Core.JobTasks;
@@ -52,7 +53,7 @@ namespace Polyrific.Catapult.Engine.Core
             _logger.LogInformation("[Queue {Code}] Attempting to run {Count} job tasks", job.Code, orderedJobTasks.Count);
 
             var results = orderedJobTasks.ToDictionary(t => t.Id, t => new TaskRunnerResult());
-            
+
             var outputValues = job.OutputValues ?? new Dictionary<string, string>();
             job.JobTasksStatus = job.JobTasksStatus?.Count > 0 ? job.JobTasksStatus :
                 orderedJobTasks.Select((t, idx) => new JobTaskStatusDto
@@ -121,7 +122,7 @@ namespace Polyrific.Catapult.Engine.Core
                         jobTaskStatus.Remarks = postResult.ErrorMessage;
                         break;
                     }
-                                        
+
                     // check if there's a need to postpone the next task
                     if (result.IsSuccess && result.StopTheProcess)
                     {
@@ -193,7 +194,7 @@ namespace Polyrific.Catapult.Engine.Core
                     throw new InvalidJobTaskTypeException(jobTask.Type);
             }
 
-            task.ReloadProject();
+            task.ReloadProperties();
             task.ProjectId = projectId;
             task.JobTaskId = jobTask.Id;
             task.Provider = jobTask.Provider;

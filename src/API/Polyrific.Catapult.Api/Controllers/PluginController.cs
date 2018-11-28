@@ -168,7 +168,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="pluginName">Name of the plugin</param>
         /// <returns></returns>
         [HttpGet("name/{pluginName}/config")]
-        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicEngineAccess)]
         public async Task<IActionResult> GetPluginAdditionalConfigsByPluginName(string pluginName)
         {
             _logger.LogInformation("Getting additional configs for plugin {pluginName}", pluginName);

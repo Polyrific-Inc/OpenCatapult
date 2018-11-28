@@ -43,7 +43,8 @@ namespace Polyrific.Catapult.Engine.Core
         /// </summary>
         /// <param name="pluginDll">Path to the task provider dll file</param>
         /// <param name="pluginArgs">Arguments to be passed when executing task provider</param>
+        /// <param name="securedPluginArgs">Arguments that has been stripped from secret values, to be shown in UI for traceability</param>
         /// <returns></returns>
-        Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs);
+        Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs, string securedPluginArgs = null);
     }
 }

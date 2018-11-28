@@ -12,6 +12,7 @@ namespace Polyrific.Catapult.Plugins.Core
     {
         protected TestProvider(string[] args) : base(args)
         {
+            ParseArguments();
         }
 
         public override string Type => PluginType.TestProvider;
