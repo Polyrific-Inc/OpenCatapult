@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.Engine.Core
                     var preResult = await taskObj.RunPreprocessingTask();
                     if (!preResult.IsSuccess && preResult.StopTheProcess)
                     {
-                        _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution.", job.Code, jobTask.Type);
+                        _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, preResult.ErrorMessage);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
                         jobTaskStatus.Remarks = preResult.ErrorMessage;
                         break;
@@ -95,7 +95,7 @@ namespace Polyrific.Catapult.Engine.Core
                     results[jobTask.Id] = result;
                     if (!result.IsSuccess && result.StopTheProcess)
                     {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution.", job.Code, jobTask.Type);
+                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, result.ErrorMessage);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
                         jobTaskStatus.Remarks = result.ErrorMessage;
                         break;
@@ -118,7 +118,7 @@ namespace Polyrific.Catapult.Engine.Core
                     var postResult = await taskObj.RunPostprocessingTask();
                     if (!postResult.IsSuccess && postResult.StopTheProcess)
                     {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution.", job.Code, jobTask.Type);
+                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, postResult.ErrorMessage);
                         jobTaskStatus.Status = JobTaskStatusType.Failed;
                         jobTaskStatus.Remarks = postResult.ErrorMessage;
                         break;
@@ -137,6 +137,7 @@ namespace Polyrific.Catapult.Engine.Core
                     }
 
                     jobTaskStatus.Status = JobTaskStatusType.Success;
+                    jobTaskStatus.Remarks = null;
                     await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
                     {
                         Id = job.Id,
@@ -154,7 +155,8 @@ namespace Polyrific.Catapult.Engine.Core
 
             job.OutputValues = outputValues;
 
-            _logger.LogInformation("[Queue {Code}] Job tasks execution complete with the following result: {@results}", job.Code, results);
+            var serializedResult = JsonConvert.SerializeObject(results);
+            _logger.LogInformation("[Queue {Code}] Job tasks execution complete with the following result: {serializedResult}", job.Code, serializedResult);
 
             return results;
         }
