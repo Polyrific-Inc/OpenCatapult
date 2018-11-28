@@ -82,9 +82,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Names of the secret AdditionalConfigs
         /// </summary>
-        public List<string> SecretAdditionalConfigs { get; set; }
+        protected List<string> SecretAdditionalConfigs { get; set; }
 
-
+        /// <summary>
+        /// The AdditionalConfigs that have been stripped off secret values
+        /// </summary>
         public Dictionary<string, string> SecuredAdditionalConfigs
         {
             get
