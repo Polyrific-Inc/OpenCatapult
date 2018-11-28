@@ -8,9 +8,9 @@ namespace Polyrific.Catapult.Engine.Core
     public interface IPluginManager
     {
         /// <summary>
-        /// Refresh plugin collection
+        /// Plugin locations
         /// </summary>
-        void RefreshPlugins();
+        List<string> PluginLocations { get; }
 
         /// <summary>
         /// Add new location of the plugin
@@ -32,6 +32,11 @@ namespace Polyrific.Catapult.Engine.Core
         /// <param name="name"></param>
         /// <returns></returns>
         PluginItem GetPlugin(string taskType, string name);
+
+        /// <summary>
+        /// Refresh plugin collection
+        /// </summary>
+        void RefreshPlugins();
 
         /// <summary>
         /// Invoke task provider

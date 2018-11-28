@@ -19,11 +19,23 @@ namespace Polyrific.Catapult.Engine.Core
 
         private readonly ILogger _logger;
 
-        private readonly List<string> _pluginLocations;
+        public List<string> PluginLocations { get; }
+
+        public PluginManager(Dictionary<string, List<PluginItem>> plugins, ICatapultEngineConfig engineConfig, ILogger<PluginManager> logger)
+        {
+            _plugins = plugins;
+
+            PluginLocations = new List<string>()
+            {
+                engineConfig.PluginsLocation
+            };
+
+            _logger = logger;
+        }
 
         public PluginManager(ICatapultEngineConfig engineConfig, ILogger<PluginManager> logger)
         {
-            _pluginLocations = new List<string>()
+            PluginLocations = new List<string>()
             {
                 engineConfig.PluginsLocation
             };
@@ -33,7 +45,7 @@ namespace Polyrific.Catapult.Engine.Core
         
         public void AddPluginLocation(string location)
         {
-            _pluginLocations.Add(location);
+            PluginLocations.Add(location);
         }
 
         public PluginItem GetPlugin(string taskType, string name)
@@ -60,7 +72,7 @@ namespace Polyrific.Catapult.Engine.Core
         {
             _plugins = new Dictionary<string, List<PluginItem>>();
 
-            foreach (var location in _pluginLocations)
+            foreach (var location in PluginLocations)
             {
                 var files = Directory.GetFiles(location, "*.dll", SearchOption.AllDirectories);
                 foreach (var file in files)
