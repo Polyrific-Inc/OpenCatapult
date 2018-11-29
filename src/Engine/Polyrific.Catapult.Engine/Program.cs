@@ -68,6 +68,7 @@ namespace Polyrific.Catapult.Engine
 
             services.AddOptions();
 
+            services.AddSingleton<IPluginProcess, PluginProcess>();
             services.AddSingleton<IPluginManager, PluginManager>();
         }
 
