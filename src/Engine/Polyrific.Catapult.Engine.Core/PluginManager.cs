@@ -48,21 +48,21 @@ namespace Polyrific.Catapult.Engine.Core
             PluginLocations.Add(location);
         }
 
-        public PluginItem GetPlugin(string taskType, string name)
+        public PluginItem GetPlugin(string providerType, string name)
         {
-            if (_plugins != null && _plugins.ContainsKey(taskType))
+            if (_plugins != null && _plugins.ContainsKey(providerType))
             {
-                return _plugins[taskType].FirstOrDefault(p => p.Name == name);
+                return _plugins[providerType].FirstOrDefault(p => p.Name == name);
             }
 
             return null;
         }
 
-        public List<PluginItem> GetPlugins(string taskType)
+        public List<PluginItem> GetPlugins(string providerType)
         {
-            if (_plugins != null && _plugins.ContainsKey(taskType))
+            if (_plugins != null && _plugins.ContainsKey(providerType))
             {
-                return _plugins[taskType];
+                return _plugins[providerType];
             }
 
             return new List<PluginItem>();

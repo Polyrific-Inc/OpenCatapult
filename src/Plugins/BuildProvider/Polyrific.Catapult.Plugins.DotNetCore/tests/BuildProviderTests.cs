@@ -41,7 +41,7 @@ namespace Polyrific.Catapult.Plugins.DotNetCore.UnitTests
 
         private async Task GenerateTestProject(string projectName, string outputLocation)
         {
-            await CommandHelper.Execute("dotnet", $"new console -n {projectName} -o {outputLocation}");
+            await CommandHelper.Execute("dotnet", $"new console -n {projectName} -o \"{outputLocation}\"");
         }
 
         private string GetArgString(string process, string projectName, BuildTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)

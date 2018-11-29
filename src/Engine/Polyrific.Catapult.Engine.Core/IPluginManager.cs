@@ -19,19 +19,19 @@ namespace Polyrific.Catapult.Engine.Core
         void AddPluginLocation(string location);
 
         /// <summary>
-        /// Get plugins by the task type
+        /// Get plugins by the provider type
         /// </summary>
-        /// <param name="taskType"></param>
+        /// <param name="providerType"></param>
         /// <returns></returns>
-        List<PluginItem> GetPlugins(string taskType);
+        List<PluginItem> GetPlugins(string providerType);
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="taskType"></param>
+        /// <param name="providerType"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        PluginItem GetPlugin(string taskType, string name);
+        PluginItem GetPlugin(string providerType, string name);
 
         /// <summary>
         /// Refresh plugin collection
