@@ -11,12 +11,12 @@ $engineCsprojPath = "$rootPath\src\Engine\Polyrific.Catapult.Engine\Polyrific.Ca
 $enginePublishPath = "$rootPath\publish\engine"
 $engineDll = "$enginePublishPath\ocengine.dll"
 
-$plugins = [System.Tuple]::Create("$rootPath\src\Plugins\GeneratorProvider\AspNetCoreMvc\src\AspNetCoreMvc.csproj", "$enginePublishPath\plugins\GeneratorProvider\AspNetCoreMvc"),
-[System.Tuple]::Create("$rootPath\src\Plugins\HostingProvider\AzureAppService\src\AzureAppService.csproj", "$enginePublishPath\plugins\HostingProvider\AzureAppService"),
-[System.Tuple]::Create("$rootPath\src\Plugins\BuildProvider\DotNetCore\src\DotNetCore.csproj", "$enginePublishPath\plugins\BuildProvider\DotNetCore"),
-[System.Tuple]::Create("$rootPath\src\Plugins\TestProvider\DotNetCoreTest\src\DotNetCoreTest.csproj", "$enginePublishPath\plugins\TestProvider\DotNetCoreTest"),
-[System.Tuple]::Create("$rootPath\src\Plugins\DatabaseProvider\EntityFrameworkCore\src\EntityFrameworkCore.csproj", "$enginePublishPath\plugins\DatabaseProvider\EntityFrameworkCore"),
-[System.Tuple]::Create("$rootPath\src\Plugins\RepositoryProvider\GitHub\src\GitHub.csproj", "$enginePublishPath\plugins\RepositoryProvider\GitHub")
+$plugins = [System.Tuple]::Create("$rootPath\src\Plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj", "$enginePublishPath\plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc"),
+[System.Tuple]::Create("$rootPath\src\Plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService\src\Polyrific.Catapult.Plugins.AzureAppService.csproj", "$enginePublishPath\plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService"),
+[System.Tuple]::Create("$rootPath\src\Plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\src\Polyrific.Catapult.Plugins.DotNetCore.csproj", "$enginePublishPath\plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore"),
+[System.Tuple]::Create("$rootPath\src\Plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest\src\Polyrific.Catapult.Plugins.DotNetCoreTest.csproj", "$enginePublishPath\plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest"),
+[System.Tuple]::Create("$rootPath\src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj", "$enginePublishPath\plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore"),
+[System.Tuple]::Create("$rootPath\src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\src\Polyrific.Catapult.Plugins.GitHub.csproj", "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub")
 
 # publish engine
 Write-Output "Publishing the Engine..."
@@ -49,6 +49,6 @@ foreach ($p in $plugins) {
 
 # Copy GitHub assemblies
 Write-Output "Copying required files..."
-Copy-Item "$enginePublishPath\plugins\RepositoryProvider\GitHub\runtimes\win-x64\native\*" -Destination "$enginePublishPath\plugins\RepositoryProvider\GitHub\" -Force
+Copy-Item "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\runtimes\win-x64\native\*" -Destination "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\" -Force
 
 Write-Output "Engine is ready. Please run: dotnet $engineDll [command] [options]"
