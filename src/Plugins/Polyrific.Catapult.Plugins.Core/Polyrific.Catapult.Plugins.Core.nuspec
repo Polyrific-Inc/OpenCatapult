@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Polyrific.Catapult.Plugins.Core</id>
+    <version>1.0.0</version>
+    <title>Polyrific.Catapult.Plugins.Core</title>
+    <authors>frandi-polyrific</authors>
+    <owners>frandi-polyrific</owners>
+    <licenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://opencatapult.net</projectUrl>
+    <iconUrl>https://opencatapult.net/img/opencatapult-logo.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Core library for OpenCatapult plugins, to be used as a contract between Engine and the plugins.</description>
+    <releaseNotes>Preview release</releaseNotes>
+    <copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</copyright>
+    <tags>catapult opencatapult devops plugins</tags>
+  </metadata>
+  <files>
+    <file src="bin\Release\*" target="lib\netstandard2.0"></file>
+  </files>
+</package>
