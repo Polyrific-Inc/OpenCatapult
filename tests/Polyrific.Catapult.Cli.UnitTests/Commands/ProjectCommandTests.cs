@@ -273,7 +273,7 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("The provider \"AspNetCoreMvc2\" is not installed", resultMessage);
+            Assert.Equal("Please register the required plugins first by using \"plugin register\" command.", resultMessage);
         }
 
         [Fact]
@@ -305,75 +305,9 @@ jobs:
 
             var resultMessage = command.Execute();
 
-            Assert.Equal("The GitHub external service is required for the provider GitHubRepositoryProvider. Please check the template file", resultMessage);
+            Assert.Equal("Please add the required external services first by using \"service add\" command.", resultMessage);
         }
-
-        [Fact]
-        public void ProjectCreate_Execute_WithTemplateReturnsExternalServiceNotFound()
-        {
-            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
-@"name: Project 2
-models:
-    - name: Product
-jobs:
-- name: Default
-  tasks:
-  - name: Generate
-    type: Generate
-    provider: AspNetCoreMvc
-  - name: Push
-    type: Generate
-    provider: GitHubRepositoryProvider
-    configs:
-      Branch: master
-      GitHubExternalService: github-default2"
-            );
-
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
-            {
-                Name = "Project 2",
-                Client = "Company",
-                Template = "Test"
-            };
-
-            var resultMessage = command.Execute();
-
-            Assert.Equal("The external service github-default2 is not found. Please add them using \"service add\" command", resultMessage);
-        }
-
-        [Fact]
-        public void ProjectCreate_Execute_WithTemplateReturnsIncorrectType()
-        {
-            _templateWriter.Setup(t => t.Read(It.IsAny<string>())).Returns(
-@"name: Project 2
-models:
-    - name: Product
-jobs:
-- name: Default
-  tasks:
-  - name: Generate
-    type: Generate
-    provider: AspNetCoreMvc
-  - name: Push
-    type: Generate
-    provider: GitHubRepositoryProvider
-    configs:
-      Branch: master
-      GitHubExternalService: azure-default"
-            );
-
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _pluginService.Object, _externalServiceService.Object, _templateWriter.Object)
-            {
-                Name = "Project 2",
-                Client = "Company",
-                Template = "Test"
-            };
-
-            var resultMessage = command.Execute();
-
-            Assert.Equal("The external service azure-default is not a GitHub service", resultMessage);
-        }
-
+        
         [Fact]
         public void ProjectExport_Execute_ReturnsSuccessMessage()
         {

@@ -102,7 +102,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             if (!isPluginOk)
                 return "Please register the required plugins first by using \"plugin register\" command.";
 
-            var serviceTypeNames = plugins.SelectMany(p => p.RequiredServices);
+            var serviceTypeNames = plugins.Where(p => p.RequiredServices != null).SelectMany(p => p.RequiredServices);
             var taskConfigs = tasks.Where(t => t.Configs != null)
                 .SelectMany(t => t.Configs)
                 .Where(tc => tc.Key.EndsWith("ExternalService"));
