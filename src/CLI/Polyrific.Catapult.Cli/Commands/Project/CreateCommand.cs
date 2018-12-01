@@ -185,12 +185,14 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             if (notExistPlugins.Count == 0)
             {
-                Console.WriteLine("All required plugins are registered.");
+                Logger.LogInformation("All required plugins are registered.");
                 return true;
             }
 
-            Console.WriteLine(
-                $"The following plugins need to be registered before continuing the project creation: {string.Join(", ", notExistPlugins)}");
+            var message = $"The following plugins need to be registered before continuing the project creation: {string.Join(", ", notExistPlugins)}";
+            Logger.LogInformation(message);
+            Console.WriteLine(message);
+
             return false;
         }
 
@@ -231,12 +233,14 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             if (notExistServices.Count == 0)
             {
-                Console.WriteLine("All required external services are found.");
+                Logger.LogInformation("All required external services are found.");
                 return true;
             }
 
-            Console.WriteLine(
-                $"The following external services need to be added before continuing to create the project: {string.Join(", ", notExistServices)}");
+            var message = $"The following external services need to be added before continuing to create the project: {string.Join(", ", notExistServices)}";
+            Logger.LogInformation(message);
+            Console.WriteLine(message);
+                
             return false;
         }
 
