@@ -1,9 +1,9 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 param(
-    [switch]$noPrompt = $false,
     [string]$configuration = "Release",
-    [string]$url = "https://localhost:44305"
+    [string]$url = "https://localhost:44305",
+    [switch]$noConfig = $false
 )
 
 $rootPath = Split-Path $PSScriptRoot
@@ -21,12 +21,14 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # Set ApiUrl
-Write-Output "Set ApiUrl config..."
-Write-Output "dotnet $cliDll config set -n ApiUrl -v $url"
-$result = dotnet $cliDll config set -n ApiUrl -v $url
-if ($LASTEXITCODE -ne 0) {
-    Write-Error -Message "[ERROR] $result"
-    break
+if (!$noConfig) {
+    Write-Output "Set ApiUrl config..."
+    Write-Output "dotnet $cliDll config set -n ApiUrl -v $url"
+    $result = dotnet $cliDll config set -n ApiUrl -v $url
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error -Message "[ERROR] $result"
+        break
+    }
 }
 
 Write-Output "CLI is ready. Please run: dotnet $cliDll [command] [options]"

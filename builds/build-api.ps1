@@ -4,7 +4,9 @@ param(
     [switch]$noPrompt = $false,
     [string]$configuration = "Release",
     [string]$connString = "",
-    [string]$url = "https://localhost:44305"
+    [string]$url = "https://localhost:44305",
+    [switch]$noRun = $false
+
 )
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = $true
@@ -83,11 +85,12 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 # run the API
-Write-Output "Running API..."
-Write-Output "dotnet $apiDll --urls $url"
-Set-Location $apiPublishPath
-$result = dotnet $apiDll --urls $url
-if ($LASTEXITCODE -ne 0) {
-    Write-Error -Message "[ERROR] $result"
-    break
+if ($noRun) {
+    Set-Location $apiPublishPath
+    Write-Output "API is ready. Please run: dotnet $apiDll --urls $url"
+} else {
+    Write-Output "Running API..."
+    Write-Output "dotnet $apiDll --urls $url"
+    Set-Location $apiPublishPath
+    dotnet $apiDll --urls $url
 }
