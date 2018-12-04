@@ -121,12 +121,11 @@ namespace Polyrific.Catapult.Api
             }
             else
             {
+                app.UseHttpsRedirection();
                 app.UseHsts();
             }
 
             app.UseCorrelationId();
-
-            app.UseHttpsRedirection();
             app.UseAuthentication();
 
             // enrich log with request context
