@@ -4,7 +4,8 @@ param(
     [switch]$noPrompt = $false,
     [string]$configuration = "Release",
     [string]$connString = "",
-    [string]$url = "https://localhost:44305",
+    [string]$http = "http://localhost:8005",
+    [string]$https = "https://localhost:44305",
     [switch]$noRun = $false
 
 )
@@ -87,10 +88,10 @@ if ($LASTEXITCODE -ne 0) {
 # run the API
 if ($noRun) {
     Set-Location $apiPublishPath
-    Write-Output "API is ready. Please run: dotnet $apiDll --urls $url"
+    Write-Output "API is ready. Please run: dotnet $apiDll --urls `"$http;$https`""
 } else {
     Write-Output "Running API..."
-    Write-Output "dotnet $apiDll --urls $url"
+    Write-Output "dotnet $apiDll --urls `"$http;$https`""
     Set-Location $apiPublishPath
-    dotnet $apiDll --urls $url
+    dotnet $apiDll --urls "$http;$https"
 }
