@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("pre");
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
 
@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("main");
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
@@ -73,7 +73,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("post");
-            var result = await PluginManager.InvokeTaskProvider(provider.DllPath, arg.argString, arg.securedArgString);
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("error"))
                 return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 

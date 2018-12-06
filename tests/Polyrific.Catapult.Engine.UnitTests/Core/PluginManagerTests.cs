@@ -101,18 +101,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             var newPlugin = pluginManager.GetPlugin(pluginType, pluginName);
             Assert.NotNull(newPlugin);
-            Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.dll"), newPlugin.DllPath);
+            Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.dll"), newPlugin.StartFilePath);
         }
 
         [Fact]
         public async void InvokeTaskProvider_Success()
         {
-            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) =>
+            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
             {
-                return new Process
-                {
-                    StartInfo = startInfo
-                };
+                StartInfo = startInfo
             });
             _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("[OUTPUT] {\"output\":\"success\"}\n[LOG][Information]Logged"))));
@@ -177,10 +174,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                
         private void AddDllReference(string projectFile, string dllFile)
         {
-            string line = null;
             var updatedContent = new StringBuilder();
             using (var reader = new StreamReader(projectFile))
             {
+                string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     switch (line.Trim())

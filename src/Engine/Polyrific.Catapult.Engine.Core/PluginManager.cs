@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -80,7 +81,16 @@ namespace Polyrific.Catapult.Engine.Core
 
             foreach (var location in PluginLocations)
             {
-                var files = Directory.GetFiles(location, "*.dll", SearchOption.AllDirectories);
+                var files = new List<string>();
+                
+                var dllFiles = Directory.GetFiles(location, "*.dll", SearchOption.AllDirectories);
+                if (dllFiles.Length > 0)
+                    files.AddRange(dllFiles);
+                
+                var exeFiles = Directory.GetFiles(location, "*.exe", SearchOption.AllDirectories);
+                if (exeFiles.Length > 0)
+                    files.AddRange(exeFiles);
+
                 foreach (var file in files)
                 {
                     try
@@ -105,7 +115,7 @@ namespace Polyrific.Catapult.Engine.Core
                             }
                         }
                     }
-                    catch (System.BadImageFormatException ex)
+                    catch (BadImageFormatException ex)
                     {
                         // skip loading file if this happen
                         _logger.LogWarning(ex, "Failed loading plugin file {file}", file);
@@ -114,16 +124,30 @@ namespace Polyrific.Catapult.Engine.Core
             }
         }
 
-        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginDll, string pluginArgs, string securedPluginArgs = null)
+        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginStartFile, string pluginArgs, string securedPluginArgs = null)
         {
             var result = new Dictionary<string, object>();
 
             pluginArgs = pluginArgs.Replace("\"", "\\\"");
-            
+
+            var isExeFile = pluginStartFile.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
+
+            var fileName = "dotnet";
+            if (isExeFile)
+                fileName = pluginStartFile;
+
+            var arguments = $"\"\"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
+            var securedArguments = $"\"\"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
+            if (!isExeFile)
+            {
+                arguments = $"\"{pluginStartFile}\" " + arguments;
+                securedArguments = $"\"{pluginStartFile}\" " + securedArguments;
+            }
+
             var startInfo = new ProcessStartInfo()
             {
-                FileName = "dotnet",
-                Arguments = $"\"{pluginDll}\" \"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}",
+                FileName = fileName,
+                Arguments = arguments,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -135,7 +159,7 @@ namespace Polyrific.Catapult.Engine.Core
                 if (process != null)
                 {
                     if (!string.IsNullOrEmpty(securedPluginArgs))
-                        System.Console.WriteLine($"[Master] Command: {process.StartInfo.FileName} \"{pluginDll}\" \"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}");
+                        Console.WriteLine($"[Master] Command: {fileName} {securedArguments}");
 
                     var reader = _pluginProcess.GetStandardOutput(process);
                     while (!reader.EndOfStream)

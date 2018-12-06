@@ -9,10 +9,10 @@ namespace Polyrific.Catapult.Engine.Core
             
         }
 
-        public PluginItem(string name, string dllPath, string[] requiredServices)
+        public PluginItem(string name, string startFilePath, string[] requiredServices)
         {
             Name = name;
-            DllPath = dllPath;
+            StartFilePath = startFilePath;
             RequiredServices = requiredServices;
         }
 
@@ -22,9 +22,9 @@ namespace Polyrific.Catapult.Engine.Core
         public string Name { get; set; }
 
         /// <summary>
-        /// Path location to the plugin DLL file
+        /// Path location to the plugin start file (.exe or .dll)
         /// </summary>
-        public string DllPath { get; set; }
+        public string StartFilePath { get; set; }
 
         /// <summary>
         /// Names of the required external service connections
