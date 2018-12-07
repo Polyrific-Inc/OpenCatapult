@@ -70,6 +70,9 @@ namespace Polyrific.Catapult.Engine
             services.AddTransient<IProjectTemplateReader, ProjectTemplateReader>();
 
             services.AddOptions();
+
+            services.AddSingleton<IPluginProcess, PluginProcess>();
+            services.AddSingleton<IPluginManager, PluginManager>();
         }
 
         private static void ConfigureApplication(CommandLineApplication app, IServiceProvider serviceProvider)

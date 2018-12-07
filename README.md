@@ -5,12 +5,13 @@ Build status:
 
 | Component | Status |
 |-----------|--------|
-| API       | [![Build status](https://ci.appveyor.com/api/projects/status/qpi6p3uypagq755o/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult/branch/master) |
-| Engine    | [![Build status](https://ci.appveyor.com/api/projects/status/vfwu1kc0y1a46sk3/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-1f88g/branch/master) |
-| CLI       | [![Build status](https://ci.appveyor.com/api/projects/status/4eogolso3j23ud2v/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-4vn9h/branch/master) |
-| Plugin: AspNetCoreMvc | [![Build status](https://ci.appveyor.com/api/projects/status/s0ap554n7nof4rtl/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-gsy03/branch/master) |
-| Plugin: DotNetCore | [![Build status](https://ci.appveyor.com/api/projects/status/sc28u4acjqdyq5it/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-hk5be/branch/master) |
-| Plugin: DotNetCoreTest | [![Build status](https://ci.appveyor.com/api/projects/status/h7kbd1ea3qgycrb3/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-aakqj/branch/master) |
-| Plugin: EntityFrameworkCore | [![Build status](https://ci.appveyor.com/api/projects/status/n4n2vyv2f9pbirty/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-jkmet/branch/master) |
-| Plugin: GitHub | [![Build status](https://ci.appveyor.com/api/projects/status/3p4jf52ms265lnq3/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-4ma5g/branch/master) |
-| Plugin: AzureAppService | [![Build status](https://ci.appveyor.com/api/projects/status/loej7m5sne7qcwae/branch/master?svg=true)](https://ci.appveyor.com/project/Frandi28567/opencatapult-7rxh2/branch/master) |
+| API       | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/API/OpenCatapult.master.API)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=341) |
+| Engine    | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Engine/OpenCatapult.master.Engine)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=334) |
+| CLI       | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/CLI/OpenCatapult.master.CLI)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=332) |
+| Plugin Core | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/OpenCatapult.master.Plugin-Core)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=344) |
+| Plugin: AspNetCoreMvc | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-AspNetCoreMvc)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=335) |
+| Plugin: AzureAppService | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-AzureAppService)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=336) |
+| Plugin: DotNetCore | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-DotNetCore)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=337) |
+| Plugin: DotNetCoreTest | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-DotNetCoreTest)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=338) |
+| Plugin: EntityFrameworkCore | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-EntityFrameworkCore)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=339) |
+| Plugin: GitHub | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.Plugin-GitHub)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=340) |

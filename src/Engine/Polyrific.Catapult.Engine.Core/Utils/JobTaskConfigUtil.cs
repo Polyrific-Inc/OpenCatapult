@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Linq;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using Polyrific.Catapult.Plugins.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Engine.Core.Utils

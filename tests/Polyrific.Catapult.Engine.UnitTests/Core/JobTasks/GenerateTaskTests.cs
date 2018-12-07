@@ -3,9 +3,11 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Moq;
+using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
-using Polyrific.Catapult.Engine.UnitTests.Core.JobTasks.Utilities;
-using Polyrific.Catapult.Plugins.Abstraction;
+using Polyrific.Catapult.Shared.Dto.ExternalService;
+using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
+using Polyrific.Catapult.Shared.Dto.Plugin;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -17,8 +19,11 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     {
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
+        private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
+        private readonly Mock<IPluginService> _pluginService;
         private readonly Mock<IProjectDataModelService> _dataModelService;
         private readonly Mock<ILogger<GenerateTask>> _logger;
+        private readonly Mock<IPluginManager> _pluginManager;
 
         public GenerateTaskTests()
         {
@@ -36,19 +41,54 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _dataModelService.Setup(s => s.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(dataModels);
 
             _logger = new Mock<ILogger<GenerateTask>>();
+
+            _pluginManager = new Mock<IPluginManager>();
+            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            {
+                new PluginItem("FakeCodeGeneratorProvider", "path/to/FakeCodeGeneratorProvider.dll", new string[] { })
+            });
+
+            _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
+            _externalServiceTypeService.Setup(s => s.GetExternalServiceTypes(It.IsAny<bool>()))
+                .ReturnsAsync(new List<ExternalServiceTypeDto>
+                {
+                    new ExternalServiceTypeDto
+                    {
+                        Name = "GitHub",
+                        ExternalServiceProperties = new List<ExternalServicePropertyDto>
+                        {
+                            new ExternalServicePropertyDto
+                            {
+                                Name = "AuthToken",
+                                IsSecret = true
+                            }
+                        }
+                    }
+                });
+            _pluginService = new Mock<IPluginService>();
+            _pluginService.Setup(s => s.GetPluginAdditionalConfigByPluginName(It.IsAny<string>()))
+                .ReturnsAsync(new List<PluginAdditionalConfigDto>
+                {
+                    new PluginAdditionalConfigDto
+                    {
+                        Name = "ConnectionString",
+                        IsSecret = true
+                    }
+                });
         }
 
         [Fact]
         public async void RunMainTask_Success()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+                {
+                    {"outputLocation", "good-result"}
+                });
+
             var config = new Dictionary<string, string>();
-
-            var providers = new List<ICodeGeneratorProvider>
-            {
-                new FakeCodeGeneratorProvider("good-result", null, "")
-            };
-
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object) {GeneratorProviders = providers};
+            
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -61,14 +101,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+                {
+                    {"errorMessage", "error-message"}
+                });
+
             var config = new Dictionary<string, string>();
-
-            var providers = new List<ICodeGeneratorProvider>
-            {
-                new FakeCodeGeneratorProvider("", null, "error-message")
-            };
-
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object) {GeneratorProviders = providers};
+            
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeGeneratorProvider";
 
@@ -82,15 +123,62 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         public async void RunMainTask_NoProvider()
         {
             var config = new Dictionary<string, string>();
-
-            var task = new GenerateTask(_projectService.Object, _dataModelService.Object, _externalServiceService.Object, _logger.Object);
+            
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
-            task.Provider = "FakeCodeGeneratorProvider";
+            task.Provider = "NotExistCodeGeneratorProvider";
 
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.False(result.IsSuccess);
-            Assert.Equal("Code generator provider \"FakeCodeGeneratorProvider\" could not be found.", result.ErrorMessage);
+            Assert.Equal("Code generator provider \"NotExistCodeGeneratorProvider\" could not be found.", result.ErrorMessage);
+        }
+
+        [Fact]
+        public async void RunMainTask_AdditionalConfigSecured()
+        {
+            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+                {
+                    {"outputLocation", "good-result"}
+                });
+            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            {
+                new PluginItem("FakeCodeGeneratorProvider", "path/to/FakeCodeGeneratorProvider.dll", new string[] { "GitHub" })
+            });
+            _externalServiceService.Setup(p => p.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => new ExternalServiceDto
+            {
+                Name = name,
+                Config = new Dictionary<string, string>
+                {
+                    { "AuthToken", "123" }
+                }
+            });
+
+            var config = new Dictionary<string, string>
+            {
+                { "GitHubExternalService", "github-test" }
+            };
+
+            var task = new GenerateTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _dataModelService.Object, _pluginManager.Object, _logger.Object);
+            task.SetConfig(config, "working");
+            task.Provider = "FakeCodeGeneratorProvider";
+            task.AdditionalConfigs = new Dictionary<string, string>
+            {
+                { "ConnectionString", "Server=localhost;Database=TestProject;User ID=sa;Password=samprod;" }
+            };
+
+            var result = await task.RunMainTask(new Dictionary<string, string>());
+
+            Assert.True(result.IsSuccess);
+            Assert.Equal("good-result", result.ReturnValue);
+
+            Assert.Equal(2, task.AdditionalConfigs.Count);
+            Assert.Equal(2, task.SecuredAdditionalConfigs.Count);
+            Assert.Equal("***", task.SecuredAdditionalConfigs["AuthToken"]);
+            Assert.Equal("***", task.SecuredAdditionalConfigs["ConnectionString"]);
+            Assert.Equal("123", task.AdditionalConfigs["AuthToken"]);
+            Assert.Equal("Server=localhost;Database=TestProject;User ID=sa;Password=samprod;", task.AdditionalConfigs["ConnectionString"]);
         }
     }
 }

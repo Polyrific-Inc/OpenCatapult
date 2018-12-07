@@ -276,12 +276,12 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.ToTable("Plugins");
 
                     b.HasData(
-                        new { Id = 1, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "AspNetCoreMvc", Type = "GeneratorProvider", Version = "1.0" },
-                        new { Id = 2, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "GitHubRepositoryProvider", RequiredServicesString = "GitHub", Type = "RepositoryProvider", Version = "1.0" },
-                        new { Id = 3, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "DotNetCoreBuildProvider", Type = "BuildProvider", Version = "1.0" },
-                        new { Id = 4, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "DotNetCoreTest", Type = "TestProvider", Version = "1.0" },
-                        new { Id = 5, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "EntityFrameworkCore", Type = "DatabaseProvider", Version = "1.0" },
-                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "AzureAppService", RequiredServicesString = "AzureAppService", Type = "HostingProvider", Version = "1.0" }
+                        new { Id = 1, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.AspNetCoreMvc", Type = "GeneratorProvider", Version = "1.0" },
+                        new { Id = 2, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.GitHub", RequiredServicesString = "GitHub", Type = "RepositoryProvider", Version = "1.0" },
+                        new { Id = 3, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.DotNetCore", Type = "BuildProvider", Version = "1.0" },
+                        new { Id = 4, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.DotNetCoreTest", Type = "TestProvider", Version = "1.0" },
+                        new { Id = 5, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.EntityFrameworkCore", Type = "DatabaseProvider", Version = "1.0" },
+                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.AzureAppService", RequiredServicesString = "AzureAppService", Type = "HostingProvider", Version = "1.0" }
                     );
                 });
 

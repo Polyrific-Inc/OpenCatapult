@@ -15,8 +15,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\src\AspNetCoreMvc.csproj" />
-  </ItemGroup>
-
 </Project>

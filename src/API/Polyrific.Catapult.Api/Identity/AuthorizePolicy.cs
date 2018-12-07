@@ -14,5 +14,6 @@ namespace Polyrific.Catapult.Api.Identity
         public const string UserRoleBasicAccess = "UserRoleBasicAccess";
         public const string UserRoleGuestAccess = "UserRoleGuestAccess";
         public const string UserRoleEngineAccess = "UserRoleEngineAccess";
+        public const string UserRoleBasicEngineAccess = "UserRoleBasicEngineAccess";
     }
 }

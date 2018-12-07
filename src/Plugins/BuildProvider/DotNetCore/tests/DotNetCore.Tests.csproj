@@ -16,8 +16,4 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\src\DotNetCore.csproj" />
-  </ItemGroup>
-
 </Project>

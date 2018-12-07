@@ -134,35 +134,31 @@ jobs:
   tasks:
   - name: Clone
     type: Clone
-    provider: GitHubRepositoryProvider
+    provider: Polyrific.Catapult.Plugins.GitHub
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
-      IsPrivateRepository: true
   - name: Generate
     type: Generate
-    provider: AspNetCoreMvc
+    provider: Polyrific.Catapult.Plugins.AspNetCoreMvc
   - name: Push
     type: Push
-    provider: GitHubRepositoryProvider
+    provider: Polyrific.Catapult.Plugins.GitHub
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
       CreatePullRequest: true
   - name: Merge
     type: Merge
-    provider: GitHubRepositoryProvider
+    provider: Polyrific.Catapult.Plugins.GitHub
     configs:
       GitHubExternalService: github-default
-      Repository: https://github.com/sample/project-sample
   - name: Build
     type: Build
-    provider: DotNetCoreBuildProvider
+    provider: Polyrific.Catapult.Plugins.DotNetCore
   - name: DeployDb
     type: DeployDb
-    provider: EntityFrameworkCore
+    provider: Polyrific.Catapult.Plugins.EntityFrameworkCore
   - name: Deploy
     type: Deploy
-    provider: AzureAppService
+    provider: Polyrific.Catapult.Plugins.AzureAppService
     configs:
       AzureAppServiceExternalService: azure-default

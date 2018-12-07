@@ -12,7 +12,7 @@ dotnet occli.dll task add --project [project] --job [job] --name [name] --type [
 | --project | -p | Name of the project ||| Yes |
 | --job | -j | Name of the job definition ||| Yes |
 | --name | -n | Name of the new job task ||| Yes |
-| --provider | -prov | Name of the provider for the task ||| Yes |
+| --provider | -prov | Name of the provider for the task. | Any installed provider name. There are some [built-in providers](../user-guides/job-definitions.md#built-in-providers) pre-installed in the catapult || Yes |
 | --type | -t | Type of the job task | Clone, Generate, Push, Merge, Build, PublishArtifact, Deploy, DeployDb, Test | Generate | No |
 | --property [key]:[value] | -prop | Property of the job task || Allowed multiple | No |
 | --sequence | -s | The sequence of the task when run by engine ||| No |
@@ -73,7 +73,7 @@ dotnet occli.dll task update --project [project] --job [job] --name [name] --ren
 | --job | -j | Name of the job definition ||| Yes |
 | --name | -n | Name of the job task ||| Yes |
 | --rename | -rn | New name of the job task ||| No |
-| --provider | -prov | Name of the provider for the task ||| No |
+| --provider | -prov | Name of the provider for the task | Any installed provider name. There are some [built-in providers](../user-guides/job-definitions.md#built-in-providers) pre-installed in the catapult|| No |
 | --type | -t | Type of the job task | Clone, Generate, Push, Merge, Build, PublishArtifact, Deploy, DeployDb, Test || No |
 | --property [key]:[value] | -prop | Property of the job task || Allowed multiple | No |
 | --sequence | -s | The sequence of the task when run by engine ||| No |

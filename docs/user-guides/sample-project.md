@@ -3,16 +3,20 @@
 Sample project template contains the following job tasks:
 
 ```
-GENERATE --> PUSH --> BUILD --> DEPLOYDB --> DEPLOY
+CLONE -> GENERATE --> PUSH -> MERGE --> BUILD --> DEPLOYDB --> DEPLOY
 ```
+
+_CLONE_ task will clone the remote repository into the engine.
 
 _GENERATE_ task will generate an ASP.NET Core MVC application.
 
-_PUSH_ task will push the generated code to GitHub repository.
+_PUSH_ task will push the generated code to GitHub repository. It will also create a Pull Request so you can review it before merging it into the master branch
+
+_Merge_ task will merge the generated Pull Request to the branch master of the GitHub repository
 
 _BUILD_ task will build the code and produce an artifact.
 
-_DEPLOYDB_ task will apply generated Entity Framework Core migrations into a SQL Server database.
+_DEPLOYDB_ task will apply generated Entity Framework Core migrations into an SQL Server database.
 
 _DEPLOY_ task will deploy the artifact to Azure App service.
 

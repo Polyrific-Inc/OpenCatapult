@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\</OutputPath>
+    </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj" />
+  </ItemGroup>
+
+</Project>

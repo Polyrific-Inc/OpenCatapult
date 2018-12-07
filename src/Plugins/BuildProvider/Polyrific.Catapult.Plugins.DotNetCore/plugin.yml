@@ -1,0 +1,15 @@
+name: 'Polyrific.Catapult.Plugins.DotNetCore'
+type: 'BuildProvider'
+author: 'Polyrific'
+version: '1.0'
+additional-configs:
+  - name: CsprojLocation
+    label: Csproj Location
+    type: string
+    is-required: false
+    is-secret: false
+  - name: Configuration
+    label: Configuration
+    type: string
+    is-required: false
+    is-secret: false

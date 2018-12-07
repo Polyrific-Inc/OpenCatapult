@@ -1,0 +1,4 @@
+name: 'Polyrific.Catapult.Plugins.DotNetCoreTest'
+type: 'TestProvider'
+author: 'Polyrific'
+version: '1.0'

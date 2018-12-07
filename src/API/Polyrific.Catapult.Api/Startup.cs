@@ -88,6 +88,7 @@ namespace Polyrific.Catapult.Api
                 options.AddPolicy(AuthorizePolicy.UserRoleBasicAccess, policy => policy.RequireRole(UserRole.Administrator, UserRole.Basic));
                 options.AddPolicy(AuthorizePolicy.UserRoleGuestAccess, policy => policy.RequireRole(UserRole.Administrator, UserRole.Basic, UserRole.Guest));
                 options.AddPolicy(AuthorizePolicy.UserRoleEngineAccess, policy => policy.RequireRole(UserRole.Administrator, UserRole.Engine));
+                options.AddPolicy(AuthorizePolicy.UserRoleBasicEngineAccess, policy => policy.RequireRole(UserRole.Administrator, UserRole.Basic, UserRole.Engine));
             });
             
             services.AddSingleton<IAuthorizationHandler, ProjectAccessHandler>();
@@ -120,12 +121,11 @@ namespace Polyrific.Catapult.Api
             }
             else
             {
+                app.UseHttpsRedirection();
                 app.UseHsts();
             }
 
             app.UseCorrelationId();
-
-            app.UseHttpsRedirection();
             app.UseAuthentication();
 
             // enrich log with request context

@@ -1,12 +1,11 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.Abstraction;
-using Polyrific.Catapult.Plugins.Abstraction.Configs;
+using Newtonsoft.Json;
+using Polyrific.Catapult.Plugins.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
 
@@ -14,34 +13,35 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class MergeTask : BaseJobTask<MergeTaskConfig>, IMergeTask
     {
-        public MergeTask(IProjectService projectService, IProjectDataModelService dataModelService, IExternalServiceService externalServiceService, ILogger<MergeTask> logger) 
-            : base(projectService, dataModelService, externalServiceService, logger)
+        /// <inheritdoc />
+        public MergeTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger<MergeTask> logger)
+            : base(projectService, externalServiceService, externalServiceTypeService, pluginService, pluginManager, logger)
         {
         }
 
         public override string Type => JobTaskDefinitionType.Merge;
 
-        [ImportMany(typeof(ICodeRepositoryProvider))]
-        public IEnumerable<ICodeRepositoryProvider> CodeRepositoryProvider;
+        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(PluginType.RepositoryProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
-            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-            
-            var error = await provider.BeforeMerge("", TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PreProcessMustSucceed);
+
+            var arg = GetArgString("pre");
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
 
         public override async Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues)
         {
-            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
@@ -53,27 +53,55 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             if (string.IsNullOrEmpty(prNumber))
                 return new TaskRunnerResult("PR Number was undefined.", !TaskConfig.ContinueWhenError);
-            
-            var result = await provider.Merge(prNumber, TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(result.errorMessage))
-                return new TaskRunnerResult(result.errorMessage, !TaskConfig.ContinueWhenError);
 
-            return new TaskRunnerResult(true, result.remoteUrl, result.outputValues);
+            var arg = GetArgString("main");
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
+                return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
+
+            var remoteUrl = "";
+            if (result.ContainsKey("remoteUrl"))
+                remoteUrl = result["remoteUrl"].ToString();
+
+            var outputValues = new Dictionary<string, string>();
+            if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
+                outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
+
+            return new TaskRunnerResult(true, remoteUrl, outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()
         {
-            var provider = CodeRepositoryProvider?.FirstOrDefault(p => p.Name == Provider);
+            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
             if (provider == null)
                 return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-            
-            var error = await provider.AfterMerge("", TaskConfig, AdditionalConfigs, Logger);
-            if (!string.IsNullOrEmpty(error))
-                return new TaskRunnerResult(error, TaskConfig.PostProcessMustSucceed);
+
+            var arg = GetArgString("post");
+            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
+                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
+        }
+
+        private (string argString, string securedArgString) GetArgString(string process)
+        {
+            var dict = new Dictionary<string, object>
+            {
+                {"process", process},
+                {"project", Project.Name},
+                {"mergeconfig", TaskConfig},
+                {"additional", AdditionalConfigs}
+            };
+
+            var argString = JsonConvert.SerializeObject(dict);
+
+            dict["additional"] = SecuredAdditionalConfigs;
+            var securedArgString = JsonConvert.SerializeObject(dict);
+
+            return (argString, securedArgString);
         }
     }
 }

@@ -10,11 +10,10 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugins\Polyrific.Catapult.Plugins.Abstraction\Polyrific.Catapult.Plugins.Abstraction.csproj" />
+    <ProjectReference Include="..\..\Plugins\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Dto\Polyrific.Catapult.Shared.Dto.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Service\Polyrific.Catapult.Shared.Service.csproj" />

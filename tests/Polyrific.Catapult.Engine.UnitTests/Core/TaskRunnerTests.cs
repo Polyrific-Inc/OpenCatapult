@@ -30,6 +30,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly JobTaskService _jobTaskService;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly List<JobTaskDefinitionDto> _data;
+        private readonly Mock<IPluginManager> _pluginManager;
 
         public TaskRunnerTests()
         {
@@ -96,6 +97,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 _pushTask.Object, _testTask.Object);
 
             _jobQueueService = new Mock<IJobQueueService>();
+            _pluginManager = new Mock<IPluginManager>();
         }
 
         [Fact]
@@ -106,7 +108,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
             var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
@@ -126,7 +128,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
             var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
@@ -144,7 +146,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
             var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
@@ -162,7 +164,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
             var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);
@@ -208,7 +210,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, "", true));
 
             var job = new JobDto { Id = 1, Code = "20180817.1" };
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _logger.Object);
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
             var results = await runner.Run(1, job, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
 
             Assert.Equal(_data.Count, results.Count);

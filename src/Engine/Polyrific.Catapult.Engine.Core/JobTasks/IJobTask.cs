@@ -37,13 +37,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Additional configurations which are required by specific providers
         /// </summary>
         Dictionary<string, string> AdditionalConfigs { get; set; }
-
-        /// <summary>
-        /// Set project data models to be used in the task
-        /// </summary>
-        /// <param name="dataModels"></param>
-        void SetDataModels(IEnumerable<CreateProjectDataModelWithPropertiesDto> dataModels);
-
+        
         /// <summary>
         /// Set job task configuration
         /// </summary>
@@ -54,7 +48,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <summary>
         /// Reload the project of task instance
         /// </summary>
-        void ReloadProject();
+        void ReloadProperties();
 
         /// <summary>
         /// Run the main task

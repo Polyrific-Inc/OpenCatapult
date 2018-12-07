@@ -1,9 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <RootNamespace>Polyrific.Catapult.Shared.Dto</RootNamespace>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <PackageId>Polyrific.Catapult.Shared.Dto</PackageId>
     <Description>Shared library for Polyrific Catapult Data Transfer Object (DTO)</Description>
     <Version>1.0.1</Version>

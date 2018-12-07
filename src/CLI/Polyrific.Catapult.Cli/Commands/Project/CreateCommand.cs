@@ -7,7 +7,9 @@ using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
+using Polyrific.Catapult.Shared.Dto.Plugin;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -94,64 +96,59 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         private string ValidateTask(List<CreateJobDefinitionWithTasksDto> jobs)
         {
-            string message = string.Empty;
+            var tasks = jobs.SelectMany(j => j.Tasks).ToArray();
 
-            var tasks = jobs.SelectMany(j => j.Tasks);
+            var isPluginOk = ValidatePlugins(tasks.Select(t => t.Provider), out var plugins);
+            if (!isPluginOk)
+                return "Please register the required plugins first by using \"plugin register\" command.";
+
+            var serviceTypeNames = plugins.Where(p => p.RequiredServices != null).SelectMany(p => p.RequiredServices);
+            var taskConfigs = tasks.Where(t => t.Configs != null)
+                .SelectMany(t => t.Configs)
+                .Where(tc => tc.Key.EndsWith("ExternalService"));
+            
+            var isExternalServiceOk = ValidateExternalServices(serviceTypeNames, taskConfigs.ToList());
+            if (!isExternalServiceOk)
+                return "Please add the required external services first by using \"service add\" command.";
+
+            string repository = null;
+            string isPrivateRepository = null;
             foreach (var task in tasks)
             {
-                var plugin = _pluginService.GetPluginByName(task.Provider).Result;
-
-                if (plugin == null)
+                // prompt for Repository config
+                if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
+                    task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
+                    task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower()) && !task.Configs.ContainsKey("Repository"))
                 {
-                    message = $"The provider \"{task.Provider}\" is not installed";
-                    return message;
+                    if (string.IsNullOrEmpty(repository))
+                        repository = PromptTaskConfig("Repository");
+
+                    task.Configs["Repository"] = repository;
                 }
 
-                if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                // prompt for IsPrivateRepository config
+                if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
                 {
-                    foreach (var service in plugin.RequiredServices)
-                    {
-                        var externalServiceKey = $"{service}ExternalService";
-                        var externalServiceName = task.Configs.GetValueOrDefault(externalServiceKey);
+                    if (string.IsNullOrEmpty(isPrivateRepository))
+                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository", allowedValues: new[] { "true", "false" });
 
-                        if (string.IsNullOrEmpty(externalServiceName))
-                        {
-                            message = $"The {service} external service is required for the provider {task.Provider}. Please check the template file";
-                            return message;
-                        }
-
-                        var externalService = _externalServiceService.GetExternalServiceByName(externalServiceName).Result;
-
-                        if (externalService == null)
-                        {
-                            message = $"The external service {externalServiceName} is not found. Please add them using \"service add\" command";
-                            return message;
-                        }
-
-                        if (externalService.ExternalServiceTypeName != service)
-                        {
-                            message = $"The external service {externalServiceName} is not a {service} service";
-                            return message;
-                        }
-                    }
+                    task.Configs["IsPrivateRepository"] = isPrivateRepository;
                 }
 
-                if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                // prompt for plugin additional configs
+                var plugin = plugins.FirstOrDefault(p => p.Name == task.Provider);
+                if (plugin?.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
                 {
                     task.AdditionalConfigs = new Dictionary<string, string>();
                     Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
                     foreach (var additionalConfig in plugin.AdditionalConfigs)
                     {
-                        string input = string.Empty;
+                        string input;
                         string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : " (Leave blank to use default value):")}";
 
                         do
                         {
-                            if (additionalConfig.IsSecret)
-                                input = _consoleReader.GetPassword(prompt);
-                            else
-                                input = Console.GetString(prompt);
-
+                            input = additionalConfig.IsSecret ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
                         } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
 
                         if (!string.IsNullOrEmpty(input))
@@ -160,7 +157,116 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 }
             }
 
-            return message;
+            return "";
+        }
+
+        private bool ValidatePlugins(IEnumerable<string> pluginNames, out List<PluginDto> plugins)
+        {
+            plugins = new List<PluginDto>();
+            var notExistPlugins = new List<string>();
+
+            if (Verbose)
+                Console.WriteLine("The project requires the following plugins:");
+            
+            foreach (var pluginName in pluginNames.Distinct())
+            {
+                var plugin = _pluginService.GetPluginByName(pluginName).Result;
+                if (plugin == null)
+                    notExistPlugins.Add(pluginName);
+                else
+                    plugins.Add(plugin);
+
+                if (Verbose)
+                {
+                    var status = plugin != null ? "OK" : "NOT REGISTERED";
+                    Console.WriteLine($"- {pluginName}: {status}");
+                }
+            }
+
+            if (notExistPlugins.Count == 0)
+            {
+                Logger.LogInformation("All required plugins are registered.");
+                return true;
+            }
+
+            var message = $"The following plugins need to be registered before continuing the project creation: {string.Join(", ", notExistPlugins)}";
+            Logger.LogInformation(message);
+            Console.WriteLine(message);
+
+            return false;
+        }
+
+        private bool ValidateExternalServices(IEnumerable<string> serviceTypeNames, List<KeyValuePair<string, string>> taskConfigs)
+        {
+            var notExistServices = new List<string>();
+            
+            if (Verbose)
+                Console.WriteLine("The project requires the following external services:");
+
+            foreach (var serviceType in serviceTypeNames.Distinct())
+            {
+                var extServiceKey = $"{serviceType}ExternalService";
+                var extServiceValue = "";
+                if (taskConfigs.Exists(tc => tc.Key == extServiceKey))
+                    extServiceValue = taskConfigs.First(tc => tc.Key == extServiceKey).Value;
+
+                if (string.IsNullOrEmpty(extServiceValue))
+                {
+                    notExistServices.Add($"(type = {serviceType})");
+
+                    if (Verbose)
+                        Console.WriteLine($"- (type = {serviceType}): NOT FOUND");
+                }
+                else
+                {
+                    var extService = _externalServiceService.GetExternalServiceByName(extServiceValue).Result;
+                    if (extService == null)
+                        notExistServices.Add($"{extServiceValue} (type = {serviceType})");
+
+                    if (Verbose)
+                    {
+                        var status = extService != null ? "OK" : "NOT FOUND";
+                        Console.WriteLine($"- {extServiceValue} (type = {serviceType}): {status}");
+                    }
+                }
+            }
+
+            if (notExistServices.Count == 0)
+            {
+                Logger.LogInformation("All required external services are found.");
+                return true;
+            }
+
+            var message = $"The following external services need to be added before continuing to create the project: {string.Join(", ", notExistServices)}";
+            Logger.LogInformation(message);
+            Console.WriteLine(message);
+                
+            return false;
+        }
+
+        private string PromptTaskConfig(string propertyName, string[] allowedValues = null)
+        {
+            string input;
+            bool validInput;
+
+            string prompt = $"{propertyName} (Required):";
+
+            do
+            {
+                input = Console.GetString(prompt);
+
+                if (allowedValues != null && allowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !allowedValues.Contains(input))
+                {
+                    Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', allowedValues)}");
+                    validInput = false;
+                }
+                else
+                {
+                    validInput = true;
+                }
+            } while (!validInput || string.IsNullOrEmpty(input));
+
+            return input;
         }
     }
 }

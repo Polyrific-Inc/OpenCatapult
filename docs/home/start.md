@@ -126,6 +126,17 @@ Set API URL in the Engine's config:
 dotnet .\publish\engine\ocengine.dll config set -n ApiUrl -v https://localhost:5001
 ```
 
+While configuring the Engine environment, let's publish the built-in plugins as well. They will be required later when executing job tasks.
+
+```sh
+dotnet publish .\src\Plugins\GeneratorProvider\AspNetCoreMvc\src\AspNetCoreMvc.csproj -c Release -o ..\..\..\publish\engine\plugins\GeneratorProvider\AspNetCoreMvc
+dotnet publish .\src\Plugins\HostingProvider\AzureAppService\src\AzureAppService.csproj -c Release -o ..\..\..\publish\engine\plugins\HostingProvider\AzureAppService
+dotnet publish .\src\Plugins\BuildProvider\DotNetCore\src\DotNetCore.csproj -c Release -o ..\..\..\publish\engine\plugins\BuildProvider\DotNetCore
+dotnet publish .\src\Plugins\TestProvider\DotNetCoreTest\src\DotNetCoreTest.csproj -c Release -o ..\..\..\publish\engine\plugins\TestProvider\DotNetCoreTest
+dotnet publish .\src\Plugins\DatabaseProvider\EntityFrameworkCore\src\EntityFrameworkCore.csproj -c Release -o ..\..\..\publish\engine\plugins\DatabaseProvider\EntityFrameworkCore
+dotnet publish .\src\Plugins\RepositoryProvider\GitHub\src\GitHub.csproj -c Release -o ..\..\..\publish\engine\plugins\RepositoryProvider\GitHub
+```
+
 **Prepare the CLI**
 
 Open new shell, go to the root folder, and build the CLI project:
@@ -179,6 +190,7 @@ dotnet occli.dll project create --name first-project --client Polyrific
 
 After creating your first project, you can:
 - [add models to the project](../user-guides/data-models.md)
+- [Register the engine](../user-guides/engine-registration.md#register-a-new-engine) and [set the authorization token](../user-guides/engine-registration.md#obtain-token-for-an-engine) so it can talk to the API
 - [explore what else you can do with the project](../user-guides/user-guides.md)
 - [create another project by using Sample project template](../user-guides/sample-project.md)
 - check references of [API](../api/api.md), [Engine](../engine/engine.md), [CLI](../cli/cli.md)
