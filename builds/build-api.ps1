@@ -17,7 +17,7 @@ $rootPath = Split-Path $PSScriptRoot
 $appSettingsPath = "$rootPath\src\API\Polyrific.Catapult.Api\appsettings.json"
 $apiCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj"
 $apiPublishPath = "$rootPath\publish\api"
-$apiDll = "$apiPublishPath\Polyrific.Catapult.Api.dll"
+$apiDll = "$apiPublishPath\ocapi.dll"
 $dataCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj"
 
 # read connection string in appsettings.json

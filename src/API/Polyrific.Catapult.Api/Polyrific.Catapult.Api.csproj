@@ -59,5 +59,6 @@
     <Version>1.0.0-alpha</Version>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>5260e463-1c3d-462e-b95e-a7ef6ab89e3b</UserSecretsId>
+    <AssemblyName>ocapi</AssemblyName>
   </PropertyGroup>
 </Project>
