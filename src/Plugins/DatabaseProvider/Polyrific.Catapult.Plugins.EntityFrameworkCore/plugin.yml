@@ -18,3 +18,9 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
+  - name: ConnectionString
+    label: ConnectionString
+    type: string
+    is-required: true
+    is-secret: true
+    is-input-masked: false

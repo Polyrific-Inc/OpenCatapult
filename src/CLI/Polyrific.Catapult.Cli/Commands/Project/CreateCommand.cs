@@ -148,7 +148,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
                         do
                         {
-                            input = additionalConfig.IsSecret ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
+                            input = additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true) ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
                         } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
 
                         if (!string.IsNullOrEmpty(input))

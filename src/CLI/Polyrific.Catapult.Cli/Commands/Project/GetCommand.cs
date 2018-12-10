@@ -24,7 +24,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         public override string Execute()
         {
-            Console.WriteLine("Trying to get project {Name}...");
+            Console.WriteLine($"Trying to get project {Name}...");
 
             string message;
 

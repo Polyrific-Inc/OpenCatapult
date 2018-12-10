@@ -38,5 +38,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Is the configuration contains sensitive value?
         /// </summary>
         public bool IsSecret { get; set; }
+
+        /// <summary>
+        /// Is the configuration masked during input?
+        /// </summary>
+        public bool? IsInputMasked { get; set; }
     }
 }
