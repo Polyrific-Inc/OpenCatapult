@@ -24,4 +24,4 @@ RUN dotnet publish Polyrific.Catapult.Api.csproj -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Polyrific.Catapult.Api.dll"]
+ENTRYPOINT ["dotnet", "ocapi.dll"]
