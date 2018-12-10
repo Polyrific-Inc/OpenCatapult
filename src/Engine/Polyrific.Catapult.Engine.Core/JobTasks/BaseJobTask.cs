@@ -18,15 +18,16 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
         private readonly IPluginService _pluginService;
-        private readonly IProjectDataModelService _dataModelService;
 
         /// <summary>
         /// Instantiate job task
         /// </summary>
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
+        /// <param name="pluginService"></param>
         /// <param name="pluginManager"></param>
         /// <param name="logger"></param>
         /// <param name="externalServiceService"></param>
+        /// <param name="externalServiceTypeService"></param>
         protected BaseJobTask(IProjectService projectService, IExternalServiceService externalServiceService, 
             IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger logger)
         {
@@ -35,7 +36,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             _externalServiceService = externalServiceService;
             _externalServiceTypeService = externalServiceTypeService;
             _pluginService = pluginService;
-            
+
             PluginManager = pluginManager;
             Logger = logger;
         }

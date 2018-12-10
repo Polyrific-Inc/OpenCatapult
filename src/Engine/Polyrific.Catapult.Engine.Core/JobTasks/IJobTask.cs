@@ -2,7 +2,6 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
@@ -37,7 +36,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Additional configurations which are required by specific providers
         /// </summary>
         Dictionary<string, string> AdditionalConfigs { get; set; }
-        
+
         /// <summary>
         /// Set job task configuration
         /// </summary>
