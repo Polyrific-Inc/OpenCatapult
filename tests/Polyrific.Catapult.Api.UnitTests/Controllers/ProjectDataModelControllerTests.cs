@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateProjectDataModel_ReturnsCreatedProjectDataModel()
         {
             _projectDataModelService
-                .Setup(s => s.AddProjectDataModel(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddProjectDataModel(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
             _projectDataModelService.Setup(s => s.GetProjectDataModelById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
@@ -192,7 +192,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _projectDataModelService
                 .Setup(s => s.AddDataModelProperty(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), 
-                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
 
             _projectDataModelService.Setup(s => s.GetProjectDataModelPropertyByName(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
