@@ -6,11 +6,12 @@ param(
     [string]$connString = "",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
-    [switch]$noRun = $false
-
+    [switch]$noRun = $false,
+    [string]$environment = "Development"
 )
 
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = $true
+$env:ASPNETCORE_ENVIRONMENT = $environment
 
 # define paths
 $rootPath = Split-Path $PSScriptRoot
