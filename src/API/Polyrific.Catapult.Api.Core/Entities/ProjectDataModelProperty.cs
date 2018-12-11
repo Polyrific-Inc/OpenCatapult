@@ -58,5 +58,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Is property required?
         /// </summary>
         public bool IsRequired { get; set; }
+
+        /// <summary>
+        /// Is the property managed in the UI?
+        /// </summary>
+        public bool? IsManaged { get; set; }
     }
 }

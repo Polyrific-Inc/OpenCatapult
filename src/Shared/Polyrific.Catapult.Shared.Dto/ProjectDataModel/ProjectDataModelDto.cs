@@ -32,6 +32,16 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         public string Label { get; set; }
 
         /// <summary>
+        /// Is the model managed in the UI?
+        /// </summary>
+        public bool? IsManaged { get; set; }
+
+        /// <summary>
+        /// The property name used as the key for select control
+        /// </summary>
+        public string SelectKey { get; set; }
+
+        /// <summary>
         /// Properties of the data model
         /// </summary>
         public List<ProjectDataModelPropertyDto> Properties { get; set; }

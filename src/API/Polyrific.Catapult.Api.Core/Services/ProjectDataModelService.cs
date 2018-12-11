@@ -27,7 +27,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _projectRepository = projectRepository;
         }
 
-        public async Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -52,13 +52,14 @@ namespace Polyrific.Catapult.Api.Core.Services
                 ControlType = controlType,
                 RelatedProjectDataModelId = relatedDataModelId,
                 RelationalType = relationalType,
-                IsRequired = isRequired
+                IsRequired = isRequired,
+                IsManaged = isManaged
             };
 
             return await _dataModelPropertyRepository.Create(newDataModelProperty, cancellationToken);
         }
 
-        public async Task<int> AddProjectDataModel(int projectId, string name, string description, string label, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddProjectDataModel(int projectId, string name, string description, string label, bool? isManaged, string selectKey, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -74,7 +75,15 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new DuplicateProjectDataModelException(name);
             }
             
-            var newDataModel = new ProjectDataModel { ProjectId = projectId, Name = name, Description = description, Label = label};
+            var newDataModel = new ProjectDataModel
+            {
+                ProjectId = projectId,
+                Name = name,
+                Description = description,
+                Label = label,
+                IsManaged = isManaged,
+                SelectKey = selectKey
+            };
 
             if (string.IsNullOrEmpty(newDataModel.Label))
             {
@@ -181,6 +190,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                 dataModel.Name = updatedDataModel.Name;
                 dataModel.Description = updatedDataModel.Description;
                 dataModel.Label = updatedDataModel.Label;
+                dataModel.IsManaged = updatedDataModel.IsManaged;
+                dataModel.SelectKey = updatedDataModel.SelectKey;
 
                 await _dataModelRepository.Update(dataModel, cancellationToken);
             }
@@ -207,6 +218,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 property.ControlType = editedProperty.ControlType;
                 property.RelatedProjectDataModelId = editedProperty.RelatedProjectDataModelId;
                 property.RelationalType = editedProperty.RelationalType;
+                property.IsManaged = editedProperty.IsManaged;
                 await _dataModelPropertyRepository.Update(property, cancellationToken);
             }
         }

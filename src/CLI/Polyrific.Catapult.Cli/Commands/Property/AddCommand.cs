@@ -58,6 +58,9 @@ namespace Polyrific.Catapult.Cli.Commands.Property
         [Option("-req|--required", "Is the property required?", CommandOptionType.NoValue)]
         public bool Required { get; set; }
 
+        [Option("-mg|--managed", "Is the property managed in the UI?", CommandOptionType.NoValue)]
+        public bool? Managed { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to add property \"{Name}\" to model {Model}...");
@@ -98,7 +101,8 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                             IsRequired = Required,
                             ControlType = ControlType,
                             RelatedProjectDataModelId = relatedModelId,
-                            RelationalType = relationalType
+                            RelationalType = relationalType,
+                            IsManaged = Managed ?? true
                         }).Result;
 
                     message = newProperty.ToCliString($"Property {Name} was added to model {Model}:", excludedFields: new string[]

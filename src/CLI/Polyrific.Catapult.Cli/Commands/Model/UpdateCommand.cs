@@ -38,6 +38,12 @@ namespace Polyrific.Catapult.Cli.Commands.Model
         [Option("-l|--label <LABEL>", "Label of the data model", CommandOptionType.SingleValue)]
         public string Label { get; set; }
 
+        [Option("-mg|--managed", "Is the model managed in the UI?", CommandOptionType.SingleOrNoValue)]
+        public bool? Managed { get; set; }
+
+        [Option("-s|--selectkey <SELECTKEY>", "Select key of the model", CommandOptionType.SingleValue)]
+        public string SelectKey { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to update model \"{Name}\"...");
@@ -55,7 +61,9 @@ namespace Polyrific.Catapult.Cli.Commands.Model
                         Id = model.Id,
                         Name = Rename ?? Name,
                         Description = Description ?? model.Description,
-                        Label = Label ?? model.Label
+                        Label = Label ?? model.Label,
+                        IsManaged = Managed ?? model.IsManaged,
+                        SelectKey = SelectKey ?? model.SelectKey
                     }).Wait();
 
                     message = $"Model {Name} has been updated successfully";

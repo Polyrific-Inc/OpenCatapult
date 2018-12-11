@@ -36,6 +36,12 @@ namespace Polyrific.Catapult.Cli.Commands.Model
         [Option("-l|--label <LABEL>", "Label of the data model", CommandOptionType.SingleValue)]
         public string Label { get; set; }
 
+        [Option("-mg|--managed", "Is the model managed in the UI?", CommandOptionType.SingleOrNoValue)]
+        public bool? Managed { get; set; }
+
+        [Option("-s|--selectkey <SELECTKEY>", "Select key of the model", CommandOptionType.SingleValue)]
+        public string SelectKey { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to add new data model to project {Project}...");
@@ -49,7 +55,9 @@ namespace Polyrific.Catapult.Cli.Commands.Model
                 {
                     Name = Name,
                     Description = Description,
-                    Label = Label
+                    Label = Label,
+                    IsManaged = Managed ?? true,
+                    SelectKey = SelectKey
                 }).Result;
 
                 message = model.ToCliString($"Model has been added:", excludedFields: new string[]

@@ -62,7 +62,7 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var modelId = await _projectDataModelService.AddProjectDataModel(projectId,
-                    newProjectDataModel.Name, newProjectDataModel.Description, newProjectDataModel.Label);
+                    newProjectDataModel.Name, newProjectDataModel.Description, newProjectDataModel.Label, newProjectDataModel.IsManaged, newProjectDataModel.SelectKey);
 
                 var projectDataModel = await _projectDataModelService.GetProjectDataModelById(modelId);
                 var result = _mapper.Map<ProjectDataModelDto>(projectDataModel);
@@ -208,7 +208,8 @@ namespace Polyrific.Catapult.Api.Controllers
                     newProperty.ControlType,
                     newProperty.IsRequired,
                     newProperty.RelatedProjectDataModelId,
-                    newProperty.RelationalType);
+                    newProperty.RelationalType,
+                    newProperty.IsManaged);
 
                 var property = await _projectDataModelService.GetProjectDataModelPropertyByName(modelId, newProperty.Name);
                 var result = _mapper.Map<ProjectDataModelPropertyDto>(property);

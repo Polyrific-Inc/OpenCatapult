@@ -16,9 +16,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="name">Name of the data model</param>
         /// <param name="description">Description of the data model</param>
         /// <param name="label">Label of the data model</param>
+        /// <param name="isManaged">Is the model managed in the UI?</param>
+        /// <param name="selectKey">The property name used as the key for select control</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added data model</returns>
-        Task<int> AddProjectDataModel(int projectId, string name, string description, string label, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddProjectDataModel(int projectId, string name, string description, string label, bool? isManaged, string selectKey, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a data model
@@ -73,9 +75,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="isRequired">Is property required?</param>
         /// <param name="relatedDataModelId">Id of the related data model</param>
         /// <param name="relationalType">Type of the relation with the related data model</param>
+        /// <param name="isManaged">Is the model managed in the UI?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added data model property</returns>
-        Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a property

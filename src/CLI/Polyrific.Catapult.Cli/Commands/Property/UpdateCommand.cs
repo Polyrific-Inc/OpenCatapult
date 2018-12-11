@@ -60,6 +60,9 @@ namespace Polyrific.Catapult.Cli.Commands.Property
         [Option("-req|--required <REQUIRED>", "Is the property required?", CommandOptionType.SingleValue)]
         public bool? Required { get; set; }
 
+        [Option("-mg|--managed", "Is the property managed in the UI?", CommandOptionType.NoValue)]
+        public bool? Managed { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to update property \"{Name}\"...");
@@ -106,7 +109,8 @@ namespace Polyrific.Catapult.Cli.Commands.Property
                             IsRequired = Required ?? property.IsRequired,
                             ControlType = ControlType ?? property.ControlType,
                             RelatedProjectDataModelId = relatedModelId ?? property.RelatedProjectDataModelId,
-                            RelationalType = relationalType ?? property.RelationalType
+                            RelationalType = relationalType ?? property.RelationalType,
+                            IsManaged = Managed ?? property.IsManaged
                         }).Wait();
 
                         message = $"Property {Name} has been updated successfully";
