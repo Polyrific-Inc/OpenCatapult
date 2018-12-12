@@ -136,7 +136,7 @@ namespace Polyrific.Catapult.Engine.Core
             if (isExeFile)
                 fileName = pluginStartFile;
 
-            var arguments = $"\"\"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
+            var arguments = $"\"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
             var securedArguments = $"\"\"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
             if (!isExeFile)
             {
