@@ -13,7 +13,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.25.3" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0070" />
     <PackageReference Include="Octokit" Version="0.32.0" />
   </ItemGroup>
 
