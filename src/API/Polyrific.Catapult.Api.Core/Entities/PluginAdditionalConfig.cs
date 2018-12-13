@@ -43,5 +43,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Is the configuration masked during input?
         /// </summary>
         public bool? IsInputMasked { get; set; }
+
+        /// <summary>
+        /// Allowed value of the additional config
+        /// </summary>
+        public string AllowedValues { get; set; }
     }
 }

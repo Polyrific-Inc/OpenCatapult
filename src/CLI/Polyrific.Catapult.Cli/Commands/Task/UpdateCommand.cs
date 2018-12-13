@@ -150,7 +150,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 {
                                     string input = null;
                                     string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}:";
-
+                                    bool validInput = true;
                                     do
                                     {
 
@@ -161,12 +161,32 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                                         if (!string.IsNullOrEmpty(input))
                                         {
-                                            if (task.Provider == provider)
-                                                task.AdditionalConfigs[additionalConfig.Name] = input;
+                                            if (additionalConfig.Type == PluginAdditionalConfigType.Boolean && !bool.TryParse(input, out var inputBool))
+                                            {
+                                                Console.WriteLine($"Input is not valid. Please enter valid boolean value: true or false");
+                                                validInput = false;
+                                            }
+                                            else if (additionalConfig.Type == PluginAdditionalConfigType.Number && !double.TryParse(input, out var inputNumber))
+                                            {
+                                                Console.WriteLine($"Input is not valid. Please enter valid number value.");
+                                                validInput = false;
+                                            }
+                                            else if (additionalConfig.AllowedValues?.Length > 0 && !additionalConfig.AllowedValues.Contains(input))
+                                            {
+                                                Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', additionalConfig.AllowedValues)}");
+                                                validInput = false;
+                                            }
                                             else
-                                                task.AdditionalConfigs.Add(additionalConfig.Name, input);
+                                            {
+                                                if (task.Provider == provider)
+                                                    task.AdditionalConfigs[additionalConfig.Name] = input;
+                                                else
+                                                    task.AdditionalConfigs.Add(additionalConfig.Name, input);
+
+                                                validInput = true;
+                                            }
                                         }
-                                    } while (additionalConfig.IsRequired && task.AdditionalConfigs.GetValueOrDefault(additionalConfig.Name) == null);
+                                    } while (!validInput || (additionalConfig.IsRequired && task.AdditionalConfigs.GetValueOrDefault(additionalConfig.Name) == null));
                                 }
                             }
                         }

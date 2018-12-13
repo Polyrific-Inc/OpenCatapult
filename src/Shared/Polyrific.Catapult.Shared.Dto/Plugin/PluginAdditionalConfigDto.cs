@@ -33,5 +33,10 @@ namespace Polyrific.Catapult.Shared.Dto.Plugin
         /// Is the configuration masked during input?
         /// </summary>
         public bool? IsInputMasked { get; set; }
+
+        /// <summary>
+        /// Allowed values of the configuration
+        /// </summary>
+        public string[] AllowedValues { get; set; }
     }
 }

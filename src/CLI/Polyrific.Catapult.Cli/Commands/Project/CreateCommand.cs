@@ -145,11 +145,35 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     {
                         string input;
                         string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : " (Leave blank to use default value):")}";
+                        bool validInput = true;
 
                         do
                         {
                             input = additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true) ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
-                        } while (additionalConfig.IsRequired && string.IsNullOrEmpty(input));
+                            
+                            if (!string.IsNullOrEmpty(input))
+                            {
+                                if (additionalConfig.Type == PluginAdditionalConfigType.Boolean && !bool.TryParse(input, out var inputBool))
+                                {
+                                    Console.WriteLine($"Input is not valid. Please enter valid boolean value: true or false");
+                                    validInput = false;
+                                }
+                                else if (additionalConfig.Type == PluginAdditionalConfigType.Number && !double.TryParse(input, out var inputNumber))
+                                {
+                                    Console.WriteLine($"Input is not valid. Please enter valid number value.");
+                                    validInput = false;
+                                }
+                                else if (additionalConfig.AllowedValues?.Length > 0 && !additionalConfig.AllowedValues.Contains(input))
+                                {
+                                    Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', additionalConfig.AllowedValues)}");
+                                    validInput = false;
+                                }
+                                else
+                                {
+                                    validInput = true;
+                                }
+                            }
+                        } while (!validInput || (additionalConfig.IsRequired && string.IsNullOrEmpty(input)));
 
                         if (!string.IsNullOrEmpty(input))
                             task.AdditionalConfigs.Add(additionalConfig.Name, input);
