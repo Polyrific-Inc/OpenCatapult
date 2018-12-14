@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "pre":
                     var error = await BeforeDeploy();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 case "main":
                     (string hostLocation, Dictionary<string, string> outputValues, string errorMessage) = await Deploy();
@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "post":
                     error = await AfterDeploy();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 default:
                     await BeforeDeploy();

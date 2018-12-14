@@ -113,10 +113,29 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             });
             _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("[OUTPUT] {\"output\":\"success\"}\n[LOG][Information]Logged"))));
+            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+                .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
 
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
             var result = await pluginManager.InvokeTaskProvider("path/to/plugin.dll", "plugin args");
             Assert.Equal("success", result["output"]);
+        }
+
+        [Fact]
+        public async void InvokeTaskProvider_Error()
+        {
+            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
+            {
+                StartInfo = startInfo
+            });
+            _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
+                .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
+            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+                .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("test error"))));
+
+            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
+            var result = await pluginManager.InvokeTaskProvider("path/to/plugin.dll", "plugin args");
+            Assert.Equal("test error", result["errorMessage"]);
         }
 
         #region Private methods

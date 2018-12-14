@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "pre":
                     var error = await BeforePublishArtifact();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 case "main":
                     (string storageLocation, Dictionary<string, string> outputValues, string errorMessage) = await PublishArtifact();
@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "post":
                     error = await AfterPublishArtifact();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 default:
                     await BeforePublishArtifact();

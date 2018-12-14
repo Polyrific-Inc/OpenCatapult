@@ -9,5 +9,6 @@ namespace Polyrific.Catapult.Engine.Core
     {
         Process Start(ProcessStartInfo startInfo);
         StreamReader GetStandardOutput(Process process);
+        StreamReader GetStandardError(Process process);
     }
 }

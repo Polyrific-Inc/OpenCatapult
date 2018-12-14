@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "pre":
                     var error = await BeforeBuild();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 case "main":
                     (string outputArtifact, Dictionary<string, string> outputValues, string errorMessage) = await Build();
@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "post":
                     error = await AfterBuild();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 default:
                     await BeforeBuild();

@@ -51,7 +51,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "pre":
                     var error = await BeforeGenerate();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 case "main":
                     (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Generate();
@@ -62,7 +62,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "post":
                     error = await AfterGenerate();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 default:
                     await BeforeGenerate();

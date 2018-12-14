@@ -44,7 +44,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "pre":
                     var error = await BeforeTest();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 case "main":
                     (string testResultLocation, Dictionary<string, string> outputValues, string errorMessage) = await Test();
@@ -55,7 +55,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 case "post":
                     error = await AfterTest();
                     if (!string.IsNullOrEmpty(error))
-                        result.Add("error", error);
+                        result.Add("errorMessage", error);
                     break;
                 default:
                     await BeforeTest();

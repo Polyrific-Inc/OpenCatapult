@@ -7,6 +7,11 @@ namespace Polyrific.Catapult.Engine.Core
 {
     public class PluginProcess : IPluginProcess
     {
+        public StreamReader GetStandardError(Process process)
+        {
+            return process.StandardError;
+        }
+
         public StreamReader GetStandardOutput(Process process)
         {
             return process.StandardOutput;

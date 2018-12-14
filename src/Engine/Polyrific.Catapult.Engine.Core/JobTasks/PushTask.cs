@@ -33,8 +33,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             var arg = GetArgString("pre");
             var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
-            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
-                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PreProcessMustSucceed);
+            if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
+                return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PreProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }
@@ -74,8 +74,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             var arg = GetArgString("post");
             var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
-            if (result.ContainsKey("error") && !string.IsNullOrEmpty(result["error"].ToString()))
-                return new TaskRunnerResult(result["error"].ToString(), TaskConfig.PostProcessMustSucceed);
+            if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
+                return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PostProcessMustSucceed);
 
             return new TaskRunnerResult(true, "");
         }

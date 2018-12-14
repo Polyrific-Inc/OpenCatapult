@@ -181,6 +181,12 @@ namespace Polyrific.Catapult.Engine.Core
                             SubmitLog(line.Replace("[LOG]", ""));
                         }
                     }
+
+                    var error = await _pluginProcess.GetStandardError(process)?.ReadToEndAsync();
+                    if (!string.IsNullOrEmpty(error))
+                    {
+                        result["errorMessage"] = error;
+                    }                    
                 }
             }
 

@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "pre":
                         var error = await BeforeClone();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     case "main":
                         (string cloneLocation, Dictionary<string, string> outputValues, string errorMessage) = await Clone();
@@ -69,7 +69,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "post":
                         error = await AfterClone();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     default:
                         await BeforeClone();
@@ -89,7 +89,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "pre":
                         var error = await BeforePush();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     case "main":
                         (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
@@ -100,7 +100,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "post":
                         error = await AfterPush();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     default:
                         await BeforePush();
@@ -120,7 +120,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "pre":
                         var error = await BeforeMerge();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     case "main":
                         (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Merge();
@@ -131,7 +131,7 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "post":
                         error = await AfterMerge();
                         if (!string.IsNullOrEmpty(error))
-                            result.Add("error", error);
+                            result.Add("errorMessage", error);
                         break;
                     default:
                         await BeforeMerge();
