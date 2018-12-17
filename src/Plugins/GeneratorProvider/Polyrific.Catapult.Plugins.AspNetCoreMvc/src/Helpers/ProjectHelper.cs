@@ -90,6 +90,10 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers
         public void CopyFileToProject(string projectName, string sourceFile, string targetFile)
         {
             var targetFilePath = Path.Combine(_outputLocation, projectName, targetFile);
+            var fileInfo = new FileInfo(targetFilePath);
+            if (!fileInfo.Directory.Exists)
+                fileInfo.Directory.Create();
+
             File.Copy(sourceFile, targetFilePath, true);
         }
 
