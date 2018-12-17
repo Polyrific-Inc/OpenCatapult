@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -132,19 +133,16 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                             bool validInput = true;
                             do
                             {
-                                if (additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true))
+                                if (additionalConfig.Type == ConfigType.Boolean)
+                                    input = Console.GetYesNoNullable(prompt)?.ToString();
+                                else if (additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true))
                                     input = _consoleReader.GetPassword(prompt);
                                 else
                                     input = Console.GetString(prompt);
 
                                 if (!string.IsNullOrEmpty(input))
                                 {
-                                    if (additionalConfig.Type == PluginAdditionalConfigType.Boolean && !bool.TryParse(input, out var inputBool))
-                                    {
-                                        Console.WriteLine($"Input is not valid. Please enter valid boolean value: true or false");
-                                        validInput = false;
-                                    }
-                                    else if (additionalConfig.Type == PluginAdditionalConfigType.Number && !double.TryParse(input, out var inputNumber))
+                                    if (additionalConfig.Type == ConfigType.Number && !double.TryParse(input, out var inputNumber))
                                     {
                                         Console.WriteLine($"Input is not valid. Please enter valid number value.");
                                         validInput = false;
@@ -201,7 +199,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             sb.AppendLine($"  - Type: {JobTaskDefinitionType.Clone}");
             sb.AppendLine("    Properties:");
             sb.AppendLine("      - Repository");
-            sb.AppendLine("      - IsPrivateRepository (\"true\" or \"false\")");
+            sb.AppendLine("      - IsPrivateRepository (\"y\" or \"n\")");
             sb.AppendLine("      - CloneLocation");
             sb.AppendLine("      - BaseBranch");
 
@@ -214,7 +212,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             sb.AppendLine("      - SourceLocation");
             sb.AppendLine("      - Repository");
             sb.AppendLine("      - Branch");
-            sb.AppendLine("      - CreatePullRequest (\"true\" or \"false\")");
+            sb.AppendLine("      - CreatePullRequest (\"y\" or \"n\")");
             sb.AppendLine("      - PullRequestTargetBranch");
             sb.AppendLine("      - CommitMessage");
             sb.AppendLine("      - Author");
@@ -242,7 +240,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             sb.AppendLine($"  - Type: {JobTaskDefinitionType.Test}");
             sb.AppendLine("    Properties:");
             sb.AppendLine("      - TestLocation");
-            sb.AppendLine("      - ContinueWhenFailed (\"true\" or \"false\")");
+            sb.AppendLine("      - ContinueWhenFailed (\"y\" or \"n\")");
 
             sb.AppendLine();
             sb.AppendLine("Available task providers:");
@@ -262,7 +260,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             if (Type.ToLower() == JobTaskDefinitionType.Clone.ToLower())
             {
                 PromptIfNotSet(taskConfigs, "Repository", true);
-                PromptIfNotSet(taskConfigs, "IsPrivateRepository", true, new string[] { "true", "false" });
+                PromptIfNotSet(taskConfigs, "IsPrivateRepository", true, configType: ConfigType.Boolean);
                 PromptIfNotSet(taskConfigs, "CloneLocation");
                 PromptIfNotSet(taskConfigs, "BaseBranch");
             }
@@ -275,7 +273,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                 PromptIfNotSet(taskConfigs, "Repository", true);
                 PromptIfNotSet(taskConfigs, "SourceLocation");
                 PromptIfNotSet(taskConfigs, "Branch");
-                PromptIfNotSet(taskConfigs, "CreatePullRequest", allowedValues: new string[] { "true", "false" });
+                PromptIfNotSet(taskConfigs, "CreatePullRequest", configType: ConfigType.Boolean);
                 PromptIfNotSet(taskConfigs, "PullRequestTargetBranch");
                 PromptIfNotSet(taskConfigs, "CommitMessage");
                 PromptIfNotSet(taskConfigs, "Author");
@@ -301,7 +299,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             else if (Type.ToLower() == JobTaskDefinitionType.Test.ToLower())
             {
                 PromptIfNotSet(taskConfigs, "TestLocation");
-                PromptIfNotSet(taskConfigs, "ContinueWhenFailed", allowedValues: new string[] { "true", "false" });
+                PromptIfNotSet(taskConfigs, "ContinueWhenFailed", configType: ConfigType.Boolean);
             }
 
             if (_firstConfigPrompt)
@@ -310,7 +308,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
             return taskConfigs;
         }
 
-        private void PromptIfNotSet(List<(string, string)> properties, string propertyName, bool required = false, string[] allowedValues = null)
+        private void PromptIfNotSet(List<(string, string)> properties, string propertyName, bool required = false, string[] allowedValues = null, string configType = null)
         {
             string input = null;
             bool validInput;
@@ -326,7 +324,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                 do
                 {
-                    input = Console.GetString(prompt);
+                    if (configType == ConfigType.Boolean)
+                        input = Console.GetYesNoNullable(prompt)?.ToString();
+                    else
+                        input = Console.GetString(prompt);
 
                     if (allowedValues != null && allowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !allowedValues.Contains(input))
                     {

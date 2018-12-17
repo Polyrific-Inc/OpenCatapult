@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -130,7 +131,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
                 {
                     if (string.IsNullOrEmpty(isPrivateRepository))
-                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository", allowedValues: new[] { "true", "false" });
+                        isPrivateRepository = PromptTaskConfig("IsPrivateRepository", configType: ConfigType.Boolean);
 
                     task.Configs["IsPrivateRepository"] = isPrivateRepository;
                 }
@@ -149,16 +150,14 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
                         do
                         {
-                            input = additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true) ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
+                            if (additionalConfig.Type == ConfigType.Boolean)
+                                input = Console.GetYesNoNullable(prompt)?.ToString();
+                            else
+                                input = additionalConfig.IsSecret && (additionalConfig.IsInputMasked ?? true) ? _consoleReader.GetPassword(prompt) : Console.GetString(prompt);
                             
                             if (!string.IsNullOrEmpty(input))
                             {
-                                if (additionalConfig.Type == PluginAdditionalConfigType.Boolean && !bool.TryParse(input, out var inputBool))
-                                {
-                                    Console.WriteLine($"Input is not valid. Please enter valid boolean value: true or false");
-                                    validInput = false;
-                                }
-                                else if (additionalConfig.Type == PluginAdditionalConfigType.Number && !double.TryParse(input, out var inputNumber))
+                                if (additionalConfig.Type == ConfigType.Number && !double.TryParse(input, out var inputNumber))
                                 {
                                     Console.WriteLine($"Input is not valid. Please enter valid number value.");
                                     validInput = false;
@@ -268,7 +267,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             return false;
         }
 
-        private string PromptTaskConfig(string propertyName, string[] allowedValues = null)
+        private string PromptTaskConfig(string propertyName, string[] allowedValues = null, string configType = null)
         {
             string input;
             bool validInput;
@@ -277,8 +276,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             do
             {
-                input = Console.GetString(prompt);
-
+                input = configType == ConfigType.Boolean ? Console.GetYesNoNullable(prompt)?.ToString() : Console.GetString(prompt);
                 if (allowedValues != null && allowedValues.Length > 0 && !string.IsNullOrEmpty(input) && !allowedValues.Contains(input))
                 {
                     Console.WriteLine($"Input is not valid. Please enter the allowed values: {string.Join(',', allowedValues)}");

@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.Shared.Dto.Constants
 {
-    public static class PluginAdditionalConfigType
+    public static class ConfigType
     {
         public const string String = "string";
         public const string Boolean = "boolean";
