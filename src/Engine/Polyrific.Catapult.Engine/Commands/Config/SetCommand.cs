@@ -41,8 +41,13 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                 _engineConfig.SetValue(ConfigName, ConfigValue);
                 _engineConfig.Save();
 
-                message = $"The value of \"{ConfigName}\" has been set to \"{ConfigValue}\".";
-                Logger.LogInformation(message);
+                var logMessage = $"The value of \"{ConfigName}\" has been set";
+                message = $"{logMessage} to \"{ConfigValue}\".";
+
+                if (ConfigName != CatapultEngineConfig.AuthorizationTokenKey)
+                    logMessage = message;
+
+                Logger.LogInformation(logMessage);
             }
             else if (!string.IsNullOrEmpty(ConfigName) || !string.IsNullOrEmpty(ConfigValue))
             {
@@ -67,7 +72,11 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                             if (!string.IsNullOrEmpty(value))
                             {
                                 _engineConfig.SetValue(key, value);
-                                modifiedConfigs.Add(key, value);
+
+                                if (key == CatapultEngineConfig.AuthorizationTokenKey)
+                                    modifiedConfigs.Add(key, "***");
+                                else
+                                    modifiedConfigs.Add(key, value);
                             }
 
                             isValueNeeded = false;
