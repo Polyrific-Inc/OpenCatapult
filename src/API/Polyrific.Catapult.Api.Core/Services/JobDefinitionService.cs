@@ -7,6 +7,7 @@ using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Security;
 using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -141,6 +142,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new JobDefinitionNotFoundException(jobTaskDefinition.JobDefinitionId);
             }
 
+            if (jobTaskDefinition.Sequence == null)
+                jobTaskDefinition.Sequence = _jobTaskDefinitionRepository.GetMaxTaskSequence(jobTaskDefinition.JobDefinitionId) + 1;
+
             await ValidateJobTaskDefinition(jobTaskDefinition, cancellationToken);
 
             return await _jobTaskDefinitionRepository.Create(jobTaskDefinition, cancellationToken);
@@ -165,8 +169,17 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new DuplicateJobTaskDefinitionException(string.Join(DataDelimiter.Comma.ToString(), duplicateTasks));
             }
 
+            int currentMax = _jobTaskDefinitionRepository.GetMaxTaskSequence(jobDefinitionId);
+            int newMax = jobTaskDefinitions.Max(t => t.Sequence) ?? 0;
+            int maxSequence = Math.Max(currentMax, newMax);
+
             foreach (var task in jobTaskDefinitions)
+            {
+                if (task.Sequence == null)
+                    task.Sequence = ++maxSequence;
+
                 await ValidateJobTaskDefinition(task, cancellationToken);
+            }                
 
             jobTaskDefinitions.ForEach(j => j.JobDefinitionId = jobDefinitionId);
 

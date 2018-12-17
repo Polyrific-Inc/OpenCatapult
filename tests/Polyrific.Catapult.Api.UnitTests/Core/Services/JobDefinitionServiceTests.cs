@@ -319,6 +319,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             Assert.True(newId > 1);
             Assert.True(_dataTask.Count > 1);
+            Assert.Equal(1, _dataTask[1].Sequence);
         }
 
         [Fact]
@@ -645,6 +646,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             }
 
             Assert.True(_dataTask.Count > 1);
+            Assert.Equal(1, _dataTask[1].Sequence);
+            Assert.Equal(2, _dataTask[2].Sequence);
         }
 
         [Fact]

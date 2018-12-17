@@ -30,5 +30,10 @@ namespace Polyrific.Catapult.Api.Data
 
             return entities.Select(e => e.Id).ToList();
         }
+
+        public int GetMaxTaskSequence(int jobDefinitionId)
+        {
+            return Db.JobTaskDefinitions.Where(t => t.JobDefinitionId == jobDefinitionId).Max(t => t.Sequence) ?? 0;
+        }
     }
 }

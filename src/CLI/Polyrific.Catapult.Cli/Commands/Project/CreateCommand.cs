@@ -113,8 +113,11 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             string repository = null;
             string isPrivateRepository = null;
+            int count = 1;
             foreach (var task in tasks)
             {
+                task.Sequence = count++;
+
                 // prompt for Repository config
                 if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
