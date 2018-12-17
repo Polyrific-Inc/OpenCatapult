@@ -1,0 +1,137 @@
+name: Project-Sample
+client: Polyrific
+models:
+  - name: User
+    label: User
+    properties:
+      - name: UserName
+        label: User name
+        data-type: string
+        control-type: input-text
+        is-required: true
+      - name: Email
+        label: Email
+        data-type: string
+        control-type: input-text
+        is-required: true
+      - name: FirstName
+        label: First Name
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: LastName
+        label: Last Name
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: IsActive
+        label: Is Active?
+        data-type: bool
+        control-type: checkbox
+        is-required: true
+  - name: Category
+    label: Category
+    properties:
+      - name: Description
+        label: Description
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: Title
+        label: Title
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: Products
+        label: Products
+        control-type: checkboxlist
+        related-project-data-model-name: Product
+        relational-type: one-to-many
+        is-required: false
+  - name: Customer
+    label: Customer
+    properties:
+      - name: Name
+        label: Name
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: User
+        label: User
+        control-type: select
+        related-project-data-model-name: User
+        relational-type: one-to-one
+        is-required: false
+  - name: Order
+    label: Order
+    properties:
+      - name: OrderDate
+        label: Order Date
+        data-type: datetime
+        control-type: calendar
+        is-required: false
+      - name: Customer
+        label: Customer
+        control-type: select
+        related-project-data-model-name: Customer
+        relational-type: one-to-one
+        is-required: false
+      - name: Products
+        label: Products
+        control-type: checkboxlist
+        related-project-data-model-name: Product
+        relational-type: one-to-many
+        is-required: false
+  - name: Product
+    label: Product
+    properties:
+      - name: Title
+        label: Title
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: Description
+        label: Description
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: Price
+        label: Price
+        data-type: decimal
+        control-type: input-number
+        is-required: false
+  - name: Sale
+    label: Sale
+    properties:
+      - name: Description
+        label: Description
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: Title
+        label: Title
+        data-type: string
+        control-type: input-text
+        is-required: false
+      - name: StartDate
+        label: Start Date
+        data-type: datetime
+        control-type: calendar
+        is-required: false
+      - name: EndDate
+        label: End Date
+        data-type: datetime
+        control-type: calendar
+        is-required: false
+      - name: Products
+        label: Products
+        control-type: checkboxlist
+        related-project-data-model-name: Product
+        relational-type: one-to-many
+        is-required: false
+jobs:
+- name: Default
+  tasks:
+  - name: Generate
+    type: Generate
+    provider: Polyrific.Catapult.Plugins.AspNetCoreMvc
