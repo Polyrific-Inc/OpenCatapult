@@ -34,12 +34,15 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers
             if (!Directory.Exists(projectFolder))
                 Directory.CreateDirectory(projectFolder);
 
-            var args = $"new {template} -n {projectName} -o \"{projectFolder}\"";
-
-            var message = await CommandHelper.RunDotnet(args, null, _logger);
-            DeleteFileToProject(projectName, "Class1.cs");
-
             var projectFile = GetProjectFullPath(projectName);
+
+            string message = "";
+            if (!File.Exists(projectFile))
+            {
+                var args = $"new {template} -n {projectName} -o \"{projectFolder}\"";
+                message = await CommandHelper.RunDotnet(args, null, _logger);
+                DeleteFileToProject(projectName, "Class1.cs");
+            }
 
             if (projectReferences != null)
                 foreach (var projectReference in projectReferences)

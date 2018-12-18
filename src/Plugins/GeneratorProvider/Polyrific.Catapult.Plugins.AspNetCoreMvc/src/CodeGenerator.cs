@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -40,6 +41,9 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 
         public async Task<string> InitSolution()
         {
+            if (File.Exists(Path.Combine(_outputLocation, $"{_projectName}.sln")))
+                return "";
+
             var args = $"new sln -n {_projectName} -o \"{_outputLocation}\"";
             return await CommandHelper.RunDotnet(args);
         }
