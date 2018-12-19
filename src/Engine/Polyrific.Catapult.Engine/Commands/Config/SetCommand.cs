@@ -33,13 +33,13 @@ namespace Polyrific.Catapult.Engine.Commands.Config
         {
             var message = "";
 
-            _engineConfig.Load();
+            _engineConfig.Load().Wait();
 
             if (!string.IsNullOrEmpty(ConfigName) && !string.IsNullOrEmpty(ConfigValue))
             {
             
                 _engineConfig.SetValue(ConfigName, ConfigValue);
-                _engineConfig.Save();
+                _engineConfig.Save().Wait();
 
                 var logMessage = $"The value of \"{ConfigName}\" has been set";
                 message = $"{logMessage} to \"{ConfigValue}\".";
@@ -88,7 +88,7 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                     }
                 }
 
-                _engineConfig.Save();
+                _engineConfig.Save().Wait();
 
                 message = "Config values have been saved successfully.";
                 Logger.LogInformation($"Config values have been modified: {JsonConvert.SerializeObject(modifiedConfigs)}");

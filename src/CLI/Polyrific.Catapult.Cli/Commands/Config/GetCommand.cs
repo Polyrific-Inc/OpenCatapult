@@ -24,7 +24,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
         {
             var message = "";
 
-            _cliConfig.Load();
+            _cliConfig.Load().Wait();
 
             if (!string.IsNullOrEmpty(ConfigName))
             {

@@ -27,7 +27,7 @@ namespace Polyrific.Catapult.Engine.Commands.Config
 
         public override string Execute()
         {
-            _engineConfig.Load();
+            _engineConfig.Load().Wait();
 
             if (RemoveAll)
             {
@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                     removedConfigs.Add(key);
                 }
 
-                _engineConfig.Save();
+                _engineConfig.Save().Wait();
                 
                 Logger.LogInformation($"Config values have been removed: {JsonConvert.SerializeObject(removedConfigs)}");
 
@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.Engine.Commands.Config
                 return "";
 
             _engineConfig.RemoveValue(ConfigName);
-            _engineConfig.Save();
+            _engineConfig.Save().Wait();
 
             var message = $"Config \"{ConfigName}\" has been removed.";
             Logger.LogInformation(message);

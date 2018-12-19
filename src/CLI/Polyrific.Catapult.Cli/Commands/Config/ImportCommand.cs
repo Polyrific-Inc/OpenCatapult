@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
             if (!File.Exists(InputFile))
                 return $"File \"{InputFile}\" could not be found.";
 
-            _cliConfig.Load();
+            _cliConfig.Load().Wait();
 
             var obj = JObject.Parse(File.ReadAllText(InputFile));
             var configs = obj.ToObject<Dictionary<string, string>>();
@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
                 _cliConfig.SetValue(key, configs[key]);
             }
 
-            _cliConfig.Save();
+            _cliConfig.Save().Wait();
 
             Logger.LogInformation($"Modified configs: {JsonConvert.SerializeObject(modifiedConfigs)}. Added configs: {JsonConvert.SerializeObject(addedConfigs)}");
 

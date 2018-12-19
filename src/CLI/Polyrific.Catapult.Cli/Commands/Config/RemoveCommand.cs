@@ -30,7 +30,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
 
         public override string Execute()
         {
-            _cliConfig.Load();
+            _cliConfig.Load().Wait();
 
             if (RemoveAll && (AutoConfirm || Console.GetYesNo($"Are you sure you want to remove all configs?", false)))
             {
@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
                     removedConfigs.Add(key);
                 }
 
-                _cliConfig.Save();
+                _cliConfig.Save().Wait();
 
                 Logger.LogInformation($"Config values have been removed: {JsonConvert.SerializeObject(removedConfigs)}");
 
@@ -56,7 +56,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
             if (AutoConfirm || Console.GetYesNo($"Are you sure you want to remove config \"{ConfigName}\"?", false))
             {
                 _cliConfig.RemoveValue(ConfigName);
-                _cliConfig.Save();
+                _cliConfig.Save().Wait();
 
                 message = $"Config \"{ConfigName}\" has been removed.";
                 Logger.LogInformation(message);

@@ -32,13 +32,13 @@ namespace Polyrific.Catapult.Cli.Commands.Config
         {
             var message = "";
 
-            _cliConfig.Load();
+            _cliConfig.Load().Wait();
 
             if (!string.IsNullOrEmpty(ConfigName) && !string.IsNullOrEmpty(ConfigValue))
             {
 
                 _cliConfig.SetValue(ConfigName, ConfigValue);
-                _cliConfig.Save();
+                _cliConfig.Save().Wait();
 
                 message = $"The value of \"{ConfigName}\" has been set to \"{ConfigValue}\".";
                 Logger.LogInformation(message);
@@ -78,7 +78,7 @@ namespace Polyrific.Catapult.Cli.Commands.Config
                     }
                 }
 
-                _cliConfig.Save();
+                _cliConfig.Save().Wait();
 
                 message = "Config values have been saved successfully.";
                 Logger.LogInformation($"Config values have been modified: {JsonConvert.SerializeObject(modifiedConfigs)}");
