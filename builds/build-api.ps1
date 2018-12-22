@@ -15,11 +15,11 @@ $env:ASPNETCORE_ENVIRONMENT = $environment
 
 # define paths
 $rootPath = Split-Path $PSScriptRoot
-$appSettingsPath = "$rootPath\src\API\Polyrific.Catapult.Api\appsettings.json"
-$apiCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj"
-$apiPublishPath = "$rootPath\publish\api"
-$apiDll = "$apiPublishPath\ocapi.dll"
-$dataCsprojPath = "$rootPath\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj"
+$appSettingsPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/appsettings.json"
+$apiCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/Polyrific.Catapult.Api.csproj"
+$apiPublishPath = Join-Path $rootPath "/publish/api"
+$apiDll = Join-Path $apiPublishPath "/ocapi.dll"
+$dataCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api.Data/Polyrific.Catapult.Api.Data.csproj"
 
 # read connection string in appsettings.json
 try {

@@ -7,9 +7,9 @@ param(
 )
 
 $rootPath = Split-Path $PSScriptRoot
-$cliCsprojPath = "$rootPath\src\CLI\Polyrific.Catapult.Cli\Polyrific.Catapult.Cli.csproj"
-$cliPublishPath = "$rootPath\publish\cli"
-$cliDll = "$cliPublishPath\occli.dll"
+$cliCsprojPath = Join-Path $rootPath "/src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj"
+$cliPublishPath = Join-Path $rootPath "/publish/cli"
+$cliDll = Join-Path $cliPublishPath "/occli.dll"
 
 # build CLI
 Write-Output "Publishing the CLI..."

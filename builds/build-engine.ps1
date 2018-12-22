@@ -7,16 +7,29 @@ param(
 )
 
 $rootPath = Split-Path $PSScriptRoot
-$engineCsprojPath = "$rootPath\src\Engine\Polyrific.Catapult.Engine\Polyrific.Catapult.Engine.csproj"
-$enginePublishPath = "$rootPath\publish\engine"
-$engineDll = "$enginePublishPath\ocengine.dll"
+$engineCsprojPath = Join-Path $rootPath "/src/Engine/Polyrific.Catapult.Engine/Polyrific.Catapult.Engine.csproj"
+$enginePublishPath = Join-Path $rootPath "/publish/engine"
+$engineDll = Join-Path $enginePublishPath "/ocengine.dll"
 
-$plugins = [System.Tuple]::Create("$rootPath\src\Plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj", "$enginePublishPath\plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc"),
-[System.Tuple]::Create("$rootPath\src\Plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService\src\Polyrific.Catapult.Plugins.AzureAppService.csproj", "$enginePublishPath\plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService"),
-[System.Tuple]::Create("$rootPath\src\Plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\src\Polyrific.Catapult.Plugins.DotNetCore.csproj", "$enginePublishPath\plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore"),
-[System.Tuple]::Create("$rootPath\src\Plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest\src\Polyrific.Catapult.Plugins.DotNetCoreTest.csproj", "$enginePublishPath\plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest"),
-[System.Tuple]::Create("$rootPath\src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj", "$enginePublishPath\plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore"),
-[System.Tuple]::Create("$rootPath\src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\src\Polyrific.Catapult.Plugins.GitHub.csproj", "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub")
+$aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.Plugins.AspNetCoreMvc/src/Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj"
+$aspNetCoreMvcPublishPath = Join-Path $enginePublishPath "/plugins/GeneratorProvider/Polyrific.Catapult.Plugins.AspNetCoreMvc"
+$azureAppServiceCsprojPath = Join-Path $rootPath "/src/Plugins/HostingProvider/Polyrific.Catapult.Plugins.AzureAppService/src/Polyrific.Catapult.Plugins.AzureAppService.csproj"
+$azureAppServicePublishPath = Join-Path $enginePublishPath "/plugins/HostingProvider/Polyrific.Catapult.Plugins.AzureAppService"
+$dotNetCoreCsprojPath = Join-Path $rootPath "/src/Plugins/BuildProvider/Polyrific.Catapult.Plugins.DotNetCore/src/Polyrific.Catapult.Plugins.DotNetCore.csproj"
+$dotNetCorePublishPath = Join-Path $enginePublishPath "/plugins/BuildProvider/Polyrific.Catapult.Plugins.DotNetCore"
+$dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyrific.Catapult.Plugins.DotNetCoreTest/src/Polyrific.Catapult.Plugins.DotNetCoreTest.csproj"
+$dotNetCoreTestPublishPath = Join-Path $enginePublishPath "/plugins/TestProvider/Polyrific.Catapult.Plugins.DotNetCoreTest"
+$entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.Plugins.EntityFrameworkCore/src/Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj"
+$entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/plugins/DatabaseProvider/Polyrific.Catapult.Plugins.EntityFrameworkCore"
+$gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub/src/Polyrific.Catapult.Plugins.GitHub.csproj"
+$gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub"
+
+$plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
+[System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),
+[System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
+[System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
+[System.Tuple]::Create($entityFrameworkCoreCsprojPath, $entityFrameworkCorePublishPath),
+[System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath)
 
 # publish engine
 Write-Output "Publishing the Engine..."
