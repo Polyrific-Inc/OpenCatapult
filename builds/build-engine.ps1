@@ -62,8 +62,4 @@ foreach ($p in $plugins) {
     }
 }
 
-# Copy GitHub assemblies
-Write-Output "Copying required files..."
-Copy-Item "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\runtimes\win-x64\native\*" -Destination "$enginePublishPath\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\" -Force
-
 Write-Output "Engine is ready. Please run: dotnet $engineDll [command] [options]"
