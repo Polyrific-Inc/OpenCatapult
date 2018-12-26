@@ -642,7 +642,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
             string line = null;
             bool isNavBlock = false;
             bool isFooterBlock = false;
-            var layoutFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "Views\\Shared\\_Layout.cshtml");
+            var layoutFile = Path.Combine(_projectHelper.GetProjectFolder(Name), "Views/Shared/_Layout.cshtml");
             var updatedContent = new StringBuilder();
             using (var reader = new StreamReader(layoutFile))
             {
