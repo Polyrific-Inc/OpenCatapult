@@ -115,10 +115,10 @@ namespace Polyrific.Catapult.Engine.Core
                             }
                         }
                     }
-                    catch (BadImageFormatException ex)
+                    catch (BadImageFormatException)
                     {
                         // skip loading file if this happen
-                        _logger.LogWarning(ex, "Failed loading plugin file {file}", file);
+                        _logger.LogDebug("Failed loading {file} as plugin file.", file);
                     }
                 }
             }
