@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Plugins.Core
@@ -17,13 +16,13 @@ namespace Polyrific.Catapult.Plugins.Core
         protected Dictionary<string, object> ParsedArguments;
         protected ILogger Logger;
 
-        protected TaskProvider(string[] args)
+        protected TaskProvider(string[] args, string taskProviderName)
         {
             if (args.Contains("--attach") && Debugger.IsAttached == false)
                 Debugger.Launch();
             
             ParsedArguments = args.Length > 0 ? JsonConvert.DeserializeObject<Dictionary<string, object>>(args[0]) : new Dictionary<string, object>();
-            Logger = new TaskLogger();
+            Logger = new TaskLogger(taskProviderName);
         }
 
         /// <summary>

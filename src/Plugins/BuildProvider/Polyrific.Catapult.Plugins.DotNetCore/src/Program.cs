@@ -9,15 +9,17 @@ namespace Polyrific.Catapult.Plugins.DotNetCore
 {
     public class Program : BuildProvider
     {
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.DotNetCore";
+
         private IBuilder _builder;
 
-        public override string Name => "Polyrific.Catapult.Plugins.DotNetCore";
+        public override string Name => TaskProviderName;
 
-        public Program() : base(new string[0])
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
         

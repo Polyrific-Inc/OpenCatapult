@@ -146,7 +146,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             await Execute("dotnet", $"new console -n {pluginName} -o \"{outputLocation}\"");
             AddDllReference(projectFile, pluginCoreDll);
             WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
-
+            
             await Execute("dotnet", $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release");
         }
 
@@ -161,15 +161,16 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             sb.AppendLine("{");
             sb.AppendLine("    public class Program : TaskProvider");
             sb.AppendLine("    {");
-            sb.AppendLine($"        public override string Name => \"{pluginName}\";");
+            sb.AppendLine($"        private const string TaskProviderName = \"{pluginName}\";");
+            sb.AppendLine($"        public override string Name => TaskProviderName;");
             sb.AppendLine("");
             sb.AppendLine($"        public override string Type => \"{pluginType}\";");
             sb.AppendLine("");
-            sb.AppendLine("        public Program() : base(new string[] { })");
+            sb.AppendLine("        public Program() : base(new string[] { }, TaskProviderName)");
             sb.AppendLine("        {");
             sb.AppendLine("        }");
             sb.AppendLine("");
-            sb.AppendLine("        public Program(string[] args) : base(args)");
+            sb.AppendLine("        public Program(string[] args) : base(args, TaskProviderName)");
             sb.AppendLine("        {");
             sb.AppendLine("        }");
             sb.AppendLine("");

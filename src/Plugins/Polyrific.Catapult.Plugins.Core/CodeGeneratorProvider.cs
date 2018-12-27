@@ -11,7 +11,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class CodeGeneratorProvider : TaskProvider
     {
-        protected CodeGeneratorProvider(string[] args) : base(args)
+        protected CodeGeneratorProvider(string[] args, string taskProviderName) 
+            : base(args, taskProviderName)
         {
             ParseArguments();
         }

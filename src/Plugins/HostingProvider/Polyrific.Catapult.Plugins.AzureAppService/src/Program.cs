@@ -7,15 +7,17 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 {
     public class Program : HostingProvider
     {
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.AzureAppService";
+
         private IAzureAutomation _azure;
         private readonly IAzureUtils _azureUtils;
         private readonly IDeployUtils _deployUtils;
 
-        public Program() : base(new string[0])
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
 
@@ -26,7 +28,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             _deployUtils = deployUtils;
         }
 
-        public override string Name => "Polyrific.Catapult.Plugins.AzureAppService";
+        public override string Name => TaskProviderName;
 
         public override string[] RequiredServices => new[] { "AzureAppService" };
 

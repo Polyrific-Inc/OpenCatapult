@@ -10,7 +10,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class TestProvider : TaskProvider
     {
-        protected TestProvider(string[] args) : base(args)
+        protected TestProvider(string[] args, string taskProviderName) 
+            : base(args, taskProviderName)
         {
             ParseArguments();
         }

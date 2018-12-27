@@ -9,17 +9,19 @@ namespace Polyrific.Catapult.Plugins.DotNetCoreTest
 {
     public class Program : TestProvider
     {
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.DotNetCoreTest";
+
         private ITestRunner _testRunner;
 
-        public Program() : base(new string[0])
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
 
-        public override string Name => "Polyrific.Catapult.Plugins.DotNetCoreTest";
+        public override string Name => TaskProviderName;
         
         public override async Task<(string testResultLocation, Dictionary<string, string> outputValues, string errorMessage)> Test()
         {

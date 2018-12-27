@@ -9,13 +9,15 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
 {
     public class Program : DatabaseProvider
     {
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.EntityFrameworkCore";
+
         private IDatabaseCommand _databaseCommand;
 
-        public Program() : base(new string[0])
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
 
@@ -24,7 +26,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             _databaseCommand = databaseCommand;
         }
 
-        public override string Name => "Polyrific.Catapult.Plugins.EntityFrameworkCore";
+        public override string Name => TaskProviderName;
         
         public override async Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase()
         {

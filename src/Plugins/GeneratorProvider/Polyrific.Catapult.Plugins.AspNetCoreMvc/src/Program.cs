@@ -8,13 +8,15 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 {
     public class Program : CodeGeneratorProvider
     {
-        public override string Name => "Polyrific.Catapult.Plugins.AspNetCoreMvc";
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.AspNetCoreMvc";
 
-        public Program() : base(new string[0])
+        public override string Name => TaskProviderName;
+
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
         

@@ -9,6 +9,8 @@ namespace Polyrific.Catapult.Plugins.GitHub
 {
     public class Program : RepositoryProvider
     {
+        private const string TaskProviderName = "Polyrific.Catapult.Plugins.GitHub";
+
         private IGitAutomation _gitAutomation;
         private readonly IGitHubUtils _gitHubUtils;
 
@@ -18,15 +20,15 @@ namespace Polyrific.Catapult.Plugins.GitHub
         private const string DefaultBaseBranch = "master";
         private const string DefaultWorkingBranch = "OpenCatapultGenerated";
 
-        public override string Name => "Polyrific.Catapult.Plugins.GitHub";
+        public override string Name => TaskProviderName;
 
         public override string[] RequiredServices => new[] { "GitHub" };
 
-        public Program() : base(new string[0])
+        public Program() : base(new string[0], TaskProviderName)
         {
         }
 
-        public Program(string[] args) : base(args)
+        public Program(string[] args) : base(args, TaskProviderName)
         {
         }
 

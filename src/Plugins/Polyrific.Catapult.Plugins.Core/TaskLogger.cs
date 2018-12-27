@@ -7,6 +7,13 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public class TaskLogger : ILogger
     {
+        private readonly string _taskProviderName;
+
+        public TaskLogger(string taskProviderName)
+        {
+            _taskProviderName = taskProviderName;
+        }
+
         public IDisposable BeginScope<TState>(TState state)
         {
             throw new NotImplementedException();
@@ -21,7 +28,11 @@ namespace Polyrific.Catapult.Plugins.Core
         {
             var message = formatter?.Invoke(state, exception);
 
-            Console.WriteLine($"[LOG][{Enum.GetName(typeof(LogLevel), logLevel)}]{message}");
+            var logMessage = $"[LOG][{Enum.GetName(typeof(LogLevel), logLevel)}][{_taskProviderName}] {message}";
+            if (exception != null)
+                logMessage += $" {exception.StackTrace}";
+
+            Console.WriteLine(logMessage);
         }
         
     }

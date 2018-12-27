@@ -10,7 +10,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class StorageProvider : TaskProvider
     {
-        protected StorageProvider(string[] args) : base(args)
+        protected StorageProvider(string[] args, string taskProviderName) 
+            : base(args, taskProviderName)
         {
             ParseArguments();
         }
