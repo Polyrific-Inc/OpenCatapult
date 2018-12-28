@@ -143,8 +143,8 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 var plugin = plugins.FirstOrDefault(p => p.Name == task.Provider);
                 if (plugin?.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
                 {
-                    task.AdditionalConfigs = new Dictionary<string, string>();
-                    Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
+                    task.AdditionalConfigs = task.AdditionalConfigs ?? new Dictionary<string, string>();
+                    Console.WriteLine($"The provider \"{plugin.Name}\" of task {task.Name} has some additional config(s):");
                     foreach (var additionalConfig in plugin.AdditionalConfigs)
                     {
                         string input;
@@ -178,8 +178,10 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                         } while (!validInput || (additionalConfig.IsRequired && string.IsNullOrEmpty(input)));
 
                         if (!string.IsNullOrEmpty(input))
-                            task.AdditionalConfigs.Add(additionalConfig.Name, input);
+                            task.AdditionalConfigs[additionalConfig.Name] = input;
                     }
+
+                    Console.WriteLine();
                 }
             }
 
