@@ -23,7 +23,16 @@ namespace Polyrific.Catapult.Engine.SignalRLogger
             if (_hubConnection == null)
                 _hubConnection = await GetConnection();
 
-            await _hubConnection.SendAsync("CompleteJob", jobQueueId);
+            try
+            {
+                await _hubConnection.SendAsync("CompleteJob", jobQueueId);
+            }
+            catch (InvalidOperationException)
+            {
+                // handle error occured when _hubConnection is available but the connection is not active
+                await _hubConnection.StartAsync();
+                await _hubConnection.SendAsync("CompleteJob", jobQueueId);
+            }
         }
 
         public async Task WriteLog(int jobQueueId, string taskName, string message)
@@ -31,7 +40,16 @@ namespace Polyrific.Catapult.Engine.SignalRLogger
             if (_hubConnection == null)
                 _hubConnection = await GetConnection();
 
-            await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
+            try
+            {
+                await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
+            }
+            catch (InvalidOperationException)
+            {
+                // handle error occured when _hubConnection is available but the connection is not active
+                await _hubConnection.StartAsync();
+                await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
+            }
         }
 
         private async Task<HubConnection> GetConnection()
