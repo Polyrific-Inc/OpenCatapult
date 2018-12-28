@@ -250,7 +250,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var command = new RestartCommand(_console, LoggerMock.GetLogger<RestartCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
             {
                 Project = "Project 1",
-                Number = 1
+                Number = "1"
             };
 
             var resultMessage = command.Execute();
@@ -264,7 +264,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var command = new RestartCommand(_console, LoggerMock.GetLogger<RestartCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
             {
                 Project = "Project 1",
-                Number = 2
+                Number = "2"
             };
 
             var resultMessage = command.Execute();

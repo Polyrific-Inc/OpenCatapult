@@ -29,25 +29,29 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
         [Required]
         [Option("-n|--number <NUMBER>", "Queue number", CommandOptionType.SingleValue)]
-        public int Number { get; set; }
+        public string Number { get; set; }
 
         public override string Execute()
         {
             Console.WriteLine($"Trying to restart queue \"{Number}\" in project {Project}...");
 
             string message;
-            
+
+            var code = "";
+            if (!int.TryParse(Number, out var id))
+                code = Number;
+
             var project = _projectService.GetProjectByName(Project).Result;
 
             if (project != null)
             {
-                var queue = _jobQueueService.GetJobQueue(project.Id, Number).Result;
+                var queue = !string.IsNullOrEmpty(code) ? _jobQueueService.GetJobQueue(project.Id, code).Result : _jobQueueService.GetJobQueue(project.Id, id).Result;
 
                 if (queue != null)
                 {
                     _jobQueueService.UpdateJobQueue(queue.Id, new UpdateJobDto
                     {
-                        Id = Number,
+                        Id = queue.Id,
                         Status = JobStatus.Queued,
                         CatapultEngineId = queue.CatapultEngineId,
                         CatapultEngineIPAddress = queue.CatapultEngineIPAddress,
