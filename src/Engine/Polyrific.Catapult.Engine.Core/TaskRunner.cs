@@ -136,7 +136,7 @@ namespace Polyrific.Catapult.Engine.Core
                     }
 
                     jobTaskStatus.Status = JobTaskStatusType.Success;
-                    jobTaskStatus.Remarks = null;
+                    jobTaskStatus.Remarks = result.ReturnValue;
                     await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
                     {
                         Id = job.Id,
