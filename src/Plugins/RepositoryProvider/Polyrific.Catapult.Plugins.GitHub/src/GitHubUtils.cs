@@ -8,6 +8,7 @@ using LibGit2Sharp;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Repository = LibGit2Sharp.Repository;
+using System.IO;
 
 namespace Polyrific.Catapult.Plugins.GitHub
 {
@@ -222,6 +223,21 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
                 // checkout base branch
                 var branchObj = repo.Branches[baseBranch] != null ? repo.Branches[baseBranch] : repo.Branches[$"origin/{baseBranch}"];
+
+                // if we're working on empty repository, create master branch
+                if (branchObj == null)
+                {
+                    File.WriteAllText(Path.Combine(localRepository, "README.md"), $"# Catapult-generated");
+                    Commands.Stage(repo, "README.md");
+                    repo.Commit("Initial commit", signature, signature);
+                    branchObj = repo.Branches["master"];
+
+                    var remote = repo.Network.Remotes["origin"];
+                    repo.Branches.Update(branchObj,
+                        b => b.Remote = remote.Name,
+                        b => b.UpstreamBranch = branchObj.CanonicalName);
+                }
+
                 if (repo.Head.Commits.FirstOrDefault() != branchObj.Commits.FirstOrDefault())
                     Commands.Checkout(repo, branchObj);
 
