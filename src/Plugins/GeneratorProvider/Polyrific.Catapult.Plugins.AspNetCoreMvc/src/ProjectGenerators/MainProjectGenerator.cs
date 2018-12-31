@@ -22,17 +22,6 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
         private readonly ILogger _logger;
 
         private string Name => $"{_projectName}";
-        
-        private static string AssemblyDirectory
-        {
-            get
-            {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                var uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
-                return Path.GetDirectoryName(path);
-            }
-        }
 
         private const string _connectionString = "Server=localhost;Database=opencatapult;User ID=sa;Password=samprod;";
 
@@ -76,7 +65,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
 
         private void AddLogo()
         {
-            var logoFile = Path.Combine(AssemblyDirectory, "Resources/Images/logo.png");
+            var logoFile = Path.Combine(CodeGenerator.AssemblyDirectory, "Resources/Images/logo.png");
             _projectHelper.CopyFileToProject(Name, logoFile, "wwwroot/images/logo.png");
         }
 

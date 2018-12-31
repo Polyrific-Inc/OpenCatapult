@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -24,7 +26,18 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
         private readonly InfrastructureProjectGenerator _infrastructureProjectGenerator;
         private readonly MainProjectGenerator _mainProjectGenerator;
         private readonly ILogger _logger;
-        
+               
+        public static string AssemblyDirectory
+        {
+            get
+            {
+                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+                var uri = new UriBuilder(codeBase);
+                string path = Uri.UnescapeDataString(uri.Path);
+                return Path.GetDirectoryName(path);
+            }
+        }
+
         public CodeGenerator(string projectName, string outputLocation, List<ProjectDataModelDto> models,
             string adminEmail, ILogger logger = null)
         {
@@ -126,12 +139,22 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
             return _mainProjectGenerator.UpdateMigrationScript();
         }
 
-        public async Task GenerateReadMeIfNotExists()
+        public async Task InitializeRepository()
         {
             var readmeFile = Path.Combine(_outputLocation, "README.md");
 
+            // generate readme if not exist
             if (!File.Exists(readmeFile))
                 await File.WriteAllTextAsync(Path.Combine(_outputLocation, "README.md"), $"# {_projectName}");
+
+            var gitignoreFile = Path.Combine(_outputLocation, ".gitignore");
+
+            if (!File.Exists(gitignoreFile))
+            {
+                var sourceFile = Path.Combine(AssemblyDirectory, "Resources/.gitignore");
+                File.Copy(sourceFile, gitignoreFile);
+            }
+                
         }
 
         public List<ProjectDataModelDto> NormalizeModels(List<ProjectDataModelDto> models)

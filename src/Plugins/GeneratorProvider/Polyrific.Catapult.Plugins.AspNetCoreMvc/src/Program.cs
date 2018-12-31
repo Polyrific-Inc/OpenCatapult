@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 
             await generator.UpdateMigrationScript();
 
-            await generator.GenerateReadMeIfNotExists();
+            await generator.InitializeRepository();
 
             return (Config.OutputLocation, null, "");
         }
