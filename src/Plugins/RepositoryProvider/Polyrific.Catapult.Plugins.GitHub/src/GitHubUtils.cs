@@ -14,17 +14,15 @@ namespace Polyrific.Catapult.Plugins.GitHub
 {
     public class GitHubUtils : IGitHubUtils
     {
-        private readonly string _credentialType;
-        private readonly string _userName;
-        private readonly string _password;
+        private readonly UsernamePasswordCredentials _gitCredential;
+        private readonly Octokit.Credentials _gitHubCredential;
         private readonly ILogger _logger;
 
         public GitHubUtils(string credentialType, string userName, string password, ILogger logger)
         {
-            _credentialType = credentialType;
-            _userName = userName;
-            _password = password;
             _logger = logger;
+            _gitCredential = GetGitCredentials(credentialType, userName, password);
+            _gitHubCredential = GetGitHubCredentials(credentialType, userName, password);
         }
 
         public async Task<string> Clone(string remoteUrl, string localRepository, bool isPrivateRepository)
@@ -36,22 +34,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
             if (isPrivateRepository)
             {
-                if (_credentialType == "userPassword")
-                {
-                    cloneOption.CredentialsProvider = (url, user, cred) => new UsernamePasswordCredentials
-                    {
-                        Username = _userName,
-                        Password = _password
-                    };
-                }
-                else if (_credentialType == "authToken")
-                {
-                    cloneOption.CredentialsProvider = (url, user, cred) => new UsernamePasswordCredentials
-                    {
-                        Username = _userName,
-                        Password = string.Empty
-                    };
-                }
+                cloneOption.CredentialsProvider = (url, user, cred) => _gitCredential;
             }
 
             try
@@ -69,9 +52,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
         {
             var client = new GitHubClient(new ProductHeaderValue(projectName))
             {
-                Credentials = _credentialType == "userPassword"
-                    ? new Octokit.Credentials(_userName, _password)
-                    : new Octokit.Credentials(_userName)
+                Credentials = _gitHubCredential
             };
 
             var newPr = new NewPullRequest(title, branch, targetBranch);
@@ -104,9 +85,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
         {
             var client = new GitHubClient(new ProductHeaderValue(projectName))
             {
-                Credentials = _credentialType == "userPassword"
-                    ? new Octokit.Credentials(_userName, _password)
-                    : new Octokit.Credentials(_userName)
+                Credentials = _gitHubCredential
             };
 
             var currentRepo = await client.Repository.Get(repositoryOwner, projectName);
@@ -168,24 +147,9 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
         public async Task<bool> Push(string remoteUrl, string localRepository, string branch)
         {
-            var credential = new UsernamePasswordCredentials();
-
-            // use GitHub token if provided
-            if (_credentialType == "userPassword")
-            {
-                // use user name and password if there is no GitHub token
-                credential.Username = _userName;
-                credential.Password = _password;
-            }
-            else if (_credentialType == "authToken")
-            {
-                credential.Username = _userName;
-                credential.Password = string.Empty;
-            }
-            
             var options = new PushOptions
             {
-                CredentialsProvider = (url, usernameFromUrl, types) => credential,
+                CredentialsProvider = (url, usernameFromUrl, types) => _gitCredential,
                 OnPushTransferProgress = PushTransferProgressHandler
             };
 
@@ -214,28 +178,40 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return Task.FromResult(true);
         }
 
-        public Task<bool> Commit(string localRepository, string baseBranch, string branch, string commitMessage, string author, string email)
+        public async Task<bool> Commit(string localRepository, string remoteUrl, string baseBranch, string branch, string commitMessage, string author, string email)
         {
             try
             {
                 var repo = new Repository(localRepository);
                 var signature = new LibGit2Sharp.Signature(author, email, DateTimeOffset.UtcNow);
 
+                // if we're working on empty repository, create master branch
+                if (repo.Branches == null || repo.Branches.Count() == 0)
+                {
+                    var readmeFile = Path.Combine(localRepository, "README.md");
+
+                    if (!File.Exists(readmeFile))
+                        File.WriteAllText(Path.Combine(localRepository, "README.md"), $"# Catapult-generated");
+
+                    Commands.Stage(repo, "README.md");
+                    repo.Commit("Initial commit", signature, signature);
+                    var masterBranch = repo.Branches["master"];
+
+                    var remote = repo.Network.Remotes["origin"];
+                    repo.Branches.Update(masterBranch,
+                        b => b.Remote = remote.Name,
+                        b => b.UpstreamBranch = masterBranch.CanonicalName);
+
+                    await Push(remoteUrl, localRepository, baseBranch);
+                }
+
                 // checkout base branch
                 var branchObj = repo.Branches[baseBranch] != null ? repo.Branches[baseBranch] : repo.Branches[$"origin/{baseBranch}"];
 
-                // if we're working on empty repository, create master branch
-                if (branchObj == null)
+                if (branch == null)
                 {
-                    File.WriteAllText(Path.Combine(localRepository, "README.md"), $"# Catapult-generated");
-                    Commands.Stage(repo, "README.md");
-                    repo.Commit("Initial commit", signature, signature);
-                    branchObj = repo.Branches["master"];
-
-                    var remote = repo.Network.Remotes["origin"];
-                    repo.Branches.Update(branchObj,
-                        b => b.Remote = remote.Name,
-                        b => b.UpstreamBranch = branchObj.CanonicalName);
+                    _logger.LogError($"Base branch {baseBranch} was not found");
+                    return false;
                 }
 
                 if (repo.Head.Commits.FirstOrDefault() != branchObj.Commits.FirstOrDefault())
@@ -257,13 +233,13 @@ namespace Polyrific.Catapult.Plugins.GitHub
                 Commands.Stage(repo, "*");
                 var commit = repo.Commit(commitMessage, signature, signature);
 
-                return Task.FromResult(commit != null);
+                return commit != null;
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
-                return Task.FromResult(false);
+                return false;
             }
         }
 
@@ -287,6 +263,31 @@ namespace Polyrific.Catapult.Plugins.GitHub
             }
 
             return true;
+        }
+
+        private UsernamePasswordCredentials GetGitCredentials(string credentialType, string userName, string password)
+        {
+            var credential = new UsernamePasswordCredentials();
+
+            if (credentialType == "userPassword")
+            {
+                credential.Username = userName;
+                credential.Password = password;
+            }
+            else
+            {
+                credential.Username = userName;
+                credential.Password = string.Empty;
+            }
+
+            return credential;
+        }
+
+        private Octokit.Credentials GetGitHubCredentials(string credentialType, string userName, string password)
+        {
+            return credentialType == "userPassword"
+                    ? new Octokit.Credentials(userName, password)
+                    : new Octokit.Credentials(userName);
         }
     }
 }

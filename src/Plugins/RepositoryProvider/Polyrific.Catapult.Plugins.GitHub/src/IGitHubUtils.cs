@@ -19,13 +19,14 @@ namespace Polyrific.Catapult.Plugins.GitHub
         /// Commit changes into a branch
         /// </summary>
         /// <param name="localRepository">Location of the local repository</param>
+        /// <param name="remoteUrl">URL of the remote repository</param>
         /// <param name="baseBranch">Base branch that will be used as Head for the new branch</param>
         /// <param name="branch">Branch of the commit</param>
         /// <param name="commitMessage">Message of the commit</param>
         /// <param name="author">Author of the commit</param>
         /// <param name="email">Email of the committer</param>
         /// <returns></returns>
-        Task<bool> Commit(string localRepository, string baseBranch, string branch, string commitMessage, string author, string email);
+        Task<bool> Commit(string localRepository, string remoteUrl, string baseBranch, string branch, string commitMessage, string author, string email);
 
         /// <summary>
         /// Checkout a branch
