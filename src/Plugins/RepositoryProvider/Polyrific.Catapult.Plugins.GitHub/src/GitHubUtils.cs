@@ -194,6 +194,10 @@ namespace Polyrific.Catapult.Plugins.GitHub
                         File.WriteAllText(Path.Combine(localRepository, "README.md"), "# Catapult-generated");
 
                     Commands.Stage(repo, "README.md");
+
+                    if (File.Exists(Path.Combine(localRepository, ".gitignore")))
+                        Commands.Stage(repo, ".gitignore");
+
                     repo.Commit("Initial commit", signature, signature);
                     var masterBranch = repo.Branches["master"];
 
