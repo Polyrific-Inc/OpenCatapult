@@ -191,7 +191,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                     var readmeFile = Path.Combine(localRepository, "README.md");
 
                     if (!File.Exists(readmeFile))
-                        File.WriteAllText(Path.Combine(localRepository, "README.md"), $"# Catapult-generated");
+                        File.WriteAllText(Path.Combine(localRepository, "README.md"), "# Catapult-generated");
 
                     Commands.Stage(repo, "README.md");
                     repo.Commit("Initial commit", signature, signature);

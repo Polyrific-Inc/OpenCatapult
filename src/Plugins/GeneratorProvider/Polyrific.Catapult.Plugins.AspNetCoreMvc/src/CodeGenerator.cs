@@ -126,6 +126,14 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
             return _mainProjectGenerator.UpdateMigrationScript();
         }
 
+        public async Task GenerateReadMeIfNotExists()
+        {
+            var readmeFile = Path.Combine(_outputLocation, "README.md");
+
+            if (!File.Exists(readmeFile))
+                await File.WriteAllTextAsync(Path.Combine(_outputLocation, "README.md"), $"# {_projectName}");
+        }
+
         public List<ProjectDataModelDto> NormalizeModels(List<ProjectDataModelDto> models)
         {
             var baseProperties = new string[] { "id", "created", "updated", "concurrencystamp" };
