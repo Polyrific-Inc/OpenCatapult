@@ -12,7 +12,7 @@ namespace Polyrific.Catapult.Cli.Extensions
 {
     public static class CatapultCliExtensions
     {
-        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 1, string[] excludedFields = null)
+        public static string ToCliString<T>(this T obj, string openingLine = "", string[] obfuscatedFields = null, int indentation = 1, string[] excludedFields = null, Dictionary<string, string> nameDictionary = null)
         {
             string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
 
@@ -26,37 +26,37 @@ namespace Polyrific.Catapult.Cli.Extensions
             sb.AppendLine();
             foreach (var item in propertyInfos)
             {
-                if (excludedFields?.Contains(item.Name) ?? false)
+                if (excludedFields?.Contains(GetDisplayName(item.Name, nameDictionary)) ?? false)
                     continue;
 
                 var prop = item.GetValue(obj);
 
                 if (prop == null)
                 {
-                    sb.AppendLine($"{indentationString}{item.Name}: NULL");
+                    sb.AppendLine($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}: NULL");
                 }
                 else if (prop is Dictionary<string, string> propDictionary)
                 {
-                    sb.AppendLine($"{indentationString}{item.Name}:");
+                    sb.AppendLine($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}:");
                     foreach (var dictItem in propDictionary)
                     {
-                        sb.AppendLine($"{indentationString}  {dictItem.Key}: {GetDisplayValue(dictItem.Key, dictItem.Value, obfuscatedFields)}");
+                        sb.AppendLine($"{indentationString}  {GetDisplayName(dictItem.Key, nameDictionary)}: {GetDisplayValue(dictItem.Key, dictItem.Value, obfuscatedFields)}");
                     }
                 }
                 else if (prop is IEnumerable enumProp && !(prop is string))
                 {
-                    sb.AppendLine(enumProp.ToListCliString($"{indentationString}{item.Name}:", obfuscatedFields, indentation, excludedFields));
+                    sb.AppendLine(enumProp.ToListCliString($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}:", obfuscatedFields, indentation, excludedFields));
                 }
                 else
                 {
-                    sb.AppendLine($"{indentationString}{item.Name}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
+                    sb.AppendLine($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
                 }
             }
 
             return sb.ToString();
         }
 
-        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0, string[] excludedFields = null)
+        public static string ToListCliString(this IEnumerable list, string openingLine = "", string[] obfuscatedFields = null, int indentation = 0, string[] excludedFields = null, Dictionary<string, string> nameDictionary = null)
         {
             var sb = new StringBuilder(openingLine);
             sb.AppendLine();
@@ -65,7 +65,7 @@ namespace Polyrific.Catapult.Cli.Extensions
             foreach (var listitem in list)
             {
                 empty = false;
-                sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1, excludedFields));
+                sb.Append(listitem.ToCliString("", obfuscatedFields, indentation + 1, excludedFields, nameDictionary));
             }
             
             if (empty)
@@ -101,6 +101,11 @@ namespace Polyrific.Catapult.Cli.Extensions
         private static string GetDisplayValue(string name, string value, string[] obfuscatedFields)
         {
             return !string.IsNullOrEmpty(value) && (obfuscatedFields?.Contains(name) ?? false) ? "****" : value;
+        }
+
+        private static string GetDisplayName(string name, Dictionary<string, string> nameDictionary)
+        {
+            return (nameDictionary?.ContainsKey(name) ?? false) ? nameDictionary[name] : name;
         }
     }
 }

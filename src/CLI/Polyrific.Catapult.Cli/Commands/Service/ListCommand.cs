@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
@@ -29,6 +30,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                 {
                     "Config",
                     "ExternalServiceTypeId"
+                }, nameDictionary: new Dictionary<string, string>
+                {
+                    {"Config", "Properties"}
                 });
 
             return message;

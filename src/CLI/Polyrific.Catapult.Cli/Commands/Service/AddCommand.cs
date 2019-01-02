@@ -107,6 +107,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                     message = service.ToCliString($"External service has been added:", secretProperties.ToArray(), excludedFields: new string[]
                     {
                         "ExternalServiceTypeId"
+                    }, nameDictionary: new Dictionary<string, string>
+                    {
+                        {"Config", "Properties"}
                     });
 
                     Logger.LogInformation(message);

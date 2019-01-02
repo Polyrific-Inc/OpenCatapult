@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
@@ -39,6 +40,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                 message = service.ToCliString($"External Service {Name}:", serviceType?.ExternalServiceProperties?.Where(x => x.IsSecret).Select(x => x.Name).ToArray(), excludedFields: new string[]
                 {
                     "ExternalServiceTypeId"
+                }, nameDictionary: new Dictionary<string, string>
+                {
+                    {"Config", "Properties"}
                 });
             }
             else
