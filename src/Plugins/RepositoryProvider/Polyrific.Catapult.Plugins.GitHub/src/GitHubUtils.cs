@@ -156,7 +156,15 @@ namespace Polyrific.Catapult.Plugins.GitHub
             var repo = new Repository(localRepository);
             try
             {
-                // Push the changes                     
+                var masterBranch = repo.Branches["master"];
+                if (masterBranch.TrackingDetails.CommonAncestor == null)
+                {
+                    _logger.LogInformation("Pushing master branch");
+                    await Task.Run(() => repo.Network.Push(masterBranch, options));
+                }
+
+                // Push the changes      
+                _logger.LogInformation($"Pushing {branch} branch");
                 await Task.Run(() => repo.Network.Push(repo.Branches[branch], options));
 
                 return true;
@@ -178,7 +186,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return Task.FromResult(true);
         }
 
-        public async Task<bool> Commit(string localRepository, string remoteUrl, string baseBranch, string branch, string commitMessage, string author, string email)
+        public Task<bool> Commit(string localRepository, string baseBranch, string branch, string commitMessage, string author, string email)
         {
             try
             {
@@ -206,7 +214,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                         b => b.Remote = remote.Name,
                         b => b.UpstreamBranch = masterBranch.CanonicalName);
 
-                    await Push(remoteUrl, localRepository, baseBranch);
+                    _logger.LogInformation("Repository has been initialized");
                 }
 
                 // checkout base branch
@@ -215,7 +223,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                 if (branch == null)
                 {
                     _logger.LogError($"Base branch {baseBranch} was not found");
-                    return false;
+                    return Task.FromResult(false);
                 }
 
                 if (repo.Head.Commits.FirstOrDefault() != branchObj.Commits.FirstOrDefault())
@@ -237,13 +245,13 @@ namespace Polyrific.Catapult.Plugins.GitHub
                 Commands.Stage(repo, "*");
                 var commit = repo.Commit(commitMessage, signature, signature);
 
-                return commit != null;
+                return Task.FromResult(commit != null);
             }
             catch(Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
-                return false;
+                return Task.FromResult(false);
             }
         }
 

@@ -67,7 +67,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
         public async Task<string> Commit(string baseBranch, string branch, string commitMessage, string author, string email)
         {
-            var success = await _gitHubUtils.Commit(_config.LocalRepository, _config.RemoteUrl, baseBranch, branch, commitMessage, author, email);
+            var success = await _gitHubUtils.Commit(_config.LocalRepository, baseBranch, branch, commitMessage, author, email);
 
             if (success)
             {
