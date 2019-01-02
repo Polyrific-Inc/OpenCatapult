@@ -10,14 +10,15 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 {
     internal class ProgressableStreamContent : HttpContent
     {
-        private const int defaultBufferSize = 4096;
+        private const int DefaultBufferSize = 4096;
+
+        private readonly int bufferSize;
+        private readonly ILogger _logger;
 
         private Stream content;
-        private int bufferSize;
         private bool contentConsumed;
-        private ILogger _logger;
 
-        public ProgressableStreamContent(Stream content, ILogger logger) : this(content, defaultBufferSize, logger) { }
+        public ProgressableStreamContent(Stream content, ILogger logger) : this(content, DefaultBufferSize, logger) { }
 
         public ProgressableStreamContent(Stream content, int bufferSize, ILogger logger)
         {
@@ -31,34 +32,34 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             this._logger = logger;
         }
 
-        protected override Task SerializeToStreamAsync(Stream stream, TransportContext context)
+        protected override async Task SerializeToStreamAsync(Stream stream, TransportContext context)
         {
             Contract.Assert(stream != null);
 
             PrepareContent();
+            
+            var buffer = new Byte[this.bufferSize];
+            var size = content.Length;
+            var uploaded = 0;
+            double percent = 0;
 
-            return Task.Run(() =>
+            _logger.LogInformation("Begin uploading");
+
+            using (content)
             {
-                var buffer = new Byte[this.bufferSize];
-                var size = content.Length;
-                var uploaded = 0;
-                double percent = 0;
+                while (true)
+                {
+                    var length = content.Read(buffer, 0, buffer.Length);
+                    if (length <= 0)
+                        break;
 
-                _logger.LogInformation("Begin uploading");
+                    uploaded += length;
+                    percent = ((double)uploaded / size) * 100;
+                    _logger.LogInformation("{percent:0}% uploaded", percent);
 
-                using (content) while (true)
-                    {
-                        var length = content.Read(buffer, 0, buffer.Length);
-                        if (length <= 0) break;
-
-                        uploaded += length;
-                        percent = ((double)uploaded / size) * 100;
-                        _logger.LogInformation("{percent:00}% uploaded", percent);
-
-                        stream.Write(buffer, 0, length);
-
-                    }
-            });
+                    await stream.WriteAsync(buffer, 0, length);
+                }
+            }
         }
 
         protected override bool TryComputeLength(out long length)

@@ -15,7 +15,10 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         public KuduDeployUtils(ILogger logger)
         {
             _logger = logger;
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient
+            {
+                Timeout = TimeSpan.FromMinutes(15)
+            };
         }
 
         public async Task<bool> ExecuteDeployWebsiteAsync(string url, string username, string password, string artifactLocation)
@@ -33,7 +36,13 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
                     if (result.StatusCode == System.Net.HttpStatusCode.OK)
                         return true;
+                    else
+                        _logger.LogError($"Error: {await result.Content.ReadAsStringAsync()}");
                 }
+            }
+            else
+            {
+                _logger.LogError($"Error: artifact file {artifactLocation} was not found");
             }
 
             return false;
