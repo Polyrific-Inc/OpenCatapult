@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// <param name="name">Name of the plugin (set null if you don't want to search by Name)</param>
         /// <param name="type">Type of the plugin (set null if you don't want to search by Type)</param>
         public PluginFilterSpecification(string name, string type) 
-            : base(m => (name == null || m.Name.Contains(name)) && (type == null || m.Type == type))
+            : base(m => (name == null || m.Name == name) && (type == null || m.Type == type))
         {
             PluginName = name;
             PluginType = type;
