@@ -139,7 +139,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
             return _mainProjectGenerator.UpdateMigrationScript();
         }
 
-        public async Task InitializeRepository()
+        public async Task GenerateRepositoryFiles()
         {
             var readmeFile = Path.Combine(_outputLocation, "README.md");
 
