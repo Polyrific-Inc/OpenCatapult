@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var arg = GetArgString("pre");
+            var arg = GetArgString("pre", null);
             var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PreProcessMustSucceed);
@@ -54,7 +54,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (string.IsNullOrEmpty(prNumber))
                 return new TaskRunnerResult("PR Number was undefined.", !TaskConfig.ContinueWhenError);
 
-            var arg = GetArgString("main");
+            var arg = GetArgString("main", prNumber);
             var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
@@ -78,7 +78,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
-            var arg = GetArgString("post");
+            var arg = GetArgString("post", null);
             var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PostProcessMustSucceed);
@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return new TaskRunnerResult(true, "");
         }
 
-        private (string argString, string securedArgString) GetArgString(string process)
+        private (string argString, string securedArgString) GetArgString(string process, string prNumber)
         {
             var dict = new Dictionary<string, object>
             {
@@ -95,6 +95,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 {"mergeconfig", TaskConfig},
                 {"additional", AdditionalConfigs}
             };
+
+            if (!string.IsNullOrEmpty(prNumber))
+                dict.Add("prnumber", prNumber);
 
             var argString = JsonConvert.SerializeObject(dict);
 

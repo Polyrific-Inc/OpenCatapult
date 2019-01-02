@@ -45,7 +45,8 @@ namespace Polyrific.Catapult.Engine.Core
                 CatapultEngineVersion = job.CatapultEngineVersion,
                 JobTasksStatus = job.JobTasksStatus,
                 JobType = job.JobType,
-                Status = job.Status
+                Status = job.Status,
+                OutputValues = job.OutputValues
             });
 
             var orderedJobTasks = jobTasks.OrderBy(t => t.Sequence).ToList();
