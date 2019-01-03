@@ -22,54 +22,62 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
         public async Task<(string, string)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString)
         {
-            var hostLocation = "";
-
-            var website = _azureUtils.GetWebsite(subscriptionId, resourceGroupName, appServiceName);
-            if (website == null)
+            try
             {
-                var error = $"Website {appServiceName} is not found in {resourceGroupName}";
-                _logger.LogError(error);
-                return (hostLocation, error);
-            }
-            
-            _logger.LogDebug("Deploying artifact to Azure App Service.");
+                var hostLocation = "";
 
-
-            if (!string.IsNullOrEmpty(deploymentSlot))
-            {
-                var slot = _azureUtils.GetSlot(website, deploymentSlot) ?? _azureUtils.CreateSlot(website, deploymentSlot);
-
-                if (!string.IsNullOrEmpty(connectionString))
-                    _azureUtils.SetConnectionString(slot, "DefaultConnection", connectionString);
-
-                var publishProfile = _azureUtils.GetPublishingProfile(slot);
-                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
+                var website = _azureUtils.GetWebsite(subscriptionId, resourceGroupName, appServiceName);
+                if (website == null)
                 {
-                    var error = $"Failed to deploy website to {appServiceName}-{deploymentSlot}.";
+                    var error = $"Website {appServiceName} is not found in {resourceGroupName}";
                     _logger.LogError(error);
                     return (hostLocation, error);
                 }
 
-                hostLocation = slot.DefaultHostName;
-            }
-            else
-            {
-                var publishProfile = _azureUtils.GetPublishingProfile(website);
+                _logger.LogDebug("Deploying artifact to Azure App Service.");
 
-                if (!string.IsNullOrEmpty(connectionString))
-                    _azureUtils.SetConnectionString(website, "DefaultConnection", connectionString);
 
-                if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
+                if (!string.IsNullOrEmpty(deploymentSlot))
                 {
-                    var error = $"Failed to deploy website to {appServiceName}.";
-                    _logger.LogError(error);
-                    return (hostLocation, error);
+                    var slot = _azureUtils.GetSlot(website, deploymentSlot) ?? _azureUtils.CreateSlot(website, deploymentSlot);
+
+                    if (!string.IsNullOrEmpty(connectionString))
+                        _azureUtils.SetConnectionString(slot, "DefaultConnection", connectionString);
+
+                    var publishProfile = _azureUtils.GetPublishingProfile(slot);
+                    if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
+                    {
+                        var error = $"Failed to deploy website to {appServiceName}-{deploymentSlot}.";
+                        _logger.LogError(error);
+                        return (hostLocation, error);
+                    }
+
+                    hostLocation = slot.DefaultHostName;
+                }
+                else
+                {
+                    var publishProfile = _azureUtils.GetPublishingProfile(website);
+
+                    if (!string.IsNullOrEmpty(connectionString))
+                        _azureUtils.SetConnectionString(website, "DefaultConnection", connectionString);
+
+                    if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
+                    {
+                        var error = $"Failed to deploy website to {appServiceName}.";
+                        _logger.LogError(error);
+                        return (hostLocation, error);
+                    }
+
+                    hostLocation = website.DefaultHostName;
                 }
 
-                hostLocation = website.DefaultHostName;
+                return (hostLocation, "");
             }
-
-            return (hostLocation, "");
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return (null, ex.Message);
+            }
         }
     }
 }

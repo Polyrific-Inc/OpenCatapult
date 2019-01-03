@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
+using System.Net.Http;
 using System.Threading;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Microsoft.Azure.Management.Fluent;
@@ -105,7 +106,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
                 {
                     returnValue = function();
                 }
-                catch (Exception ex)
+                catch (HttpRequestException ex)
                 {
                     _logger.LogError(ex, ex.Message);
                     _logger.LogInformation($"Connection attempt {attempt} failed");
