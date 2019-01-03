@@ -85,5 +85,10 @@ namespace Polyrific.Catapult.Engine.Core
         /// Skip the next process?
         /// </summary>
         public bool StopTheProcess { get; set; }
+
+        /// <summary>
+        /// The remarks for the next process that will be stopped
+        /// </summary>
+        public string StopRemarks { get; set; }
     }
 }

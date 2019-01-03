@@ -64,6 +64,7 @@ namespace Polyrific.Catapult.Plugins.GitHub.UnitTests
             var result = await provider.Push();
 
             Assert.Equal(remoteUrl, result.remoteUrl);
+            Assert.Equal("https://github.com/polyrific-inc/opencatapult/pull/100", result.pullRequestUrl);
             Assert.Equal("100", result.outputValues["PRNumber"]);
             Assert.Equal("", result.errorMessage);
         }

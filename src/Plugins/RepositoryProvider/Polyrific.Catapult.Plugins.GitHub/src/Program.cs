@@ -56,7 +56,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return (cloneLocation, null, "");
         }
 
-        public override async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push()
+        public override async Task<(string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage)> Push()
         {
             var repoConfig = GetGitAutomationConfig(PushTaskConfig.SourceLocation ?? PushTaskConfig.WorkingLocation, PushTaskConfig.Repository, AdditionalConfigs);
 
@@ -68,14 +68,15 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
             var commitError = await _gitAutomation.Commit(baseBranch, workingBranch, PushTaskConfig.CommitMessage ?? DefaultCommitMessage, PushTaskConfig.Author ?? DefaultAuthor, PushTaskConfig.Email ?? DefaultEmail);
             if (!string.IsNullOrEmpty(commitError))
-                return ("", null, commitError);
+                return ("", "", null, commitError);
 
             var error = await _gitAutomation.Push(workingBranch);
             if (!string.IsNullOrEmpty(error))
-                return ("", null, error);
+                return ("", "", null, error);
 
             Dictionary<string, string> outputValues = null;
 
+            string pullRequestUrl = "";
             if (PushTaskConfig.CreatePullRequest)
             {
                 var prNumber = await _gitAutomation.SubmitPullRequest(workingBranch, baseBranch);
@@ -85,10 +86,12 @@ namespace Polyrific.Catapult.Plugins.GitHub
                     {
                         {"PRNumber", prNumber.ToString()}
                     };
+
+                    pullRequestUrl = $"{repoConfig.RemoteUrl.TrimEnd('/')}/pull/{prNumber}";
                 }
             }
 
-            return (repoConfig.RemoteUrl, outputValues, "");
+            return (repoConfig.RemoteUrl, pullRequestUrl, outputValues, "");
         }
 
         public override async Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Merge()

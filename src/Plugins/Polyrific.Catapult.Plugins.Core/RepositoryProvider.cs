@@ -93,8 +93,9 @@ namespace Polyrific.Catapult.Plugins.Core
                             result.Add("errorMessage", error);
                         break;
                     case "main":
-                        (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
+                        (string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
                         result.Add("remoteUrl", remoteUrl);
+                        result.Add("pullRequestUrl", pullRequestUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -105,10 +106,11 @@ namespace Polyrific.Catapult.Plugins.Core
                         break;
                     default:
                         await BeforePush();
-                        (remoteUrl, outputValues, errorMessage) = await Push();
+                        (remoteUrl, pullRequestUrl, outputValues, errorMessage) = await Push();
                         await AfterPush();
 
                         result.Add("remoteUrl", remoteUrl);
+                        result.Add("pullRequestUrl", pullRequestUrl);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -216,7 +218,7 @@ namespace Polyrific.Catapult.Plugins.Core
         /// Push the code to remote repository
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string remoteUrl, Dictionary<string, string> outputValues, string errorMessage)> Push();
+        public abstract Task<(string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage)> Push();
 
         /// <summary>
         /// Process to run after executing Push repository

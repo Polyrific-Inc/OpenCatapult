@@ -61,7 +61,17 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
             // stop the next process if we're creating a pull request
-            return new TaskRunnerResult(true, remoteUrl, outputValues, TaskConfig.CreatePullRequest);
+            var taskRunnerResult = new TaskRunnerResult(true, remoteUrl, outputValues, TaskConfig.CreatePullRequest);
+            if (TaskConfig.CreatePullRequest)
+            {
+                var prUrl = "";
+                if (result.ContainsKey("pullRequestUrl"))
+                    prUrl = result["pullRequestUrl"].ToString();
+
+                taskRunnerResult.StopRemarks = prUrl;
+            }
+
+            return taskRunnerResult;
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

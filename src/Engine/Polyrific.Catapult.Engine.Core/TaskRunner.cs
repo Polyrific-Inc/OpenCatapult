@@ -129,10 +129,12 @@ namespace Polyrific.Catapult.Engine.Core
                     {
                         _logger.LogInformation("[Queue {Code}] Execution of {Type} require the job to be halted. Run the restart command in order to restart the job", job.Code, jobTask.Type);
                         jobTaskStatus.Status = JobTaskStatusType.Success;
+                        jobTaskStatus.Remarks = result.ReturnValue;
 
                         int currentTaskStatusIdx = job.JobTasksStatus.IndexOf(jobTaskStatus);
                         var nextTaskStatus = currentTaskStatusIdx == job.JobTasksStatus.Count - 1 ? null : job.JobTasksStatus[currentTaskStatusIdx + 1];
                         nextTaskStatus.Status = JobTaskStatusType.Pending;
+                        nextTaskStatus.Remarks = result.StopRemarks;
                         break;
                     }
 
