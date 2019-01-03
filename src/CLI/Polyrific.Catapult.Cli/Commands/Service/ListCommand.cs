@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
 
             message = services.ToListCliString($"Found {services.Count} external service(s):", excludedFields: new string[]
                 {
-                    "Config",
+                    "Properties",
                     "ExternalServiceTypeId"
                 }, nameDictionary: new Dictionary<string, string>
                 {
