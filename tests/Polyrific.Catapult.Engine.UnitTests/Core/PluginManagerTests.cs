@@ -105,6 +105,31 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         }
 
         [Fact]
+        public async void RefreshPlugin_Exe_PluginLoaded()
+        {
+            var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.2");
+
+            if (Directory.Exists(workingLocation))
+                Directory.Delete(workingLocation, true);
+
+            Directory.CreateDirectory(workingLocation);
+
+            var pluginName = "Polyrific.Catapult.Plugins.TestPlugin";
+            var pluginType = "TestPlugin";
+            var publishLocation = Path.Combine(workingLocation, "publish");
+
+            _engineConfig.SetupGet(e => e.PluginsLocation).Returns(publishLocation);
+
+            await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation, "net461");
+            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
+            pluginManager.RefreshPlugins();
+
+            var newPlugin = pluginManager.GetPlugin(pluginType, pluginName);
+            Assert.NotNull(newPlugin);
+            Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.exe"), newPlugin.StartFilePath);
+        }
+
+        [Fact]
         public async void InvokeTaskProvider_Success()
         {
             _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
@@ -118,6 +143,23 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
             var result = await pluginManager.InvokeTaskProvider("path/to/plugin.dll", "plugin args");
+            Assert.Equal("success", result["output"]);
+        }
+
+        [Fact]
+        public async void InvokeTaskProvider_Exe_Success()
+        {
+            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
+            {
+                StartInfo = startInfo
+            });
+            _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
+                .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("[OUTPUT] {\"output\":\"success\"}\n[LOG][Information]Logged"))));
+            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+                .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
+
+            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
+            var result = await pluginManager.InvokeTaskProvider("path/to/plugin.exe", "plugin args");
             Assert.Equal("success", result["output"]);
         }
 
@@ -139,17 +181,21 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         }
 
         #region Private methods
-        private async Task GenerateTestPlugin(string pluginName, string pluginType, string outputLocation, string publishLocation)
+        private async Task GenerateTestPlugin(string pluginName, string pluginType, string outputLocation, string publishLocation, string framework = null)
         {
             var projectFile = Path.Combine(outputLocation, $"{pluginName}.csproj");
-            var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.Plugins.Core.dll");
-            await Execute("dotnet", $"new console -n {pluginName} -o \"{outputLocation}\"");
-            AddDllReference(projectFile, pluginCoreDll);
+            var newProjectArgs = $"new console -n {pluginName} -o \"{outputLocation}\"";
+
+            if (!string.IsNullOrEmpty(framework))
+                newProjectArgs += $" --target-framework-override {framework}";
+
+            await Execute("dotnet", newProjectArgs);
+            SetLangVersion(projectFile);
+            await Execute("dotnet", $"add \"{projectFile}\" package Polyrific.Catapult.Plugins.Core");
             WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
-            
+
             await Execute("dotnet", $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release");
         }
-
 
         private void WriteDummyPlugin(string programFile, string pluginName, string pluginType)
         {
@@ -192,7 +238,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             File.WriteAllText(programFile, sb.ToString());
         }
                
-        private void AddDllReference(string projectFile, string dllFile)
+        private void SetLangVersion(string projectFile)
         {
             var updatedContent = new StringBuilder();
             using (var reader = new StreamReader(projectFile))
@@ -202,14 +248,6 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 {
                     switch (line.Trim())
                     {
-                        case "</Project>":
-                            updatedContent.AppendLine("<ItemGroup>");
-                            updatedContent.AppendLine($" <Reference Include=\"{Path.GetFileNameWithoutExtension(dllFile)}\">");
-                            updatedContent.AppendLine($"    <HintPath>{dllFile}</HintPath>");
-                            updatedContent.AppendLine("  </Reference>");
-                            updatedContent.AppendLine("</ItemGroup>");
-                            updatedContent.AppendLine(line);
-                            break;
                         case "<OutputType>Exe</OutputType>":
                             updatedContent.AppendLine(line);
                             updatedContent.AppendLine("<LangVersion>7.1</LangVersion>");
