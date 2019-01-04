@@ -637,36 +637,44 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
             {
                 while ((line = reader.ReadLine()) != null)
                 {
-                    switch (line.Trim())
+                    var trimmedLine = line.Trim();
+
+                    if (trimmedLine.StartsWith("<ul"))
                     {
-                        case "<ul class=\"nav navbar-nav\">":
-                            isNavBlock = true;
-                            updatedContent.AppendLine(line);
-                            break;
-                        case "</ul>":
-                            isNavBlock = false;
-                            updatedContent.AppendLine("                    <li><a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a></li>");
-                            foreach (var model in _models)
-                                updatedContent.AppendLine($"                    <li><a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
+                        isNavBlock = true;
+                        updatedContent.AppendLine(line);
+                    }
+                    else if (trimmedLine == "</ul>")
+                    {
+                        isNavBlock = false;
+                        updatedContent.AppendLine("                    <li><a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a></li>");
+                        foreach (var model in _models)
+                            updatedContent.AppendLine($"                    <li><a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
 
-                            updatedContent.AppendLine(line);
+                        updatedContent.AppendLine(line);
 
-                            updatedContent.AppendLine("<partial name=\"_LoginPartial\" />");
-                            break;
-                        case "<footer>":
-                            isFooterBlock = true;
+                        updatedContent.AppendLine("<partial name=\"_LoginPartial\" />");
+                    }
+                    else if (trimmedLine == "<partial name=\"_LoginPartial\" />")
+                    {
+                        // skip this line as it should have been readded in the nav section
+                    }
+                    else if (trimmedLine.StartsWith("<footer"))
+                    {
+                        isFooterBlock = true;
+                        updatedContent.AppendLine(line);
+                    }
+                    else if (trimmedLine == "</footer>")
+                    {
+                        isFooterBlock = false;
+                        updatedContent.AppendLine($"<p class=\"pull-left\">&copy; {DateTime.Today.Year} - {_projectName}</p>");
+                        updatedContent.AppendLine($"<p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+                        updatedContent.AppendLine(line);
+                    }
+                    else
+                    {
+                        if (!isNavBlock && !isFooterBlock)
                             updatedContent.AppendLine(line);
-                            break;
-                        case "</footer>":
-                            isFooterBlock = false;
-                            updatedContent.AppendLine($"<p class=\"pull-left\">&copy; {DateTime.Today.Year} - {_projectName}</p>");
-                            updatedContent.AppendLine($"<p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
-                            updatedContent.AppendLine(line);
-                            break;
-                        default:
-                            if (!isNavBlock && !isFooterBlock)
-                                updatedContent.AppendLine(line);
-                            break;
                     }
                 }
             }
