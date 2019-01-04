@@ -72,5 +72,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// JSON string of the output values
         /// </summary>
         public string OutputValues { get; set; }
+
+        /// <summary>
+        /// Remarks related to the job
+        /// </summary>
+        public string Remarks { get; set; }
     }
 }

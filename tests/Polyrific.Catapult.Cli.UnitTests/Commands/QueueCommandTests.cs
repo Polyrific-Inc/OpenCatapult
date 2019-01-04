@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     public class QueueCommandTests
     {
         private readonly IConsole _console;
+        private readonly ITestOutputHelper _output;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
@@ -58,6 +59,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
+            _output = output;
             _console = new TestConsole(output);
             _projectService = new Mock<IProjectService>();
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
@@ -270,6 +272,84 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.Equal("Failed to restart queue 2. Make sure the project name and queue number are correct.", resultMessage);
+        }
+
+        [Fact]
+        public void QueueCancel_Execute_ReturnsSuccessMessage()
+        {
+            _jobQueueService.Setup(s => s.GetJobQueue(It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync((int projectId, int queueId) =>
+                new JobDto
+                {
+                    Id = 1,
+                    ProjectId = 1,
+                    Status = JobStatus.Processing,
+                    CatapultEngineId = "1"
+                });
+
+            var console = new TestConsole(_output, "y");
+            var command = new CancelCommand(console, LoggerMock.GetLogger<CancelCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 1",
+                Number = "1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Queue 1 has been cancelled successfully", resultMessage);
+        }
+
+        [Fact]
+        public void QueueCancel_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new CancelCommand(_console, LoggerMock.GetLogger<CancelCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 1",
+                Number = "2"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to cancel queue 2. Make sure the project name and queue number are correct.", resultMessage);
+        }
+
+        [Fact]
+        public void QueueCancel_Execute_CannotCancel()
+        {
+            var command = new CancelCommand(_console, LoggerMock.GetLogger<CancelCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 1",
+                Number = "1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Cannot cancel queue 1 with status QUEUED", resultMessage);
+        }
+
+        [Fact]
+        public void QueueCancel_Execute_NotContinueCancel()
+        {
+            _jobQueueService.Setup(s => s.GetJobQueue(It.IsAny<int>(), It.IsAny<int>()))
+                .ReturnsAsync((int projectId, int queueId) =>
+                new JobDto
+                {
+                    Id = 1,
+                    ProjectId = 1,
+                    Status = JobStatus.Processing,
+                    CatapultEngineId = "1"
+                });
+
+            var console = new TestConsole(_output, "n");
+            var command = new CancelCommand(console, LoggerMock.GetLogger<CancelCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 1",
+                Number = "1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Empty(resultMessage);
         }
     }
 }

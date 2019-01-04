@@ -75,5 +75,10 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         /// Output values of the job
         /// </summary>
         public Dictionary<string, string> OutputValues { get; set; }
+
+        /// <summary>
+        /// Remarks related to the job
+        /// </summary>
+        public string Remarks { get; set; }
     }
 }

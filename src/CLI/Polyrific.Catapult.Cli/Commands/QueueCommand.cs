@@ -12,6 +12,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand("log", typeof(LogCommand))]
     [Subcommand("list", typeof(ListCommand))]
     [Subcommand("restart", typeof(RestartCommand))]
+    [Subcommand("cancel", typeof(CancelCommand))]
     public class QueueCommand : BaseCommand
     {
         public QueueCommand(IConsole console, ILogger<QueueCommand> logger) : base(console, logger)
