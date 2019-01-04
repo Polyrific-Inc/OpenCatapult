@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
         [Option("-n|--number <NUMBER>", "Queue number", CommandOptionType.SingleValue)]
         public string Number { get; set; }
 
-        [Option("-r|--reason <NUMBER>", "Cancellation Reason", CommandOptionType.SingleValue)]
+        [Option("-r|--reason <REASON>", "Cancellation Reason", CommandOptionType.SingleValue)]
         public string Reason { get; set; }
 
         public override string Execute()
