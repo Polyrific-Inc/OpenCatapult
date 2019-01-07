@@ -11,8 +11,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
         /// </summary>
         /// <param name="dataProject">The --project option</param>
         /// <param name="startupProject">The --startup-project option</param>
-        /// <param name="configuration">The --configuration option</param>
         /// <returns></returns>
-        Task<string> Update(string dataProject, string startupProject, string configuration = "Debug");
+        Task<string> Update(string dataProject, string startupProject);
     }
 }

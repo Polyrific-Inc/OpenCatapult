@@ -13,11 +13,6 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
-  - name: Configuration
-    label: Configuration
-    type: string
-    is-required: false
-    is-secret: false
   - name: ConnectionString
     label: ConnectionString
     type: string

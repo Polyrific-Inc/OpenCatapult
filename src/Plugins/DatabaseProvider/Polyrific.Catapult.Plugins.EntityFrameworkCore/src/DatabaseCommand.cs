@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             _connectionString = connectionString;
         }
 
-        public async Task<string> Update(string dataProject, string startupProject, string configuration = "Debug")
+        public async Task<string> Update(string dataProject, string startupProject)
         {
             var pathToEfDll = GetPathToEfDll();
             if (string.IsNullOrEmpty(pathToEfDll))

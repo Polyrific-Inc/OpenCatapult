@@ -50,10 +50,6 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             if (!Path.IsPathRooted(dataProjectPath))
                 dataProjectPath = Path.Combine(Config.WorkingLocation, dataProjectPath);
 
-            var buildConfiguration = "Release";
-            if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("Configuration") && !string.IsNullOrEmpty(AdditionalConfigs["Configuration"]))
-                buildConfiguration = AdditionalConfigs["Configuration"];
-
             string connectionString = "";
             if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("ConnectionString") && !string.IsNullOrEmpty(AdditionalConfigs["ConnectionString"]))
                 connectionString = AdditionalConfigs["ConnectionString"];
@@ -61,7 +57,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             if (_databaseCommand == null)
                 _databaseCommand = new DatabaseCommand(Logger, connectionString);
 
-            var error = await _databaseCommand.Update(dataProjectPath, startupProjectPath, buildConfiguration);
+            var error = await _databaseCommand.Update(dataProjectPath, startupProjectPath);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
             
