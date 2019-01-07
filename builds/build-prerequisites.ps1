@@ -7,7 +7,7 @@ $currentSdkVersion = dotnet --version
 
 if ([System.Version]$currentSdkVersion -lt $dotnetSdkVersion) {
     Write-Output "You need to install dotnet SDK version $dotnetSdkVersion."
-    Write-Host "Please run this command in an elevated shell: .\dotnet-install.ps1 -Channel 2.1 -InstallDir `$env:ProgramFiles\dotnet"
+    Write-Host "Please run this command in an elevated shell: .\builds\dotnet-install.ps1 -Channel 2.1 -InstallDir `$env:ProgramFiles\dotnet"
 
     $allGood = $false
 }
