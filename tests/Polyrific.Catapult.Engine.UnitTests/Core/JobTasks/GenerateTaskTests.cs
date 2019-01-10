@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"outputLocation", "good-result"}
+                    {"outputLocation", "c:\\test"}
                 });
 
             var config = new Dictionary<string, string>();
@@ -95,7 +95,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("The code is generated in: c:\\test", result.ReturnValue);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"outputLocation", "good-result"}
+                    {"outputLocation", "c:\\test"}
                 });
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
@@ -171,7 +171,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("The code is generated in: c:\\test", result.ReturnValue);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

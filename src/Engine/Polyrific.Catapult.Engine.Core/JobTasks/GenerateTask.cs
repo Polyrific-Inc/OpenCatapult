@@ -68,15 +68,15 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            var outputLocation = "";
+            var returnValue = "";
             if (result.ContainsKey("outputLocation"))
-                outputLocation = result["outputLocation"].ToString();
+                returnValue = $"The code is generated in: {result["outputLocation"].ToString()}";
             
             var outputValues = new Dictionary<string, string>();
             if (result.ContainsKey("outputValues"))
                 outputValues = result["outputValues"] as Dictionary<string, string>;
             
-            return new TaskRunnerResult(true, outputLocation, outputValues);
+            return new TaskRunnerResult(true, returnValue, outputValues);
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

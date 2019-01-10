@@ -73,10 +73,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"remoteUrl", "good-result"}
+                    {"remoteUrl", "http://github.com/test/test"},
+                    {"pullRequestUrl", "http://github.com/test/test/pull/1"}
                 });
 
-            var config = new Dictionary<string, string>();
+            var config = new Dictionary<string, string>()
+            {
+                { "CreatePullRequest", "true" }
+            };
                         
             var task = new PushTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
@@ -85,7 +89,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
         }
 
         [Fact]
@@ -130,7 +135,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"remoteUrl", "good-result"}
+                    {"remoteUrl", "http://github.com/test/test"},
+                    {"pullRequestUrl", "http://github.com/test/test/pull/1"}
                 });
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
@@ -147,7 +153,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>
             {
-                { "GitHubExternalService", "github-test" }
+                { "GitHubExternalService", "github-test" },
+                { "CreatePullRequest", "true" }
             };
 
             var task = new PushTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
@@ -161,7 +168,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

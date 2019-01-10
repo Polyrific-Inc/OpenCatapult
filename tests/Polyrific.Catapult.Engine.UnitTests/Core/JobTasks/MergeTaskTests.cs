@@ -74,7 +74,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"remoteUrl", "good-result"}
+                    {"remoteUrl", "http://github.com/test/test"}
                 });
 
             var config = new Dictionary<string, string>();
@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string> {{"PRNumber", "1"}});
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.ReturnValue);
         }
 
         [Fact]
@@ -146,7 +146,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"remoteUrl", "good-result"}
+                    {"remoteUrl", "http://github.com/test/test"}
                 });
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
@@ -177,7 +177,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string> { { "PRNumber", "1" } });
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("good-result", result.ReturnValue);
+            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.ReturnValue);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);
