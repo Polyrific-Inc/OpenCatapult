@@ -160,8 +160,8 @@ namespace Polyrific.Catapult.Engine.Core
                 {
                     if (!string.IsNullOrEmpty(securedPluginArgs))
                     {
-                        Console.WriteLine($"[Master] Command: {fileName} {securedArguments}");
-                        _logger.LogDebug($"[Master] Command: {fileName} {securedArguments}");
+                        Console.WriteLine($"[PluginManager] Command: {fileName} {securedArguments}");
+                        _logger.LogDebug($"[PluginManager] Command: {fileName} {securedArguments}");
                     }                        
 
                     var reader = _pluginProcess.GetStandardOutput(process);
