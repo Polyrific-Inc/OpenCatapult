@@ -31,4 +31,4 @@ if (!$noConfig) {
     }
 }
 
-Write-Output "CLI is ready. Please run: dotnet $cliDll [command] [options]"
+Write-Output "CLI is ready. You can start exploring available commands by running: dotnet ""$cliDll"" --help"
