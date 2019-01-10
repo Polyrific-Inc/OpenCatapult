@@ -84,12 +84,22 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
         public IWebAppBase SetConnectionString(IWebAppBase deployTarget, string connectionStringName, string connectionString)
         {
+            _logger.LogInformation("Setting connection string...");
+            IWebAppBase web;
             if (deployTarget is IWebApp webApp)
-                return ExecuteWithRetry(() => webApp.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
+                web = ExecuteWithRetry(() => webApp.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
             else if (deployTarget is IDeploymentSlot slot)
-                return ExecuteWithRetry(() => slot.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
+                web = ExecuteWithRetry(() => slot.Update().WithConnectionString(connectionStringName, connectionString, Microsoft.Azure.Management.AppService.Fluent.Models.ConnectionStringType.Custom).Apply());
             else
-                return null;
+                web = null;
+
+            var connStrings = web?.GetConnectionStrings();
+            if (connStrings == null || !connStrings.ContainsKey(connectionStringName))
+            {
+                throw new Exception("Failed setting connection string. Please check for the user permission");
+            }
+
+            return web;
         }
 
         #region Private Methods
