@@ -159,7 +159,10 @@ namespace Polyrific.Catapult.Engine.Core
                 if (process != null)
                 {
                     if (!string.IsNullOrEmpty(securedPluginArgs))
+                    {
                         Console.WriteLine($"[Master] Command: {fileName} {securedArguments}");
+                        _logger.LogDebug("[Master] Command: {fileName} {securedArguments}", fileName, securedArguments);
+                    }                        
 
                     var reader = _pluginProcess.GetStandardOutput(process);
                     while (!reader.EndOfStream)
