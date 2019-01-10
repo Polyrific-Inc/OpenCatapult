@@ -93,7 +93,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             else
                 web = null;
 
-            var connStrings = web?.GetConnectionStrings();
+            var connStrings = ExecuteWithRetry(() => web?.GetConnectionStrings());
             if (connStrings == null || !connStrings.ContainsKey(connectionStringName))
             {
                 throw new Exception("Failed setting connection string. Please check for the user permission");
