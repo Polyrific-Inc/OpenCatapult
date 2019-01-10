@@ -40,7 +40,14 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             if (!string.IsNullOrEmpty(result.error))
                 return result.error;
             else if (!result.output.EndsWith("Done.\r\n"))
-                return "Failed updating database";
+            {
+                // get the last line of the log to get the error detail
+                var errorDetail = GetErrorInOutput(result.output);
+                if (!string.IsNullOrEmpty(errorDetail))
+                    return errorDetail;
+                else
+                    return "Failed updating database";
+            }                
             else
                 return "";
         }
@@ -94,6 +101,13 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             }
 
             return null;
+        }
+
+        private string GetErrorInOutput(string output)
+        {
+            var result = output.TrimEnd('\r', '\n');
+
+            return result.Split('\n').LastOrDefault();
         }
     }
 }
