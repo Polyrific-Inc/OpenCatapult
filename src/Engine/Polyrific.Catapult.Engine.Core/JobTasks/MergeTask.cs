@@ -64,7 +64,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("remoteUrl"))
             {
                 remoteUrl = result["remoteUrl"].ToString();
-                taskRemarks = $"The PR #{prNumber} has been merged in {remoteUrl}";
+                taskRemarks = $"Pull request #{prNumber} has been merged";
             }
 
             var outputValues = new Dictionary<string, string>();
