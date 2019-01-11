@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("testResultLocation"))
             {
                 testResultLocation = result["testResultLocation"].ToString();
-                taskRemarks = $"The test result is available in: {testResultLocation}";
+                taskRemarks = $"The test result is located at {testResultLocation}";
             }
 
             var outputValues = new Dictionary<string, string>();

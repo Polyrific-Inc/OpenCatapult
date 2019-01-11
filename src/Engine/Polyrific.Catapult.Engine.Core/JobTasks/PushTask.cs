@@ -76,7 +76,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 if (result.ContainsKey("pullRequestUrl"))
                     prUrl = result["pullRequestUrl"].ToString();
 
-                taskRunnerResult.StopRemarks = $"Pull request has been created: {prUrl}";
+                taskRunnerResult.StopRemarks = $"A pull request has been submitted to {prUrl}. Please review it, and restart this queue when it's ready to be merged";
             }
 
             return taskRunnerResult;

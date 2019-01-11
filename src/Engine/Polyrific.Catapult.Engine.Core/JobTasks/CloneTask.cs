@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("cloneLocation"))
             {
                 cloneLocation = result["cloneLocation"].ToString();
-                taskRemarks = $"The repository has been cloned in: {cloneLocation}";
+                taskRemarks = $"The repository has been cloned to {cloneLocation}";
             }                
 
             var outputValues = new Dictionary<string, string>();

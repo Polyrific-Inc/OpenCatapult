@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("storageLocation"))
             {
                 storageLocation = result["storageLocation"].ToString();
-                taskRemarks = $"The data has been stored in: {storageLocation}";
+                taskRemarks = $"The downloaded build artifact is located at {storageLocation}";
             }
 
             var outputValues = new Dictionary<string, string>();

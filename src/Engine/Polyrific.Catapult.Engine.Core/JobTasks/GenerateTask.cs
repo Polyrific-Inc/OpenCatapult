@@ -73,7 +73,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("outputLocation"))
             {
                 outputLocation = result["outputLocation"].ToString();
-                taskRemarks = $"The code is generated in: {outputLocation}";
+                taskRemarks = $"The generated code is located at {outputLocation}";
             }
             
             var outputValues = new Dictionary<string, string>();

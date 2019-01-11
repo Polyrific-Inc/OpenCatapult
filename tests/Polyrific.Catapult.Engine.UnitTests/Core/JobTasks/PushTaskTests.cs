@@ -91,7 +91,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             Assert.True(result.IsSuccess);
             Assert.Equal("http://github.com/test/test", result.ReturnValue);
             Assert.Equal("Changes has been pushed into http://github.com/test/test", result.TaskRemarks);
-            Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
+            Assert.Equal("A pull request has been submitted to http://github.com/test/test/pull/1. Please review it, and restart this queue when it's ready to be merged", result.StopRemarks);
         }
 
         [Fact]
@@ -171,7 +171,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             Assert.True(result.IsSuccess);
             Assert.Equal("http://github.com/test/test", result.ReturnValue);
             Assert.Equal("Changes has been pushed into http://github.com/test/test", result.TaskRemarks);
-            Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
+            Assert.Equal("A pull request has been submitted to http://github.com/test/test/pull/1. Please review it, and restart this queue when it's ready to be merged", result.StopRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

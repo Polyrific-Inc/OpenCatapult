@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             Assert.True(result.IsSuccess);
             Assert.Equal("c:\\test", result.ReturnValue);
-            Assert.Equal("The data has been stored in: c:\\test", result.TaskRemarks);
+            Assert.Equal("The downloaded build artifact is located at c:\\test", result.TaskRemarks);
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             Assert.True(result.IsSuccess);
             Assert.Equal("c:\\test", result.ReturnValue);
-            Assert.Equal("The data has been stored in: c:\\test", result.TaskRemarks);
+            Assert.Equal("The downloaded build artifact is located at c:\\test", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

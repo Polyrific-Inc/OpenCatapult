@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("outputArtifact"))
             {
                 outputArtifact = result["outputArtifact"].ToString();
-                taskRemarks = $"The code is published in: {outputArtifact}";
+                taskRemarks = $"The build artifact is located at {outputArtifact}";
             }
 
             var outputValues = new Dictionary<string, string>();
