@@ -1,6 +1,0 @@
-name: 'GitHubRepositoryProvider'
-type: 'RepositoryProvider'
-author: 'Polyrific'
-version: '1.0'
-required-services:
-  - GitHub
