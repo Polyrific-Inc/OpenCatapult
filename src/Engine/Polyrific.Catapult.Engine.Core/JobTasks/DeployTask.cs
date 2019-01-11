@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("hostLocation"))
             {
                 hostLocation = result["hostLocation"].ToString();
-                taskRemarks = $"The code has been deployed in {hostLocation}";
+                taskRemarks = $"The code has been deployed to {hostLocation}";
             }
 
             var outputValues = new Dictionary<string, string>();

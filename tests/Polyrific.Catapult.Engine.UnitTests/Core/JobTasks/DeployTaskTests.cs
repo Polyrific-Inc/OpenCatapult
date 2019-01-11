@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             Assert.True(result.IsSuccess);
             Assert.Equal("https://test.azurewebsites.net", result.ReturnValue);
-            Assert.Equal("The code has been deployed in https://test.azurewebsites.net", result.TaskRemarks);
+            Assert.Equal("The code has been deployed to https://test.azurewebsites.net", result.TaskRemarks);
         }
 
         [Fact]
@@ -163,7 +163,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             Assert.True(result.IsSuccess);
             Assert.Equal("https://test.azurewebsites.net", result.ReturnValue);
-            Assert.Equal("The code has been deployed in https://test.azurewebsites.net", result.TaskRemarks);
+            Assert.Equal("The code has been deployed to https://test.azurewebsites.net", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

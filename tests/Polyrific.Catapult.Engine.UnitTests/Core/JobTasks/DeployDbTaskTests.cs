@@ -74,7 +74,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"databaseLocation", "c:\\test.data.dll"}
+                    {"databaseLocation", "localhost"}
                 });
 
             var config = new Dictionary<string, string>();
@@ -86,8 +86,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("c:\\test.data.dll", result.ReturnValue);
-            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.TaskRemarks);
+            Assert.Equal("localhost", result.ReturnValue);
+            Assert.Equal("The database changes have been applied to localhost", result.TaskRemarks);
         }
 
         [Fact]
@@ -132,7 +132,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
                 {
-                    {"databaseLocation", "c:\\test.data.dll"}
+                    {"databaseLocation", "localhost"}
                 });
             _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
             {
@@ -163,8 +163,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("c:\\test.data.dll", result.ReturnValue);
-            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.TaskRemarks);
+            Assert.Equal("localhost", result.ReturnValue);
+            Assert.Equal("The database changes have been applied to localhost", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("databaseLocation"))
             {
                 databaseLocation = result["databaseLocation"].ToString();
-                taskRemarks = $"The database code in {databaseLocation} has been deployed";
+                taskRemarks = $"The database changes have been applied to {databaseLocation}";
             }                
 
             var outputValues = new Dictionary<string, string>();

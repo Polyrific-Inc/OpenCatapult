@@ -38,7 +38,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore.UnitTests
             var result = await provider.DeployDatabase();
 
             Assert.Equal("", result.errorMessage);
-            Assert.Equal("TestProject.Data.dll", result.databaseLocation);
+            Assert.Equal("localhost", result.databaseLocation);
         }
 
         private string GetArgString(string process, string projectName, DeployDbTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)

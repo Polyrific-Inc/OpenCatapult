@@ -61,7 +61,7 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
             
-            return (dataProjectName, null, "");
+            return (GetDatabaseLocation(connectionString), null, "");
         }
 
         private static async Task Main(string[] args)
@@ -70,6 +70,17 @@ namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
             
             var result = await app.Execute();
             app.ReturnOutput(result);
+        }
+
+        private string GetDatabaseLocation(string connectionString)
+        {
+            if (!string.IsNullOrEmpty(connectionString))
+            {
+                var builder = new System.Data.SqlClient.SqlConnectionStringBuilder(connectionString);
+                return builder.DataSource;
+            }
+
+            return "";
         }
     }
 }
