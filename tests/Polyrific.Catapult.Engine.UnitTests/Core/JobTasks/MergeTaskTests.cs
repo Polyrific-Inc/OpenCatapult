@@ -86,7 +86,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string> {{"PRNumber", "1"}});
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.TaskRemarks);
         }
 
         [Fact]
@@ -177,7 +178,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string> { { "PRNumber", "1" } });
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("The PR #1 has been merged in http://github.com/test/test", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

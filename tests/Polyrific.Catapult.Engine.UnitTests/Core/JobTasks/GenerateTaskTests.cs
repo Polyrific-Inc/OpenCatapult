@@ -95,7 +95,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The code is generated in: c:\\test", result.ReturnValue);
+            Assert.Equal("c:\\test", result.ReturnValue);
+            Assert.Equal("The code is generated in: c:\\test", result.TaskRemarks);
         }
 
         [Fact]
@@ -171,7 +172,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The code is generated in: c:\\test", result.ReturnValue);
+            Assert.Equal("c:\\test", result.ReturnValue);
+            Assert.Equal("The code is generated in: c:\\test", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);

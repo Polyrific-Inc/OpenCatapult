@@ -87,6 +87,11 @@ namespace Polyrific.Catapult.Engine.Core
         public bool StopTheProcess { get; set; }
 
         /// <summary>
+        /// The remarks for the current task
+        /// </summary>
+        public string TaskRemarks { get; set; }
+
+        /// <summary>
         /// The remarks for the next process that will be stopped
         /// </summary>
         public string StopRemarks { get; set; }

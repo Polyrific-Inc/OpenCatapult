@@ -89,7 +89,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.TaskRemarks);
             Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
         }
 
@@ -168,7 +169,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("http://github.com/test/test", result.ReturnValue);
+            Assert.Equal("Changes has been pushed into http://github.com/test/test", result.TaskRemarks);
             Assert.Equal("Pull request has been created: http://github.com/test/test/pull/1", result.StopRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);

@@ -52,15 +52,22 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            var returnValue = "";
+            var storageLocation = "";
+            var taskRemarks = "";
             if (result.ContainsKey("storageLocation"))
-                returnValue = $"The data has been stored in: {result["storageLocation"].ToString()}";
+            {
+                storageLocation = result["storageLocation"].ToString();
+                taskRemarks = $"The data has been stored in: {storageLocation}";
+            }
 
             var outputValues = new Dictionary<string, string>();
             if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
                 outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
-            return new TaskRunnerResult(true, returnValue, outputValues);
+            return new TaskRunnerResult(true, storageLocation, outputValues)
+            {
+                TaskRemarks = taskRemarks
+            };
         }
 
         public override async Task<TaskRunnerResult> RunPostprocessingTask()

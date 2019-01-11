@@ -86,7 +86,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.ReturnValue);
+            Assert.Equal("c:\\test.data.dll", result.ReturnValue);
+            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.TaskRemarks);
         }
 
         [Fact]
@@ -162,7 +163,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             var result = await task.RunMainTask(new Dictionary<string, string>());
 
             Assert.True(result.IsSuccess);
-            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.ReturnValue);
+            Assert.Equal("c:\\test.data.dll", result.ReturnValue);
+            Assert.Equal("The database code in c:\\test.data.dll has been deployed", result.TaskRemarks);
 
             Assert.Equal(2, task.AdditionalConfigs.Count);
             Assert.Equal(2, task.SecuredAdditionalConfigs.Count);
