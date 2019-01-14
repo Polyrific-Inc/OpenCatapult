@@ -51,5 +51,11 @@ namespace Polyrific.Catapult.Plugins.GitHub
         /// <param name="prNumber">Pull Request number</param>
         /// <returns></returns>
         Task<bool> MergePullRequest(string prNumber);
+
+        /// <summary>
+        /// Create a repository if it's not yet exists
+        /// </summary>
+        /// <returns></returns>
+        Task<string> CreateRepositoryIfNotExists();
     }
 }

@@ -131,7 +131,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
                             await client.Git.Reference.Delete(repositoryOwner, projectName, prBranchRef);
                         }
                     }
-                    
+
                     return mergeResult.Merged;
                 }
             }
@@ -247,11 +247,44 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
                 return Task.FromResult(commit != null);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
 
                 return Task.FromResult(false);
+            }
+        }
+
+        public async Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository = true)
+        {
+            try
+            {
+                var client = new GitHubClient(new ProductHeaderValue(projectName))
+                {
+                    Credentials = _gitHubCredential
+                };
+
+                var repository = await GetGitHubRepository(projectName, repositoryOwner);
+
+                if (repository == null)
+                {
+                    _logger.LogInformation($"Creating repository {repositoryOwner}/{projectName}...");
+                    await client.Repository.Create(repositoryOwner, new NewRepository(projectName)
+                    {
+                        Private = isPrivateRepository
+                    });
+                }
+                else
+                {
+                    _logger.LogInformation($"Repository {repositoryOwner}/{projectName} is already exists");
+                }
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return ex.Message;
             }
         }
 
@@ -300,6 +333,25 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return credentialType == "userPassword"
                     ? new Octokit.Credentials(userName, password)
                     : new Octokit.Credentials(userName);
+        }
+
+        private async Task<Octokit.Repository> GetGitHubRepository(string projectName, string repositoryOwner)
+        {
+            try
+            {
+                var client = new GitHubClient(new ProductHeaderValue(projectName))
+                {
+                    Credentials = _gitHubCredential
+                };
+
+                var repository = await client.Repository.Get(repositoryOwner, projectName);
+
+                return repository;
+            }
+            catch (Octokit.NotFoundException)
+            {
+                return null;
+            }
         }
     }
 }
