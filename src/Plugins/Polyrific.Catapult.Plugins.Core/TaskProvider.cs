@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -20,8 +21,34 @@ namespace Polyrific.Catapult.Plugins.Core
         {
             if (args.Contains("--attach") && Debugger.IsAttached == false)
                 Debugger.Launch();
+
+            if (args.Contains("--file"))
+            {
+                var filePathIndex = Array.IndexOf(args, "--file") + 1;
+
+                if (args.Length - 1 >= filePathIndex)
+                {
+                    var filePath = args[filePathIndex];
+
+                    if (File.Exists(filePath))
+                    {
+                        ParsedArguments = JsonConvert.DeserializeObject<Dictionary<string, object>>(File.ReadAllText(filePath));
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"File path {filePath} was not found");
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException("File path is required when using --file option");
+                }
+            }
+            else
+            {
+                ParsedArguments = args.Length > 0 ? JsonConvert.DeserializeObject<Dictionary<string, object>>(args[0]) : new Dictionary<string, object>();
+            }            
             
-            ParsedArguments = args.Length > 0 ? JsonConvert.DeserializeObject<Dictionary<string, object>>(args[0]) : new Dictionary<string, object>();
             Logger = new TaskLogger(taskProviderName);
         }
 
