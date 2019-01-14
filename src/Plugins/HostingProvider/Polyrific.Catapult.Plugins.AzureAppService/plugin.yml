@@ -3,7 +3,7 @@ type: 'HostingProvider'
 author: 'Polyrific'
 version: '1.0'
 required-services:
-  - AzureAppService
+  - Azure
 additional-configs:
   - name: SubscriptionId
     label: Subscription Id

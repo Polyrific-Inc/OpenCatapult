@@ -161,4 +161,4 @@ jobs:
     type: Deploy
     provider: Polyrific.Catapult.Plugins.AzureAppService
     configs:
-      AzureAppServiceExternalService: azure-default
+      AzureExternalService: azure-default

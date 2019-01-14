@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         
         [Option("-t|--type <TYPE>", "Type of the external service", CommandOptionType.SingleValue)]
         [Required]
-        [AllowedValues(ExternalServiceTypeName.Generic, ExternalServiceTypeName.GitHub, ExternalServiceTypeName.AzureAppService, IgnoreCase = true)]
+        [AllowedValues(ExternalServiceTypeName.Generic, ExternalServiceTypeName.GitHub, ExternalServiceTypeName.Azure, IgnoreCase = true)]
         public string Type { get; set; }
 
         [Option("-d|--description <DESCRIPTION>", "Description of the external service", CommandOptionType.SingleValue)]

@@ -30,7 +30,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
         public override string Name => TaskProviderName;
 
-        public override string[] RequiredServices => new[] { "AzureAppService" };
+        public override string[] RequiredServices => new[] { "Azure" };
 
         public override async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy()
         {
