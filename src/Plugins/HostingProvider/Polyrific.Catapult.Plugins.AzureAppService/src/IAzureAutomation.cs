@@ -14,8 +14,10 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         /// <param name="resourceGroupName">Name of the resource group</param>
         /// <param name="appServiceName">Name of the App Service</param>
         /// <param name="deploymentSlot">Deployment slot. If empty, it will deploy to production slot.</param>
-        /// <param name="config">The connection string</param>
+        /// <param name="connectionString">The connection string</param>
+        /// <param name="planName">The plan name to be used for web create</param>
+        /// <param name="regionName">The region for which the web will be created</param>
         /// <returns>Host location and Error message if any</returns>
-        Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString);
+        Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString, string regionName, string planName);
     }
 }

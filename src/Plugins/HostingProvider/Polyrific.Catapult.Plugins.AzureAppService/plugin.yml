@@ -31,3 +31,13 @@ additional-configs:
     is-required: false
     is-secret: true
     is-input-masked: false
+  - name: Region
+    label: Region
+    type: string
+    is-required: false
+    is-secret: false
+  - name: AppServicePlan
+    label: App Service Plan
+    type: string
+    is-required: false
+    is-secret: false

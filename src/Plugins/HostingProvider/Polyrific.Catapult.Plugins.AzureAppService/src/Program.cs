@@ -57,11 +57,19 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             if (AdditionalConfigs.ContainsKey("ConnectionString") && !string.IsNullOrEmpty(AdditionalConfigs["ConnectionString"]))
                 connectionString = AdditionalConfigs["ConnectionString"];
 
+            var region = "southcentralus";
+            if (AdditionalConfigs.ContainsKey("Region") && !string.IsNullOrEmpty(AdditionalConfigs["Region"]))
+                region = AdditionalConfigs["Region"];
+
+            var appServicePlan = "";
+            if (AdditionalConfigs.ContainsKey("AppServicePlan") && !string.IsNullOrEmpty(AdditionalConfigs["AppServicePlan"]))
+                appServicePlan = AdditionalConfigs["AppServicePlan"];
+
             var artifactLocation = Config.ArtifactLocation ?? Path.Combine(Config.WorkingLocation, "artifact", $"{ProjectName}.zip");
             if (!Path.IsPathRooted(artifactLocation))
                 artifactLocation = Path.Combine(Config.WorkingLocation, artifactLocation);
 
-            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString);
+            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString, region, appServicePlan);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 

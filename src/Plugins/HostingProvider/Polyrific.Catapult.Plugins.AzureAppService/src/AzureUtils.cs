@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using Microsoft.Azure.Management.AppService.Fluent;
@@ -27,23 +28,6 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             _authenticatedAzure = Azure.Configure()
                 .WithLogLevel(HttpLoggingDelegatingHandler.Level.BodyAndHeaders)
                 .Authenticate(credentials);
-        }
-
-        public IWebApp GetWebsite(string subscriptionId, string resourceGroupName, string name)
-        {
-            IWebApp webApp = null;
-
-            try
-            {
-                webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.GetByResourceGroup(resourceGroupName, name));
-            }
-            catch (CloudException cex)
-            {
-                if (cex.Body.Code != "ResourceNotFound")
-                    throw;
-            }
-
-            return webApp;
         }
 
         public IDeploymentSlot GetSlot(IWebApp webApp, string name)
@@ -100,6 +84,82 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             }
 
             return web;
+        }
+
+        public IWebApp CreateWebsiteIfNotExists(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName)
+        {
+            var resourceGroup = CreateResourceGroupIfNotExists(subscriptionId, resourceGroupName, regionName);
+
+            var webApp = GetWebsite(subscriptionId, resourceGroupName, appName);
+
+            if (webApp == null)
+            {
+                IAppServicePlan plan;
+                if (string.IsNullOrEmpty(planName))
+                {
+                    planName = $"Catapult-Apps-{Guid.NewGuid()}";
+                    _logger.LogInformation($"Creating new plan name {planName} in resource group {resourceGroupName}");
+                    plan = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).AppServices.AppServicePlans
+                        .Define(planName)
+                        .WithRegion(resourceGroup.Region)
+                        .WithExistingResourceGroup(resourceGroup)
+                        .WithFreePricingTier()
+                        .Create());
+                }
+                else
+                {
+                    plan = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).AppServices.AppServicePlans.GetByResourceGroup(resourceGroupName, planName));
+                }
+                
+                if (plan != null)
+                {
+                    webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.Define(appName).WithExistingWindowsPlan(plan).WithExistingResourceGroup(resourceGroupName).Create());
+                }
+                else
+                {
+                    throw new ArgumentException($"Plan {planName} is not found in resource group {resourceGroupName}");
+                }
+            }
+
+            return webApp;
+        }
+
+        private IResourceGroup CreateResourceGroupIfNotExists(string subscriptionId, string resourceGroupName, string region)
+        {
+            IResourceGroup resourceGroup = null;
+            try
+            {
+                resourceGroup = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).ResourceGroups.GetByName(resourceGroupName));
+            }
+            catch (CloudException cex)
+            {
+                if (cex.Body.Code != "ResourceNotFound")
+                    throw;
+            }
+
+            if (resourceGroup == null)
+            {
+                resourceGroup = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).ResourceGroups.Define(resourceGroupName).WithRegion(region).Create());
+            }
+
+            return resourceGroup;
+        }
+        
+        public IWebApp GetWebsite(string subscriptionId, string resourceGroupName, string name)
+        {
+            IWebApp webApp = null;
+
+            try
+            {
+                webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.GetByResourceGroup(resourceGroupName, name));
+            }
+            catch (CloudException cex)
+            {
+                if (cex.Body.Code != "ResourceNotFound")
+                    throw;
+            }
+
+            return webApp;
         }
 
         #region Private Methods

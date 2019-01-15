@@ -20,13 +20,15 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             _logger = logger;
         }
 
-        public async Task<(string, string)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString)
+        public async Task<(string, string)> DeployWebsite(string artifactLocation, 
+            string subscriptionId, string resourceGroupName, string appServiceName, 
+            string deploymentSlot, string connectionString, string regionName, string planName)
         {
             try
             {
                 var hostLocation = "";
 
-                var website = _azureUtils.GetWebsite(subscriptionId, resourceGroupName, appServiceName);
+                var website = _azureUtils.CreateWebsiteIfNotExists(subscriptionId, resourceGroupName, appServiceName, regionName, planName);
                 if (website == null)
                 {
                     var error = $"Website {appServiceName} is not found in {resourceGroupName}";
