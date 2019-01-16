@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Polyrific.Catapult.Plugins.Core</id>
-    <version>1.0.0</version>
+    <version>1.0.0-beta1</version>
     <title>Polyrific.Catapult.Plugins.Core</title>
     <authors>frandi-polyrific</authors>
     <owners>frandi-polyrific</owners>

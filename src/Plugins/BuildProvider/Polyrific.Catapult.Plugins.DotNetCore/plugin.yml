@@ -1,7 +1,7 @@
 name: 'Polyrific.Catapult.Plugins.DotNetCore'
 type: 'BuildProvider'
 author: 'Polyrific'
-version: '1.0'
+version: '1.0.0-beta1'
 additional-configs:
   - name: CsprojLocation
     label: Csproj Location

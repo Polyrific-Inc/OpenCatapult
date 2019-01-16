@@ -1,7 +1,7 @@
 name: 'Polyrific.Catapult.Plugins.AspNetCoreMvc'
 type: 'GeneratorProvider'
 author: 'Polyrific'
-version: '1.0'
+version: '1.0.0-beta1'
 additional-configs:
   - name: AdminEmail
     label: Admin Email
