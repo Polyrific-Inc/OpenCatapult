@@ -63,5 +63,14 @@ namespace Polyrific.Catapult.Plugins.GitHub
         /// <param name="prNumber">Pull request number</param>
         /// <returns>Success status</returns>
         Task<bool> MergePullRequest(string projectName, string repositoryOwner, string prNumber);
+
+        /// <summary>
+        /// Create a repository if it's not yet exists
+        /// </summary>
+        /// <param name="projectName">Name of the remote repository</param>
+        /// <param name="repositoryOwner">Owner of the repository. It could be username or organization.</param>
+        /// <param name="isPrivateRepository">Is remote repository private?</param>
+        /// <returns></returns>
+        Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository);
     }
 }

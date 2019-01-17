@@ -1,9 +1,9 @@
 name: 'Polyrific.Catapult.Plugins.AzureAppService'
 type: 'HostingProvider'
 author: 'Polyrific'
-version: '1.0'
+version: '1.0.0-beta1'
 required-services:
-  - AzureAppService
+  - Azure
 additional-configs:
   - name: SubscriptionId
     label: Subscription Id

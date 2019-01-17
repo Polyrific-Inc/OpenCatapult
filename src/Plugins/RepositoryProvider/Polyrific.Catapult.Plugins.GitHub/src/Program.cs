@@ -46,7 +46,11 @@ namespace Polyrific.Catapult.Plugins.GitHub
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
 
-            var error = await _gitAutomation.Clone();
+            var error = await _gitAutomation.CreateRepositoryIfNotExists();
+            if (!string.IsNullOrEmpty(error))
+                return ("", null, error);
+
+            error = await _gitAutomation.Clone();
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
@@ -66,11 +70,15 @@ namespace Polyrific.Catapult.Plugins.GitHub
             string baseBranch = PushTaskConfig.PullRequestTargetBranch ?? DefaultBaseBranch;
             string workingBranch = PushTaskConfig.Branch ?? (PushTaskConfig.CreatePullRequest ? DefaultWorkingBranch : DefaultBaseBranch);
 
-            var commitError = await _gitAutomation.Commit(baseBranch, workingBranch, PushTaskConfig.CommitMessage ?? DefaultCommitMessage, PushTaskConfig.Author ?? DefaultAuthor, PushTaskConfig.Email ?? DefaultEmail);
-            if (!string.IsNullOrEmpty(commitError))
-                return ("", "", null, commitError);
+            var error = await _gitAutomation.CreateRepositoryIfNotExists();
+            if (!string.IsNullOrEmpty(error))
+                return ("", "", null, error);
 
-            var error = await _gitAutomation.Push(workingBranch);
+            error = await _gitAutomation.Commit(baseBranch, workingBranch, PushTaskConfig.CommitMessage ?? DefaultCommitMessage, PushTaskConfig.Author ?? DefaultAuthor, PushTaskConfig.Email ?? DefaultEmail);
+            if (!string.IsNullOrEmpty(error))
+                return ("", "", null, error);
+
+            error = await _gitAutomation.Push(workingBranch);
             if (!string.IsNullOrEmpty(error))
                 return ("", "", null, error);
 
@@ -108,7 +116,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
             return (MergeTaskConfig.Repository, null, "");
         }
 
-        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool isPrivateRepository = false)
+        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool? isPrivateRepository = null)
         {
             var config = new GitAutomationConfig
             {

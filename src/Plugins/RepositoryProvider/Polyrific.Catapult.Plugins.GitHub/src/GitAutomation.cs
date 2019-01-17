@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
                 attempt++;
 
-                var repoLocation = await _gitHubUtils.Clone(_config.RemoteUrl, _config.LocalRepository, _config.IsPrivateRepository);
+                var repoLocation = await _gitHubUtils.Clone(_config.RemoteUrl, _config.LocalRepository, _config.IsPrivateRepository ?? false);
                 if (!string.IsNullOrEmpty(repoLocation))
                 {
                     _logger.LogInformation($"GitHub repository has been successfully cloned from {_config.RemoteUrl}.");
@@ -150,6 +150,34 @@ namespace Polyrific.Catapult.Plugins.GitHub
             }
 
             return false;
+        }
+
+        public async Task<string> CreateRepositoryIfNotExists()
+        {
+            var attempt = 1;
+            string error = null;
+
+            // start attempt clone
+            while (attempt <= MaxAttempt)
+            {
+                _logger.LogInformation($"Create a GitHub repository if not exists (attempt #{attempt}) in {_config.RemoteUrl}.");
+
+                attempt++;
+
+                error = await _gitHubUtils.CreateRepositoryIfNotExists(_config.ProjectName, _config.RepoOwner, _config.IsPrivateRepository ?? true);
+                if (string.IsNullOrEmpty(error))
+                {
+                    return "";
+                }
+                else
+                {
+                    _logger.LogError(error);
+                }
+
+                Thread.Sleep(30000);
+            }
+
+            return $"Failed to create a GitHub repository after {MaxAttempt} attempts. Error: {error}";
         }
     }
 }

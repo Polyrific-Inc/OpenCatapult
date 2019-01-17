@@ -6,6 +6,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
     {
         public const string Generic = "Generic";
         public const string GitHub = "GitHub";
-        public const string AzureAppService = "AzureAppService";
+        public const string Azure = "Azure";
     }
 }

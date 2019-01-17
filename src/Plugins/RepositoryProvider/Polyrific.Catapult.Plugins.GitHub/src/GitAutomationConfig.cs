@@ -43,7 +43,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
         /// <summary>
         /// Is the repository private?
         /// </summary>
-        public bool IsPrivateRepository { get; set; }
+        public bool? IsPrivateRepository { get; set; }
 
         /// <summary>
         /// Location of the local repository
