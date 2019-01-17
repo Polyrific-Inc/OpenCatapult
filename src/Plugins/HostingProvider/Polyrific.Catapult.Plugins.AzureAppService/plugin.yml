@@ -32,12 +32,12 @@ additional-configs:
     is-secret: true
     is-input-masked: false
   - name: Region
-    label: Region
+    label: Default Region
     type: string
     is-required: false
     is-secret: false
   - name: AppServicePlan
-    label: App Service Plan
+    label: Default App Service Plan
     type: string
     is-required: false
     is-secret: false

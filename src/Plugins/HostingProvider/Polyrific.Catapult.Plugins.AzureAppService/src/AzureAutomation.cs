@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             {
                 var hostLocation = "";
 
-                var website = _azureUtils.CreateWebsiteIfNotExists(subscriptionId, resourceGroupName, appServiceName, regionName, planName);
+                var website = _azureUtils.GetOrCreateWebsite(subscriptionId, resourceGroupName, appServiceName, regionName, planName);
                 if (website == null)
                 {
                     var error = $"Website {appServiceName} is not found in {resourceGroupName}";

@@ -10,8 +10,8 @@ using Polyrific.Catapult.Api.Data;
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    [Migration("20190115085133_AllowCreateResource")]
-    partial class AllowCreateResource
+    [Migration("20190117141227_AllowCreateAzureResource")]
+    partial class AllowCreateAzureResource
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -120,7 +120,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasData(
                         new { Id = 1, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce98", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "Generic" },
                         new { Id = 2, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce96", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "GitHub" },
-                        new { Id = 3, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce97", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "AzureAppService" }
+                        new { Id = 3, ConcurrencyStamp = "2425fe0d-4e3e-4549-a9a7-60056097ce97", Created = new DateTime(2018, 9, 19, 8, 14, 52, 51, DateTimeKind.Utc), Name = "Azure" }
                     );
                 });
 
@@ -285,7 +285,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         new { Id = 3, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.DotNetCore", Type = "BuildProvider", Version = "1.0" },
                         new { Id = 4, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.DotNetCoreTest", Type = "TestProvider", Version = "1.0" },
                         new { Id = 5, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.EntityFrameworkCore", Type = "DatabaseProvider", Version = "1.0" },
-                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.AzureAppService", RequiredServicesString = "AzureAppService", Type = "HostingProvider", Version = "1.0" }
+                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.Plugins.AzureAppService", RequiredServicesString = "Azure", Type = "HostingProvider", Version = "1.0" }
                     );
                 });
 
@@ -336,8 +336,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         new { Id = 9, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382260", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "App Service", Name = "AppServiceName", PluginId = 6, Type = "string" },
                         new { Id = 10, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382261", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Deployment Slot", Name = "DeploymentSlot", PluginId = 6, Type = "string" },
                         new { Id = 11, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsInputMasked = false, IsRequired = false, IsSecret = true, Label = "Connection String", Name = "ConnectionString", PluginId = 6, Type = "string" },
-                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Region", Name = "Region", PluginId = 6, Type = "string" },
-                        new { Id = 13, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "App Service Plan", Name = "AppServicePlan", PluginId = 6, Type = "string" }
+                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default Region", Name = "Region", PluginId = 6, Type = "string" },
+                        new { Id = 13, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default App Service Plan", Name = "AppServicePlan", PluginId = 6, Type = "string" }
                     );
                 });
 

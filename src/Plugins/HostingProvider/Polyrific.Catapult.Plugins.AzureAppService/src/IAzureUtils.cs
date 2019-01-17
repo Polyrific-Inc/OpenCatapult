@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         IWebAppBase SetConnectionString(IWebAppBase deployTarget, string connectionStringName, string connectionString);
 
         /// <summary>
-        /// Create an azure web app if it's not yet exist
+        /// Get an azure web app or create it if it's not yet exist
         /// </summary>
         /// <param name="subscriptionId">Subscription Id used to access</param>
         /// <param name="resourceGroupName">Resource group name where the website located</param>
@@ -47,6 +47,6 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         /// <param name="regionName">The region for which the web will be created</param>
         /// <param name="planName">The plan name to be used for web create</param>
         /// <returns></returns>
-        IWebApp CreateWebsiteIfNotExists(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName);
+        IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName);
     }
 }

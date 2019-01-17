@@ -86,9 +86,9 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             return web;
         }
 
-        public IWebApp CreateWebsiteIfNotExists(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName)
+        public IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName)
         {
-            var resourceGroup = CreateResourceGroupIfNotExists(subscriptionId, resourceGroupName, regionName);
+            var resourceGroup = GetOrCreateResourceGroup(subscriptionId, resourceGroupName, regionName);
 
             var webApp = GetWebsite(subscriptionId, resourceGroupName, appName);
 
@@ -124,7 +124,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             return webApp;
         }
 
-        private IResourceGroup CreateResourceGroupIfNotExists(string subscriptionId, string resourceGroupName, string region)
+        private IResourceGroup GetOrCreateResourceGroup(string subscriptionId, string resourceGroupName, string region)
         {
             IResourceGroup resourceGroup = null;
             try
