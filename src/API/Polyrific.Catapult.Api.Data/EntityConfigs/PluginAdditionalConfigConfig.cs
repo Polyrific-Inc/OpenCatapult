@@ -14,7 +14,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
 
             // Additional configs for AspNetCoreMvc plugin
             builder.HasData(
-                new PluginAdditionalConfig { Id = 1, PluginId = 1, Name = "AdminEmail", Label = "Admin Email", Type = "string", IsRequired = true, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382258" }
+                new PluginAdditionalConfig { Id = 1, PluginId = 1, Name = "AdminEmail", Label = "Admin Email", Hint = "Please enter the email address that you wish to be used as an administrator of the project", Type = "string", IsRequired = true, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382258" }
             );
 
             // Additional configs for DotNetCoreBuildProvider plugin
@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                 new PluginAdditionalConfig { Id = 8, PluginId = 6, Name = "ResourceGroupName", Label = "Resource Group", Type = "string", IsRequired = true, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225f" },
                 new PluginAdditionalConfig { Id = 9, PluginId = 6, Name = "AppServiceName", Label = "App Service", Type = "string", IsRequired = true, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382260" },
                 new PluginAdditionalConfig { Id = 10, PluginId = 6, Name = "DeploymentSlot", Label = "Deployment Slot", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382261" },
-                new PluginAdditionalConfig { Id = 11, PluginId = 6, Name = "ConnectionString", Label = "Connection String", Type = "string", IsRequired = false, IsSecret = true, IsInputMasked = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263" },
+                new PluginAdditionalConfig { Id = 11, PluginId = 6, Name = "ConnectionString", Label = "Connection String", Hint = "Please make sure to enter the connection string if the website needs to connect to the database", Type = "string", IsRequired = false, IsSecret = true, IsInputMasked = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263" },
                 new PluginAdditionalConfig { Id = 12, PluginId = 6, Name = "Region", Label = "Default Region", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264" },
                 new PluginAdditionalConfig { Id = 13, PluginId = 6, Name = "AppServicePlan", Label = "Default App Service Plan", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265" }
             );

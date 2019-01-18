@@ -38,5 +38,10 @@ namespace Polyrific.Catapult.Shared.Dto.Plugin
         /// Allowed values of the configuration
         /// </summary>
         public string[] AllowedValues { get; set; }
+
+        /// <summary>
+        /// A short hint to inform user what should be inputted in the additional config
+        /// </summary>
+        public string Hint { get; set; }
     }
 }
