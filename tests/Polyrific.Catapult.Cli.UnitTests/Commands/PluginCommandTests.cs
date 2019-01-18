@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using McMaster.Extensions.CommandLineUtils;
 using Moq;
 using Polyrific.Catapult.Cli.Commands;
-using Polyrific.Catapult.Cli.Commands.Plugin;
+using Polyrific.Catapult.Cli.Commands.Provider;
 using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.Plugin;
@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void Plugin_Execute_ReturnsEmpty()
         {
-            var command = new PluginCommand(_console, LoggerMock.GetLogger<PluginCommand>().Object);
+            var command = new ProviderCommand(_console, LoggerMock.GetLogger<ProviderCommand>().Object);
 
             var message = command.Execute();
 
@@ -56,7 +56,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.StartsWith("Plugin APlugin01:", message);
+            Assert.StartsWith("Task provider APlugin01:", message);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("Plugin APlugin01 was not found.", message);
+            Assert.Equal("Task provider APlugin01 was not found.", message);
         }
 
         [Fact]
@@ -87,7 +87,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.StartsWith("Found 1 plugin(s):", message);
+            Assert.StartsWith("Found 1 task provider(s):", message);
         }
 
         [Fact]
@@ -99,7 +99,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("No registered plugins found.", message);
+            Assert.Equal("No registered task providers found.", message);
         }
 
         [Fact]
@@ -136,7 +136,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("Plugin APlugin01 (v1.0) by Frandi has been registered successfully.", message);
+            Assert.Equal("Task provider APlugin01 (v1.0) by Frandi has been registered successfully.", message);
         }
 
         [Fact]
@@ -174,7 +174,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("Plugin metadata could not be parsed from the file content.", message);
+            Assert.Equal("Task provider metadata could not be parsed from the file content.", message);
         }
 
         [Fact]
@@ -193,7 +193,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("Plugin APlugin01 has been removed.", message);
+            Assert.Equal("Task provider APlugin01 has been removed.", message);
         }
 
         [Fact]
@@ -212,7 +212,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             var message = command.Execute();
 
-            Assert.Equal("Plugin APlugin01 was not found.", message);
+            Assert.Equal("Task provider APlugin01 was not found.", message);
         }
 
         private string YamlSerialize(NewPluginDto dto)

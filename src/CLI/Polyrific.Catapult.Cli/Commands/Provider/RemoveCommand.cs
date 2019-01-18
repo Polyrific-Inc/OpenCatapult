@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 
-namespace Polyrific.Catapult.Cli.Commands.Plugin
+namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "Remove a plugin registration")]
+    [Command(Description = "Remove a task provider registration")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IPluginService _pluginService;
@@ -17,7 +17,7 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             _pluginService = pluginService;
         }
 
-        [Option("-n|--name", "Name of the plugin", CommandOptionType.SingleValue)]
+        [Option("-n|--name", "Name of the task provider", CommandOptionType.SingleValue)]
         public string PluginName { get; set; }
 
         [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
@@ -25,18 +25,18 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
 
         public override string Execute()
         {
-            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove plugin {PluginName}?", false)))
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove task provider {PluginName}?", false)))
                 return string.Empty;
 
-            Console.WriteLine($"Trying to remove plugin \"{PluginName}\"...");
+            Console.WriteLine($"Trying to remove task provider \"{PluginName}\"...");
 
             var plugin = _pluginService.GetPluginByName(PluginName).Result;
             if (plugin == null)
-                return $"Plugin {PluginName} was not found.";
+                return $"Task provider {PluginName} was not found.";
 
             _pluginService.DeletePlugin(plugin.Id).Wait();
 
-            var message = $"Plugin {PluginName} has been removed.";
+            var message = $"Task provider {PluginName} has been removed.";
             Logger.LogInformation(message);
 
             return message;

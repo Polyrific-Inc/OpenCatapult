@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Cli
             app.Command<EngineCommand>("engine", _ => { });
             app.Command<ServiceCommand>("service", _ => { });
             app.Command<ConfigCommand>("config", _ => { });
-            app.Command<PluginCommand>("plugin", _ => { });
+            app.Command<ProviderCommand>("provider", _ => { });
             app.Command<CurrentUserCommand>("currentuser", _ => { });
             app.Command<VersionCommand>("version", _ => { });
         }

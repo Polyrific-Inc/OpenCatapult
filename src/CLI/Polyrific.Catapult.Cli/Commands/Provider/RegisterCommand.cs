@@ -8,9 +8,9 @@ using Polyrific.Catapult.Shared.Service;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace Polyrific.Catapult.Cli.Commands.Plugin
+namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "Register a new plugin")]
+    [Command(Description = "Register a new task provider")]
     public class RegisterCommand : BaseCommand
     {
         private readonly IPluginService _pluginService;
@@ -20,12 +20,12 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             _pluginService = pluginService;
         }
 
-        [Option("-f|--file", "Plugin metadata yaml file", CommandOptionType.SingleValue)]
+        [Option("-f|--file", "Task provider metadata yaml file", CommandOptionType.SingleValue)]
         public string MetadataFile { get; set; }
 
         public override string Execute()
         {
-            Console.WriteLine("Trying to register the plugin...");
+            Console.WriteLine("Trying to register the task provider...");
 
             if (!File.Exists(MetadataFile))
                 return $"Could not find \"{MetadataFile}\".";
@@ -33,11 +33,11 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             var metadataContent = File.ReadAllText(MetadataFile);
             var plugin = DeserializeYaml<NewPluginDto>(metadataContent);
             if (plugin == null)
-                return "Plugin metadata could not be parsed from the file content.";
+                return "Task provider metadata could not be parsed from the file content.";
             
             var _ = _pluginService.AddPlugin(plugin).Result;
 
-            var message = $"Plugin {plugin.Name} (v{plugin.Version}) by {plugin.Author} has been registered successfully.";
+            var message = $"Task provider {plugin.Name} (v{plugin.Version}) by {plugin.Author} has been registered successfully.";
             Logger.LogInformation(message);
 
             return message;

@@ -15,7 +15,7 @@ using Polyrific.Catapult.Shared.Dto.Plugin;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
-    [Route("plugin")]
+    [Route("provider")]
     [ApiController]
     public class PluginController : ControllerBase
     {

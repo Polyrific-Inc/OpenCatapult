@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 
-namespace Polyrific.Catapult.Cli.Commands.Plugin
+namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "List registered plugins")]
+    [Command(Description = "List registered task providers")]
     public class ListCommand : BaseCommand
     {
         private readonly IPluginService _pluginService;
@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
             _pluginService = pluginService;
         }
 
-        [Option("-t|--type", "Type of the plugin", CommandOptionType.SingleOrNoValue)]
+        [Option("-t|--type", "Type of the task provider", CommandOptionType.SingleOrNoValue)]
         [AllowedValues(
             "all",
             Shared.Dto.Constants.PluginType.BuildProvider,
@@ -32,16 +32,16 @@ namespace Polyrific.Catapult.Cli.Commands.Plugin
 
         public override string Execute()
         {
-            Console.WriteLine("Trying to get list of plugins...");
+            Console.WriteLine("Trying to get list of task providers...");
 
             if (string.IsNullOrEmpty(PluginType))
                 PluginType = "all";
 
             var plugins = _pluginService.GetPlugins(PluginType).Result;
             if (!plugins.Any())
-                return PluginType == "all" ? "No registered plugins found." : $"No registered plugins with type {PluginType} found.";
+                return PluginType == "all" ? "No registered task providers found." : $"No registered task providers with type {PluginType} found.";
             
-            return plugins.ToListCliString($"Found {plugins.Count} plugin(s):", excludedFields: new string[]
+            return plugins.ToListCliString($"Found {plugins.Count} task provider(s):", excludedFields: new string[]
                 {
                     "AdditionalConfigs"
                 });
