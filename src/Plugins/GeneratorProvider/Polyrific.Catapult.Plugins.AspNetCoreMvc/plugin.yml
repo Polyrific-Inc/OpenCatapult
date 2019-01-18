@@ -5,6 +5,7 @@ version: '1.0.0-beta1'
 additional-configs:
   - name: AdminEmail
     label: Admin Email
+    hint: Please enter the email address that you wish to be used as an administrator of the project
     type: string
     is-required: true
     is-secret: false

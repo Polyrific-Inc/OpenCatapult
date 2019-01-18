@@ -27,6 +27,7 @@ additional-configs:
     is-secret: false
   - name: ConnectionString
     label: Connection String
+    hint: Please make sure to enter the connection string if the website needs to connect to the database
     type: string
     is-required: false
     is-secret: true

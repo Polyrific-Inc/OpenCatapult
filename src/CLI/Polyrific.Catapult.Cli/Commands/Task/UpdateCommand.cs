@@ -150,7 +150,9 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 foreach (var additionalConfig in plugin.AdditionalConfigs)
                                 {
                                     string input = null;
-                                    string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}:";
+                                    string hint = !string.IsNullOrEmpty(additionalConfig.Hint) ? $" ({additionalConfig.Hint})" : "";
+                                    string label = !string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name;
+                                    string prompt = $"{label}{hint}:";
                                     bool validInput = true;
                                     do
                                     {
