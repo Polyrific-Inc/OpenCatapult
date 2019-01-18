@@ -11,11 +11,11 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
     [Command(Description = "List registered task providers")]
     public class ListCommand : BaseCommand
     {
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
 
-        public ListCommand(IPluginService pluginService, IConsole console, ILogger<ListCommand> logger) : base(console, logger)
+        public ListCommand(IProviderService providerService, IConsole console, ILogger<ListCommand> logger) : base(console, logger)
         {
-            _pluginService = pluginService;
+            _providerService = providerService;
         }
 
         [Option("-t|--type", "Type of the task provider", CommandOptionType.SingleOrNoValue)]
@@ -28,20 +28,20 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
             Shared.Dto.Constants.PluginType.DatabaseProvider,
             Shared.Dto.Constants.PluginType.StorageProvider,
             Shared.Dto.Constants.PluginType.TestProvider)]
-        public string PluginType { get; set; }
+        public string ProviderType { get; set; }
 
         public override string Execute()
         {
             Console.WriteLine("Trying to get list of task providers...");
 
-            if (string.IsNullOrEmpty(PluginType))
-                PluginType = "all";
+            if (string.IsNullOrEmpty(ProviderType))
+                ProviderType = "all";
 
-            var plugins = _pluginService.GetPlugins(PluginType).Result;
-            if (!plugins.Any())
-                return PluginType == "all" ? "No registered task providers found." : $"No registered task providers with type {PluginType} found.";
+            var providers = _providerService.GetProviders(ProviderType).Result;
+            if (!providers.Any())
+                return ProviderType == "all" ? "No registered task providers found." : $"No registered task providers with type {ProviderType} found.";
             
-            return plugins.ToListCliString($"Found {plugins.Count} task provider(s):", excludedFields: new string[]
+            return providers.ToListCliString($"Found {providers.Count} task provider(s):", excludedFields: new string[]
                 {
                     "AdditionalConfigs"
                 });

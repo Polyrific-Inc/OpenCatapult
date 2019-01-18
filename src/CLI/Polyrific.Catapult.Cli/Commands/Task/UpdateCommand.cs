@@ -20,18 +20,18 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
 
         public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IConsoleReader consoleReader,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService,
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IProviderService providerService,
             IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
             _consoleReader = consoleReader;
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
-            _pluginService = pluginService;
+            _providerService = providerService;
             _externalServiceService = externalServiceService;
             _externalServiceTypeService = externalServiceTypeService;
         }
@@ -87,27 +87,27 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         var provider = !string.IsNullOrEmpty(Provider) ? Provider : task.Provider;
                         if (!string.IsNullOrEmpty(provider))
                         {
-                            var plugin = _pluginService.GetPluginByName(provider).Result;
+                            var currentProvider = _providerService.GetProviderByName(provider).Result;
 
-                            if (plugin == null)
+                            if (currentProvider == null)
                             {
                                 message = $"The provider \"{provider}\" is not installed";
                                 return message;
                             }
 
                             // making sure it's equal case sensitive
-                            provider = plugin.Name;
+                            provider = currentProvider.Name;
 
-                            if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                            if (currentProvider.RequiredServices != null && currentProvider.RequiredServices.Length > 0)
                             {
-                                Console.WriteLine($"The provider \"{provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
+                                Console.WriteLine($"The provider \"{provider}\" requires the following service(s): {string.Join(", ", currentProvider.RequiredServices)}.");
 
                                 if (task.Provider == provider)
                                 {
                                     Console.WriteLine("Leave blank if no changes for the external service");
                                 }
 
-                                foreach (var service in plugin.RequiredServices)
+                                foreach (var service in currentProvider.RequiredServices)
                                 {
                                     var externalServiceKey = $"{service}ExternalService";
                                     var externalServiceName = Console.GetString($"{service} external service name:");
@@ -144,10 +144,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                 task.AdditionalConfigs = new Dictionary<string, string>();
                             }
 
-                            if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                            if (currentProvider.AdditionalConfigs != null && currentProvider.AdditionalConfigs.Length > 0)
                             {
-                                Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
-                                foreach (var additionalConfig in plugin.AdditionalConfigs)
+                                Console.WriteLine($"The provider \"{currentProvider.Name}\" have some additional config(s):");
+                                foreach (var additionalConfig in currentProvider.AdditionalConfigs)
                                 {
                                     string input = null;
                                     string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}:";

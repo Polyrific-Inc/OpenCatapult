@@ -4,19 +4,19 @@ using System;
 using AutoMapper;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Shared.Dto.Constants;
-using Polyrific.Catapult.Shared.Dto.Plugin;
+using Polyrific.Catapult.Shared.Dto.Provider;
 
 namespace Polyrific.Catapult.Api.AutoMapperProfiles
 {
-    public class PluginAutoMapperProfile : Profile
+    public class ProviderAutoMapperProfile : Profile
     {
-        public PluginAutoMapperProfile()
+        public ProviderAutoMapperProfile()
         {
-            CreateMap<Plugin, PluginDto>()
+            CreateMap<Plugin, ProviderDto>()
                 .ForMember(dest => dest.RegistrationDate, opt => opt.MapFrom(src => src.Created))
                 .ForMember(dest => dest.RequiredServices, opt => opt.MapFrom(src => src.RequiredServicesString.Split(DataDelimiter.Comma, StringSplitOptions.None)));
 
-            CreateMap<NewPluginDto, Plugin>();
+            CreateMap<NewProviderDto, Plugin>();
         }
     }
 }

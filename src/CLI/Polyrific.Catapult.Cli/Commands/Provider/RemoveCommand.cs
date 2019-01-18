@@ -10,33 +10,33 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
     [Command(Description = "Remove a task provider registration")]
     public class RemoveCommand : BaseCommand
     {
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
 
-        public RemoveCommand(IPluginService pluginService, IConsole console, ILogger<RemoveCommand> logger) : base(console, logger)
+        public RemoveCommand(IProviderService providerService, IConsole console, ILogger<RemoveCommand> logger) : base(console, logger)
         {
-            _pluginService = pluginService;
+            _providerService = providerService;
         }
 
         [Option("-n|--name", "Name of the task provider", CommandOptionType.SingleValue)]
-        public string PluginName { get; set; }
+        public string ProviderName { get; set; }
 
         [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
         public bool AutoConfirm { get; set; }
 
         public override string Execute()
         {
-            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove task provider {PluginName}?", false)))
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove task provider {ProviderName}?", false)))
                 return string.Empty;
 
-            Console.WriteLine($"Trying to remove task provider \"{PluginName}\"...");
+            Console.WriteLine($"Trying to remove task provider \"{ProviderName}\"...");
 
-            var plugin = _pluginService.GetPluginByName(PluginName).Result;
-            if (plugin == null)
-                return $"Task provider {PluginName} was not found.";
+            var provider = _providerService.GetProviderByName(ProviderName).Result;
+            if (provider == null)
+                return $"Task provider {ProviderName} was not found.";
 
-            _pluginService.DeletePlugin(plugin.Id).Wait();
+            _providerService.DeleteProvider(provider.Id).Wait();
 
-            var message = $"Task provider {PluginName} has been removed.";
+            var message = $"Task provider {ProviderName} has been removed.";
             Logger.LogInformation(message);
 
             return message;

@@ -19,18 +19,18 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
 
         public AddCommand(IConsole console, ILogger<AddCommand> logger, IConsoleReader consoleReader,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService, 
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IProviderService providerService, 
             IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService) : base(console, logger)
         {
             _consoleReader = consoleReader;
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
-            _pluginService = pluginService;
+            _providerService = providerService;
             _externalServiceService = externalServiceService;
             _externalServiceTypeService = externalServiceTypeService;
         }
@@ -82,8 +82,8 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     var secretProperties = new List<string>();
                     Dictionary<string, string> additionalConfigs = null;
                     
-                    var plugin = _pluginService.GetPluginByName(Provider).Result;
-                    if (plugin == null)
+                    var provider = _providerService.GetProviderByName(Provider).Result;
+                    if (provider == null)
                     {
                         message = $"The provider \"{Provider}\" is not installed";
                         return message;
@@ -91,10 +91,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                     var properties = PromptTaskConfig();
 
-                    if (plugin.RequiredServices != null && plugin.RequiredServices.Length > 0)
+                    if (provider.RequiredServices != null && provider.RequiredServices.Length > 0)
                     {
-                        Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", plugin.RequiredServices)}.");
-                        foreach (var service in plugin.RequiredServices)
+                        Console.WriteLine($"The provider \"{Provider}\" requires the following service(s): {string.Join(", ", provider.RequiredServices)}.");
+                        foreach (var service in provider.RequiredServices)
                         {
                             var externalServiceName = Console.GetString($"{service} external service name:");
 
@@ -122,11 +122,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                         }
                     }
 
-                    if (plugin.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                    if (provider.AdditionalConfigs != null && provider.AdditionalConfigs.Length > 0)
                     {
                         additionalConfigs = new Dictionary<string, string>();
-                        Console.WriteLine($"The provider \"{plugin.Name}\" have some additional config(s):");
-                        foreach (var additionalConfig in plugin.AdditionalConfigs)
+                        Console.WriteLine($"The provider \"{provider.Name}\" have some additional config(s):");
+                        foreach (var additionalConfig in provider.AdditionalConfigs)
                         {
                             string input = string.Empty;
                             string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : " (Leave blank to use default value):")}";
@@ -171,7 +171,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     var task = _jobDefinitionService.CreateJobTaskDefinition(project.Id, job.Id, new CreateJobTaskDefinitionDto
                     {
                         Name = Name,
-                        Provider = plugin.Name,
+                        Provider = provider.Name,
                         Type = Type,
                         Sequence = Sequence,
                         Configs = properties.Count > 0 ? properties.ToDictionary(x => x.Item1, x => x.Item2) : null,
@@ -244,7 +244,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
             sb.AppendLine();
             sb.AppendLine("Available task providers:");
-            var providers = _pluginService.GetPlugins().Result;
+            var providers = _providerService.GetProviders().Result;
             foreach (var provider in providers)
                 sb.AppendLine($"  - Provider: {provider.Name}");
 

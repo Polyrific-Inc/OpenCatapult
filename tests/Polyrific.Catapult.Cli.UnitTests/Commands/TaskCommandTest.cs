@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
 using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
-using Polyrific.Catapult.Shared.Dto.Plugin;
+using Polyrific.Catapult.Shared.Dto.Provider;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 using System.Collections.Generic;
@@ -26,7 +26,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly ITestOutputHelper _output;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
-        private readonly Mock<IPluginService> _pluginService;
+        private readonly Mock<IProviderService> _providerService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
 
@@ -65,22 +65,22 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            var plugins = new List<PluginDto>
+            var providers = new List<ProviderDto>
             {
-                new PluginDto
+                new ProviderDto
                 {
                     Id = 1,
                     Name = "GithubPushProvider",
                     RequiredServices = new string[] { "GitHub" }
                 },
-                new PluginDto
+                new ProviderDto
                 {
                     Id = 2,
                     Name = "AzureAppService",
                     RequiredServices = new string[] { "AzureAppService" },
-                    AdditionalConfigs = new PluginAdditionalConfigDto[]
+                    AdditionalConfigs = new ProviderAdditionalConfigDto[]
                     {
-                        new PluginAdditionalConfigDto
+                        new ProviderAdditionalConfigDto
                         {
                             Name = "SubscriptionId",
                             Label = "Subscription Id",
@@ -88,7 +88,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                             IsRequired = true,
                             IsSecret = false
                         },
-                        new PluginAdditionalConfigDto
+                        new ProviderAdditionalConfigDto
                         {
                             Name = "AppKey",
                             Label = "AppKey Id",
@@ -170,9 +170,9 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
             
 
-            _pluginService = new Mock<IPluginService>();
-            _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>()))
-                .ReturnsAsync((string pluginName) => plugins.FirstOrDefault(x => x.Name == pluginName));
+            _providerService = new Mock<IProviderService>();
+            _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>()))
+                .ReturnsAsync((string providerName) => providers.FirstOrDefault(x => x.Name == providerName));
 
             _externalServiceService = new Mock<IExternalServiceService>();
             _externalServiceService.Setup(s => s.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => services.FirstOrDefault(u => u.Name == name));
@@ -196,7 +196,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
             var console = new TestConsole(_output, "azure-default");
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -213,7 +213,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskAdd_Execute_ReturnsNotFoundMessage()
         {
-            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(_console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2",
@@ -230,7 +230,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskAdd_Execute_ReturnsProviderNotInstalledMessage()
         {
             var console = new TestConsole(_output);
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -248,7 +248,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskAdd_Execute_ReturnsServiceRequiredMessage()
         {
             var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "true", "master", "commit", "opencatapult", "test@opencatapult.net", "");
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -266,7 +266,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskAdd_Execute_ReturnsServiceNotFoundMessage()
         {
             var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "y", "master", "commit", "opencatapult", "test@opencatapult.net", "test");
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -284,7 +284,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskAdd_Execute_ReturnsServiceTypeIncorrectMessage()
         {
             var console = new TestConsole(_output, "https://github.com/test/test", "", "dev", "y", "master", "commit", "opencatapult", "test@opencatapult.net", "azure-default");
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -310,7 +310,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
 
             var console = new TestConsole(_output, "generic-service");
-            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new AddCommand(console, LoggerMock.GetLogger<AddCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -327,8 +327,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskGet_Execute_ReturnsSuccessMessage()
         {
-            _pluginService.Setup(x => x.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<PluginAdditionalConfigDto>());
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<ProviderAdditionalConfigDto>());
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -343,7 +343,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskGet_Execute_ReturnsNotFoundMessage()
         {
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2",
@@ -358,8 +358,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskList_Execute_ReturnsSuccessMessage()
         {
-            _pluginService.Setup(x => x.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<PluginAdditionalConfigDto>());
-            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<ProviderAdditionalConfigDto>());
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
                 Job = "Default"
@@ -373,7 +373,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskList_Execute_ReturnsNotFoundMessage()
         {
-            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
                 Job = "Default 2"
@@ -407,7 +407,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
             var console = new TestConsole(_output, "azure-default");
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -426,7 +426,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
             var console = new TestConsole(_output, "azure-default");
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -445,7 +445,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(_console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -461,7 +461,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void TaskUpdate_Execute_ReturnsProviderNotInstalledMessage()
         {
             var console = new TestConsole(_output);
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -488,7 +488,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
 
             var console = new TestConsole(_output);
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -515,7 +515,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
 
             var console = new TestConsole(_output, "test");
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -542,7 +542,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
 
             var console = new TestConsole(_output, "azure-default");
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",
@@ -586,7 +586,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
             var console = new TestConsole(_output, "generic-service");
-            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
+            var command = new UpdateCommand(console, LoggerMock.GetLogger<UpdateCommand>().Object, _consoleReader.Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object, _externalServiceService.Object, _externalServiceTypeService.Object)
             {
                 Project = "Project 1",
                 Job = "Default",

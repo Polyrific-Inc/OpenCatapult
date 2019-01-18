@@ -10,7 +10,7 @@ using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
-using Polyrific.Catapult.Shared.Dto.Plugin;
+using Polyrific.Catapult.Shared.Dto.Provider;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
@@ -24,15 +24,15 @@ namespace Polyrific.Catapult.Cli.Commands.Project
     {
         private readonly IConsoleReader _consoleReader;
         private readonly IProjectService _projectService;
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly ITemplateWriter _templateWriter;
 
-        public CreateCommand(IConsole console, ILogger<CreateCommand> logger, IConsoleReader consoleReader, IProjectService projectService, IPluginService pluginService, IExternalServiceService externalServiceService, ITemplateWriter templateWriter) : base(console, logger)
+        public CreateCommand(IConsole console, ILogger<CreateCommand> logger, IConsoleReader consoleReader, IProjectService projectService, IProviderService providerService, IExternalServiceService externalServiceService, ITemplateWriter templateWriter) : base(console, logger)
         {
             _consoleReader = consoleReader;
             _projectService = projectService;
-            _pluginService = pluginService;
+            _providerService = providerService;
             _externalServiceService = externalServiceService;
             _templateWriter = templateWriter;
         }
@@ -99,11 +99,11 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         {
             var tasks = jobs.SelectMany(j => j.Tasks).ToArray();
 
-            var isPluginOk = ValidatePlugins(tasks.Select(t => t.Provider), out var plugins);
-            if (!isPluginOk)
-                return "Please register the required plugins first by using \"plugin register\" command.";
+            var isProviderOk = ValidateProviders(tasks.Select(t => t.Provider), out var providers);
+            if (!isProviderOk)
+                return "Please register the required providers first by using \"provider register\" command.";
 
-            var serviceTypeNames = plugins.Where(p => p.RequiredServices != null).SelectMany(p => p.RequiredServices);
+            var serviceTypeNames = providers.Where(p => p.RequiredServices != null).SelectMany(p => p.RequiredServices);
             var taskConfigs = tasks.Where(t => t.Configs != null)
                 .SelectMany(t => t.Configs)
                 .Where(tc => tc.Key.EndsWith("ExternalService"));
@@ -139,13 +139,13 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                     task.Configs["IsPrivateRepository"] = isPrivateRepository;
                 }
 
-                // prompt for plugin additional configs
-                var plugin = plugins.FirstOrDefault(p => p.Name == task.Provider);
-                if (plugin?.AdditionalConfigs != null && plugin.AdditionalConfigs.Length > 0)
+                // prompt for provider additional configs
+                var provider = providers.FirstOrDefault(p => p.Name == task.Provider);
+                if (provider?.AdditionalConfigs != null && provider.AdditionalConfigs.Length > 0)
                 {
                     task.AdditionalConfigs = task.AdditionalConfigs ?? new Dictionary<string, string>();
-                    Console.WriteLine($"The provider \"{plugin.Name}\" of task {task.Name} has some additional config(s):");
-                    foreach (var additionalConfig in plugin.AdditionalConfigs)
+                    Console.WriteLine($"The provider \"{provider.Name}\" of task {task.Name} has some additional config(s):");
+                    foreach (var additionalConfig in provider.AdditionalConfigs)
                     {
                         string input;
                         string prompt = $"{(!string.IsNullOrEmpty(additionalConfig.Label) ? additionalConfig.Label : additionalConfig.Name)}{(additionalConfig.IsRequired ? " (Required):" : " (Leave blank to use default value):")}";
@@ -188,36 +188,36 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             return "";
         }
 
-        private bool ValidatePlugins(IEnumerable<string> pluginNames, out List<PluginDto> plugins)
+        private bool ValidateProviders(IEnumerable<string> providerNames, out List<ProviderDto> providers)
         {
-            plugins = new List<PluginDto>();
-            var notExistPlugins = new List<string>();
+            providers = new List<ProviderDto>();
+            var notExistProviders = new List<string>();
 
             if (Verbose)
-                Console.WriteLine("The project requires the following plugins:");
+                Console.WriteLine("The project requires the following providers:");
             
-            foreach (var pluginName in pluginNames.Distinct())
+            foreach (var providerName in providerNames.Distinct())
             {
-                var plugin = _pluginService.GetPluginByName(pluginName).Result;
-                if (plugin == null)
-                    notExistPlugins.Add(pluginName);
+                var provider = _providerService.GetProviderByName(providerName).Result;
+                if (provider == null)
+                    notExistProviders.Add(providerName);
                 else
-                    plugins.Add(plugin);
+                    providers.Add(provider);
 
                 if (Verbose)
                 {
-                    var status = plugin != null ? "OK" : "NOT REGISTERED";
-                    Console.WriteLine($"- {pluginName}: {status}");
+                    var status = provider != null ? "OK" : "NOT REGISTERED";
+                    Console.WriteLine($"- {providerName}: {status}");
                 }
             }
 
-            if (notExistPlugins.Count == 0)
+            if (notExistProviders.Count == 0)
             {
-                Logger.LogInformation("All required plugins are registered.");
+                Logger.LogInformation("All required providers are registered.");
                 return true;
             }
 
-            var message = $"The following plugins need to be registered before continuing the project creation: {string.Join(", ", notExistPlugins)}";
+            var message = $"The following providers need to be registered before continuing the project creation: {string.Join(", ", notExistProviders)}";
             Logger.LogInformation(message);
             Console.WriteLine(message);
 

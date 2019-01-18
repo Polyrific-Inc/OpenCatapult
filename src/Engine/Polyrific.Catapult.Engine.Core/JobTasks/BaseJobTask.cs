@@ -17,7 +17,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         private readonly IProjectService _projectService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly IExternalServiceTypeService _externalServiceTypeService;
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
 
         /// <summary>
         /// Instantiate job task
@@ -27,13 +27,13 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <param name="logger"></param>
         /// <param name="externalServiceService"></param>
         protected BaseJobTask(IProjectService projectService, IExternalServiceService externalServiceService, 
-            IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger logger)
+            IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger logger)
         {
             _projectService = projectService;
 
             _externalServiceService = externalServiceService;
             _externalServiceTypeService = externalServiceTypeService;
-            _pluginService = pluginService;
+            _providerService = providerService;
 
             PluginManager = pluginManager;
             Logger = logger;
@@ -181,7 +181,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 var externalServiceTypes = await _externalServiceTypeService.GetExternalServiceTypes(true);
                 SecretAdditionalConfigs = externalServiceTypes.SelectMany(s => s.ExternalServiceProperties).Where(p => p.IsSecret).Select(p => p.Name).ToList();
 
-                var pluginAdditionalConfigs = await _pluginService.GetPluginAdditionalConfigByPluginName(Provider);
+                var pluginAdditionalConfigs = await _providerService.GetProviderAdditionalConfigByProviderName(Provider);
                 SecretAdditionalConfigs.AddRange(pluginAdditionalConfigs.Where(c => c.IsSecret).Select(c => c.Name));   
             }
 

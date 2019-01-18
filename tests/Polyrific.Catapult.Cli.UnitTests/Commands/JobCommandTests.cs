@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly IConsole _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
-        private readonly Mock<IPluginService> _pluginService;
+        private readonly Mock<IProviderService> _providerService;
         private readonly ITestOutputHelper _output;
 
         public JobCommandTests(ITestOutputHelper output)
@@ -76,8 +76,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _projectService = new Mock<IProjectService>();
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
 
-            _pluginService = new Mock<IPluginService>();
-            _pluginService.Setup(s => s.GetPluginAdditionalConfigByPluginName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Plugin.PluginAdditionalConfigDto>());
+            _providerService = new Mock<IProviderService>();
+            _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Provider.ProviderAdditionalConfigDto>());
         }
 
         [Fact]
@@ -204,7 +204,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void JobGet_Execute_ReturnsSuccessMessage()
         {
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
                 Name = "Default"
@@ -218,7 +218,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void JobGet_Execute_ReturnsNotFoundMessage()
         {
-            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _pluginService.Object)
+            var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 2",
                 Name = "Default"

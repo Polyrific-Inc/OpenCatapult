@@ -10,21 +10,21 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
     [Command(Description = "Get a single task provider details")]
     public class GetCommand : BaseCommand
     {
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _providerService;
 
-        public GetCommand(IPluginService pluginService, IConsole console, ILogger<GetCommand> logger) : base(console, logger)
+        public GetCommand(IProviderService providerService, IConsole console, ILogger<GetCommand> logger) : base(console, logger)
         {
-            _pluginService = pluginService;
+            _providerService = providerService;
         }
 
         [Option("-n|--name", "Name of the task provider", CommandOptionType.SingleValue)]
-        public string PluginName { get; set; }
+        public string ProviderName { get; set; }
 
         public override string Execute()
         {
-            Console.WriteLine($"Trying to get task provider {PluginName}...");
-            var plugin = _pluginService.GetPluginByName(PluginName).Result;
-            return plugin == null ? $"Task provider {PluginName} was not found." : plugin.ToCliString($"Task provider {PluginName}:");
+            Console.WriteLine($"Trying to get task provider {ProviderName}...");
+            var provider = _providerService.GetProviderByName(ProviderName).Result;
+            return provider == null ? $"Task provider {ProviderName} was not found." : provider.ToCliString($"Task provider {ProviderName}:");
         }
     }
 }

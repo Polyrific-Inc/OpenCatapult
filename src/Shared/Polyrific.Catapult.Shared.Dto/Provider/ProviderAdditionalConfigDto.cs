@@ -1,8 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.Shared.Dto.Plugin
+namespace Polyrific.Catapult.Shared.Dto.Provider
 {
-    public class PluginAdditionalConfigDto
+    public class ProviderAdditionalConfigDto
     {
         /// <summary>
         /// Name of the configuration

@@ -1,37 +1,37 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.Shared.Dto.Plugin
+namespace Polyrific.Catapult.Shared.Dto.Provider
 {
-    public class NewPluginDto
+    public class NewProviderDto
     {
         /// <summary>
-        /// Name of the plugin
+        /// Name of the provider
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Type of the plugin
+        /// Type of the provider
         /// </summary>
         public string Type { get; set; }
 
         /// <summary>
-        /// Author of the plugin
+        /// Author of the provider
         /// </summary>
         public string Author { get; set; }
 
         /// <summary>
-        /// Version of the plugin
+        /// Version of the provider
         /// </summary>
         public string Version { get; set; }
 
         /// <summary>
-        /// Required services of the plugin
+        /// Required services of the provider
         /// </summary>
         public string[] RequiredServices { get; set; }
 
         /// <summary>
-        /// Plugin additional configs
+        /// Provider additional configs
         /// </summary>
-        public PluginAdditionalConfigDto[] AdditionalConfigs { get; set; }
+        public ProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
     }
 }
