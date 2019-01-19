@@ -25,8 +25,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Utilities
                         cfg.AddProfile<JobDefinitionAutoMapperProfile>();
                         cfg.AddProfile<JobTaskDefinitionAutoMapperProfile>();
                         cfg.AddProfile<JobQueueAutoMapperProfile>();
-                        cfg.AddProfile<PluginAdditionalConfigAutoMapperProfile>();
-                        cfg.AddProfile<PluginAutoMapperProfile>();
+                        cfg.AddProfile<ProviderAdditionalConfigAutoMapperProfile>();
+                        cfg.AddProfile<ProviderAutoMapperProfile>();
                         cfg.AddProfile<ProjectAutoMapperProfile>();
                         cfg.AddProfile<ProjectDataModelAutoMapperProfile>();
                         cfg.AddProfile<ProjectDataModelPropertyAutoMapperProfile>();

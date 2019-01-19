@@ -22,12 +22,12 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
         /// <param name="externalServiceService">Instance of <see cref="IExternalServiceService"/></param>
         /// <param name="externalServiceTypeService">Instance of <see cref="IExternalServiceTypeService"/></param>
-        /// <param name="IPluginService">Instance of <see cref="IPluginService"/></param>
+        /// <param name="IProviderService">Instance of <see cref="IProviderService"/></param>
         /// <param name="dataModelService">Instance of <see cref="IProjectDataModelService"/></param>
         /// <param name="pluginManager">Instance of <see cref="IPluginManager"/></param>
         /// <param name="logger">Logger</param>
-        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IProjectDataModelService dataModelService, IPluginManager pluginManager, ILogger<GenerateTask> logger) 
-            : base(projectService, externalServiceService, externalServiceTypeService, pluginService, pluginManager, logger)
+        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IProjectDataModelService dataModelService, IPluginManager pluginManager, ILogger<GenerateTask> logger) 
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
         {
             _dataModelService = dataModelService;
         }

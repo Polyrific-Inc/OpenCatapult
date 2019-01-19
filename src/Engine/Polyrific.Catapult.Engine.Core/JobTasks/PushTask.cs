@@ -14,8 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public class PushTask : BaseJobTask<PushTaskConfig>, IPushTask
     {
         /// <inheritdoc />
-        public PushTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger<PushTask> logger)
-            : base(projectService, externalServiceService, externalServiceTypeService, pluginService, pluginManager, logger)
+        public PushTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<PushTask> logger)
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
         {
         }
 

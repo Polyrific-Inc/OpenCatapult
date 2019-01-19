@@ -7,7 +7,7 @@ using Polyrific.Catapult.Engine.Core;
 using Polyrific.Catapult.Engine.Core.JobTasks;
 using Polyrific.Catapult.Shared.Dto.ExternalService;
 using Polyrific.Catapult.Shared.Dto.ExternalServiceType;
-using Polyrific.Catapult.Shared.Dto.Plugin;
+using Polyrific.Catapult.Shared.Dto.Provider;
 using Polyrific.Catapult.Shared.Dto.Project;
 using Polyrific.Catapult.Shared.Service;
 using Xunit;
@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
-        private readonly Mock<IPluginService> _pluginService;
+        private readonly Mock<IProviderService> _providerService;
         private readonly Mock<IPluginManager> _pluginManager;
         private readonly Mock<ILogger<MergeTask>> _logger;
 
@@ -56,11 +56,11 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                         }
                     }
                 });
-            _pluginService = new Mock<IPluginService>();
-            _pluginService.Setup(s => s.GetPluginAdditionalConfigByPluginName(It.IsAny<string>()))
-                .ReturnsAsync(new List<PluginAdditionalConfigDto>
+            _providerService = new Mock<IProviderService>();
+            _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>()))
+                .ReturnsAsync(new List<ProviderAdditionalConfigDto>
                 {
-                    new PluginAdditionalConfigDto
+                    new ProviderAdditionalConfigDto
                     {
                         Name = "ConnectionString",
                         IsSecret = true
@@ -79,7 +79,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
                         
-            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
+            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -101,7 +101,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
 
-            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
+            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -116,7 +116,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
                         
-            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
+            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -131,7 +131,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
+            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistRepositoryProvider";
 
@@ -167,7 +167,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _pluginService.Object, _pluginManager.Object, _logger.Object);
+            var task = new MergeTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
             task.AdditionalConfigs = new Dictionary<string, string>

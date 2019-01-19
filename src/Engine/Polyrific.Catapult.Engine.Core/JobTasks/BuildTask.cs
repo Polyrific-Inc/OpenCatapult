@@ -14,8 +14,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public class BuildTask : BaseJobTask<BuildTaskConfig>, IBuildTask
     {
         /// <inheritdoc />
-        public BuildTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IPluginService pluginService, IPluginManager pluginManager, ILogger<BuildTask> logger) 
-            : base(projectService, externalServiceService, externalServiceTypeService, pluginService, pluginManager, logger)
+        public BuildTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<BuildTask> logger) 
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
         {
             
         }

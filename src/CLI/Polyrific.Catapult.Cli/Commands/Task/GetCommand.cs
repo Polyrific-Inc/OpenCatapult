@@ -14,10 +14,10 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     {
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
-        private readonly IPluginService _pluginService;
+        private readonly IProviderService _pluginService;
 
         public GetCommand(IConsole console, ILogger<GetCommand> logger,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService, IPluginService pluginService) : base(console, logger)
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IProviderService pluginService) : base(console, logger)
         {
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
@@ -54,7 +54,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
                     if (task != null)
                     {
-                        var configs = _pluginService.GetPluginAdditionalConfigByPluginName(task.Provider).Result;
+                        var configs = _pluginService.GetProviderAdditionalConfigByProviderName(task.Provider).Result;
                         var secretConfigs = configs.Where(c => c.IsSecret).Select(c => c.Name).ToArray();
                         message = task.ToCliString($"Task {Name} in job {Job}:", secretConfigs, excludedFields: new string[]
                         {
