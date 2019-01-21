@@ -15,7 +15,7 @@ code .\{{ProjectName}}\appsettings.json
 Add the connection string to the json file, based on your database configuration:
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database={{ProjectName}};User ID=sa;Password=samprod;"
+    "DefaultConnection": "Server=localhost;Database={{ProjectName}}.db;User ID=sa;Password=samprod;"
 }
 ```
 
