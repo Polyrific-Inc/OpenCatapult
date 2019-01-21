@@ -59,6 +59,15 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers
             return message;
         }
 
+        public async Task AddProjectReferences(string projectName, string[] projectReferences)
+        {
+            var projectFile = GetProjectFullPath(projectName);
+
+            if (projectReferences != null)
+                foreach (var projectReference in projectReferences)
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger);
+        }
+
         public void AddFileToProject(string projectName, string filePath, string contents, bool overwrite = false, int modelId = 0)
         {
             var fullFilePath = Path.Combine(_outputLocation, projectName, filePath);

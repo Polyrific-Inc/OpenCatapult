@@ -610,6 +610,8 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"            var user = new ApplicationUser(1, \"{_adminEmail}\")");
             sb.AppendLine("            {");
             sb.AppendLine("                EmailConfirmed = true,");
+            sb.AppendLine("                IsActive = true,");
+            sb.AppendLine("                PasswordHash = \"AQAAAAEAACcQAAAAEKBBPo49hQnfSTCnZPTPvpdvqOA5YKXoS8XT6S4hbX9vVTzjKzgXGmUUKWnpOvyjhA==\",");
             sb.AppendLine();
             sb.AppendLine("                // ideally these values don't need to be set here,");
             sb.AppendLine("                // it's just a workaround because of a bug in ef core 2.1 which prevents migrations to work as expected");

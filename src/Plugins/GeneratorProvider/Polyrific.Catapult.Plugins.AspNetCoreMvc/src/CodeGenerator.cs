@@ -19,6 +19,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
     {
         private readonly string _projectName;
         private readonly string _outputLocation;
+        private readonly string _adminEmail;
         private readonly List<ProjectDataModelDto> _models;
         private readonly ProjectHelper _projectHelper;
         private readonly CoreProjectGenerator _coreProjectGenerator;
@@ -43,6 +44,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
         {
             _projectName = TextHelper.Pascalize(projectName.Replace("-", "_"));
             _outputLocation = outputLocation;
+            _adminEmail = adminEmail;
             _models = NormalizeModels(models);
             _projectHelper = new ProjectHelper(_projectName, outputLocation, logger);
             _coreProjectGenerator = new CoreProjectGenerator(_projectName, _projectHelper, _models, logger);
@@ -65,10 +67,12 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
         {
             var sb = new StringBuilder();
 
+            // add main project first so it set as start up project
+            sb.AppendLine(await _mainProjectGenerator.Initialize());
             sb.AppendLine(await _coreProjectGenerator.Initialize());
             sb.AppendLine(await _dataProjectGenerator.Initialize());
             sb.AppendLine(await _infrastructureProjectGenerator.Initialize());
-            sb.AppendLine(await _mainProjectGenerator.Initialize());
+            await _mainProjectGenerator.AddProjectReferences();
 
             return sb.ToString();
         }
@@ -145,7 +149,13 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 
             // generate readme if not exist
             if (!File.Exists(readmeFile))
-                await File.WriteAllTextAsync(Path.Combine(_outputLocation, "README.md"), $"# {_projectName}");
+            {
+                var sourceFile = Path.Combine(AssemblyDirectory, "Resources/README.md");
+                var readmeContent = await File.ReadAllTextAsync(sourceFile);
+                readmeContent = readmeContent.Replace("{{ProjectName}}", _projectName);
+                readmeContent = readmeContent.Replace("{{AdminEmail}}", _adminEmail);
+                await File.WriteAllTextAsync(readmeFile, readmeContent);
+            }
 
             var gitignoreFile = Path.Combine(_outputLocation, ".gitignore");
 

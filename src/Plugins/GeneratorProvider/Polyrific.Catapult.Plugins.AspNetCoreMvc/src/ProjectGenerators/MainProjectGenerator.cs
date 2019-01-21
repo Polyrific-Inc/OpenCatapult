@@ -35,11 +35,6 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
 
         public async Task<string> Initialize()
         {
-            var mainProjectReferences = new string[]
-            {
-                _projectHelper.GetProjectFullPath($"{_projectName}.{CoreProjectGenerator.CoreProject}"),
-                _projectHelper.GetProjectFullPath($"{_projectName}.{InfrastructureProjectGenerator.InfrastructureProject}")
-            };
             var mainProjectPackages = new (string, string)[]
             {
                 ("AutoMapper", "7.0.1"),
@@ -47,11 +42,21 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
                 ("MailKit", "2.0.6")
             };
 
-            var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", mainProjectReferences, mainProjectPackages);
+            var message = await _projectHelper.CreateProject($"{_projectName}", "mvc", null, mainProjectPackages);
             AddLogo();
             ModifyHomePage();
 
             return message;
+        }
+
+        public async Task AddProjectReferences()
+        {
+            var mainProjectReferences = new string[]
+            {
+                _projectHelper.GetProjectFullPath($"{_projectName}.{CoreProjectGenerator.CoreProject}"),
+                _projectHelper.GetProjectFullPath($"{_projectName}.{InfrastructureProjectGenerator.InfrastructureProject}")
+            };
+            await _projectHelper.AddProjectReferences(_projectName, mainProjectReferences);
         }
 
         public async Task<string> UpdateMigrationScript()
