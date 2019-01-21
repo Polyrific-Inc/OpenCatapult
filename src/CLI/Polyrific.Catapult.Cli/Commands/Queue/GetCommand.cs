@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
@@ -50,8 +51,30 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                     message = queue.ToCliString($"Job Queue {Number}", excludedFields: new string[]
                     {
                         "ProjectId",
-                        "JobDefinitionId"
+                        "JobDefinitionId",
+                        "JobTasksStatus"
                     });
+
+                    if (queue.JobTasksStatus?.Count > 0)
+                    {
+                        var sb = new System.Text.StringBuilder();
+                        sb.AppendLine();
+                        sb.AppendLine("  ------------------------------------------------------------------");
+                        sb.AppendLine("  Job Task Status:");
+
+                        foreach (var taskStatus in queue.JobTasksStatus.OrderBy(t => t.Sequence))
+                        {
+                            sb.AppendLine();
+                            sb.AppendLine($"    {taskStatus.Sequence}. Task Name: {taskStatus.TaskName}");
+                            sb.AppendLine($"       Status: {taskStatus.Status}");
+                            sb.AppendLine($"       Remarks: {taskStatus.Remarks}");
+                        }
+
+                        sb.AppendLine();
+                        sb.AppendLine("  ------------------------------------------------------------------");
+
+                        message += sb.ToString();
+                    }
                 }
             }
 

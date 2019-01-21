@@ -67,6 +67,8 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                         "CatapultEngineVersion"
                     });
                     Logger.LogInformation(message);
+
+                    message += "\nThe job will be picked up by a running engine shortly.";
                     return message;
                 }
             }
