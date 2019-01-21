@@ -11,11 +11,19 @@ param(
     [switch]$noConfig = $false
 )
 
+## Initially make sure the location are in root of opencatapult
+$opencatapultRootPath = Split-Path $PSScriptRoot -Parent
+Set-Location $opencatapultRootPath
 
-function Run-BuildScript ([string]$script)
+
+function Run-BuildScript ([string]$script, [string]$scriptArgs)
 {
-   $fullPathScript = Join-Path -Path $PSScriptRoot -ChildPath $script
-   &$fullPathScript
+   $fullPathScript += ".\builds\" + $script
+   if ($scriptArgs) {
+    $fullPathScript += " ";
+    $fullPathScript += $scriptArgs;
+   }
+   Invoke-Expression $fullPathScript
 }
 
 function Start-InNewWindowMacOS {
@@ -26,7 +34,7 @@ function Start-InNewWindowMacOS {
   )
 
   # Construct the shebang line 
-  $shebangLine = '#!/usr/bin/env powershell'
+  $shebangLine = '#!/usr/bin/env pwsh'
   # Add options, if specified:
   # As an aside: Fundamentally, this wouldn't work on Linux, where
   # the shebang line only supports *1* argument, which is `powershell` in this case.
@@ -36,18 +44,6 @@ function Start-InNewWindowMacOS {
   # Create a temporary script file
   $tmpScript = New-TemporaryFile
 
-  # Add the shebang line, the self-deletion code, and the script-block code.
-  # Note: 
-  #      * The self-deletion code assumes that the script was read *as a whole*
-  #        on execution, which assumes that it is reasonably small.
-  #        Ideally, the self-deletion code would use 
-  #        'Remove-Item -LiteralPath $PSCommandPath`, but, 
-  #        as of PowerShell Core v6.0.0-beta.6, this doesn't work due to a bug 
-  #        - see https://github.com/PowerShell/PowerShell/issues/4217
-  #      * UTF8 encoding is desired, but -Encoding utf8, regrettably, creates
-  #        a file with BOM. For now, use ASCII.
-  #        Once v6 is released, BOM-less UTF8 will be the *default*, in which
-  #        case you'll be able to use `> $tmpScript` instead.
   $shebangLine, "Remove-Item -LiteralPath '$tmpScript'", $ScriptBlock.ToString() | 
     Set-Content -Encoding Ascii -LiteralPath $tmpScript
 
@@ -59,22 +55,15 @@ function Start-InNewWindowMacOS {
   open -a Terminal -- $tmpScript
 }
 
-function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs, [bool]$wait) 
+function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs) 
 {    
     if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
         #Windows env
-        if (!$wait) {
-            $command = "-NoExit"
-        }
-        else {
-            $command = ""
-        }
-
-        $command += " -file `""
+        $command = "-NoExit "
+        $command += "-file `""
         $command += Join-Path -Path $PSScriptRoot -ChildPath $script
         $command += "`" "
         $command += $scriptArgs
-        write-host $command
         
         if ($wait) {
             Start-Process Powershell $command -Wait
@@ -86,18 +75,12 @@ function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs, [bool]$w
     else {
         # Linux or Mac
         if ($IsMacOS) {
-            $command = "`""
             $command += Join-Path -Path $PSScriptRoot -ChildPath $script
-            $command += "`" "
+            $command += " "
             $command += $scriptArgs
+            $scriptBlock = [Scriptblock]::Create($command)
         
-            if ($wait) {
-                Start-InNewWindowMacOS $command 
-            }
-            else {
-                Start-InNewWindowMacOS -NoExit $command 
-            }
-            
+            Start-InNewWindowMacOS -NoExit $scriptBlock
         }
         else {
             if (!$terminal) {
@@ -106,22 +89,14 @@ function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs, [bool]$w
 
             $command = "-- pwsh"
             
-            
-            if (!$wait) {
-                $command = " -NoExit"
-            }
-            $command = " -file `""
+            $command += " -NoExit"
+            $command += " -file `""
 
             $command += Join-Path -Path $PSScriptRoot -ChildPath $script
             $command += "`" "
             $command += $scriptArgs
         
-            if ($wait) {
-                Start-Process $terminal $command -Wait
-            }
-            else {
-                Start-Process $terminal $command
-            }
+            Start-Process $terminal $command
         }
     }
 }
@@ -144,7 +119,7 @@ if ($noPrompt) {
 if ($connString) {
     $args += "-connString " + $connString
 }
-Run-BuildScriptNewWindow "build-api.ps1" $args $true
+Run-BuildScript "build-api.ps1" $args
 
 
 ## Build Engine
