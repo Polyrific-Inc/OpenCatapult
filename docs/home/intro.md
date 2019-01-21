@@ -40,11 +40,11 @@ This is the user-facing interface which is used to interact with `OpenCatapult`.
 
 Engine runs as a stand-alone console application which waits for any queued jobs to be executed. It orchestrates the execution of job tasks, and reports back the result to the API asynchronously. It can be hosted in any machine (either Windows, Mac, or Linux) which has ability to reach the API endpoint. You can find more details about its capability in the [Engine References](../engine/engine.md).
 
-### Service Providers \(Plugins\)
+### Task Providers
 
-Engine is a platform-agnostic system. It means that Engine actually knows nothing about the concrete work that the job tasks do.
-Service providers are specific implementation of job tasks which can be plugged into the system to do "the real work" during task execution.
+OpenCatapult's Engine is a platform-agnostic system. It means that Engine actually knows nothing about the concrete work that the job tasks do.
+Task Provider is an `OpenCatapult` extension which provides specific implementation of a job task.
 
-For example, Engine actually knows nothing about GitHub repository. All Engine knows is just it wants to push some code to a remote repository via `Push` task. So we need to provide a service provider, e.g. `GitHubRepositoryProvider`, which will handle the source code delivery in a specific way to GitHub.
+For example, Engine actually knows nothing about GitHub repository. All Engine knows is just it wants to push some code to a remote repository via `Push` task. So we need to provide a Task Provider, e.g. `Polyrific.Catapult.Plugins.GitHub`, which will handle the source code delivery in a specific way to GitHub. If you want to submit the code into another repository service, you can just plug in a new Task Provider, and reconfigure the `Push` task to use it.
 
-`OpenCatapult` is packed with some built-in service provider plugins. Please check them in the [Plugins References](../plugins/plugins.md).
+`OpenCatapult` is packed with some built-in Task Providers. Please check them in the [Task Provider References](../task-providers/task-provider.md).
