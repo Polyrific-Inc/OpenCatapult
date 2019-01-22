@@ -88,10 +88,13 @@ if ($LASTEXITCODE -ne 0) {
 
 # run the API
 if ($noRun) {
-    Set-Location $apiPublishPath
     Write-Output "API is ready. Please run: dotnet $apiDll --urls `"$http;$https`""
 } else {
     Write-Output "Running API..."
+    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
+    Write-Host "|This terminal window should remain open for catapult to work|" -ForegroundColor Yellow 
+    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
+    Write-Host "To learn more about catapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green 
     Write-Output "dotnet $apiDll --urls `"$http;$https`""
     Set-Location $apiPublishPath
     dotnet $apiDll --urls "$http;$https"

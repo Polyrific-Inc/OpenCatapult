@@ -139,6 +139,11 @@ if (!$noRun) {
     $apiPublishPath = Join-Path $rootPath "/publish/api"
     $apiDll = Join-Path $apiPublishPath "/ocapi.dll"
     Write-Output "Running API..."
+    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
+    Write-Host "|This terminal window should remain open for catapult to work|" -ForegroundColor Yellow 
+    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
+    Write-Host "The engine and CLI are in the new terminal windows. Please go ahead and try to run the commands available there." -ForegroundColor Green 
+    Write-Host "To learn more about catapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green 
     Write-Output "dotnet $apiDll --urls `"$http;$https`""
     Set-Location $apiPublishPath
     dotnet $apiDll --urls "$http;$https"
