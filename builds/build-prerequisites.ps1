@@ -83,7 +83,7 @@ if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
 	}
 }
 elseif ($IsMacOS) {
-	Write-Host "You are running on OSX which currently does not support SQL Server. Please provide a remote db server when building API." -ForegroundColor Red
+	Write-Host "You are running on Mac OS which currently does not support SQL Server. Please provide a remote db server when building API." -ForegroundColor Red
 }
 else {
 	# Check SQL Instance in linux
