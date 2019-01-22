@@ -65,7 +65,7 @@ This is Database specific project that implements the repository abstraction fro
 - Entity Configs: Defines the physical database configuration you want to override. It defaults to the structure defined in the `Core.Entities`
 
 ### {{SampleProject}}.Infrastructure
-This is only a bootstrapper project, to link the Dependency Injection from Data project to Web project. This way, we can have a cleaner dependency map where the Web only depen on the Core project.
+This is a bootstrapper project, to link the Dependency Injection from Data project to Web project. This way, we can have a cleaner dependency map where the Web only depend on the Core project.
 
 ## Advanced
 
