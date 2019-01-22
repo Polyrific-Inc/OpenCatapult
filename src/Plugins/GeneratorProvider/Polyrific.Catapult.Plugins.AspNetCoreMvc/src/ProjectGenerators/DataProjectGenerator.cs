@@ -88,12 +88,39 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
         private void GenerateEntityConfig(ProjectDataModelDto model)
         {
             var sb = new StringBuilder();
+            sb.AppendLine("using Microsoft.EntityFrameworkCore.Metadata.Builders;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
+            sb.AppendLine($"using {Name}.Identity;");
             sb.AppendLine();
             sb.AppendLine($"namespace {Name}.EntityConfigs");
             sb.AppendLine("{");
             sb.AppendLine($"    public class {model.Name}Config : BaseEntityConfig<{model.Name}>");
             sb.AppendLine("    {");
+
+            var userRelations = model.Properties.Where(p => p.RelatedProjectDataModelName == CoreProjectGenerator.UserModel).ToList();
+            if (userRelations.Count > 0)
+            {
+                sb.AppendLine($"        public override void Configure(EntityTypeBuilder<{model.Name}> builder)");
+                sb.AppendLine("        {");
+                sb.AppendLine("            base.Configure(builder);");
+
+                foreach (var userRelation in userRelations)
+                {
+                    sb.AppendLine($"            builder.Ignore(m => m.{userRelation.Name});");
+
+                    if (userRelation.RelationalType == PropertyRelationalType.OneToOne)
+                    {
+                        sb.AppendLine($"            builder.HasOne(typeof(ApplicationUser)).WithOne().HasForeignKey(typeof({model.Name}), \"{userRelation.Name}Id\");");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"            builder.HasMany(typeof(ApplicationUser));");
+                    }
+                }
+
+                sb.AppendLine("        }");
+            }
+
             sb.AppendLine("    }");
             sb.AppendLine("}");
 
