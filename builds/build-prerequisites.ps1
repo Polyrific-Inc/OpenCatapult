@@ -82,6 +82,9 @@ if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
 		Write-Host "SQL Server is not found in the local machine. Please install it if you want to use localhost as the db server. Otherwise, you can provide a remote db server." -ForegroundColor Red
 	}
 }
+elseif ($IsMacOS) {
+	Write-Host "You are running on Mac OS which currently does not support SQL Server. Please provide a remote db server when building API." -ForegroundColor Red
+}
 else {
 	# Check SQL Instance in linux
 	$linuxSqlResult = systemctl status mssql-server

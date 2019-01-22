@@ -1,11 +1,14 @@
 # Generator Provider
-Generator providers can be used in [Generate task](../user-guides/job-definitions.md#generate). This task will generate the source code based on the project configuration and its defined models.
+
+Generator providers can be used in [Generate task](../user-guides/job-definitions.md#generate). The main role of this provider is to provide a specific implementation of source code generation based on the project configuration and the defined data models.
 
 ## Polyrific.Catapult.Plugins.AspNetCoreMvc
-This is the built-in generator provider in opencatapult. This plugin will create a web application using AspNet Core Mvc. The generated code further explained in the last section.
+
+`OpenCatapult` provides `Polyrific.Catapult.Plugins.AspNetCoreMvc` as the built-in provider for Generator Provider. This provider will create an AspNet Core Mvc application. The generated code further explained in the last section.
 
 ### Usage
-The generator provider can only be used in generate task. You can use the name `Polyrific.Catapult.Plugins.AspNetCoreMvc` when adding or updating a build task:
+
+This provider can only be used in Generate task. You can use the name `Polyrific.Catapult.Plugins.AspNetCoreMvc` when adding or updating a Generate task:
 
 ```sh
 dotnet occli.dll task add -p SampleProject -j Default -n Generate -t Generate -prov Polyrific.Catapult.Plugins.AspNetCoreMvc
@@ -17,14 +20,16 @@ dotnet occli.dll task update -p SampleProject -j Default -n Generate -prov Polyr
 
 ### Additional configs
 
-This plugin have several additional configurations that you can use to fit your use case
+This provider has several additional configurations that you can use to fit your use case:
 
-| Name | Description | DefaultValue | Mandatory |
+| Name | Description | Default Value | Mandatory |
 | --- | --- | --- | --- | --- |
 | AdminEmail | The email of the admin user used to login to the application | - | Yes |
 
 ### Structures of generated code
+
 The AspNetCoreMvc generator will generate the code with the following structure:
+
 - Main Web Project: The Web UI project. It uses Asp Net Core Mvc as the web framework.
 - Business layer project: The core business of the applications reside here.
 - Data project: The project that define the structure of physical database. It uses entity framework core fluent API to define the data structure, and generate migration script.

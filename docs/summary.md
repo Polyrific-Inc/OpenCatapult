@@ -58,14 +58,14 @@
   * [Config](engine/config.md)
 * [Web UI](web/web.md)
 * [Mobile](mobile/mobile.md)
-* [Built-In Plugins](plugins/plugins.md)
-  * [Build Provider](plugins/build-provider.md)
-  * [Database Provider](plugins/database-provider.md)
-  * [Generator Provider](plugins/generator-provider.md)
-  * [Hosting Provider](plugins/hosting-provider.md)
-  * [Repository Provider](plugins/repository-provider.md)
-  * [Storage Provider](plugins/storage-provider.md)
-  * [Test Provider](plugins/test-provider.md)
+* [Task Providers](task-providers/task-provider.md)
+  * [Build Provider](task-providers/build-provider.md)
+  * [Database Provider](task-providers/database-provider.md)
+  * [Generator Provider](task-providers/generator-provider.md)
+  * [Hosting Provider](task-providers/hosting-provider.md)
+  * [Repository Provider](task-providers/repository-provider.md)
+  * [Storage Provider](task-providers/storage-provider.md)
+  * [Test Provider](task-providers/test-provider.md)
 
 ## Management
 
