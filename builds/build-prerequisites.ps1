@@ -24,7 +24,7 @@ if ([System.Version]$currentSdkVersion -lt $dotnetSdkVersion) {
 	Switch ($readInstallDotnet) { 
 		Y {$installDotnet=$true} 
 		N {$installDotnet=$false} 
-		Default {Write-Host "Invalid input" -ForegroundColor Red; $installDotnet=$false} 
+		Default {Write-Error "Invalid input"; break;} 
 	} 
 	
 	if ($installDotnet) {
@@ -35,8 +35,8 @@ if ([System.Version]$currentSdkVersion -lt $dotnetSdkVersion) {
 			.\dotnet-install.ps1 -Channel 2.1 -InstallDir $env:ProgramFiles\dotnet
 		}
 		else { 
-			Write-Host "Cannot find dotnet-install.ps1" -ForegroundColor Red
-			Exit 1
+			Write-Error "Cannot find dotnet-install.ps1"
+			break
 		}
 	}
 }
@@ -57,7 +57,7 @@ if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
 			Switch ($readRunSql) { 
 				Y {$runSql=$true} 
 				N {$runSql=$false} 
-				Default {Write-Host "Invalid input" -ForegroundColor Red; $runSql=$false} 
+				Default {Write-Error "Invalid input"; break;} 
 			} 
 
 			if ($runSql) {
@@ -72,7 +72,18 @@ if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
 					}
 				}
 				else {
-					Write-Host "You need Administrator access to start the service" -ForegroundColor Red
+					Write-Host "You need Administrator access to start the service. Please execute the script in a shell with elevated permission or start the service manually." -ForegroundColor Yellow
+					Write-Host "Do you want to continue with the update migration process now? (y/n)" -ForegroundColor Yellow
+					$readContinue = Read-Host
+					Switch ($readContinue) { 
+						Y {$continueBuild=$true} 
+						N {$continueBuild=$false} 
+						Default {Write-Error "Invalid input"; break;} 
+					}
+					
+					if (!$continueBuild) {
+						break;
+					}
 				}
 			}
 		}
@@ -99,7 +110,7 @@ else {
 		Switch ($readRunSqlLinux) { 
 			Y {$runSqlLinux=$true} 
 			N {$runSqlLinux=$false} 
-			Default {Write-Host "Invalid input" -ForegroundColor Red; $runSqlLinux=$false} 
+			Default {Write-Error "Invalid input"; break;} 
 		} 
 		
 		if ($runSqlLinux) {
