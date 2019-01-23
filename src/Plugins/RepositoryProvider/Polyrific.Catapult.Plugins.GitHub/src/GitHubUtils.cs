@@ -269,10 +269,21 @@ namespace Polyrific.Catapult.Plugins.GitHub
                 if (repository == null)
                 {
                     _logger.LogInformation($"Creating repository {repositoryOwner}/{projectName}...");
-                    await client.Repository.Create(repositoryOwner, new NewRepository(projectName)
+                    var newRepository = new NewRepository(projectName)
                     {
                         Private = isPrivateRepository
-                    });
+                    };
+
+                    var currentUser = await client.User.Current();
+
+                    if (repositoryOwner == currentUser.Login)
+                    {
+                        await client.Repository.Create(newRepository);
+                    }
+                    else
+                    {
+                        await client.Repository.Create(repositoryOwner, newRepository);
+                    }
                 }
                 else
                 {
