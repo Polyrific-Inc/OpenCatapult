@@ -276,7 +276,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
                     var currentUser = await client.User.Current();
 
-                    if (repositoryOwner == currentUser.Login)
+                    if (repositoryOwner.Equals(currentUser.Login, StringComparison.InvariantCultureIgnoreCase))
                     {
                         await client.Repository.Create(newRepository);
                     }
