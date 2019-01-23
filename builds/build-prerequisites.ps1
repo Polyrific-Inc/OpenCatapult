@@ -99,10 +99,10 @@ elseif ($IsMacOS) {
 else {
 	# Check SQL Instance in linux
 	$linuxSqlResult = systemctl status mssql-server
-	if ($linuxSqlResult -Contains "Active: active") {
+	if ($linuxSqlResult -like "*Active: active*") {
 		"SQL Server available in local machine."
 	}
-	elseif ($linuxSqlResult -Contains "Active: inactive") {	
+	elseif ($linuxSqlResult -like "*Active: inactive*") {	
 		# Ask user if she want to automatically install the dotnet SDK
 		$allGood = $false
 		Write-Host "SQL instance is found in the local machine, but the service is not running. Do you want to start it now? (y/n)" -ForegroundColor Yellow
@@ -114,7 +114,7 @@ else {
 		} 
 		
 		if ($runSqlLinux) {
-			sudo systemctl enable mssql-server
+			sudo systemctl start mssql-server
 		}
 	}
 	else {
