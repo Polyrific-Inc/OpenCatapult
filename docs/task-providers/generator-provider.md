@@ -34,13 +34,13 @@ cd path/to/solution_folder
 
 You would need to modify the connection string in the `appsettings.json` file. If you've installed visual studio code you can run this:
 ```sh
-code .\{{ProjectName}}\appsettings.json
+code .\SampleProject\appsettings.json
 ```
 
 Add the connection string to the json file, based on your database configuration:
 ```json
 "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database={{ProjectName}}.db;User ID=sa;Password=samprod;"
+    "DefaultConnection": "Server=localhost;Database=SampleProject.db;User ID=sa;Password=samprod;"
 }
 ```
 
@@ -48,12 +48,12 @@ Note that to use a localhost database server you would need SQL Server instance 
 
 After the connection string is set, run the following command to initialize the database:
 ```sh
-dotnet ef database update --startup-project {{ProjectName}} --project {{ProjectName}}.Data
+dotnet ef database update --startup-project SampleProject --project SampleProject.Data
 ```
 
 Then, to run the web, use the following command:
 ```sh
-dotnet run --project {{ProjectName}} --urls "http://localhost:8006;https://localhost:44306"
+dotnet run --project SampleProject --urls "http://localhost:8006;https://localhost:44306"
 ```
 
 Finally, you can then open the website in your browser using one of these urls:
