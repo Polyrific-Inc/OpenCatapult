@@ -11,6 +11,8 @@ namespace Polyrific.Catapult.Api.Data.Identity
 
         public bool IsActive { get; set; }
 
+        public string Version { get; set; }
+
         public int? CatapultEngineId { get; set; }
         public virtual ApplicationUser CatapultEngine { get; set; }
     }

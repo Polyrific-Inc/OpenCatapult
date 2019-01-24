@@ -39,7 +39,8 @@ namespace Polyrific.Catapult.Api.Data.Identity
             CreateMap<ApplicationUser, CatapultEngine>()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.CatapultEngineProfile.IsActive))
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.UserName))
-                .ForMember(dest => dest.LastSeen, opt => opt.MapFrom(src => src.CatapultEngineProfile.LastSeen));
+                .ForMember(dest => dest.LastSeen, opt => opt.MapFrom(src => src.CatapultEngineProfile.LastSeen))
+                .ForMember(dest => dest.Version, opt => opt.MapFrom(src => src.CatapultEngineProfile.Version));
             CreateMap<CatapultEngine, CatapultEngineProfile>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore())
                 .ForMember(dest => dest.Created, opt => opt.Ignore())

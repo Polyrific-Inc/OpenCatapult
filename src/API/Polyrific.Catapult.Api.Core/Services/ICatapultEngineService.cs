@@ -112,8 +112,9 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Update Engine's Last Seen value
         /// </summary>
         /// <param name="engineName">Name of the engine</param>
+        /// <param name="version">Version of the engine</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task UpdateLastSeen(string engineName, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateLastSeen(string engineName, string version, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

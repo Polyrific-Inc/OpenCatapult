@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
+using Polyrific.Catapult.Shared.Dto.Version;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Shared.ApiClient
@@ -12,11 +12,9 @@ namespace Polyrific.Catapult.Shared.ApiClient
         {
         }
 
-        public async Task<string> GetApiVersion()
+        public async Task<VersionDto> GetApiVersion()
         {
-            var apiVersion = await Api.Get<JObject>("version");
-
-            return (string)apiVersion.SelectToken("version");
+            return await Api.Get<VersionDto>("version");
         }
     }
 }

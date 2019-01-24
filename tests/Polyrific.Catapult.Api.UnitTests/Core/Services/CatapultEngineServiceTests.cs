@@ -208,7 +208,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var date1 = DateTime.UtcNow;
 
             var catapultEngineService = new CatapultEngineService(_catapultEngineRepository.Object);
-            await catapultEngineService.UpdateLastSeen("test");
+            await catapultEngineService.UpdateLastSeen("test", "1.0.0");
 
             var date2 = DateTime.UtcNow;
             var testEngine = _data.First();

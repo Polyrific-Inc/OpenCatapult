@@ -9,5 +9,6 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public DateTime? LastSeen { get; set; }
+        public string Version { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Threading.Tasks;
+using Polyrific.Catapult.Shared.Dto.Version;
 
 namespace Polyrific.Catapult.Shared.Service
 {
@@ -10,6 +11,6 @@ namespace Polyrific.Catapult.Shared.Service
         /// Get version of the API
         /// </summary>
         /// <returns></returns>
-        Task<string> GetApiVersion();
+        Task<VersionDto> GetApiVersion();
     }
 }

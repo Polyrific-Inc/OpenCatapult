@@ -11,6 +11,7 @@ using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobQueue;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Api.Controllers
@@ -184,7 +185,7 @@ namespace Polyrific.Catapult.Api.Controllers
             var result = _mapper.Map<JobDto>(job);
 
             // update engine's last seen
-            await _engineService.UpdateLastSeen(engineName);
+            await _engineService.UpdateLastSeen(engineName, GetEngineVersion(Request.Headers["User-Agent"].ToString()));
 
             return Ok(result);
         }
@@ -262,6 +263,21 @@ namespace Polyrific.Catapult.Api.Controllers
             var logs = await _jobQueueService.GetJobLogs(queueId);
 
             return Ok(logs);
+        }
+
+        private string GetEngineVersion(string userAgent)
+        {
+            if (!string.IsNullOrEmpty(userAgent))
+            {
+                var appNameVersion = userAgent.Split(' ').FirstOrDefault();
+
+                if (appNameVersion != null)
+                {
+                    return appNameVersion.Split('/').LastOrDefault();
+                }
+            }
+
+            return null;
         }
     }
 }

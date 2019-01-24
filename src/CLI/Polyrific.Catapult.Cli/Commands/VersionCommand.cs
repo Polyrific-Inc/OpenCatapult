@@ -22,11 +22,25 @@ namespace Polyrific.Catapult.Cli.Commands
         {
             Console.WriteLine("Checking version of the components...");
 
-            var apiVersion = _versionService.GetApiVersion().Result;
+            var versionResult = _versionService.GetApiVersion().Result;
 
             var sb = new StringBuilder();
-            sb.AppendLine($"API Version: {apiVersion}");
+            sb.AppendLine($"API Version: {versionResult.ApiVersion}");
             sb.AppendLine($"CLI Version: {GetCliVersion()}");
+
+            if (versionResult.Engines?.Count > 0)
+            {
+                sb.AppendLine($"Registered Engines:");
+                foreach (var engine in versionResult.Engines)
+                    sb.AppendLine($"  - {engine.Name}: {engine.Version ?? "n/a"}");
+            }
+
+            if (versionResult.Providers?.Count > 0)
+            {
+                sb.AppendLine($"Registered Task Providers:");
+                foreach (var provider in versionResult.Providers)
+                    sb.AppendLine($"  - {provider.Name}: {provider.Version}");
+            }
 
             return sb.ToString();
         }

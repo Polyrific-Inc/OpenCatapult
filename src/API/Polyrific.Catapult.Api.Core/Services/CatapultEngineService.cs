@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _catapultEngineRepository.ValidateCatapultEnginePassword(catapultEngineName, password, cancellationToken);
         }
 
-        public async Task UpdateLastSeen(string engineName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UpdateLastSeen(string engineName, string version, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -167,6 +167,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (engine != null)
             {
                 engine.LastSeen = DateTime.UtcNow;
+                engine.Version = version;
                 await _catapultEngineRepository.Update(engine, cancellationToken);
             }
         }

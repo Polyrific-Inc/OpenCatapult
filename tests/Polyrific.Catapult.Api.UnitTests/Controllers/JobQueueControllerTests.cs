@@ -166,7 +166,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         new Claim(ClaimTypes.Name, "Engine01"),
                         new Claim(ClaimTypes.Role, UserRole.Engine)
                     })
-                })
+                }),
             };
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object)
@@ -178,7 +178,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             Assert.IsType<OkObjectResult>(result);
 
-            _catapultEngineService.Verify(s => s.UpdateLastSeen("Engine01", It.IsAny<CancellationToken>()), Times.Once);
+            _catapultEngineService.Verify(s => s.UpdateLastSeen("Engine01", null, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
