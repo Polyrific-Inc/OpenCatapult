@@ -91,6 +91,8 @@ namespace Polyrific.Catapult.Engine.Core
 
                     // main process
                     _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
+
+                    System.Console.WriteLine($"Invoking \"{jobTask.Name}\" task.");
                     var result = await taskObj.RunMainTask(outputValues);
                     results[jobTask.Id] = result;
                     if (!result.IsSuccess && result.StopTheProcess)
