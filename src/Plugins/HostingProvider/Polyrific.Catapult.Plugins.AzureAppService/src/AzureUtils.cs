@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             return web;
         }
 
-        public IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool isAllowRename)
+        public IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool isAllowAutomaticRename)
         {
             var resourceGroup = GetOrCreateResourceGroup(subscriptionId, resourceGroupName, regionName);
 
@@ -113,7 +113,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
                 
                 if (plan != null)
                 {
-                    appName = GetAvailableAppName(subscriptionId, appName, isAllowRename);
+                    appName = GetAvailableAppName(subscriptionId, appName, isAllowAutomaticRename);
 
                     if (!string.IsNullOrEmpty(appName))
                     {
@@ -173,7 +173,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         }
 
         #region Private Methods
-        private string GetAvailableAppName(string subscriptionId, string appName, bool isAllowRename)
+        private string GetAvailableAppName(string subscriptionId, string appName, bool isAllowAutomaticRename)
         {
             var restClient = _authenticatedAzure.WithSubscription(subscriptionId).AppServices.RestClient;
             var websiteManagementClient = new WebSiteManagementClient(restClient);
@@ -183,7 +183,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
             if (!(result.NameAvailable ?? false))
             {
-                if (!isAllowRename)
+                if (!isAllowAutomaticRename)
                 {
                     _logger.LogError($"The application name \"{appName}\"is not available: {result.Message}");
                     return null;

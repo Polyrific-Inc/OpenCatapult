@@ -20,12 +20,12 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
-  - name: IsAllowRename
-    label: Allow Rename?
+  - name: AllowAutomaticRename
+    label: Allow Automatic Rename?
     type: boolean
     is-required: false
     is-secret: false
-    hint:  Allows Automatically reassign app service name when it is not available?
+    hint:  Do you want to automatically reassign app service name when it is not available?
   - name: DeploymentSlot
     label: Deployment Slot
     type: string

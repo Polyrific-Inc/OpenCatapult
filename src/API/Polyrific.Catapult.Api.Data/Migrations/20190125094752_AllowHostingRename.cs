@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                 keyColumn: "Id",
                 keyValue: 10,
                 columns: new[] { "ConcurrencyStamp", "Hint", "Label", "Name", "Type" },
-                values: new object[] { "c48cafcc-b3e9-4375-a2c2-f30404382266", "Allows Automatically reassign app service name when it is not available?", "Allow Rename?", "IsAllowRename", "boolean" });
+                values: new object[] { "c48cafcc-b3e9-4375-a2c2-f30404382266", "Do you want to automatically reassign app service name when it is not available?", "Allow Automatic Rename?", "AllowAutomaticRename", "boolean" });
 
             migrationBuilder.UpdateData(
                 table: "PluginAdditionalConfigs",

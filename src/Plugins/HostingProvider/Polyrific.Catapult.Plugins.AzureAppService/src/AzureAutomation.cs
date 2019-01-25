@@ -22,13 +22,13 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
 
         public async Task<(string, string)> DeployWebsite(string artifactLocation, 
             string subscriptionId, string resourceGroupName, string appServiceName, 
-            string deploymentSlot, string connectionString, string regionName, string planName, bool isAllowRename)
+            string deploymentSlot, string connectionString, string regionName, string planName, bool isAllowAutomaticRename)
         {
             try
             {
                 var hostLocation = "";
 
-                var website = _azureUtils.GetOrCreateWebsite(subscriptionId, resourceGroupName, appServiceName, regionName, planName, isAllowRename);
+                var website = _azureUtils.GetOrCreateWebsite(subscriptionId, resourceGroupName, appServiceName, regionName, planName, isAllowAutomaticRename);
                 if (website == null)
                 {
                     var error = $"Website {appServiceName} is not found in {resourceGroupName}";
