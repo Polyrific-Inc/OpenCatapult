@@ -17,8 +17,8 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         /// <param name="connectionString">The connection string</param>
         /// <param name="planName">The plan name to be used for web create</param>
         /// <param name="regionName">The region for which the web will be created</param>
-        /// <param name="isAllowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
+        /// <param name="allowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
         /// <returns>Host location and Error message if any</returns>
-        Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString, string regionName, string planName, bool isAllowAutomaticRename);
+        Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString, string regionName, string planName, bool allowAutomaticRename);
     }
 }

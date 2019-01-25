@@ -46,8 +46,8 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         /// <param name="name">instance name of the azure app service</param>
         /// <param name="regionName">The region for which the web will be created</param>
         /// <param name="planName">The plan name to be used for web create</param>
-        /// <param name="isAllowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
+        /// <param name="allowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
         /// <returns></returns>
-        IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool isAllowAutomaticRename);
+        IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool allowAutomaticRename);
     }
 }
