@@ -18,8 +18,14 @@ additional-configs:
   - name: AppServiceName
     label: App Service
     type: string
-    is-required: true
+    is-required: false
     is-secret: false
+  - name: IsAllowRename
+    label: Allow Rename?
+    type: boolean
+    is-required: false
+    is-secret: false
+    hint:  Allows Automatically reassign app service name when it is not available?
   - name: DeploymentSlot
     label: Deployment Slot
     type: string

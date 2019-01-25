@@ -45,9 +45,20 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             if (AdditionalConfigs.ContainsKey("ResourceGroupName") && !string.IsNullOrEmpty(AdditionalConfigs["ResourceGroupName"]))
                 resourceGroupName = AdditionalConfigs["ResourceGroupName"];
 
-            var appServiceName = "";
+            bool isAllowRename = true;
+            if (AdditionalConfigs.ContainsKey("IsAllowRename"))
+                bool.TryParse(AdditionalConfigs["IsAllowRename"], out isAllowRename);
+
+            var appServiceName = ProjectName;
             if (AdditionalConfigs.ContainsKey("AppServiceName") && !string.IsNullOrEmpty(AdditionalConfigs["AppServiceName"]))
+            {
                 appServiceName = AdditionalConfigs["AppServiceName"];
+            }
+            else
+            {
+                // if the app service name is not defined, the allow rename should always be true
+                isAllowRename = true;
+            }
 
             var deploymentSlot = "";
             if (AdditionalConfigs.ContainsKey("DeploymentSlot") && !string.IsNullOrEmpty(AdditionalConfigs["DeploymentSlot"]))
@@ -69,7 +80,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             if (!Path.IsPathRooted(artifactLocation))
                 artifactLocation = Path.Combine(Config.WorkingLocation, artifactLocation);
 
-            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString, region, appServicePlan);
+            var (hostLocation, error) = await _azure.DeployWebsite(artifactLocation, subscriptionId, resourceGroupName, appServiceName, deploymentSlot, connectionString, region, appServicePlan, isAllowRename);
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 

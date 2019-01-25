@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService.UnitTests
             var slot = new Mock<IDeploymentSlot>();
             slot.SetupGet(x => x.DefaultHostName).Returns("https://test.azurewebsites.net");
 
-            _azureUtils.Setup(x => x.GetOrCreateWebsite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(webSite.Object);
+            _azureUtils.Setup(x => x.GetOrCreateWebsite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>())).Returns(webSite.Object);
             _azureUtils.Setup(x => x.GetSlot(It.IsAny<IWebApp>(), slotName)).Returns(slot.Object);
             _azureUtils.Setup(x => x.GetPublishingProfile(It.IsAny<IWebAppBase>())).Returns(new Mock<IPublishingProfile>().Object);
             _deployUtils.Setup(x => x.ExecuteDeployWebsiteAsync(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(true);

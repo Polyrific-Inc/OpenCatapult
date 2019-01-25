@@ -1,10 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using Microsoft.Azure.Management.AppService.Fluent;
+using Microsoft.Azure.Management.AppService.Fluent.Models;
 using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             return web;
         }
 
-        public IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName)
+        public IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool isAllowRename)
         {
             var resourceGroup = GetOrCreateResourceGroup(subscriptionId, resourceGroupName, regionName);
 
@@ -113,6 +113,8 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
                 
                 if (plan != null)
                 {
+                    appName = GetAvailableAppName(subscriptionId, appName, isAllowRename);
+                    _logger.LogInformation("Creating new website {appName}", appName);
                     webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.Define(appName).WithExistingWindowsPlan(plan).WithExistingResourceGroup(resourceGroupName).Create());
                 }
                 else
@@ -163,6 +165,48 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         }
 
         #region Private Methods
+        private string GetAvailableAppName(string subscriptionId, string appName, bool isAllowRename)
+        {
+            var restClient = _authenticatedAzure.WithSubscription(subscriptionId).AppServices.RestClient;
+            var websiteManagementClient = new WebSiteManagementClient(restClient);
+            websiteManagementClient.SubscriptionId = subscriptionId;
+            
+            var result = ExecuteWithRetry(() => websiteManagementClient.CheckNameAvailabilityAsync(appName, CheckNameResourceTypes.MicrosoftWebSites).Result);
+
+            if (!(result.NameAvailable ?? false))
+            {
+                if (!isAllowRename)
+                {
+                    throw new ArgumentException($"The application name \"{appName}\"is not available: {result.Message}");
+                }
+                else
+                {
+                    _logger.LogWarning($"The application name \"{appName}\" is not available. Trying other names...");
+
+                    int attempt = 1;
+                    // set max attempt to avoid infinite trial
+                    while (!(result.NameAvailable ?? false) && attempt <= 5)
+                    {
+                        appName = GetAlternativeAppName(appName);
+                        _logger.LogInformation($"Attempt {attempt}: Trying app name \"{appName}\"");
+                        result = ExecuteWithRetry(() => websiteManagementClient.CheckNameAvailabilityAsync(appName, CheckNameResourceTypes.MicrosoftWebSites).Result);
+                        attempt++;
+                    }
+
+                    if (!(result.NameAvailable ?? false))
+                        throw new Exception("Failed getting available name after 5 attempts");
+                }
+            }
+
+            return appName;
+        }
+
+        private string GetAlternativeAppName(string appName)
+        {
+            var r = new Random();
+            return $"{appName}-{r.Next(1000, 9999).ToString()}";
+        }
+
         private T ExecuteWithRetry<T>(Func<T> function)
         {
             var attempt = 0;
