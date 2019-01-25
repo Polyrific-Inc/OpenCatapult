@@ -114,8 +114,16 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
                 if (plan != null)
                 {
                     appName = GetAvailableAppName(subscriptionId, appName, isAllowRename);
-                    _logger.LogInformation("Creating new website {appName}", appName);
-                    webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.Define(appName).WithExistingWindowsPlan(plan).WithExistingResourceGroup(resourceGroupName).Create());
+
+                    if (!string.IsNullOrEmpty(appName))
+                    {
+                        _logger.LogInformation("Creating new website {appName}", appName);
+                        webApp = ExecuteWithRetry(() => _authenticatedAzure.WithSubscription(subscriptionId).WebApps.Define(appName).WithExistingWindowsPlan(plan).WithExistingResourceGroup(resourceGroupName).Create());
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
                 else
                 {
@@ -177,7 +185,8 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
             {
                 if (!isAllowRename)
                 {
-                    throw new ArgumentException($"The application name \"{appName}\"is not available: {result.Message}");
+                    _logger.LogError($"The application name \"{appName}\"is not available: {result.Message}");
+                    return null;
                 }
                 else
                 {

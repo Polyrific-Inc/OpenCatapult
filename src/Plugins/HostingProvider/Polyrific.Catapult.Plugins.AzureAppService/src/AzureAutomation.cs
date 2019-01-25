@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
                     var publishProfile = _azureUtils.GetPublishingProfile(slot);
                     if (!(await _deployUtils.ExecuteDeployWebsiteAsync(publishProfile.GitUrl, publishProfile.GitUsername, publishProfile.GitPassword, artifactLocation)))
                     {
-                        var error = $"Failed to deploy website to {appServiceName}-{deploymentSlot}.";
+                        var error = $"Failed to deploy website to {website.Name}-{deploymentSlot}.";
                         _logger.LogError(error);
                         return (hostLocation, error);
                     }
