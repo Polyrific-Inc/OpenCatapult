@@ -13,11 +13,7 @@ namespace Polyrific.Catapult.Plugins.AzureAppService
         private readonly IAzureUtils _azureUtils;
         private readonly IDeployUtils _deployUtils;
 
-        public Program() : base(new string[0], TaskProviderName)
-        {
-        }
-
-        public Program(string[] args) : base(args, TaskProviderName)
+        public Program(string[] args) : base(args)
         {
         }
 

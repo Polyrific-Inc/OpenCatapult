@@ -188,10 +188,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             if (!string.IsNullOrEmpty(framework))
                 newProjectArgs += $" --target-framework-override {framework}";
-
+            
             await Execute("dotnet", newProjectArgs);
-            SetLangVersion(projectFile);
-            await Execute("dotnet", $"add \"{projectFile}\" package Polyrific.Catapult.Plugins.Core");
+            var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.Plugins.Core.dll");
+            AddDllReference(projectFile, pluginCoreDll);
             WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
 
             await Execute("dotnet", $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release");
@@ -212,11 +212,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             sb.AppendLine("");
             sb.AppendLine($"        public override string Type => \"{pluginType}\";");
             sb.AppendLine("");
-            sb.AppendLine("        public Program() : base(new string[] { }, TaskProviderName)");
-            sb.AppendLine("        {");
-            sb.AppendLine("        }");
-            sb.AppendLine("");
-            sb.AppendLine("        public Program(string[] args) : base(args, TaskProviderName)");
+            sb.AppendLine("        public Program(string[] args) : base(args)");
             sb.AppendLine("        {");
             sb.AppendLine("        }");
             sb.AppendLine("");
@@ -237,8 +233,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             File.WriteAllText(programFile, sb.ToString());
         }
-               
-        private void SetLangVersion(string projectFile)
+
+        private void AddDllReference(string projectFile, string dllFile)
         {
             var updatedContent = new StringBuilder();
             using (var reader = new StreamReader(projectFile))
@@ -248,6 +244,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 {
                     switch (line.Trim())
                     {
+                        case "</Project>":
+                            updatedContent.AppendLine("<ItemGroup>");
+                            updatedContent.AppendLine($" <Reference Include=\"{Path.GetFileNameWithoutExtension(dllFile)}\">");
+                            updatedContent.AppendLine($"    <HintPath>{dllFile}</HintPath>");
+                            updatedContent.AppendLine("  </Reference>");
+                            updatedContent.AppendLine("</ItemGroup>");
+                            updatedContent.AppendLine(line);
+                            break;
                         case "<OutputType>Exe</OutputType>":
                             updatedContent.AppendLine(line);
                             updatedContent.AppendLine("<LangVersion>7.1</LangVersion>");

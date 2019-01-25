@@ -14,12 +14,8 @@ namespace Polyrific.Catapult.Plugins.DotNetCore
         private IBuilder _builder;
 
         public override string Name => TaskProviderName;
-
-        public Program() : base(new string[0], TaskProviderName)
-        {
-        }
-
-        public Program(string[] args) : base(args, TaskProviderName)
+        
+        public Program(string[] args) : base(args)
         {
         }
         

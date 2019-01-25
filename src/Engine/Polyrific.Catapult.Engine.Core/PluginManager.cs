@@ -101,7 +101,7 @@ namespace Polyrific.Catapult.Engine.Core
                             var type = info.EntryPoint.DeclaringType?.FullName;
                             if (type != null)
                             {
-                                var instance = (TaskProvider)info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[] { }, null, null);
+                                var instance = (TaskProvider)info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[] { new string[0] }, null, null);
                                 if (instance != null)
                                 {
                                     if (!_plugins.ContainsKey(instance.Type))

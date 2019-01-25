@@ -10,8 +10,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class DatabaseProvider : TaskProvider
     {
-        protected DatabaseProvider(string[] args, string taskProviderName) 
-            : base(args, taskProviderName)
+        protected DatabaseProvider(string[] args) 
+            : base(args)
         {
             ParseArguments();
         }

@@ -13,11 +13,7 @@ namespace Polyrific.Catapult.Plugins.DotNetCoreTest
 
         private ITestRunner _testRunner;
 
-        public Program() : base(new string[0], TaskProviderName)
-        {
-        }
-
-        public Program(string[] args) : base(args, TaskProviderName)
+        public Program(string[] args) : base(args)
         {
         }
 

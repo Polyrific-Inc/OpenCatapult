@@ -12,11 +12,7 @@ namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 
         public override string Name => TaskProviderName;
 
-        public Program() : base(new string[0], TaskProviderName)
-        {
-        }
-
-        public Program(string[] args) : base(args, TaskProviderName)
+        public Program(string[] args) : base(args)
         {
         }
         

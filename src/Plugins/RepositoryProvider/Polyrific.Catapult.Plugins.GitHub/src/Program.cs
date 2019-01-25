@@ -24,11 +24,7 @@ namespace Polyrific.Catapult.Plugins.GitHub
 
         public override string[] RequiredServices => new[] { "GitHub" };
 
-        public Program() : base(new string[0], TaskProviderName)
-        {
-        }
-
-        public Program(string[] args) : base(args, TaskProviderName)
+        public Program(string[] args) : base(args)
         {
         }
 

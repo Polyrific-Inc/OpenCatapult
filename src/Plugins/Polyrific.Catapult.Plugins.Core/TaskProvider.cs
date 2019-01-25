@@ -17,7 +17,7 @@ namespace Polyrific.Catapult.Plugins.Core
         protected Dictionary<string, object> ParsedArguments;
         protected ILogger Logger;
 
-        protected TaskProvider(string[] args, string taskProviderName)
+        protected TaskProvider(string[] args)
         {
             if (args.Contains("--attach") && Debugger.IsAttached == false)
                 Debugger.Launch();
@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Plugins.Core
                 ParsedArguments = args.Length > 0 ? JsonConvert.DeserializeObject<Dictionary<string, object>>(args[0]) : new Dictionary<string, object>();
             }            
             
-            Logger = new TaskLogger(taskProviderName);
+            Logger = new TaskLogger(Name);
         }
 
         /// <summary>

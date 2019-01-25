@@ -10,8 +10,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class HostingProvider : TaskProvider
     {
-        protected HostingProvider(string[] args, string taskProviderName) 
-            : base(args, taskProviderName)
+        protected HostingProvider(string[] args) 
+            : base(args)
         {
             ParseArguments();
         }

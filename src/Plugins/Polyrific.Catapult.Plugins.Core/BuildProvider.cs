@@ -10,8 +10,8 @@ namespace Polyrific.Catapult.Plugins.Core
 {
     public abstract class BuildProvider : TaskProvider
     {
-        protected BuildProvider(string[] args, string taskProviderName) 
-            : base(args, taskProviderName)
+        protected BuildProvider(string[] args) 
+            : base(args)
         {
             ParseArguments();
         }
