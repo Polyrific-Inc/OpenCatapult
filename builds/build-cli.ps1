@@ -31,4 +31,6 @@ if (!$noConfig) {
     }
 }
 
-Write-Output "CLI is ready. You can start exploring available commands by running: dotnet ""$cliDll"" --help"
+Write-Host "CLI is ready. You can start exploring available commands by running: dotnet occli.dll --help" -ForegroundColor Green
+
+Set-Location $cliPublishPath

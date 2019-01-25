@@ -62,4 +62,6 @@ foreach ($p in $plugins) {
     }
 }
 
-Write-Output "Engine is ready. You can start exploring available commands by running: dotnet ""$engineDll"" --help"
+Write-Host "Engine is ready. You can start exploring available commands by running: dotnet ocengine.dll --help" -ForegroundColor Green
+
+Set-Location $enginePublishPath

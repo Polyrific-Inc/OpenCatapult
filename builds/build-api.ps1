@@ -38,7 +38,7 @@ if ($connString -eq "") {
     Write-Output "Current connection string is `"$currentConnString`""
 
     if (!$noPrompt) {
-        $enteredConnString = Read-Host -Prompt "Please enter new connection string, or just ENTER if you want to use current value"    
+        $enteredConnString = Read-Host -Prompt "Please enter new connection string (or just ENTER if you want to use current value)"    
         if ($enteredConnString -ne "") {
             $connString = $enteredConnString
         }

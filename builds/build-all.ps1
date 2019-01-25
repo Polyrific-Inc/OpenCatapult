@@ -16,7 +16,7 @@ $opencatapultRootPath = Split-Path $PSScriptRoot -Parent
 Set-Location $opencatapultRootPath
 
 
-function Run-BuildScript ([string]$script, [string]$scriptArgs)
+function Invoke-BuildScript ([string]$script, [string]$scriptArgs)
 {
    $fullPathScript += ".\builds\" + $script
    if ($scriptArgs) {
@@ -55,7 +55,7 @@ function Start-InNewWindowMacOS {
   open -a Terminal -- $tmpScript
 }
 
-function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs) 
+function Invoke-BuildScriptNewWindow([string]$script, [string]$scriptArgs) 
 {    
     if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
         #Windows env
@@ -102,7 +102,7 @@ function Run-BuildScriptNewWindow([string]$script, [string]$scriptArgs)
 }
 
 
-Run-BuildScript "build-prerequisites.ps1"
+Invoke-BuildScript "build-prerequisites.ps1"
 
 
 ## Build API
@@ -119,7 +119,7 @@ if ($noPrompt) {
 if ($connString) {
     $args += "-connString " + $connString
 }
-Run-BuildScript "build-api.ps1" $args
+Invoke-BuildScript "build-api.ps1" $args
 
 
 ## Build Engine
@@ -128,10 +128,13 @@ $args = " -url " + $https
 if ($noConfig) {
     $args = " -noConfig"
 }
-Run-BuildScriptNewWindow "build-engine.ps1" $args
+Invoke-BuildScriptNewWindow "build-engine.ps1" $args
 
 ## Build CLI
-Run-BuildScriptNewWindow "build-cli.ps1" $args
+Invoke-BuildScriptNewWindow "build-cli.ps1" $args
+
+Write-Host "The Engine and CLI are in the new terminal windows. Please go ahead and try to run the commands available there." -ForegroundColor Green 
+Write-Host "To learn more about OpenCatapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green 
 
 ## Run API
 if (!$noRun) {
@@ -141,9 +144,7 @@ if (!$noRun) {
     Write-Output "Running API..."
     Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
     Write-Host "|This terminal window should remain open for catapult to work|" -ForegroundColor Yellow 
-    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow 
-    Write-Host "The engine and CLI are in the new terminal windows. Please go ahead and try to run the commands available there." -ForegroundColor Green 
-    Write-Host "To learn more about catapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green 
+    Write-Host "--------------------------------------------------------------" -ForegroundColor Yellow     
     Write-Output "dotnet $apiDll --urls `"$http;$https`""
     Set-Location $apiPublishPath
     dotnet $apiDll --urls "$http;$https"
