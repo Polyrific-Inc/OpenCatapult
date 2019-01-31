@@ -188,7 +188,7 @@ namespace MyCodeGenerator
 ### Create Helper classes
 Our `Program` class would get too big if we put all of the code generation logic in there. So it'd be wise to separate some logic into different classes.
 
-First we'd need a helper Class to  run CLI commands, since we'd use Angular CLI in this code generator. Create a folder `Helpers` since we'd have several helper classes, and create a class `CommandHelper.cs`. The CommandHelper static class will have a static method named `Execute` that execute a command with arguments.
+First we'd need a helper Class to  run CLI commands, since we'd use Angular CLI in this code generator. Create a folder `Helpers` since we'd have several helper classes, and create a class `CommandHelper.cs`. The CommandHelper static class will have a static method named `ExecuteNodeModule` that execute a node command with arguments.
 
 ```csharp
 using System;
@@ -596,12 +596,13 @@ namespace MyCodeGenerator
 }
 ```
 
-The code above basically do three things:
+The code above basically do four things:
 - Create the angular project using `ng new`
-- Add angular components for each model
+- Add Material UI library using `ng add`
+- Add angular components for each model using `ng generate component`
 - Modify the generated components based on the model's property
 
-For the third part, we'd need to add some template files in our project. Please download the following [zip file ](../file/Template.zip), and put it into your project. The folder structure should like this:
+For the last part, we'd need to add some template files in our project. Please download the following [zip file ](../file/Template.zip), and put it into your project. The folder structure should like this:
 ![Project structure](../img/provider-project.jpg)
 
 The last thing is to call the `CodeGenerator` in the `Program.cs`:
@@ -716,6 +717,37 @@ ng serve --open
 ```
 
 ## Installing the Task Provider
+
+For now, there's two step to install the task provider
+
+### Copy the published binary to the plugin folder
+
+If you have run the build script for engine, the plugin folder should be available in
+```
+.\publish\engine\plugins
+```
+
+Let's create a folder where our task provider shall be published into. Since it's a generator provider, it should be under `GeneratorProvider` folder:
+```
+.\plublish\engine\plugins\GeneratorProvider\MyCodeGenerator
+```
+
+Now get the absolute path to this folder, then open a new shell, and go to our task provider source code project folder . Run the following command to publish our source code into the plugin folder:
+```sh
+dotnet publish --output "absolute path to .\plublish\engine\plugins\GeneratorProvider\MyCodeGenerator"
+```
+
+### Register the engine in the CLI
+
+Remember earlier we created a `plugin.yml` file? Now is the time to use it. Open the opencatapult cli shell, login, then run this command:
+```sh
+dotnet occli.dll provider register --file "absolute path to MyCodeGenerator\plugin.yml"
+```
+
+And that's it, you can now create a generate task using the provider:
+```sh
+dotnet occli.dll task add --name Generate --type Generate --provider MyCodeGenerator
+```
 
 ## Task Provider structure
 
