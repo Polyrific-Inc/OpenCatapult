@@ -1,0 +1,66 @@
+{
+    "process": "main",
+    "project": "ProductCatalog",
+    "config": {
+        "OutputLocation": null,
+        "ContinueWhenError": false,
+        "PreProcessMustSucceed": true,
+        "PostProcessMustSucceed": false,
+        "WorkingLocation": "absolute\\path\\to\\working\\location"
+    },
+    "additional": {
+        "Title": "Product Catalog"
+    },
+    "models": [
+        {
+            "Id": 1,
+            "ProjectId": 1,
+            "Name": "Product",
+            "Description": null,
+            "Label": "Product",
+            "IsManaged": null,
+            "SelectKey": null,
+            "Properties": [
+                {
+                    "Id": 1,
+                    "ProjectDataModelId": 1,
+                    "Name": "Price",
+                    "Label": "Price",
+                    "DataType": "decimal",
+                    "IsRequired": false,
+                    "ControlType": "input-number",
+                    "RelatedProjectDataModelId": null,
+                    "RelatedProjectDataModelName": null,
+                    "RelationalType": null,
+                    "IsManaged": null
+                },
+                {
+                    "Id": 2,
+                    "ProjectDataModelId": 1,
+                    "Name": "Description",
+                    "Label": "Description",
+                    "DataType": "string",
+                    "IsRequired": false,
+                    "ControlType": "input-text",
+                    "RelatedProjectDataModelId": null,
+                    "RelatedProjectDataModelName": null,
+                    "RelationalType": null,
+                    "IsManaged": null
+                },
+                {
+                    "Id": 3,
+                    "ProjectDataModelId": 1,
+                    "Name": "Title",
+                    "Label": "Title",
+                    "DataType": "string",
+                    "IsRequired": false,
+                    "ControlType": "input-text",
+                    "RelatedProjectDataModelId": null,
+                    "RelatedProjectDataModelName": null,
+                    "RelationalType": null,
+                    "IsManaged": null
+                }
+            ]
+        }
+    ]
+}
