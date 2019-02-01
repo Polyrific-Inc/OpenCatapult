@@ -21,10 +21,13 @@
   * [Manage plugins](user-guides/plugins.md)
   * [Sample Devops project template](user-guides/sample-project.md)
 * [Developer Guide](dev-guides/dev-guides.md)
-  * [Create a task provider](dev-guides/create-task-provider.md)
   * [Project template](dev-guides/project-template.md)
   * [Coding Style](dev-guides/coding-style.md)
   * [Code of conduct](dev-guides/contribute.md)
+  * [Create a task provider - Part 1](dev-guides/create-task-provider.md)
+  * [Create a task provider - Part 2](dev-guides/create-task-provider-2.md)
+  * [Create a task provider - Part 3](dev-guides/create-task-provider-3.md)
+  * [Create a task provider - Part 4](dev-guides/create-task-provider-4.md)
 
 ## References
 

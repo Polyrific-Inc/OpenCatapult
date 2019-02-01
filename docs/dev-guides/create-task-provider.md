@@ -1,22 +1,25 @@
-# Create a task provider
+# Create a task provider - Part 1
 
 Here we will guide you into creating your own custom task provider. We will create a simple code generator provider that will generate an angular website. We will create the provider using dotnet core framework, though you can also create it using .NET Framework.
+
+> You can find the code in this tutorial in our GitHub repository: https://github.com/Polyrific-Inc/Polyrific.Catapult.Plugins.Angular/tree/tutorial-part-1
 
 ## Prerequisites
 - A code editor. We will use [Visual Studio Code](https://code.visualstudio.com/download) in this example
 - [dotnet core sdk version 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1)
 - [angular cli](https://cli.angular.io/). Note that angular cli require [nodejs](https://nodejs.org) to be installed
 - Opencatapult instalation to test your provider in action. If you have not already, please follow the [quick start](../home/start.md)
+- If you are on a non-windows OS, you'd need to install powershell [here](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-6#powershell-core)
 
 ## Create the provider project
 Create a new dotnet core console project by using the dotnet cli:
 ```sh
-dotnet new console --name MyCodeGenerator
+dotnet new console --name Polyrific.Catapult.Plugins.Angular
 ``` 
 
 Go into your project folder:
 ```sh
-cd MyCodeGenerator
+cd Polyrific.Catapult.Plugins.Angular
 ```
 
 Next, you'd need to add the plugin core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.Plugins.Core/)
@@ -38,7 +41,7 @@ code .
 ### Add plugin.yml
 Create a new file inside the project folder named `plugin.yml`. This is the metadata of our task provider. It describe the name of the task provider, the additional configs that can be passed, and any [external services](../user-guides/external-services.md) that it requires.
 ```yml
-name: 'MyCodeGenerator'
+name: 'Polyrific.Catapult.Plugins.Angular'
 type: 'GeneratorProvider'
 author: 'Polyrific'
 version: '1.0.0'
@@ -51,15 +54,15 @@ additional-configs:
     is-secret: false
 ```
 
-Note that we have an additional configs `Title`. This is an optional config that will be used by our task provider to set the title of our angular website
+Note that we have an additional configs `Title`. This is an optional config that will be used by our task provider to set the title of our angular website. Though, we'd not use this config until [Part 2](./create-task-provider-2.md).
 
 ### Prepare the csproj
-First, let's set the language version to c# 7.1. This will allow us to have async main method. Add the following line to the `<PropertyGroup>` section in `MyCodeGenerator.csproj` file:
+First, let's set the language version to c# 7.1. This will allow us to have async main method. Add the following line to the `<PropertyGroup>` section in `Polyrific.Catapult.Plugins.Angular.csproj` file:
 ```xml
 <LangVersion>7.1</LangVersion>
 ```
 
-The `MyCodeGenerator.csproj` file should like this:
+The `Polyrific.Catapult.Plugins.Angular.csproj` file should like this:
 ```xml
 <Project Sdk="Microsoft.NET.Sdk">
 
@@ -78,7 +81,7 @@ The `MyCodeGenerator.csproj` file should like this:
 ```
 
 ### Implement the task provider base class
-Let's head up to `Program.cs`. The first thing to do is to inherit one of the task provider base class. Since we're going to create a code generator provider, we should inherit from `CodeGeneratorProvider`. Then we'd need to implement the base constructor and abstract method `Generate`. We'd also need to implement `Name` property, and return the name of our task provider.
+Let's head up to `Program.cs`. The first thing to do is to inherit one of the task provider base class. Since we're going to create a code generator provider, we should inherit from `CodeGeneratorProvider`. Then we'd need to implement the base constructor and abstract method `Generate`. We'd also need to override the `Name` property, and return the name of our task provider as stated in [plugin.yml](./create-task-provider.md#add-plugin.yml).
 
 ```csharp
 using System;
@@ -87,7 +90,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Polyrific.Catapult.Plugins.Core;
 
-namespace MyCodeGenerator
+namespace Polyrific.Catapult.Plugins.Angular
 {
   class Program : CodeGeneratorProvider
   {
@@ -95,7 +98,7 @@ namespace MyCodeGenerator
     {
     }
 
-    public override string Name => "MyCodeGenerator";
+    public override string Name => "Polyrific.Catapult.Plugins.Angular";
 
     static void Main(string[] args)
     {
@@ -123,7 +126,7 @@ static async Task Main(string[] args)
 }
 ```
 
-The next thing is to write the logic of our code generator inside the `Generate` method. Here, we will only extract the configuration  and additional configurations that are passed into the task provider. 
+The next thing is to write the logic of our code generator inside the `Generate` method. Here, we will only extract the configuration  and additional configurations that are passed into the task provider. We'd also need to get the `Config` property in the base class, to determine where our source code will be saved. Our user can enter their prefered location in `Config.OutputLocation` but if they have no preferences, we'd take the `Config.WorkingLocation` instead. 
 ```csharp
 public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate()
 {
@@ -141,16 +144,48 @@ public override async Task<(string outputLocation, Dictionary<string, string> ou
 }
 ```
 
+Now let's create a private method that will generate a simple angular project. We'd utilize the Angular CLI, and use the `ng new` command to create the project for us. We'd pass the command into powershell. Note that this is only one way to generate the code. If you do not want to use the Angular CLI, you can probably provide some template files, then copy the template files into the `OutputLocation`
+
+```csharp
+    private Task GenerateCode(string projectName, string outputLocation)
+    {
+      // if this code is run in linux/mac, change the "powershell" into "pwsh" and the arguments should be $"-c \"ng new {projectName.Kebaberize()} --skipGit=true --skipInstall=true\""
+      var info = new ProcessStartInfo("powershell")
+      {
+          UseShellExecute = false,
+          Arguments = $"ng new {projectName.Kebaberize()} --skipGit=true --skipInstall=true",
+          RedirectStandardInput = true,
+          RedirectStandardOutput = true,
+          RedirectStandardError = true,
+          CreateNoWindow = true,
+          WorkingDirectory = outputLocation
+      };
+
+      using (var process = Process.Start(info))
+      {
+        process.WaitForExit();
+      }
+
+      return Task.CompletedTask;
+    }
+```
+
+We can then call the method inside the `Generate` method:
+```csharp
+await GenerateCode(ProjectName, Config.OutputLocation);
+``` 
+
 Here's how the `Program.cs` should look now:
 ```csharp
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Humanizer;
 using Polyrific.Catapult.Plugins.Core;
 
-namespace MyCodeGenerator
+namespace Polyrific.Catapult.Plugins.Angular
 {
   class Program : CodeGeneratorProvider
   {
@@ -158,7 +193,7 @@ namespace MyCodeGenerator
     {
     }
 
-    public override string Name => "MyCodeGenerator";
+    public override string Name => "Polyrific.Catapult.Plugins.Angular";
 
     static async Task Main(string[] args)
     {
@@ -176,588 +211,37 @@ namespace MyCodeGenerator
       
       Config.OutputLocation = Config.OutputLocation ?? Config.WorkingLocation;
 
-      // TODO: call the code generator logic
+      await GenerateCode(ProjectName, Config.OutputLocation);
 
       return (Config.OutputLocation, null, "");        
+    }
+
+    private Task GenerateCode(string projectName, string outputLocation)
+    {
+      // if this code is run in linux/mac, change the "powershell" into "pwsh" and the arguments should be $"-c \"ng new {projectName.Kebaberize()} --skipGit=true --skipInstall=true\""
+      var info = new ProcessStartInfo("powershell")
+      {
+          UseShellExecute = false,
+          Arguments = $"ng new {projectName.Kebaberize()} --skipGit=true --skipInstall=true",
+          RedirectStandardInput = true,
+          RedirectStandardOutput = true,
+          RedirectStandardError = true,
+          CreateNoWindow = true,
+          WorkingDirectory = outputLocation
+      };
+
+      using (var process = Process.Start(info))
+      {
+        process.WaitForExit();
+      }
+
+      return Task.CompletedTask;
     }
   }
 }
 
 ```
 
-### Create Helper classes
-Our `Program` class would get too big if we put all of the code generation logic in there. So it'd be wise to separate some logic into different classes.
+## Summary
 
-First we'd need a helper Class to  run CLI commands, since we'd use Angular CLI in this code generator. Create a folder `Helpers` since we'd have several helper classes, and create a class `CommandHelper.cs`. The CommandHelper static class will have a static method named `ExecuteNodeModule` that execute a node command with arguments.
-
-```csharp
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-
-namespace MyCodeGenerator.Helpers
-{
-    public static class CommandHelper
-    {
-        public static async Task<string> ExecuteNodeModule(string command, string workingDirectory, ILogger logger = null)
-        {
-            var outputBuilder = new StringBuilder();
-            var errorBuilder = new StringBuilder();
-            var error = "";
-
-            string fileName;
-
-            // we cannot start the node module in ProcessStartInfo, so we will use powershell
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) 
-            {
-                fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "powershell" : command;
-            }
-            else 
-            {
-                fileName = "pwsh";
-                command = $"-c \"{command}\"";
-            }
-
-            var info = new ProcessStartInfo(fileName)
-            {
-                UseShellExecute = false,
-                Arguments = command,
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-                WorkingDirectory = workingDirectory
-            };
-
-            using (var process = Process.Start(info))
-            {
-                if (process != null)
-                {
-                    var reader = process.StandardOutput;
-                    while (!reader.EndOfStream)
-                    {
-                        var line = await reader.ReadLineAsync();
-
-                        logger?.LogDebug(line);
-
-                        outputBuilder.AppendLine(line);
-                    }
-
-                    var errorReader = process.StandardError;
-                    while (!errorReader.EndOfStream)
-                    {
-                        var line = await errorReader.ReadLineAsync();
-
-                        if (line.StartsWith("npm WARN"))
-                        {
-                            logger?.LogWarning(line);
-                        }
-                        else if (!string.IsNullOrEmpty(line))
-                        {
-                            errorBuilder.AppendLine(line);
-                        }
-                    }
-
-                    error = errorBuilder.ToString();
-                }
-            }
-
-            if (!string.IsNullOrEmpty(error))
-                throw new Exception(error);
-
-            return outputBuilder.ToString();
-        }
-    }
-}
-
-```
-Aside from running the command and returning the result, it would also log any output of the command into the logger class.
-
-Now we can create the class that will do most of the heavy lifting, we shall create a class called `CodeGenerator`, that exposes 1 public method, `Generate`. 
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using Humanizer;
-using Microsoft.Extensions.Logging;
-using MyCodeGenerator.Helpers;
-using Polyrific.Catapult.Shared.Dto.Constants;
-using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
-
-namespace MyCodeGenerator
-{
-    public class CodeGenerator
-    {
-        private readonly ILogger _logger;
-
-        private static string AssemblyDirectory
-        {
-            get
-            {
-                string codeBase = Assembly.GetExecutingAssembly().CodeBase;
-                var uri = new UriBuilder(codeBase);
-                string path = Uri.UnescapeDataString(uri.Path);
-                return Path.GetDirectoryName(path);
-            }
-        }
-
-        public CodeGenerator(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public async Task<string> Generate(string projectName, string projectTitle, string outputLocation, List<ProjectDataModelDto> models)
-        {
-            try
-            {
-                // clean project name form space
-                projectName = projectName.Replace(" ", "").Kebaberize();
-                var projectFolder = Path.Combine(outputLocation, projectName);
-
-                // 1. Generate the project
-                await CreateAngularProject(projectName, outputLocation);
-                await InitializeProject(projectFolder);
-
-                // 2. Generate each model files
-                await CreateHomeComponent(projectFolder, projectTitle, models);
-                foreach (var model in models)
-                {
-                    await CreateModelRelatedFile(projectFolder, model);
-                }
-
-                return "";
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, ex.Message);
-                return ex.Message;
-            }
-        }
-
-        private async Task CreateAngularProject(string projectName, string outputLocation)
-        {
-            await CommandHelper.ExecuteNodeModule($"ng new {projectName} --routing=true --skipGit=true", outputLocation, _logger);
-        }
-
-        private async Task InitializeProject(string projectFolder)
-        {
-            // install angular material to project
-            await CommandHelper.ExecuteNodeModule($"ng add @angular/material", projectFolder, _logger);
-        }
-
-        private async Task CreateHomeComponent(string projectFolder, string projectTitle, List<ProjectDataModelDto> models)
-        {
-            var appFolder = Path.Combine(projectFolder, "src/app");
-            
-            if (File.Exists(Path.Combine(appFolder, "app.component.ts")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app", "app.component.ts"));
-                content = content.Replace("$Title$", projectTitle);
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "app.component.ts"), content);
-            }
-            
-            if (File.Exists(Path.Combine(appFolder, "app.component.css")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app", "app.component.css"));
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "app.component.css"), content);
-            }
-
-            if (File.Exists(Path.Combine(appFolder, "app.component.html")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app", "app.component.html"));
-
-                var sb = new StringBuilder();
-                foreach (var model in models)
-                {
-                    sb.AppendLine($"<a mat-list-item routerLink=\"/{model.Name.Kebaberize()}\">{model.Label}</a>");
-                }
-                content = content.Replace("$navlist$", sb.ToString());
-
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "app.component.html"), content);
-            }
-            
-            
-            if (File.Exists(Path.Combine(appFolder, "app.module.ts")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app", "app.module.ts"));
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "app.module.ts"), content);
-            }
-
-            if (File.Exists(Path.Combine(appFolder, "app-routing.module.ts")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app", "app-routing.module.ts"));
-
-                var sb = new StringBuilder();
-                foreach (var model in models)
-                {
-                    var modelName = model.Name.Kebaberize();
-                    sb.AppendLine($"import {{ {model.Name}Component }} from './{modelName}/{modelName}.component';");
-                }
-                
-                content = content.Replace("$ImportComponents$", sb.ToString());
-                
-                sb = new StringBuilder();
-                foreach (var model in models)
-                {
-                    var modelName = model.Name.Kebaberize();
-                    sb.AppendLine($"{{path: '{modelName}', component: {model.Name}Component }},");
-                }
-                
-                content = content.Replace("$RouteComponents$", sb.ToString());
-
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "app-routing.module.ts"), content);
-            }
-
-            
-            await CommandHelper.ExecuteNodeModule($"ng generate component home", projectFolder, _logger);
-            
-            if (File.Exists(Path.Combine(appFolder, "home", "home.component.html")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app/home", "home.component.html"));
-                await File.WriteAllTextAsync(Path.Combine(appFolder, "home", "home.component.html"), content);
-            }
-        }
-
-        private async Task CreateModelRelatedFile(string projectFolder, ProjectDataModelDto model)
-        {
-            await CreateModelComponent(projectFolder, model);
-
-            await CreateModelDataSource(projectFolder, model);
-        }
-
-        private async Task CreateModelComponent(string projectFolder, ProjectDataModelDto model)
-        {
-            var modelName = model.Name.Kebaberize();
-            await CommandHelper.ExecuteNodeModule($"ng generate component {modelName}", projectFolder, _logger);
-
-            string componentFolder = Path.Combine(projectFolder, "src/app", modelName);
-            if (File.Exists(Path.Combine(componentFolder, $"{modelName}.component.ts")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app/model", "model.component.ts"));
-
-                content = content.Replace("$ModelName$", modelName);
-                content = content.Replace("$ModelClassName$", model.Name);
-                
-                var sb = new StringBuilder();
-                foreach (var property in model.Properties)
-                {
-                    var propertyName = property.Name.Camelize();
-                    sb.Append($"'{propertyName}', ");
-                }
-
-                content = content.Replace("$PropertyList$", sb.ToString());
-
-                await File.WriteAllTextAsync(Path.Combine(componentFolder, $"{modelName}.component.ts"), content);
-            }
-            
-            if (File.Exists(Path.Combine(componentFolder, $"{modelName}.component.css")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app/model", "model.component.css"));
-                await File.WriteAllTextAsync(Path.Combine(componentFolder, $"{modelName}.component.css"), content);
-            }
-
-            if (File.Exists(Path.Combine(componentFolder, $"{modelName}.component.html")))
-            {
-                var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app/model", "model.component.html"));
-
-                var sb = new StringBuilder();
-                foreach (var property in model.Properties)
-                {
-                    var propertyName = property.Name.Camelize();
-                    sb.AppendLine($"<!-- {property.Name} column -->");
-                    sb.AppendLine($"<ng-container matColumnDef=\"{propertyName}\">");
-                    sb.AppendLine($"<th mat-header-cell *matHeaderCellDef mat-sort-header>{property.Label}</th>");
-                    sb.AppendLine($"<td mat-cell *matCellDef=\"let row\">{{{{row.{propertyName}}}}}</td>");
-                    sb.AppendLine("</ng-container>");
-                }
-                content = content.Replace("$ColumnDefinition$", sb.ToString());
-
-                await File.WriteAllTextAsync(Path.Combine(componentFolder, $"{modelName}.component.html"), content);
-            }
-        }
-
-        private async Task CreateModelDataSource(string projectFolder, ProjectDataModelDto model)
-        {
-            var modelName = model.Name.Kebaberize();
-            var componentFolder = Path.Combine(projectFolder, "src/app", modelName);
-            var content = await LoadFile(Path.Combine(AssemblyDirectory, "Template/app/model", "model-datasource.ts"));
-
-            var sb = new StringBuilder();
-            foreach (var property in model.Properties)
-            {
-                var propertyName = property.Name.Camelize();
-
-                string propertyType;
-                switch (property.DataType)
-                {
-                    case PropertyDataType.String:
-                        propertyType = "string";
-                        break;
-                    case PropertyDataType.Integer:
-                    case PropertyDataType.Short:
-                    case PropertyDataType.Float:
-                    case PropertyDataType.Decimal:
-                    case PropertyDataType.Double:
-                        propertyType = "number";
-                        break;
-                    case PropertyDataType.Boolean:
-                        propertyType = "boolean";
-                        break;
-                    default:
-                        propertyType = "any";
-                        break;
-                }
-                sb.AppendLine($"{propertyName}: {propertyType};");
-            }
-            
-            content = content.Replace("$ModelDefinition$", sb.ToString());
-            
-            sb = new StringBuilder();
-            for (var i = 0; i < 10; i++)
-            {
-                sb.Append("{");
-                foreach (var property in model.Properties)
-                {
-                    var propertyName = property.Name.Camelize();
-                    sb.Append($"{propertyName}: {GetRandomData(property.DataType)}, ");
-                }
-
-                sb.Append("},");
-                sb.AppendLine();
-            }
-            
-            content = content.Replace("$ModelDummyData$", sb.ToString());
-
-            sb = new StringBuilder();
-            sb.AppendLine("switch (this.sort.active) {");
-            foreach (var property in model.Properties)
-            {
-                var propertyName = property.Name.Camelize();
-                switch (property.DataType)
-                {
-                    case PropertyDataType.Boolean:
-                    case PropertyDataType.String:
-                        sb.AppendLine($"case '{propertyName}': return compare(a.{propertyName}, b.{propertyName}, isAsc);");
-                        break;
-                    case PropertyDataType.Integer:
-                    case PropertyDataType.Short:
-                    case PropertyDataType.Float:
-                    case PropertyDataType.Decimal:
-                    case PropertyDataType.Double:
-                        sb.AppendLine($"case '{propertyName}': return compare(+a.{propertyName}, +b.{propertyName}, isAsc);");
-                        break;
-                    default:
-                        break;
-                }
-            }
-            sb.AppendLine("default: return 0;");
-            sb.AppendLine("}");
-            content = content.Replace("$ModelSort$", sb.ToString());
-            
-            content = content.Replace("$ModelName$", model.Name);
-
-            await File.WriteAllTextAsync(Path.Combine(componentFolder, $"{modelName}-datasource.ts"), content);
-        }
-
-        private async Task<string> LoadFile(string filePath)
-        {
-            var content = await File.ReadAllTextAsync(filePath);
-
-            content = content.Replace("// @ts-ignore", "");
-
-            return content;
-        }
-
-        private string GetRandomData(string propertyType)
-        {            
-            var rand = new Random();
-            switch (propertyType)
-            {
-                case PropertyDataType.Integer:
-                case PropertyDataType.Short:
-                case PropertyDataType.Float:
-                case PropertyDataType.Decimal:
-                case PropertyDataType.Double:
-                    return rand.Next(10).ToString();
-                case PropertyDataType.Boolean:
-                    return (rand.NextDouble() >= 0.5) ? "true" : "false";
-                default:
-                    return $"\"dummy {rand.Next(10)}\"";
-            }
-        }
-    }
-}
-```
-
-The code above basically do four things:
-- Create the angular project using `ng new`
-- Add Material UI library using `ng add`
-- Add angular components for each model using `ng generate component`
-- Modify the generated components based on the model's property
-
-For the last part, we'd need to add some template files in our project. Please download the following [zip file ](../file/Template.zip), and put it into your project. The folder structure should like this:
-![Project structure](../img/provider-project.jpg)
-
-The last thing is to call the `CodeGenerator` in the `Program.cs`:
-Here's how the `Program.cs` should look now:
-```csharp
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Humanizer;
-using Polyrific.Catapult.Plugins.Core;
-
-namespace MyCodeGenerator
-{
-    class Program : CodeGeneratorProvider
-    {
-        private readonly CodeGenerator _codeGenerator;
-
-        public Program(string[] args) : base(args)
-        {
-            _codeGenerator = new CodeGenerator(Logger);
-        }
-
-        public override string Name => "MyCodeGenerator";
-
-        static async Task Main(string[] args)
-        {
-            var app = new Program(args);
-            
-            var result = await app.Execute();
-            app.ReturnOutput(result);
-        }
-
-        public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate()
-        {
-            string projectTitle = ProjectName.Humanize(); // set the default title to project name
-            if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("Title") && !string.IsNullOrEmpty(AdditionalConfigs["Title"]))
-                projectTitle = AdditionalConfigs["Title"];
-            
-            Config.OutputLocation = Config.OutputLocation ?? Config.WorkingLocation;
-
-            var error = await _codeGenerator.Generate(ProjectName, projectTitle, Config.OutputLocation, Models);
-
-            if (!string.IsNullOrEmpty(error))
-                return ("", null, error);
-
-            return (Config.OutputLocation, null, "");        
-        }
-    }
-}
-
-```
-
-Now we're ready to test our task provider
-
-## Testing the Task Provider
-
-When catapult engine execute our task provider, it passes several arguments that is required by the base task provider class, along with the addditional configs as json string. During testing, we can pass the `--file` option instead, and specify the path to the json file containing the arguments. Since we're going to run a Code Generator Provider, you can use this template file:
-- [CodeGeneratorProviderTest.json](../file/CodeGeneratorProviderTest.json)
-
-After downloading the file, Please change the `config -> WorkingLocation` to an absolute path folder in your machine. This folder will be the location that is used by our code generator to create the code for us. Here you can modify the Additional config `title`, or add/modify the `models`.
-
-Next, We'd utilize the visual studio code so we can run and/or debug our application. Create a folder `.vscode` in the project folder, and create these two files:
-
->launch.json
-```json
-{       
-    "configurations": [
-        {
-        "name": "Launch",
-        "type": "coreclr",
-        "request": "launch",
-        "program": "${workspaceFolder}/bin/Debug/netcoreapp2.1/MyCodeGenerator.dll",
-        "preLaunchTask": "build",
-        "args": "--file \"absolute\\path\\to\\CodeGeneratorProviderTest.json\""
-    }]
-}
-```
-Please don't forget the change the `args` section so it points to the correct `CodeGeneratorProviderTest.json` location.
-
->tasks.json
-```json
-{
-    "version": "2.0.0",
-    "command": "dotnet",
-    "type": "shell",
-    "args": [],
-    "options":  {
-        "cwd": "${workspaceRoot}/"
-    },
-    "tasks": [
-        {
-            "label": "build",
-            "args": [ ],
-            "group": "build",
-            "problemMatcher": "$msCompile"
-        }
-    ]
-}
-```
-
-Now we're ready to go. Hit F5, and wait for the code generation to complete. If All goes well, the DEBUG CONSOLE will have the following output:
-```sh
-[OUTPUT] {"outputLocation":"workingfolderpath","outputValues":null,"errorMessage":""}
-
-```
-
-Now open the folder in the `outputLocation` stated above, and your code is ready there. To run the application, you can open your shell, go to the `outputLocation` directory, and run the command
-```sh
-ng serve --open
-```
-
-## Installing the Task Provider
-
-For now, there's two step to install the task provider
-
-### Copy the published binary to the plugin folder
-
-If you have run the build script for engine, the plugin folder should be available in
-```
-.\publish\engine\plugins
-```
-
-Let's create a folder where our task provider shall be published into. Since it's a generator provider, it should be under `GeneratorProvider` folder:
-```
-.\plublish\engine\plugins\GeneratorProvider\MyCodeGenerator
-```
-
-Now get the absolute path to this folder, then open a new shell, and go to our task provider source code project folder . Run the following command to publish our source code into the plugin folder:
-```sh
-dotnet publish --output "absolute path to .\plublish\engine\plugins\GeneratorProvider\MyCodeGenerator"
-```
-
-### Register the engine in the CLI
-
-Remember earlier we created a `plugin.yml` file? Now is the time to use it. Open the opencatapult cli shell, login, then run this command:
-```sh
-dotnet occli.dll provider register --file "absolute path to MyCodeGenerator\plugin.yml"
-```
-
-And that's it, you can now create a generate task using the provider:
-```sh
-dotnet occli.dll task add --name Generate --type Generate --provider MyCodeGenerator
-```
-
-## Task Provider structure
-
-> TODO: Describe required structure of a task provider
-
-## Type of Task Provider
-
-> TODO: Describe types of task providers
-
-## Task Provider marketplace
-
-> \[coming soon\]
-
+Now our code generator provider technically can be used by opencatapult engine. You can move on to [Part 2](./create-task-provider-2.md), or if you want to immediately see how the code generated, you can jump into [Part 3](./create-task-provider-3.md) to see how to test the task provider
