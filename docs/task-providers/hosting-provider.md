@@ -30,6 +30,7 @@ This provider has several additional configurations that you can use to fit your
 | --- | --- | --- | --- | --- |
 | SubscriptionId | The subscription id for the app service | -| Yes |
 | ResourceGroupName | The name of the resource group in which the app service reside | -| Yes |
-| AppServiceName | The name of the app service to be deployed | -| Yes |
+| AppServiceName | The name of the app service to be deployed. | {ProjectName}| No |
+| AllowAutomaticRename | Set whether to allow the provider to rename the app service if the app service name is not available  | -| No |
 | DeploymentSlot | The deployment slot of the app service | -| No |
 | ConnectionString | The connection string that shall be set to the app settings to be used by the application | -| No |
