@@ -156,7 +156,9 @@ You are now ready to create your first Catapult project.
 
 ## Create your first project
 
-Activate the previously opened CLI shell, and go to the published folder:
+OpenCatapult allows you to define [task providers](../task-providers/task-provider.md) for all types of applications and devOps resources. We have pre-loaded OpenCatapult with an example [code generator provider](../task-providers/generator-provider.md) based on a .NET Core MVC template which will deploy directly to your local machine at this location: `.\publish\engine\working`.
+
+To get started, open up a PowerShell window that will be used as your CLI shell and enter the following from within your OpenCatapult folder:
 
 ```sh
 cd .\publish\cli\
@@ -209,7 +211,7 @@ You can find more details about these procedure at [Manage engine registration](
 
 ### Create sample project
 
-And now, you're good to go to create a project. We will use `sample` template, which will give you some pre-defined models, and a job definition with a single `Generate` task. The task uses a built-in generator plugin called `Polyrific.Catapult.Plugins.AspNetCoreMvc`, which will generate a starter ASP.NET Core MVC application.
+And now, you're good to go to create a project. We will use `sample` template, which will give you some pre-defined models, and a job definition with a single `Generate` task. The task uses a built-in generator provider called `Polyrific.Catapult.Plugins.AspNetCoreMvc`, which will generate a starter ASP.NET Core MVC application.
 
 Activate the CLI shell, and enter this command:
 
@@ -227,6 +229,8 @@ dotnet occli.dll model list -p first-project
 
 ### Queue the job
 
+As explained in [introduction](./intro.md#the-circle-of-magic), the automation logics happens in the engine. We define what the engine shall do in what we call [job](../user-guides/job-definitions.md). A job can contain many tasks as needed by our development, build, and deployment pipeline. When we want to ask the engine to run a job, we add it into the [queue](../user-guides/job-queues.md), and any active engine will pick it up and execute it.
+
 The project that you've just created contains a `Default` job definition with a `Generate` task in it.
 
 ```sh
@@ -239,7 +243,11 @@ Let's add the job to the queue so Engine can pick and execute it.
 dotnet occli.dll queue add -j Default -p first-project
 ```
 
-You can monitor the live progress by checking the queue log:
+ The above command will print the created queue in the CLI. You should check out the `Id` since this will be used to get the log or queue status. If this is your first time adding queue, the `Id` should be 1.
+ 
+![Queue add](../img/queue-add.JPG)
+
+You can monitor the live progress by using the `queue log` command and passing the queue `Id`:
 
 ```sh
 dotnet occli.dll queue log -n 1 -p first-project
