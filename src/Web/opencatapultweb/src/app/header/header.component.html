@@ -1,0 +1,12 @@
+<mat-toolbar color="primary" *ngIf="isLoggedIn$ | async as isLoggedIn">
+  <span>
+    <img src="assets/img/logo.png" class="angular-logo">
+    Opencatapult
+  </span>
+  <span class="fill-remaining-space"></span>
+  <button mat-button routerLink="/project">Projects</button>
+  <button mat-button routerLink="/service">External Services</button>
+  <button mat-button routerLink="/engine">Engines</button>
+  <button mat-button routerLink="/provider">Providers</button>
+  <button mat-button (click)="onLogout()" *ngIf="isLoggedIn">Logout</button>
+</mat-toolbar>
