@@ -1,7 +1,7 @@
 name: 'Polyrific.Catapult.Plugins.EntityFrameworkCore'
 type: 'DatabaseProvider'
 author: 'Polyrific'
-version: '1.0.0-beta1'
+version: '1.0.0-beta2'
 additional-configs:
   - name: StartupProjectName
     label: Startup Project Name

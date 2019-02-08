@@ -1,6 +1,6 @@
 name: 'Polyrific.Catapult.Plugins.GitHub'
 type: 'RepositoryProvider'
 author: 'Polyrific'
-version: '1.0.0-beta1'
+version: '1.0.0-beta2'
 required-services:
   - GitHub

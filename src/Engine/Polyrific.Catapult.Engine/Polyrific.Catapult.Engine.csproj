@@ -8,7 +8,7 @@
     <AssemblyName>ocengine</AssemblyName>
     <LangVersion>7.1</LangVersion>
     <PackageId>Polyrific.Catapult.Engine</PackageId>
-    <Version>1.0.0-beta1</Version>
+    <Version>1.0.0-beta2</Version>
     <Authors>Polyrific</Authors>
     <Company>Polyrific, Inc</Company>
     <Product>OpenCatapult</Product>
