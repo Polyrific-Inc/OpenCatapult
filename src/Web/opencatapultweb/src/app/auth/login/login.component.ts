@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from '../auth.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { first } from 'rxjs/operators';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -8,7 +11,9 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-
+  loading = false;
+  returnUrl: string;
+  error = '';
   loginForm = this.fb.group({
     email: [null, Validators.compose([
       Validators.required, Validators.email])],
@@ -19,9 +24,17 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private authService: AuthService) {}
+    private route: ActivatedRoute,
+    private router: Router,
+    private authService: AuthService) {
+      if (this.authService.currentUserValue) { 
+          this.router.navigate(['/']);
+      }
+    }
 
-  ngOnInit() {
+  ngOnInit() {    
+    // get return url from route parameters or default to '/'
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
   isFieldInvalid(field: string) {
@@ -33,7 +46,19 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value);
+        this.loading = true;
+      this.authService.login(this.loginForm.value)
+        .subscribe(
+            data => {
+                this.router.navigate([this.returnUrl]);
+            },
+            (err: HttpErrorResponse) => {
+                if (err.error && typeof err.error === "string")
+                  this.error = err.error;
+                else
+                  this.error = err.message;
+                this.loading = false;
+            });
     }
 
     this.formSubmitAttempt = true;

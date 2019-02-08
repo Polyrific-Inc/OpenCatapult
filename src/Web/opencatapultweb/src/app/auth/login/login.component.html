@@ -1,4 +1,6 @@
 <div class="signin-content">
+  <h1>Catapult Dashboard</h1>
+
   <mat-card>
     <mat-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
@@ -15,7 +17,10 @@
             Please inform your password
           </mat-error>
         </mat-form-field>
-        <button mat-raised-button color="primary">Login</button>
+        
+        <mat-error *ngIf="error">{{error}}</mat-error>
+        <mat-spinner *ngIf="loading"></mat-spinner>
+        <button mat-raised-button color="primary" [disabled]="loading">Login</button>
       </form>
     </mat-card-content>
   </mat-card>

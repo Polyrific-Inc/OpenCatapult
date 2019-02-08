@@ -24,11 +24,11 @@ const routes: Routes = [
     ]
   },
   {
-    path: '',
+    path: 'login',
     component: LoginLayoutComponent,
     children: [
       {
-        path: 'login',
+        path: '',
         component: LoginComponent
       }
     ]

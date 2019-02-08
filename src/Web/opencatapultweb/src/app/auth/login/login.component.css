@@ -1,7 +1,12 @@
-mat-card {
+mat-card, h1 {
     max-width: 400px;
     margin: 2em auto;
     text-align: center;
+}
+
+mat-spinner {
+    text-align: center;
+    margin: 10px auto;
 }
 
 .signin-content {
