@@ -110,6 +110,8 @@ namespace Polyrific.Catapult.Api
                 c.IncludeXmlComments(xmlPath);
 
             });
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -143,6 +145,11 @@ namespace Polyrific.Catapult.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenCatapult API V1");
                 c.RoutePrefix = string.Empty;
             });
+
+            app.UseCors(builder => builder
+                .WithOrigins(Configuration["AllowedOrigin"])
+                .AllowAnyHeader()
+                .AllowAnyMethod());
 
             app.UseMvc();
 
