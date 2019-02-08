@@ -15,6 +15,7 @@ import { LoginComponent } from './auth/login/login.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorInterceptor } from './_helpers/error.interceptor';
 import { JwtInterceptor } from './_helpers/jwt.interceptor';
+import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { JwtInterceptor } from './_helpers/jwt.interceptor';
     HeaderComponent,
     HomeLayoutComponent,
     LoginLayoutComponent,
-    LoginComponent
+    LoginComponent,
+    UnauthorizedComponent
   ],
   imports: [
     BrowserModule,

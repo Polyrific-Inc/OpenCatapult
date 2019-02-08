@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { map, catchError, tap } from 'rxjs/operators';
+import { map, } from 'rxjs/operators';
 import { User } from './user';
 import { environment } from 'src/environments/environment';
+import * as jwt_decode from 'jwt-decode';
+import { AuthorizePolicy } from './authorize-policy';
+import { Role } from './role';
+import { ProjectMemberRole } from './project-member-role';
 
 @Injectable({
   providedIn: 'root'
@@ -40,6 +44,20 @@ export class AuthService {
             if (token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 user.token = token;
+                let decodedToken = this.getDecodedAccessToken(token);
+
+                if (decodedToken.Projects){
+                  user.projects = JSON.parse(decodedToken.Projects).map(pm => ({
+                      projectId: pm.ProjectId,
+                      projectName: pm.ProjectName,
+                      memberRole: pm.MemberRole
+                    }));
+                }
+
+                if (decodedToken.hasOwnProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")) {
+                  user.role = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                }
+
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 this.currentUserSubject.next(user);
             }
@@ -52,5 +70,43 @@ export class AuthService {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
     this.currentUserSubject.next(null);
+  }
+
+  checkRoleAuthorization(authPolicy : AuthorizePolicy, projectId : number) : boolean {
+    let currentUser = this.currentUserValue;
+    if (currentUser.role === Role.Administrator)
+      return true;
+
+    switch (authPolicy) {
+      case AuthorizePolicy.UserRoleAdminAccess:
+        return currentUser.role === Role.Administrator;
+      case AuthorizePolicy.UserRoleBasicAccess:
+        return [Role.Administrator, Role.Basic].includes(Role[currentUser.role]);
+      case AuthorizePolicy.UserRoleGuestAccess:        
+        return [Role.Administrator, Role.Basic, Role.Guest].includes(Role[currentUser.role]);
+      case AuthorizePolicy.ProjectAccess:
+      case AuthorizePolicy.ProjectMemberAccess:
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId);
+      case AuthorizePolicy.ProjectContributorAccess:
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
+          [ProjectMemberRole.Owner, ProjectMemberRole.Maintainer, ProjectMemberRole.Contributor].includes(ProjectMemberRole[p.memberRole]));
+      case AuthorizePolicy.ProjectMaintainerAccess:
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
+          [ProjectMemberRole.Owner, ProjectMemberRole.Maintainer].includes(ProjectMemberRole[p.memberRole]));
+      case AuthorizePolicy.ProjectOwnerAccess:
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
+          p.memberRole == ProjectMemberRole.Owner);
+      default:
+      return false;
+     }
+  }
+
+  private getDecodedAccessToken(token: string): any {
+    try{
+        return jwt_decode(token);
+    }
+    catch(Error){
+        return null;
+    }
   }
 }

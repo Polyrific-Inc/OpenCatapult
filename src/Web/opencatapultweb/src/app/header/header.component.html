@@ -6,7 +6,8 @@
   <span class="fill-remaining-space"></span>
   <button mat-button routerLink="/project">Projects</button>
   <button mat-button routerLink="/service">External Services</button>
-  <button mat-button routerLink="/engine">Engines</button>
-  <button mat-button routerLink="/provider">Providers</button>
+  <button mat-button routerLink="/engine" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Engines</button>
+  <button mat-button routerLink="/provider" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Providers</button>
+  <button mat-button routerLink="/user" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Users</button>
   <button mat-button (click)="onLogout()" *ngIf="isLoggedIn">Logout</button>
 </mat-toolbar>

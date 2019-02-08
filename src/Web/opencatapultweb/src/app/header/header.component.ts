@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Router } from '@angular/router';
+import { AuthorizePolicy } from '../auth/authorize-policy';
 
 @Component({
   selector: 'app-header',
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
 
-  isLoggedIn$: Observable<boolean>;     
+  isLoggedIn$: Observable<boolean>;
+  authorizePolicyEnum = AuthorizePolicy;
 
   constructor(
       private authService: AuthService,
@@ -24,5 +26,9 @@ export class HeaderComponent implements OnInit {
   onLogout(){
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  isMenuShown(authorizePolicy : AuthorizePolicy) {
+    return this.authService.checkRoleAuthorization(authorizePolicy, null);
   }
 }
