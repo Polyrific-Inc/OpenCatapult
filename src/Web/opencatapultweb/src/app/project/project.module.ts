@@ -5,7 +5,8 @@ import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectComponent } from './project/project.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectInfoComponent } from './project-info/project-info.component';
-import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule } from '@angular/material';
+import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatGridListModule, MatExpansionModule, MatTabsModule, MatButtonModule } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [ProjectComponent, ProjectDetailComponent, ProjectInfoComponent],
@@ -15,7 +16,12 @@ import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule } from
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
-    MatIconModule
+    MatIconModule,
+    MatGridListModule,
+    MatExpansionModule,
+    MatButtonModule,
+    MatTabsModule,
+    FlexLayoutModule
   ]
 })
 export class ProjectModule { }

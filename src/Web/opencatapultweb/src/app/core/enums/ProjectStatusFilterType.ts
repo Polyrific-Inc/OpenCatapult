@@ -1,3 +1,5 @@
 export enum ProjectStatusFilterType{
-    all = 'all'
+    all = 'all',
+    active = 'active',
+    archived = 'archived'
 }

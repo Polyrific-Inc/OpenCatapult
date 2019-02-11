@@ -1,10 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DataModelComponent } from './data-model/data-model.component';
+import { MemberComponent } from './member/member.component';
 
 const routes: Routes = [
   {
-    path: '', component: DataModelComponent
+    path: '',
+    component: MemberComponent
   }
 ];
 
@@ -12,4 +13,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DataModelRoutingModule { }
+export class MemberRoutingModule { }

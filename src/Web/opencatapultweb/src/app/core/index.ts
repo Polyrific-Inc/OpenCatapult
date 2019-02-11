@@ -2,7 +2,7 @@
 export * from './services/project.service';
 
 /* Models */
-export * from './models/ProjectDto';
+export * from './models/project-dto';
 
 /* Enums */
 export * from './enums/ProjectStatusFilterType';

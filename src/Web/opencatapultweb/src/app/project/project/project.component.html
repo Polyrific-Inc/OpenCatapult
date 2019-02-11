@@ -1,13 +1,34 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport="true"
-      [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
-      [mode]="(isHandset$ | async) ? 'over' : 'side'"
-      [opened]="!(isHandset$ | async)">
-    <mat-nav-list>
-      <a mat-list-item *ngFor="let project of projects" routerLink='/project/project.Id'>{{project.name}}</a>
-    </mat-nav-list>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <!-- Add Content Here -->
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div fxLayout="row" fxLayout.xs="column">
+  <div fxFlex="15">    
+    <!-- Project list -->
+    <mat-accordion>
+        <mat-expansion-panel class="project-list" expanded="true">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Project List
+            </mat-panel-title>
+          </mat-expansion-panel-header>       
+          <div class="button">
+              <button mat-raised-button color="primary">New Project</button>
+          </div>             
+          <mat-nav-list>
+            <a mat-list-item *ngFor="let project of projects" routerLink='/project/{{project.id}}' [routerLinkActive]="['is-active']">{{project.name}}</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+        <mat-expansion-panel expanded="false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Archived Project
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item *ngFor="let project of archivedProjects">{{project.name}}</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div fxFlex="85" class="project-detail">
+      <!-- Content -->
+      <router-outlet></router-outlet>
+  </div>
+</div>

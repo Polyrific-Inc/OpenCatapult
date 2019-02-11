@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DataModelComponent } from './data-model/data-model.component';
+import { JobQueueComponent } from './job-queue/job-queue.component';
 
 const routes: Routes = [
   {
-    path: '', component: DataModelComponent
+    path: '', component: JobQueueComponent
   }
 ];
 
@@ -12,4 +12,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class DataModelRoutingModule { }
+export class JobQueueRoutingModule { }

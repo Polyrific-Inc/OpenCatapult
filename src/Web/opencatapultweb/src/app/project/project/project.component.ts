@@ -11,6 +11,8 @@ import { ProjectService, ProjectStatusFilterType, ProjectDto } from '@app/core';
 })
 export class ProjectComponent implements OnInit {
   projects: ProjectDto[];
+  archivedProjects: ProjectDto[];
+  currentProjectId: number;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -27,8 +29,11 @@ export class ProjectComponent implements OnInit {
   }
 
   getProjects() {
-    this.projectService.getProjects(ProjectStatusFilterType.all, true)
+    this.projectService.getProjects(ProjectStatusFilterType.active, true)
       .subscribe(data => this.projects = data);
+
+    this.projectService.getProjects(ProjectStatusFilterType.archived, true)
+      .subscribe(data => this.archivedProjects = data);
   }
 
 }
