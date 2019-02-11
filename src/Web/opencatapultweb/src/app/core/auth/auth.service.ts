@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, } from 'rxjs/operators';
 import { User } from './user';
-import { environment } from 'src/environments/environment';
+import { environment } from '@env/environment';
 import * as jwt_decode from 'jwt-decode';
 import { AuthorizePolicy } from './authorize-policy';
 import { Role } from './role';

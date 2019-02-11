@@ -1,10 +1,10 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from './core/auth/auth.guard';
+import { AuthorizePolicy } from './core/auth/authorize-policy';
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
-import { LoginComponent } from './auth/login/login.component';
-import { AuthorizePolicy } from './auth/authorize-policy';
+import { LoginComponent } from './login/login.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 
 const routes: Routes = [

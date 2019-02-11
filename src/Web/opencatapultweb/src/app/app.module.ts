@@ -5,17 +5,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule, MatCardModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule, MatCardModule, MatInputModule, MatProgressSpinnerModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProjectModule } from './project/project.module';
 import { HeaderComponent } from './header/header.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
-import { LoginComponent } from './auth/login/login.component';
+import { LoginComponent } from './login/login.component';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { ErrorInterceptor } from './_helpers/error.interceptor';
-import { JwtInterceptor } from './_helpers/jwt.interceptor';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
+import { CoreModule } from './core/core.module';
 
 @NgModule({
   declarations: [
@@ -27,6 +26,7 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     UnauthorizedComponent
   ],
   imports: [
+    CoreModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -35,7 +35,6 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     MatProgressSpinnerModule,
     MatToolbarModule,
     MatButtonModule,
-    MatSidenavModule,
     MatIconModule,
     MatListModule,
     MatCardModule,
@@ -43,10 +42,6 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
     ReactiveFormsModule,
     ProjectModule
   ],
-  providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
-],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

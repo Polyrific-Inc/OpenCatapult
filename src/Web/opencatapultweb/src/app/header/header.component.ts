@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
+import { AuthService } from '../core/auth/auth.service';
 import { Router } from '@angular/router';
-import { AuthorizePolicy } from '../auth/authorize-policy';
+import { AuthorizePolicy } from '../core/auth/authorize-policy';
 
 @Component({
   selector: 'app-header',
