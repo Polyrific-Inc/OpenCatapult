@@ -18,21 +18,21 @@ There are 7 types of Task Provider. `OpenCatapult` provides built-in Task Provid
 
 - [Build Provider](build-provider.md)
 
-Build Providers answer the question of **how** your code will be built and deployed. `OpenCatapult` allows you to define a CI/CD pipeline that works your way by creating a build provider that defines every actionable step in your build & release flow.
+  Build Providers answer the question of **how** your code will be built and deployed. `OpenCatapult` allows you to define a CI/CD pipeline that works your way by creating a build provider that defines every actionable step in your build & release flow.
 
-The default build provider is `Polyrific.Catapult.Plugins.DotNetCore`
+  The default build provider is `Polyrific.Catapult.Plugins.DotNetCore`
 
 - [Repository Provider](repository-provider.md)
 
-The Repository Provider dictates **where** your source code will live. You can create or consume task providers for almost any kind of version control service so that your code is checked in to a location of your choosing. 
+  The Repository Provider dictates **where** your source code will live. You can create or consume task providers for almost any kind of version control service so that your code is checked in to a location of your choosing. 
 
-The default repository provider is `Polyrific.Catapult.Plugins.GitHub`
+  The default repository provider is `Polyrific.Catapult.Plugins.GitHub`
 
 - [Hosting Provider](hosting-provider.md)
 
-The Hosting Provider lets you declare **where** your app should be deployed. You can create or consume a hosting provider that will deploy your apps to Azure, AWS, Rackspace, on-premise, or any other place of your choosing.
+  The Hosting Provider lets you declare **where** your app should be deployed. You can create or consume a hosting provider that will deploy your apps to Azure, AWS, Rackspace, on-premise, or any other place of your choosing.
 
-The default hosting provider is `Polyrific.Catapult.Plugins.AzureAppService`.
+  The default hosting provider is `Polyrific.Catapult.Plugins.AzureAppService`.
 
 - [Database Provider](database-provider.md), with `Polyrific.Catapult.Plugins.EntityFrameworkCore` as the default provider
 - [Test Provider](test-provider.md), with `Polyrific.Catapult.Plugins.DotNetCoreTest` as the default provider
