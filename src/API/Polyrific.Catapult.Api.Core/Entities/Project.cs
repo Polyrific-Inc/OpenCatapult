@@ -17,9 +17,9 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Client { get; set; }
 
         /// <summary>
-        /// Confing string of the project
+        /// Display name of the project
         /// </summary>
-        public string ConfigString { get; set; }
+        public string DisplayName { get; set; }
 
         /// <summary>
         /// Is project archived?

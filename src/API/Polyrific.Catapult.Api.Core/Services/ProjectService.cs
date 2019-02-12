@@ -68,7 +68,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             var newProject = new Project
             {
                 Name = newProjectName,
-                ConfigString = sourceProject.ConfigString,
                 Models = sourceProject.Models?.Select(m => new ProjectDataModel
                 {
                     Name = m.Name,
@@ -146,7 +145,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             var newProject = new Project{ Name = projectName, Client = client };
             newProject.Models = models;
             newProject.Jobs = jobs;
-            newProject.ConfigString = config != null && config.Count > 0 ? JsonConvert.SerializeObject(config) : null;
 
             projectMembers = projectMembers ?? new List<(int userId, int projectMemberRoleId)>();
             if (!projectMembers.Any(p => p.userId == currentUserId))
@@ -330,7 +328,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 entity.Name = project.Name;
                 entity.Client = project.Client;
-                entity.ConfigString = project.ConfigString;
+                entity.DisplayName = project.DisplayName;
                 await _projectRepository.Update(entity);
             }            
         }

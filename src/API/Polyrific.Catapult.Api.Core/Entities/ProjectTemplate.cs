@@ -8,7 +8,6 @@ namespace Polyrific.Catapult.Api.Core.Entities
     {
         public string Name { get; set; }
         public string Client { get; set; }
-        public Dictionary<string, string> Config { get; set; }
         public List<ProjectDataModelTemplate> Models { get; set; }
         public List<JobDefinitionTemplate> Jobs { get; set; }
     }

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using System.Collections.Generic;
+using System;
 
 namespace Polyrific.Catapult.Shared.Dto.Project
 {
@@ -17,6 +17,11 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         public string Name { get; set; }
 
         /// <summary>
+        /// Display name of the project
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
         /// Client of the project
         /// </summary>
         public string Client { get; set; }
@@ -27,8 +32,8 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         public string Status { get; set; }
 
         /// <summary>
-        /// Config of the project
+        /// DateTime when the project created
         /// </summary>
-        public Dictionary<string, string> Config { get; set; }
+        public DateTime Created { get; set; }
     }
 }
