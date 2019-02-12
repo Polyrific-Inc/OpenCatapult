@@ -4,7 +4,7 @@
   <button mat-raised-button color="accent">Archive</button>
   <button mat-raised-button color="warn">Delete</button>
 </div>
-<nav mat-tab-nav-bar>
+<nav mat-tab-nav-bar flex>
     <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
     <a mat-tab-link (click)="activeLink = 'data-model'" [active]="activeLink == 'data-model'" routerLink='data-model'>Data Models</a>
     <a mat-tab-link (click)="activeLink = 'job-definition'" [active]="activeLink == 'job-definition'" routerLink='job-definition'>Job Definitions</a>

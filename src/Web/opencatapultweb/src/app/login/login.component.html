@@ -2,6 +2,7 @@
   <h1>Catapult Dashboard</h1>
 
   <mat-card>
+    <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
     <mat-card-content>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <p>Please login to continue</p>
@@ -19,7 +20,6 @@
         </mat-form-field>
         
         <mat-error *ngIf="error">{{error}}</mat-error>
-        <mat-spinner *ngIf="loading"></mat-spinner>
         <button mat-raised-button color="primary" [disabled]="loading">Login</button>
       </form>
     </mat-card-content>

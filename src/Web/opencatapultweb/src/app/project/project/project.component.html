@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayout.xs="column">
-  <div fxFlex="15">    
+  <div fxFlex="15" fxFlex.sm="30" fxFlex.md="20">    
     <!-- Project list -->
     <mat-accordion>
         <mat-expansion-panel class="project-list" expanded="true">
@@ -27,7 +27,7 @@
         </mat-expansion-panel>
     </mat-accordion>
   </div>
-  <div fxFlex="85" class="project-detail">
+  <div fxFlex="85" fxFlex.sm="70" fxFlex.md="80" class="project-detail">
       <!-- Content -->
       <router-outlet></router-outlet>
   </div>
