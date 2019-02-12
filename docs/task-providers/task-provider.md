@@ -1,6 +1,6 @@
 # Task Provider
 
-Task Provider is `OpenCatapult` extension which provides specific implementation of a job task. It holds an important role because the `OpenCatapult` itself is designed to be "platform-agnostic system", which means it should not make assumption on how a task should work. `OpenCatapult` just provides the skeleton of the tasks so they can be executed correctly in the defined sequence. That's why you are required to define a provider when defining a job task.
+A "Task Provider" is an `OpenCatapult` extension which provides specific implementation of a job task. It holds an important role because  `OpenCatapult` itself is designed to be a platform-agnostic system which means it should not make any assumptions about how a task should work. `OpenCatapult` provides the mechanism through wich task providers execute, correctly and in the defined sequence. That's why you are required to define a provider when defining a job task.
 
 There are 7 types of Task Provider. `OpenCatapult` provides built-in Task Providers for most of them:
 
