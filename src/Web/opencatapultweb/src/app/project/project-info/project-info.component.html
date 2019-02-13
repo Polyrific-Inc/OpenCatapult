@@ -1,5 +1,4 @@
 <div fxLayout="row" fxLayout.sm="column" class="form-container">  
-    <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
     <form fxFlex="50" fxFlex.md="70" [formGroup]="projectInfoForm" (ngSubmit)="onSubmit()">
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">

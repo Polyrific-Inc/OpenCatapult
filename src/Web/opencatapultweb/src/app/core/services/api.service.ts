@@ -19,9 +19,8 @@ export class ApiService {
       else if (error.error[""] && Array.isArray(error.error[""]))
         return throwError(error.error[""].join('\n'));
     }
-    else {
-      return throwError(error.message);
-    }
+    
+    return throwError(error.message);
   }
 
   get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
