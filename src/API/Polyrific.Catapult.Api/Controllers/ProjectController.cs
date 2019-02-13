@@ -102,7 +102,6 @@ namespace Polyrific.Catapult.Api.Controllers
                 Name = newProject.Name,
                 Members = newProject.Members,
                 Client = newProject.Client,
-                Config = newProject.Config,
                 Models = newProject.Models,
                 Jobs = newProject.Jobs?.Select(j => new CreateJobDefinitionWithTasksDto
                 {
@@ -133,7 +132,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 if (newProject.Jobs != null)
                     jobs = _mapper.Map<List<JobDefinition>>(newProject.Jobs);
 
-                var createdProject = await _projectService.CreateProject(newProject.Name, newProject.Client, projectMembers, newProject.Config, models, jobs, currentUserId);
+                var createdProject = await _projectService.CreateProject(newProject.Name, newProject.DisplayName, newProject.Client, projectMembers, models, jobs, currentUserId);
                 var project = _mapper.Map<ProjectDto>(createdProject);
                 return CreatedAtRoute("GetProjectById", new { projectId = project.Id }, project);
                 

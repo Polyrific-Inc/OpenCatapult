@@ -41,15 +41,15 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Create a new project
         /// </summary>
         /// <param name="projectName">Name of the project</param>
+        /// <param name="displayName">Display name of the project</param>
         /// <param name="client">Client of the project</param>
         /// <param name="projectMembers">Members of the project</param>
-        /// <param name="configs">Configs of the project</param>
         /// <param name="models">Models of the project</param>
         /// <param name="jobs">Job definitions of the project</param>
         /// <param name="currentUserId">Id of the current user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The new created project</returns>
-        Task<Project> CreateProject(string projectName, string client, List<(int userId, int projectMemberRoleId)> projectMembers, Dictionary<string, string> configs, List<ProjectDataModel> models, List<JobDefinition> jobs, int currentUserId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Project> CreateProject(string projectName, string displayName, string client, List<(int userId, int projectMemberRoleId)> projectMembers, List<ProjectDataModel> models, List<JobDefinition> jobs, int currentUserId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete a project

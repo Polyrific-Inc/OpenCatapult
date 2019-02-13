@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 new Project
                 {
                     Id = 1,
-                    Name = "Project A",
+                    Name = "Project-A",
                     IsArchived = false
                 }
             };
@@ -195,18 +195,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void CreateProject_ValidItem()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var newProject = await projectService.CreateProject("Project B", "Client B", null, null, null, null, 1);
+            var newProject = await projectService.CreateProject("Project  B   test", "Project B", "Client B", null, null, null, 1);
 
             Assert.True(_data.Count > 1);
             Assert.True(newProject.Id > 1);
-            Assert.True(newProject.Name == "Project B");
+            Assert.True(newProject.Name == "Project-B-test"); // check normalization logic
         }
 
         [Fact]
         public async void CreateProject_WithMembers()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var newProject = await projectService.CreateProject("Project B", "Client B", new List<(int, int)>{ (100, 1) }, null, null, null, 1);
+            var newProject = await projectService.CreateProject("Project-B", "Project B", "Client B", null, null, null, 1);
 
             Assert.True(newProject.Members.Count > 0);
         }
@@ -215,7 +215,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void CreateProject_DuplicateItemName()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var exception = Record.ExceptionAsync(() => projectService.CreateProject("Project A", "Client A", null, null, null, null, 1));
+            var exception = Record.ExceptionAsync(() => projectService.CreateProject("Project-A", "Project A", "Client A", null, null, null, 1));
 
             Assert.IsType<DuplicateProjectException>(exception?.Result);
         }
@@ -252,7 +252,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetProjectByName_ReturnItem()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
-            var project = await projectService.GetProjectByName("Project A");
+            var project = await projectService.GetProjectByName("Project-A");
 
             Assert.NotNull(project);
             Assert.Equal(1, project.Id);

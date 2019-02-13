@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Polyrific.Catapult.Api.Data;
 
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    partial class CatapultDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190213052546_AddProjectDisplayName")]
+    partial class AddProjectDisplayName
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -352,6 +354,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
+
+                    b.Property<string>("ConfigString");
 
                     b.Property<DateTime>("Created");
 

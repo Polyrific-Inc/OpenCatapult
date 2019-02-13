@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -133,16 +134,18 @@ namespace Polyrific.Catapult.Api.Core.Services
             return newProject;
         }
 
-        public async Task<Project> CreateProject(string projectName, string client, List<(int userId, int projectMemberRoleId)> projectMembers, Dictionary<string, string> config, List<ProjectDataModel> models, List<JobDefinition> jobs, int currentUserId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Project> CreateProject(string projectName, string displayName, string client, List<(int userId, int projectMemberRoleId)> projectMembers, List<ProjectDataModel> models, List<JobDefinition> jobs, int currentUserId, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            projectName = GetNormalizedProjectName(projectName);
 
             var projectByNameSpec = new ProjectFilterSpecification(projectName);
             var duplicateProjectsCount = await _projectRepository.CountBySpec(projectByNameSpec, cancellationToken);
             if (duplicateProjectsCount > 0)
                 throw new DuplicateProjectException(projectName);
             
-            var newProject = new Project{ Name = projectName, Client = client };
+            var newProject = new Project{ Name = projectName, DisplayName = displayName, Client = client };
             newProject.Models = models;
             newProject.Jobs = jobs;
 
@@ -337,6 +340,18 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             var serializer = new SerializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
             return serializer.Serialize(template);
+        }
+
+        private string GetNormalizedProjectName(string projectName)
+        {
+            projectName = projectName.Trim();
+
+            if (projectName.Contains(" "))
+            {
+                projectName = Regex.Replace(projectName, @"\s+", "-");
+            }
+
+            return projectName;
         }
     }
 }

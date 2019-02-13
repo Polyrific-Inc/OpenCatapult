@@ -118,10 +118,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateProject_ReturnsCreatedProject()
         {
             _projectService
-                .Setup(s => s.CreateProject(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<List<(int,int)>>(), 
-                    It.IsAny<Dictionary<string, string>>(), It.IsAny<List<ProjectDataModel>>(), It.IsAny<List<JobDefinition>>(),
+                .Setup(s => s.CreateProject(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), 
+                    It.IsAny<List<(int,int)>>(), It.IsAny<List<ProjectDataModel>>(), It.IsAny<List<JobDefinition>>(),
                     It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string projectName, string client, List<(int, int)> projectMembers, Dictionary<string, string> configs, 
+                .ReturnsAsync((string projectName, string displayName, string client, List<(int, int)> projectMembers, 
                 List<ProjectDataModel> models, List<JobDefinition> jobs, int currentUserId, CancellationToken cancellationToken) =>
                     new Project
                     {
