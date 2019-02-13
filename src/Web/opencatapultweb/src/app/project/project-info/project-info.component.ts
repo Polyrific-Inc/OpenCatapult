@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { ProjectService, ProjectDto } from '@app/core';
+import { DatePipe } from '@angular/common';
+import { MatSnackBar } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-project-info',
@@ -11,29 +14,44 @@ export class ProjectInfoComponent implements OnInit {
   projectInfoForm: FormGroup;
   project: ProjectDto;
   editing: boolean;
+  loading: boolean;
+  formSubmitAttempt = false;
 
   constructor(
     private fb: FormBuilder,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private snackBar: MatSnackBar,
+    private route: ActivatedRoute
     ) { }
 
   ngOnInit() {
     this.projectInfoForm = this.fb.group({
       id: new FormControl({value: null, disabled: true}),
-      created: new FormControl({value: null, disabled: true})
+      createdDate: new FormControl({value: null, disabled: true})
     });
 
-    this.projectService.getCurrentProject().subscribe(data => 
-      {
-        this.project = data;
-        this.populateForm();
-      });
+    this.getProject();
     
-      this.editing = false;
+    this.editing = false;
+  }  
+
+  getProject() : void {
+    this.route.parent.params.subscribe(params => {      
+      const id = +params.id;
+      this.projectService.getProject(id)
+        .subscribe(project => {
+          this.project = project;
+          this.populateForm();
+        });
+    })
   }
 
   populateForm() {
-    this.projectInfoForm.patchValue(this.project);
+    var datePipe = new DatePipe('en-US');
+    this.projectInfoForm.patchValue({
+      ...this.project,
+      createdDate: datePipe.transform(this.project.created, 'MMMM d, yyyy')
+    });
   }
 
   /**
@@ -47,7 +65,33 @@ export class ProjectInfoComponent implements OnInit {
   }
 
   onSubmit() {
-
+    this.formSubmitAttempt = true;
+    if (this.projectInfoForm.valid) {
+      this.loading = true;
+      this.projectService.updateProject({
+        id: this.project.id,
+        ...this.projectInfoForm.value
+      })
+        .subscribe(
+            data => {
+              this.snackBar.open("Project info has been updated", null, {
+                duration: 2000
+              });  
+              this.loading = false;
+              this.project = {
+                ...this.projectInfoForm.value,
+                id: this.project.id,
+                created: this.project.created
+              };
+              this.editing = false;
+            },
+            err => {
+              this.snackBar.open(err, null, {
+                duration: 2000
+              });
+              this.loading = false;
+            });
+    }
   }
 
   setEditing(editing : boolean)

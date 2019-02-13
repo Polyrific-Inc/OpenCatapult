@@ -13,10 +13,15 @@ export class ApiService {
   ) {}
 
   private formatErrors(error: HttpErrorResponse) {    
-    if (error.error && typeof error.error === "string")
-      return throwError(error.error);
-    else
+    if (error.error) {
+      if (typeof error.error === "string")
+        return throwError(error.error);
+      else if (error.error[""] && Array.isArray(error.error[""]))
+        return throwError(error.error[""].join('\n'));
+    }
+    else {
       return throwError(error.message);
+    }
   }
 
   get<T>(path: string, params: HttpParams = new HttpParams()): Observable<T> {
@@ -27,14 +32,14 @@ export class ApiService {
   put<T>(path: string, body: Object = {}): Observable<T> {
     return this.http.put<T>(
       `${environment.apiUrl}/${path}`,
-      JSON.stringify(body)
+      body
     ).pipe(catchError(this.formatErrors));
   }
 
   post<T>(path: string, body: Object = {}): Observable<T> {
     return this.http.post<T>(
       `${environment.apiUrl}/${path}`,
-      JSON.stringify(body)
+      body
     ).pipe(catchError(this.formatErrors));
   }
 

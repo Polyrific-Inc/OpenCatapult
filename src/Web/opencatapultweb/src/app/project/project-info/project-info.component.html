@@ -1,4 +1,5 @@
-<div fxLayout="row" fxLayout.sm="column" class="form-container">
+<div fxLayout="row" fxLayout.sm="column" class="form-container">  
+    <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
     <form fxFlex="50" fxFlex.md="70" [formGroup]="projectInfoForm" (ngSubmit)="onSubmit()">
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">
@@ -6,11 +7,11 @@
           <input matInput formControlName="id">
         </mat-form-field>
         
-        <app-project-info-form (formReady)="formInitialized($event)" [project]="project" [disableForm]="!editing"></app-project-info-form>
+        <app-project-info-form (formReady)="formInitialized($event)" [project]="project" [disableForm]="!editing" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
         
         <mat-form-field class="full-width-input">
             <mat-label>Created</mat-label>
-            <input matInput formControlName="created">
+            <input matInput formControlName="createdDate">
         </mat-form-field>
         <mat-error *ngIf="error">{{error}}</mat-error>
         <button mat-raised-button [disabled]="loading" *ngIf="!editing" (click)="setEditing(true)">Edit</button>

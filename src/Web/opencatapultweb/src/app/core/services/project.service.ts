@@ -8,8 +8,6 @@ import { tap, filter } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class ProjectService {
-  private currentProject = new BehaviorSubject<ProjectDto>(null);
-
   constructor(private apiService: ApiService) { }
 
   getProjects(status: string, getAll: boolean) : Observable<ProjectDto[]> {
@@ -17,16 +15,10 @@ export class ProjectService {
   }
 
   getProject(projectId: number) : Observable<ProjectDto> {
-    let self = this;
-    return this.apiService.get<ProjectDto>(`project/${projectId}`)
-      .pipe(tap(data => 
-        {
-          self.currentProject.next(data);
-        }));
+    return this.apiService.get<ProjectDto>(`project/${projectId}`);
   }
 
-  getCurrentProject() : Observable<ProjectDto>
-  {
-    return this.currentProject.asObservable().pipe(filter(p => p != null));
+  updateProject(project: ProjectDto) {
+    return this.apiService.put(`project/${project.id}`, project);
   }
 }

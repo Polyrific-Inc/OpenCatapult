@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ProjectDto } from '@app/core';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-project-info-form',
@@ -10,9 +12,10 @@ import { ProjectDto } from '@app/core';
 export class ProjectInfoFormComponent implements OnInit, OnChanges {
   @Input() project: ProjectDto;
   @Input() disableForm: boolean;
+  @Input() formSubmitAttempt: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   projectInfoForm: FormGroup;
-  private formSubmitAttempt: boolean;
+  private projectName = new Subject<string>();
 
   constructor(
     private fb: FormBuilder
@@ -21,9 +24,11 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.projectInfoForm = this.fb.group({
       name: [{value: null, disabled: this.disableForm}, Validators.required],
-      displayName: [{value: null, disabled: this.disableForm}, Validators.required],
+      displayName: [{value: null, disabled: this.disableForm}],
       client: {value: null, disabled: this.disableForm}    
     });
+
+    this.normalizeProjectName();
 
     this.formReady.emit(this.projectInfoForm);
   }
@@ -50,6 +55,26 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
         this.projectInfoForm.enable();
       }
     }
+  }
+
+  onNameChanged(name: string) {
+    this.projectName.next(name);
+  }
+
+  normalizeProjectName() {
+    this.projectName.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(projectName => {
+      projectName = projectName.trim();
+      if (projectName.indexOf(' ')){        
+        projectName = projectName.replace(/ /g, "-");
+      }
+
+      this.projectInfoForm.patchValue({
+        name: projectName
+      });
+    });
   }
 
   isFieldInvalid(field: string) {
