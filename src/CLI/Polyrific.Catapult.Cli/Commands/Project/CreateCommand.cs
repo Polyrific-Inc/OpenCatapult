@@ -41,7 +41,6 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [Option("-n|--name <NAME>", "Name of the project", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
-        [Required]
         [Option("-d|--displayname <DISPLAYNAME>", "Display Name of the project", CommandOptionType.SingleValue)]
         public string DisplayName { get; set; }
 

@@ -138,6 +138,9 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            // set default display name
+            displayName = !string.IsNullOrEmpty(displayName) ? displayName : projectName;
+
             projectName = GetNormalizedProjectName(projectName);
 
             var projectByNameSpec = new ProjectFilterSpecification(projectName);
