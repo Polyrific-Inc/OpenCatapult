@@ -23,14 +23,15 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [Option("-n|--name <NAME>", "Name of the project", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Required]
+        [Option("-d|--displayname <DISPLAYNAME>", "Display Name of the project", CommandOptionType.SingleValue)]
+        public string DisplayName { get; set; }
+
         [Option("-r|--rename <RENAME>", "New Name of the project", CommandOptionType.SingleValue)]
         public string Rename { get; set; }
 
         [Option("-c|--client <CLIENT>", "Name of the client", CommandOptionType.SingleValue)]
         public string Client { get; set; }
-
-        [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the project", CommandOptionType.MultipleValue)]
-        public (string, string)[] Property { get; set; }
 
         public override string Execute()
         {
@@ -45,8 +46,8 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 {
                     Id = project.Id,
                     Name = Rename ?? project.Name,
-                    Client = Client ?? project.Client,
-                    Config = Property?.ToDictionary(x => x.Item1, x => x.Item2)
+                    DisplayName = DisplayName ?? project.DisplayName,
+                    Client = Client ?? project.Client
                 };
 
                 _projectService.UpdateProject(project.Id, dto).Wait();

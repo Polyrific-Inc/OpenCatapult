@@ -41,14 +41,15 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [Option("-n|--name <NAME>", "Name of the project", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Required]
+        [Option("-d|--displayname <DISPLAYNAME>", "Display Name of the project", CommandOptionType.SingleValue)]
+        public string DisplayName { get; set; }
+
         [Option("-c|--client <CLIENT>", "Name of the client", CommandOptionType.SingleValue)]
         public string Client { get; set; }
 
         [Option("-t|--template <TEMPLATE>", "Project template", CommandOptionType.SingleValue)]
         public string Template { get; set; }
-
-        [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the project", CommandOptionType.MultipleValue)]
-        public (string, string)[] Property { get; set; }
 
         public override string Execute()
         {
@@ -60,6 +61,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 var projectTemplate = _templateWriter.Read(Template);
                 projectDto = DeserializeYaml<NewProjectDto>(projectTemplate);
                 projectDto.Name = Name;
+                projectDto.DisplayName = DisplayName;
                 projectDto.Client = Client;
             }
             else
@@ -68,6 +70,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 {
                     Name = Name,
                     Client = Client,
+                    DisplayName = DisplayName,
                     Members = new List<NewProjectMemberDto>()
                 };
             }
@@ -75,7 +78,6 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             projectDto.Members = projectDto.Members ?? new List<NewProjectMemberDto>();
             projectDto.Models = projectDto.Models ?? new List<CreateProjectDataModelWithPropertiesDto>();
             projectDto.Jobs = projectDto.Jobs ?? new List<CreateJobDefinitionWithTasksDto>();
-            projectDto.Config = Property?.ToDictionary(x => x.Item1, x => x.Item2);
 
             var message = ValidateTask(projectDto.Jobs);
             if (!string.IsNullOrEmpty(message))

@@ -25,10 +25,5 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         /// Display name of the project
         /// </summary>
         public string DisplayName { get; set; }
-
-        /// <summary>
-        /// Config of the project
-        /// </summary>
-        public Dictionary<string, string> Config { get; set; }
     }
 }

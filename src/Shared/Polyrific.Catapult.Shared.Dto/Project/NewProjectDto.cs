@@ -32,11 +32,6 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         public string Client { get; set; }
 
         /// <summary>
-        /// Config of the project
-        /// </summary>
-        public Dictionary<string, string> Config { get; set; }
-
-        /// <summary>
         /// Data models of the project
         /// </summary>
         public List<CreateProjectDataModelWithPropertiesDto> Models { get; set; }
