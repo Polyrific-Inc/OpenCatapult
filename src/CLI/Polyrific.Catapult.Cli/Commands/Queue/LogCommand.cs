@@ -30,6 +30,9 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
         [Option("-n|--number <NUMBER>", "Queue number", CommandOptionType.SingleValue)]
         public string Number { get; set; }
 
+        [Option("-w|--wait", "Wait for the log stream to coming through", CommandOptionType.NoValue)]
+        public bool Wait { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to get queue \"{Number}\" in project {Project}...");
@@ -59,7 +62,17 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                             message = _jobQueueService.GetJobLogs(project.Id, queue.Id).Result;
                             return message;
                         case JobStatus.Queued:
-                            message = $"Queue {Number} is queued";
+                            if (Wait)
+                            {
+                                Console.WriteLine("Waiting for log stream...");
+                                _jobQueueLogListener.Listen(queue.Id, OnLogReceived, OnLogError).Wait();
+                                message = "";
+                            }
+                            else
+                            {
+                                message = $"Queue {Number} is queued";
+                            }
+                            
                             return message;
                         default:
                             message = $"Queue {Number} has unknown status";
