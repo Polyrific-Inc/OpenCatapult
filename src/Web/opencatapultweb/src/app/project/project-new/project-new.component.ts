@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
 import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto } from '@app/core';
 import * as jsYaml from 'js-yaml';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app/shared';
+import { strictEqual } from 'assert';
 
 @Component({
   selector: 'app-project-new',
@@ -11,7 +12,7 @@ import { SnackbarService } from '@app/shared';
   styleUrls: ['./project-new.component.css']
 })
 export class ProjectNewComponent implements OnInit {
-  projectInfoForm: FormGroup;
+  projectForm: FormGroup;
   project: NewProjectDto;
   loading: boolean;
   formSubmitAttempt = false;
@@ -29,37 +30,35 @@ export class ProjectNewComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.projectInfoForm = this.fb.group({
+    this.projectForm = this.fb.group({
       projectTemplate: null,
     });
 
     this.templates = [
-      ["sample", 'sample'],
-      ["sample-devops", 'sample-devops'],
+      ["sample.yaml", 'sample'],
+      ["sample-devops.yaml", 'sample-devops'],
       ["custom", 'Upload template file (.yaml or .yml)']
     ];
   }
 
   formInitialized(form: FormGroup) {
-    this.projectInfoForm = this.fb.group({
-      ...this.projectInfoForm.controls,
+    this.projectForm = this.fb.group({
+      ...this.projectForm.controls,
       ...form.controls
     })
   }
 
   onSubmit() {
     this.formSubmitAttempt = true;
-    if (this.projectInfoForm.valid) {
+    if (this.projectForm.valid) {
       this.loading = true;
-      this.projectService.createProject(this.projectInfoForm.value)
+      this.projectService.createProject(this.getNormalizedProjectObject(this.projectForm.value))
         .subscribe(
             (data: ProjectDto) => {
               this.snackBar.open("New project has been created");  
               
               this.router.navigate(["project", { dummyData: (new Date).getTime()}])
                 .then(() => this.router.navigate([`project/${data.id}`]));
-              
-              //this.router.navigate([`/project/${data.id}`, {dummyData: (new Date).getTime()}]); // the dummy data is there to force reload the component
             },
             err => {
               this.snackBar.open(err);
@@ -106,5 +105,24 @@ export class ProjectNewComponent implements OnInit {
     }
   }
 
+  onJobsFormChanged(form: FormArray) {
+    this.projectForm.setControl("jobs", form);
+  }
 
+  private getNormalizedProjectObject(projectObj: any) {
+    projectObj.jobs = projectObj.jobs.map(job => {
+      job.tasks = job.tasks.map(task => {
+        task.configs = this.buildMap(task.configs);
+        return task;
+      });
+
+      return job;
+    });
+
+    return projectObj;
+  }
+  
+  private buildMap(obj){
+    return Object.keys(obj).reduce((map, key) => map.set(key, obj[key]), new Map<string, string>());
+  }
 }

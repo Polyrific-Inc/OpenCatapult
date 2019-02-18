@@ -19,5 +19,13 @@
         </mat-form-field>
     </div>
 
-    <app-clone-task-config-form></app-clone-task-config-form>
+    <app-clone-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-clone-task-config-form>
+    <app-generate-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-generate-task-config-form>
+    <app-push-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-push-task-config-form>
+    <app-merge-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-merge-task-config-form>
+    <app-build-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-build-task-config-form>
+    <app-deploy-db-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-deploy-db-task-config-form>
+    <app-deploy-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-deploy-task-config-form>
+    <app-test-task-config-form [taskType]="task.type" (formReady)="onTaskConfigFormReady($event)"></app-test-task-config-form>
+    <app-additional-config-form></app-additional-config-form>
 </div>

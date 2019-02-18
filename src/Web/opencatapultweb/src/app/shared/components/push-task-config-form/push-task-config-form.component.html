@@ -1,0 +1,40 @@
+<div [formGroup]="pushConfigForm" *ngIf="showForm">
+    <mat-form-field class="full-width-input">
+        <mat-label>Repository</mat-label>
+        <input matInput placeholder="The remote repository url" formControlName="Repository" required>
+    </mat-form-field>
+
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Task Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <mat-form-field class="full-width-input">
+            <mat-label>Source Location</mat-label>
+            <input matInput placeholder="Custom folder of the source code to be pushed" formControlName="SourceLocation">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+            <mat-label>Branch</mat-label>
+            <input matInput placeholder="Custom branch name to be created" formControlName="Branch">
+        </mat-form-field>
+        <mat-checkbox formControName="CreatePullRequest" (change)="onCreatePullRequestChanged($event)">Create pull request?</mat-checkbox>
+        <mat-form-field class="full-width-input" *ngIf="createPullRequest">
+            <mat-label>Pull Request Target Branch</mat-label>
+            <input matInput placeholder="Custom pull request target branch" formControlName="PullRequestTargetBranch">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+            <mat-label>Commit Message</mat-label>
+            <input matInput placeholder="Custom commit message" formControlName="CommitMessage">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+            <mat-label>Author</mat-label>
+            <input matInput placeholder="Custom commit author name" formControlName="Author">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+            <mat-label>Email</mat-label>
+            <input matInput placeholder="Custom commit author's email" formControlName="Email">
+        </mat-form-field>
+        <mat-checkbox formControName="ContinueWhenFailed">Continue when failed?</mat-checkbox>
+    </mat-expansion-panel>
+</div>

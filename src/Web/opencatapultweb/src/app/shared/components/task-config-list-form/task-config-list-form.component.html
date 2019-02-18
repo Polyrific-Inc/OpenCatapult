@@ -1,1 +1,1 @@
-<app-task-config-form *ngFor="let task of tasks" [task]="task"></app-task-config-form>
+<app-task-config-form *ngFor="let task of tasks" [task]="task" (formReady)="onConfigFormChanged($event)"></app-task-config-form>

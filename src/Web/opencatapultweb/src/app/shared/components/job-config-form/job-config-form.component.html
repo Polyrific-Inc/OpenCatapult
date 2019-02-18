@@ -1,5 +1,5 @@
 
 <div *ngFor="let jobDefinition of jobDefinitions">
     <h4>Job: {{jobDefinition.name}}</h4>
-    <app-task-config-list-form [tasks]="jobDefinition.tasks"></app-task-config-list-form>
+    <app-task-config-list-form [tasks]="jobDefinition.tasks" (formChanged)="onTaskConfigListChanged($event)"></app-task-config-list-form>
 </div>

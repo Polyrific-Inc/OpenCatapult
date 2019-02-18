@@ -1,0 +1,15 @@
+<div [formGroup]="deployDbConfigForm" *ngIf="showForm">  
+  
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Task Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <mat-form-field class="full-width-input">
+            <mat-label>Migration Location</mat-label>
+            <input matInput placeholder="Custom directory path of migration script/library" formControlName="MigrationLocation">
+        </mat-form-field>
+    </mat-expansion-panel>
+</div>

@@ -1,0 +1,14 @@
+<div [formGroup]="deployConfigForm" *ngIf="showForm"> 
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Task Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+    <mat-form-field class="full-width-input">
+        <mat-label>Artifact Location</mat-label>
+        <input matInput placeholder="Custom directory path of the artifact to be deployed" formControlName="ArtifactLocation">
+    </mat-form-field>
+    </mat-expansion-panel> 
+</div>

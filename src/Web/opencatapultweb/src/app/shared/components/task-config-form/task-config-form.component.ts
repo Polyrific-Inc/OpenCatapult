@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto } from '@app/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 export class TaskConfigFormComponent implements OnInit, OnChanges {
   @Input() task: CreateJobTaskDefinitionDto;
   @Input() showRequiredOnly: boolean;
+  @Output() formReady = new EventEmitter<FormGroup>();
   taskConfigForm: FormGroup = this.fb.group({
     provider: null,
     externalService: null
@@ -23,11 +24,13 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   ) { }
 
   ngOnInit() {
+    this.formReady.emit(this.taskConfigForm);
   }
 
   ngOnChanges(changes: SimpleChanges){
     if (changes.task) {
       this.taskConfigForm.patchValue({
+        taskName: this.task.name,
         provider: this.task.provider
       });
 
@@ -61,7 +64,7 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
                     })
                 }
               }
-            }
+            }            
           }
         });
     }
@@ -83,6 +86,13 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
     else if (control.errors.notFound) {
       return control.errors.notFound;
     }
+  }
+
+  onTaskConfigFormReady(form: FormGroup) {    
+    Object.keys(form.controls).forEach(key => {
+      let control = form.get(key);
+      this.taskConfigForm.addControl(key, control);
+    });
   }
 
 }

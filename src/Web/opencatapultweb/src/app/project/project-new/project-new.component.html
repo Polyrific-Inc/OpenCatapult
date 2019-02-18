@@ -1,6 +1,6 @@
 <h3>New Project</h3>
 <div fxLayout="row" fxLayout.xs="column" class="form-container">  
-  <form fxFlex="50" fxFlex.md="70" [formGroup]="projectInfoForm" (ngSubmit)="onSubmit()">
+  <form fxFlex="50" fxFlex.md="70" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
       <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>      
       <app-project-info-form (formReady)="formInitialized($event)" [disableForm]="false" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
       
@@ -19,8 +19,9 @@
           <span class="custom-file">{{customTemplateFile}}</span>
       </div>
 
-      <app-job-config-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs"></app-job-config-form>
+      <app-job-config-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs" (onFormChanged)="onJobsFormChanged($event)"></app-job-config-form>
 
+      <div class="margin10"></div>
       <button mat-raised-button color="primary" [disabled]="loading">Save</button>
       <button mat-raised-button [disabled]="loading" routerLink="/project">Cancel</button>
     </form>
