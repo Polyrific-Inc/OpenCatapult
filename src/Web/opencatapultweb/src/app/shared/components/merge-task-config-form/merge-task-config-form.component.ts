@@ -9,6 +9,7 @@ import { JobTaskDefinitionType } from '@app/core';
 })
 export class MergeTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
+  @Input() taskConfigs: Map<string, string>;
   @Output() formReady = new EventEmitter<FormGroup>();
   mergeConfigForm: FormGroup;
   showForm: boolean;
@@ -27,6 +28,10 @@ export class MergeTaskConfigFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Merge;
+
+    if (changes.taskConfigs && this.taskConfigs){
+      this.mergeConfigForm.patchValue(this.taskConfigs);
+    }
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto } from '@app/core';
+import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto, JobTaskDefinitionType } from '@app/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -9,38 +9,40 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 })
 export class TaskConfigFormComponent implements OnInit, OnChanges {
   @Input() task: CreateJobTaskDefinitionDto;
-  @Input() showRequiredOnly: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
-  taskConfigForm: FormGroup = this.fb.group({
-    provider: null,
-    externalService: null
-  });;
+  taskForm: FormGroup;
+  taskConfigForm: FormGroup = this.fb.group({});;
   taskProvider: TaskProviderDto;
 
   constructor(
     private taskProviderService: TaskProviderService,
     private externalServiceService: ExternalServiceService,
     private fb: FormBuilder
-  ) { }
+  ) {
+    this.taskForm = this.fb.group({
+      name: null,
+      type: null,
+      provider: null,
+      sequence: null
+    });;
+    this.taskForm.addControl("configs", this.taskConfigForm);
+  }
 
   ngOnInit() {
-    this.formReady.emit(this.taskConfigForm);
+    this.formReady.emit(this.taskForm);
   }
 
   ngOnChanges(changes: SimpleChanges){
     if (changes.task) {
-      this.taskConfigForm.patchValue({
-        taskName: this.task.name,
-        provider: this.task.provider
-      });
+      this.taskForm.patchValue(this.task);
 
       this.taskProviderService.getTaskProviderByName(this.task.provider)
         .subscribe(data => {
           if (!data) {
-            this.taskConfigForm.get('provider').setErrors({
+            this.taskForm.get('provider').setErrors({
               'notFound': true
             });
-            this.taskConfigForm.get('provider').markAsTouched();
+            this.taskForm.get('provider').markAsTouched();
           }
           else {
             this.taskProvider = data;
@@ -49,7 +51,7 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
               for (let requiredService of this.taskProvider.requiredServices) {
                 const externalServiceName = `${requiredService}ExternalService`;
                 let taskExternalService = this.task.configs ? this.task.configs[externalServiceName] : null;
-                this.taskConfigForm.addControl(externalServiceName, new FormControl(taskExternalService, Validators.required));
+                this.taskConfigForm.setControl(externalServiceName, new FormControl(taskExternalService, Validators.required));
 
                 if (taskExternalService){
                   this.externalServiceService.getExternalServiceByName(taskExternalService)
@@ -91,8 +93,12 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   onTaskConfigFormReady(form: FormGroup) {    
     Object.keys(form.controls).forEach(key => {
       let control = form.get(key);
-      this.taskConfigForm.addControl(key, control);
+      this.taskConfigForm.setControl(key, control);
     });
+  }
+
+  onAdditionalConfigFormReady(form: FormGroup) {
+    this.taskForm.setControl("additionalConfigs", form);
   }
 
 }

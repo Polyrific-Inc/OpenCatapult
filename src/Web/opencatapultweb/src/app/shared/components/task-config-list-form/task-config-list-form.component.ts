@@ -9,26 +9,17 @@ import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 })
 export class TaskConfigListFormComponent implements OnInit {
   @Input() tasks: CreateJobTaskDefinitionDto[];
-  @Output() formChanged = new EventEmitter<FormArray>();
-  taskConfigsForm = this.fb.array([]);
+  @Output() formReady = new EventEmitter<FormArray>();
   tasksForm = this.fb.array([]);
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
-    this.tasks.forEach(task => {
-      let taskForm = this.fb.group({
-        name: task.name,
-        configs: this.taskConfigsForm
-      })
-
-      this.tasksForm.push(taskForm);
-    });
-    this.formChanged.emit(this.tasksForm);
+    this.formReady.emit(this.tasksForm);
   }
 
   onConfigFormChanged(form : FormGroup) {
-    this.taskConfigsForm.push(form);
+    this.tasksForm.push(form);
   }
 
 }

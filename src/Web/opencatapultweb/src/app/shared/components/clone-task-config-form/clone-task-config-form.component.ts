@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
 
@@ -9,6 +9,7 @@ import { JobTaskDefinitionType } from '@app/core';
 })
 export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
+  @Input() taskConfigs: Map<string, string>;
   @Output() formReady = new EventEmitter<FormGroup>();
   cloneConfigForm: FormGroup;
   showForm: boolean;
@@ -30,8 +31,12 @@ export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     this.showForm = this.taskType === JobTaskDefinitionType.Clone;
+
+    if (changes.taskConfigs && this.taskConfigs){
+      this.cloneConfigForm.patchValue(this.taskConfigs);
+    }
   }
 
   

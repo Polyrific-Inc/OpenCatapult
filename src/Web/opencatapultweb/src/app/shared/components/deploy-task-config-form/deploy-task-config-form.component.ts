@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class DeployTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
+  @Input() taskConfigs: Map<string, string>;
   @Output() formReady = new EventEmitter<FormGroup>();
   deployConfigForm: FormGroup;
   showForm: boolean;
@@ -27,6 +28,10 @@ export class DeployTaskConfigFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Deploy;
+
+    if (changes.taskConfigs && this.taskConfigs){
+      this.deployConfigForm.patchValue(this.taskConfigs);
+    }
   }
 
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
 
@@ -9,6 +9,7 @@ import { JobTaskDefinitionType } from '@app/core';
 })
 export class BuildTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
+  @Input() taskConfigs: Map<string, string>;
   @Output() formReady = new EventEmitter<FormGroup>();
   buildConfigForm: FormGroup;
   showForm: boolean;
@@ -25,8 +26,12 @@ export class BuildTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  ngOnChanges() {
+  ngOnChanges(changes: SimpleChanges) {
     this.showForm = this.taskType === JobTaskDefinitionType.Build;
+
+    if (changes.taskConfigs && this.taskConfigs){
+      this.buildConfigForm.patchValue(this.taskConfigs);
+    }
   }
 
 

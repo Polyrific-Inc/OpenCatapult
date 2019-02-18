@@ -15,9 +15,11 @@ import { DeployDbTaskConfigFormComponent } from './components/deploy-db-task-con
 import { DeployTaskConfigFormComponent } from './components/deploy-task-config-form/deploy-task-config-form.component';
 import { AdditionalConfigFormComponent } from './components/additional-config-form/additional-config-form.component';
 import { TestTaskConfigFormComponent } from './components/test-task-config-form/test-task-config-form.component';
+import { JobListFormComponent } from './components/job-list-form/job-list-form.component';
+import { AdditionalConfigFieldComponent } from './components/additional-config-field/additional-config-field.component';
 
 @NgModule({
-  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent],
+  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent, JobListFormComponent, AdditionalConfigFieldComponent],
   imports: [
     CommonModule,
     MatDividerModule,
@@ -41,6 +43,9 @@ import { TestTaskConfigFormComponent } from './components/test-task-config-form/
     DeployTaskConfigFormComponent,
     DeployDbTaskConfigFormComponent,
     TestTaskConfigFormComponent,
+    JobListFormComponent,
+    AdditionalConfigFormComponent,
+    AdditionalConfigFieldComponent
   ]
 })
 export class SharedModule {

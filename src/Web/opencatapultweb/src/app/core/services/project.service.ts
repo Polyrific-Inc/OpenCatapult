@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
 import { ProjectDto } from '../models/project/project-dto';
+import { NewProjectDto } from '../models/project/new-project-dto';
 
 @Injectable()
 export class ProjectService {
@@ -19,7 +20,7 @@ export class ProjectService {
     return this.apiService.put(`project/${project.id}`, project);
   }
 
-  createProject(project: ProjectDto) {
+  createProject(project: NewProjectDto) {
     return this.apiService.post('project', project);
   }
 }

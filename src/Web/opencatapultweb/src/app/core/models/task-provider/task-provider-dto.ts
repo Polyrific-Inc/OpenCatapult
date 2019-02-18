@@ -1,3 +1,5 @@
+import { AdditionalConfigDto } from '@app/core';
+
 export interface TaskProviderDto {
     id: number;
     name: string;
@@ -6,5 +8,5 @@ export interface TaskProviderDto {
     version: string;
     registrationDate: Date;
     requiredServices: string[];
-    //additionalConfigs:
+    additionalConfigs: AdditionalConfigDto[];
 }

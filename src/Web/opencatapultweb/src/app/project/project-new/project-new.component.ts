@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto } from '@app/core';
 import * as jsYaml from 'js-yaml';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ import { strictEqual } from 'assert';
 })
 export class ProjectNewComponent implements OnInit {
   projectForm: FormGroup;
+  template: FormControl;
   project: NewProjectDto;
   loading: boolean;
   formSubmitAttempt = false;
@@ -31,8 +32,9 @@ export class ProjectNewComponent implements OnInit {
 
   ngOnInit() {
     this.projectForm = this.fb.group({
-      projectTemplate: null,
     });
+
+    this.template = this.fb.control("template");
 
     this.templates = [
       ["sample.yaml", 'sample'],
@@ -52,7 +54,7 @@ export class ProjectNewComponent implements OnInit {
     this.formSubmitAttempt = true;
     if (this.projectForm.valid) {
       this.loading = true;
-      this.projectService.createProject(this.getNormalizedProjectObject(this.projectForm.value))
+      this.projectService.createProject(this.projectForm.value)
         .subscribe(
             (data: ProjectDto) => {
               this.snackBar.open("New project has been created");  
@@ -105,24 +107,7 @@ export class ProjectNewComponent implements OnInit {
     }
   }
 
-  onJobsFormChanged(form: FormArray) {
+  onJobsFormReady(form: FormArray) {
     this.projectForm.setControl("jobs", form);
-  }
-
-  private getNormalizedProjectObject(projectObj: any) {
-    projectObj.jobs = projectObj.jobs.map(job => {
-      job.tasks = job.tasks.map(task => {
-        task.configs = this.buildMap(task.configs);
-        return task;
-      });
-
-      return job;
-    });
-
-    return projectObj;
-  }
-  
-  private buildMap(obj){
-    return Object.keys(obj).reduce((map, key) => map.set(key, obj[key]), new Map<string, string>());
   }
 }

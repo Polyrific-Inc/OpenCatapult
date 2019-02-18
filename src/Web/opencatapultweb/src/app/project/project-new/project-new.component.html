@@ -5,7 +5,7 @@
       <app-project-info-form (formReady)="formInitialized($event)" [disableForm]="false" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
       
       <mat-form-field class="full-width-input">
-        <mat-select #templateSelect placeholder="Project template" formControlName="projectTemplate" (selectionChange)="onTemplateChanged($event)">
+        <mat-select #templateSelect placeholder="Project template" [formControl]="template" (selectionChange)="onTemplateChanged($event)">
           <mat-option>None</mat-option>
           <mat-option *ngFor="let template of templates" [value]="template[0]">
             {{template[1]}}
@@ -19,7 +19,7 @@
           <span class="custom-file">{{customTemplateFile}}</span>
       </div>
 
-      <app-job-config-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs" (onFormChanged)="onJobsFormChanged($event)"></app-job-config-form>
+      <app-job-list-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs" (formReady)="onJobsFormReady($event)"></app-job-list-form>
 
       <div class="margin10"></div>
       <button mat-raised-button color="primary" [disabled]="loading">Save</button>

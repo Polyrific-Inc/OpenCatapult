@@ -9,6 +9,7 @@ import { JobTaskDefinitionType } from '@app/core';
 })
 export class GenerateTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
+  @Input() taskConfigs: Map<string, string>;
   @Output() formReady = new EventEmitter<FormGroup>();
   generateConfigForm: FormGroup;
   showForm: boolean;
@@ -27,6 +28,10 @@ export class GenerateTaskConfigFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Generate;
+
+    if (changes.taskConfigs && this.taskConfigs){
+      this.generateConfigForm.patchValue(this.taskConfigs);
+    }
   }
 
 }

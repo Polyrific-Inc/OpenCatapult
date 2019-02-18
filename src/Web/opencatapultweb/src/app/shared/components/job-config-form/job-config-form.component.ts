@@ -1,35 +1,36 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
 import { CreateJobDefinitionDto, JobTaskDefinitionType } from '@app/core';
-import { FormArray, FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-job-config-form',
   templateUrl: './job-config-form.component.html',
   styleUrls: ['./job-config-form.component.css']
 })
-export class JobConfigFormComponent implements OnInit {
-  @Input() jobDefinitions: CreateJobDefinitionDto[];
-  @Output() onFormChanged = new EventEmitter<FormArray>();
-  jobsForm = this.fb.array([]);
-  jobTasksForm = this.fb.array([]);
+export class JobConfigFormComponent implements OnInit, OnChanges {
+  @Input() job: CreateJobDefinitionDto;
+  @Output() formReady = new EventEmitter<FormGroup>();
+  jobForm: FormGroup
 
   constructor(private fb: FormBuilder) { 
-
+    this.jobForm = this.fb.group(
+      {
+        name: null
+      }
+    );
   }
 
   ngOnInit() {
-    this.jobDefinitions.forEach(job => {
-      let jobForm = this.fb.group({
-        name: job.name,
-        tasks: this.jobTasksForm
-      })
+    this.formReady.emit(this.jobForm);
+  }
 
-      this.jobsForm.push(jobForm);
-    });
-    this.onFormChanged.emit(this.jobsForm);
+  ngOnChanges(changes: SimpleChanges) {
+    this.jobForm.patchValue({
+      name: this.job.name
+    })
   }
 
   onTaskConfigListChanged(form: FormArray) {
-    this.jobTasksForm.push(form);
+    this.jobForm.setControl("tasks", form);
   }
 }
