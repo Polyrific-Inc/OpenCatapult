@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -20,7 +20,6 @@ export class ConfirmationWithInputDialogComponent {
     public dialogRef: MatDialogRef<ConfirmationWithInputDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
-      let regex = `/^${data.confirmationMatch}$/`;
       this.inputControl =  new FormControl(data.enteredConfirmation, 
         Validators.compose([Validators.required, Validators.pattern(data.confirmationMatch)]));
     }

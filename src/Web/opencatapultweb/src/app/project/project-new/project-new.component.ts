@@ -4,7 +4,6 @@ import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto } fro
 import * as jsYaml from 'js-yaml';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app/shared';
-import { strictEqual } from 'assert';
 
 @Component({
   selector: 'app-project-new',
