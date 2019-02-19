@@ -13,6 +13,16 @@ namespace Polyrific.Catapult.Shared.Dto.Project
         public string NewProjectName { get; set; }
 
         /// <summary>
+        /// Display name of the project
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Client of the project
+        /// </summary>
+        public string Client { get; set; }
+
+        /// <summary>
         /// Copy project members into the new project
         /// </summary>
         public bool IncludeMembers { get; set; }

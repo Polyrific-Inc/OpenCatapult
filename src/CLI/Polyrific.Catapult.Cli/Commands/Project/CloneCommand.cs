@@ -27,6 +27,12 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [Option("-n|--name <NAME>", "New project name", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Option("-d|--displayname <DISPLAYNAME>", "Display Name of the project", CommandOptionType.SingleValue)]
+        public string DisplayName { get; set; }
+
+        [Option("-c|--client <CLIENT>", "Name of the client", CommandOptionType.SingleValue)]
+        public string Client { get; set; }
+
         [Option("-m|--includemember", "Include project members", CommandOptionType.NoValue)]
         public bool IncludeMembers { get; set; }
 
@@ -46,7 +52,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 {
                     IncludeMembers = IncludeMembers,
                     IncludeJobDefinitions = IncludeJobDefinitions,
-                    NewProjectName = Name
+                    NewProjectName = Name,
+                    DisplayName = DisplayName,
+                    Client = Client
                 }).Result;
 
                 message = clonedProject.ToCliString("Project cloned:");

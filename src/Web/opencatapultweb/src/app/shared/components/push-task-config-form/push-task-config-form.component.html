@@ -18,8 +18,8 @@
             <mat-label>Branch</mat-label>
             <input matInput placeholder="Custom branch name to be created" formControlName="Branch">
         </mat-form-field>
-        <mat-checkbox formControName="CreatePullRequest" (change)="onCreatePullRequestChanged($event)">Create pull request?</mat-checkbox>
-        <mat-form-field class="full-width-input" *ngIf="createPullRequest">
+        <mat-checkbox #createPullRequestControl formControlName="CreatePullRequest">Create pull request?</mat-checkbox>
+        <mat-form-field class="full-width-input" *ngIf="createPullRequestControl.checked">
             <mat-label>Pull Request Target Branch</mat-label>
             <input matInput placeholder="Custom pull request target branch" formControlName="PullRequestTargetBranch">
         </mat-form-field>
@@ -35,6 +35,5 @@
             <mat-label>Email</mat-label>
             <input matInput placeholder="Custom commit author's email" formControlName="Email">
         </mat-form-field>
-        <mat-checkbox formControName="ContinueWhenFailed">Continue when failed?</mat-checkbox>
     </mat-expansion-panel>
 </div>

@@ -48,10 +48,15 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _projectRepository.Update(project, cancellationToken);
         }
 
-        public async Task<Project> CloneProject(int sourceProjectId, string newProjectName, int ownerUserId, bool includeMembers = false,
+        public async Task<Project> CloneProject(int sourceProjectId, string newProjectName, string newDisplayName, string newClient, int ownerUserId, bool includeMembers = false,
             bool includeJobDefinitions = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            newProjectName = GetNormalizedProjectName(newProjectName);
+
+            // set default display name
+            newDisplayName = !string.IsNullOrEmpty(newDisplayName) ? newDisplayName : newProjectName;
 
             var projectByNameSpec = new ProjectFilterSpecification(newProjectName);
             var duplicateProjects = await _projectRepository.GetBySpec(projectByNameSpec, cancellationToken);
@@ -69,6 +74,8 @@ namespace Polyrific.Catapult.Api.Core.Services
             var newProject = new Project
             {
                 Name = newProjectName,
+                DisplayName = newDisplayName,
+                Client = newClient ?? sourceProject.Client,
                 Models = sourceProject.Models?.Select(m => new ProjectDataModel
                 {
                     Name = m.Name,

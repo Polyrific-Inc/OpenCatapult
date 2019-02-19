@@ -190,9 +190,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CloneProject_ReturnsCreatedProject()
         {
             _projectService
-                .Setup(s => s.CloneProject(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int>(),
+                .Setup(s => s.CloneProject(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(),
                     It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, string newProjectName, int ownerUserId, bool includeMembers, 
+                .ReturnsAsync((int id, string newProjectName, string displayName, string client, int ownerUserId, bool includeMembers, 
                     bool includeJobDefinitions, CancellationToken cancellationToken) =>
                     new Project
                     {

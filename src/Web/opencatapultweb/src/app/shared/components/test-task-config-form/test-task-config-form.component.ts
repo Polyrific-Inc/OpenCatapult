@@ -19,7 +19,7 @@ export class TestTaskConfigFormComponent implements OnInit, OnChanges {
   ) {     
     this.testConfigForm = this.fb.group({
       TestLocation: null,
-      ContinueWhenError: null
+      ContinueWhenFailed: null
     });
   }
 

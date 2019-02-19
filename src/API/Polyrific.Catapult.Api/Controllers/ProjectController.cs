@@ -227,11 +227,10 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var ownerUserId = User.GetUserId();
-                var createdProject = await _projectService.CloneProject(projectId, option.NewProjectName, ownerUserId,
+                var createdProject = await _projectService.CloneProject(projectId, option.NewProjectName, option.DisplayName, option.Client, ownerUserId,
                     option.IncludeMembers, option.IncludeJobDefinitions);
                 var project = _mapper.Map<ProjectDto>(createdProject);
                 return CreatedAtRoute("GetProjectById", new {projectId = project.Id}, project);
-
             }
             catch (DuplicateProjectException dupEx)
             {

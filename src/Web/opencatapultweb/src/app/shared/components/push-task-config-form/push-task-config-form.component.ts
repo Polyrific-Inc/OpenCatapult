@@ -1,7 +1,6 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
-import { MatCheckboxChange } from '@angular/material';
 
 @Component({
   selector: 'app-push-task-config-form',
@@ -14,7 +13,6 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
   @Output() formReady = new EventEmitter<FormGroup>();
   pushConfigForm: FormGroup;
   showForm: boolean;
-  createPullRequest: boolean;
 
   constructor(private fb: FormBuilder) {
     this.pushConfigForm = this.fb.group({
@@ -43,8 +41,8 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
     }
   }
 
-  onCreatePullRequestChanged(data: MatCheckboxChange){
-    this.createPullRequest = data.checked;
+  onchanged(obj) {
+    console.log(obj);
   }
 
 }

@@ -22,12 +22,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="id">Id of the project</param>
         /// <param name="newProjectName">Name of the new project</param>
+        /// <param name="newDisplayName">Display name of the new project</param>
+        /// <param name="newClient">Client of the new project</param>
         /// <param name="ownerUserId">User id of the project owner</param>
         /// <param name="includeMembers">Copy project members into the new project?</param>
         /// <param name="includeJobDefinitions">Copy job definitions into the new project?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The new project entity</returns>
-        Task<Project> CloneProject(int id, string newProjectName, int ownerUserId, bool includeMembers = false, bool includeJobDefinitions = false, CancellationToken cancellationToken = default(CancellationToken));
+        Task<Project> CloneProject(int id, string newProjectName, string newDisplayName, string newClient, int ownerUserId, bool includeMembers = false, bool includeJobDefinitions = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Export a project into a yaml text

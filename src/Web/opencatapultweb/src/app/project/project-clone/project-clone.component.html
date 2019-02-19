@@ -1,0 +1,14 @@
+<h3>Clone Project</h3>
+<div fxLayout="row" fxLayout.xs="column" class="form-container">  
+  <form fxFlex="50" fxFlex.md="70" [formGroup]="cloneProjectForm" (ngSubmit)="onSubmit()">
+      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>      
+      <app-project-info-form (formReady)="formInitialized($event)" [disableForm]="false" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
+      
+      <mat-checkbox [checked]="true" disabled>Clone Data Models?</mat-checkbox>      
+      <mat-checkbox formControlName="includeJobDefinitions">Clone Job Definitions?</mat-checkbox>
+      <mat-checkbox formControlName="includeMembers">Clone Members?</mat-checkbox>
+      <div class="margin10"></div>
+      <button mat-raised-button color="primary" [disabled]="loading">Clone</button>
+      <button mat-raised-button [disabled]="loading" (click)="onCancelClick()">Cancel</button>
+    </form>
+</div>
