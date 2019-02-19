@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskConfigFormComponent } from './components/task-config-form/task-config-form.component';
 import { JobConfigFormComponent } from './components/job-config-form/job-config-form.component';
-import { MatDividerModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatExpansionModule } from '@angular/material';
+import { MatDividerModule, MatSnackBarModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatExpansionModule, MatDialogModule, MatButtonModule } from '@angular/material';
 import { TaskConfigListFormComponent } from './components/task-config-list-form/task-config-list-form.component';
 import { BuildTaskConfigFormComponent } from './components/build-task-config-form/build-task-config-form.component';
 import { CloneTaskConfigFormComponent } from './components/clone-task-config-form/clone-task-config-form.component';
@@ -17,9 +17,10 @@ import { AdditionalConfigFormComponent } from './components/additional-config-fo
 import { TestTaskConfigFormComponent } from './components/test-task-config-form/test-task-config-form.component';
 import { JobListFormComponent } from './components/job-list-form/job-list-form.component';
 import { AdditionalConfigFieldComponent } from './components/additional-config-field/additional-config-field.component';
+import { ConfirmationWithInputDialogComponent } from './components/confirmation-with-input-dialog/confirmation-with-input-dialog.component';
 
 @NgModule({
-  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent, JobListFormComponent, AdditionalConfigFieldComponent],
+  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent, JobListFormComponent, AdditionalConfigFieldComponent, ConfirmationWithInputDialogComponent],
   imports: [
     CommonModule,
     MatDividerModule,
@@ -28,7 +29,9 @@ import { AdditionalConfigFieldComponent } from './components/additional-config-f
     MatInputModule,
     MatFormFieldModule,
     MatCheckboxModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatDialogModule,
+    MatButtonModule
   ],
   exports: [
     TaskConfigFormComponent,
@@ -45,7 +48,11 @@ import { AdditionalConfigFieldComponent } from './components/additional-config-f
     TestTaskConfigFormComponent,
     JobListFormComponent,
     AdditionalConfigFormComponent,
-    AdditionalConfigFieldComponent
+    AdditionalConfigFieldComponent,
+    ConfirmationWithInputDialogComponent
+  ],
+  entryComponents: [    
+    ConfirmationWithInputDialogComponent
   ]
 })
 export class SharedModule {

@@ -23,4 +23,8 @@ export class ProjectService {
   createProject(project: NewProjectDto) {
     return this.apiService.post('project', project);
   }
+
+  deleteProject(projectId: number) {
+    return this.apiService.delete(`project/${projectId}`);
+  }
 }

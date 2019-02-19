@@ -2,7 +2,7 @@
 <div class="action-buttons">    
   <button mat-raised-button color="primary">Clone</button>
   <button mat-raised-button color="accent">Archive</button>
-  <button mat-raised-button color="warn">Delete</button>
+  <button mat-raised-button color="warn" (click)="onDeleteClick()">Delete</button>
 </div>
 <nav mat-tab-nav-bar flex>
     <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
