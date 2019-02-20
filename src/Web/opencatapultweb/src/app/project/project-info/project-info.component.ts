@@ -16,6 +16,7 @@ export class ProjectInfoComponent implements OnInit {
   editing: boolean;
   loading: boolean;
   formSubmitAttempt = false;
+  error = '';
 
   constructor(
     private fb: FormBuilder,
