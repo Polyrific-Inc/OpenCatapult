@@ -12,7 +12,6 @@
             <mat-label>Created</mat-label>
             <input matInput formControlName="createdDate">
         </mat-form-field>
-        <mat-error *ngIf="error">{{error}}</mat-error>
         <button mat-raised-button [disabled]="loading" *ngIf="!editing" (click)="setEditing(true)">Edit</button>
         <button mat-raised-button color="primary" [disabled]="loading" *ngIf="editing">Save</button>
         <button mat-raised-button [disabled]="loading" *ngIf="editing" (click)="setEditing(false)">Cancel</button>
