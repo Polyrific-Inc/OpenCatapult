@@ -14,8 +14,8 @@ import { LoginLayoutComponent } from './layouts/login-layout/login-layout.compon
 import { LoginComponent } from './login/login.component';
 import { HttpClientModule } from '@angular/common/http';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
-import { CoreModule } from './core/core.module';
 import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core';
 
 @NgModule({
   declarations: [

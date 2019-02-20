@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdditionalConfigFormComponent } from './additional-config-form.component';
+import { AdditionalConfigFieldComponent } from '../additional-config-field/additional-config-field.component';
+import { MatExpansionModule, MatInputModule, MatCheckboxModule } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('AdditionalConfigFormComponent', () => {
   let component: AdditionalConfigFormComponent;
@@ -8,7 +11,8 @@ describe('AdditionalConfigFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AdditionalConfigFormComponent ]
+      declarations: [ AdditionalConfigFormComponent, AdditionalConfigFieldComponent ],
+      imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule ]
     })
     .compileComponents();
   }));

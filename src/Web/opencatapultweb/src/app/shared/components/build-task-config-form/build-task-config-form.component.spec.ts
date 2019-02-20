@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { BuildTaskConfigFormComponent } from './build-task-config-form.component';
+import { AdditionalConfigFormComponent } from '../additional-config-form/additional-config-form.component';
+import { AdditionalConfigFieldComponent } from '../additional-config-field/additional-config-field.component';
+import { MatExpansionModule, MatInputModule, MatCheckboxModule } from '@angular/material';
+import { ReactiveFormsModule } from '@angular/forms';
 
 describe('BuildTaskConfigFormComponent', () => {
   let component: BuildTaskConfigFormComponent;
@@ -8,7 +12,8 @@ describe('BuildTaskConfigFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BuildTaskConfigFormComponent ]
+      declarations: [ BuildTaskConfigFormComponent, AdditionalConfigFormComponent, AdditionalConfigFieldComponent ],
+      imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule ]
     })
     .compileComponents();
   }));

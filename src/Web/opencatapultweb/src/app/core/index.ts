@@ -18,3 +18,6 @@ export * from './models/external-service/external-service-dto';
 /* Enums */
 export * from './enums/project-status-filter-type';
 export * from './enums/job-task-definition-type';
+
+/* module */
+export * from './core.module';

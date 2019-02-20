@@ -1,6 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginLayoutComponent } from './login-layout.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatProgressBarModule } from '@angular/material';
 
 describe('LoginLayoutComponent', () => {
   let component: LoginLayoutComponent;
@@ -8,6 +10,7 @@ describe('LoginLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ RouterTestingModule, MatProgressBarModule ],
       declarations: [ LoginLayoutComponent ]
     })
     .compileComponents();

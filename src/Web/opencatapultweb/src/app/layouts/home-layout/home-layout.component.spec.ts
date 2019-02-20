@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeLayoutComponent } from './home-layout.component';
+import { HeaderComponent } from '@app/header/header.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { MatToolbarModule } from '@angular/material';
+import { AuthService } from '@app/core/auth/auth.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -8,7 +13,9 @@ describe('HomeLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ HomeLayoutComponent ]
+      imports: [ RouterTestingModule, HttpClientTestingModule, MatToolbarModule ],
+      declarations: [ HomeLayoutComponent, HeaderComponent ],
+      providers: [ AuthService ]
     })
     .compileComponents();
   }));

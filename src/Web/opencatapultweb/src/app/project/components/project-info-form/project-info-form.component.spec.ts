@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ProjectInfoFormComponent } from './project-info-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('ProjectInfoFormComponent', () => {
   let component: ProjectInfoFormComponent;
@@ -8,7 +11,12 @@ describe('ProjectInfoFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ProjectInfoFormComponent ]
+      declarations: [ ProjectInfoFormComponent ],
+      imports: [
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatInputModule
+      ]
     })
     .compileComponents();
   }));
