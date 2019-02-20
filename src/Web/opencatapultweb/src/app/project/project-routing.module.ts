@@ -5,6 +5,7 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ProjectInfoComponent } from './project-info/project-info.component';
 import { ProjectNewComponent } from './project-new/project-new.component';
 import { ProjectCloneComponent } from './project-clone/project-clone.component';
+import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
 
 const routes: Routes = [
   {
@@ -19,6 +20,10 @@ const routes: Routes = [
       {
         path: ':id/clone',
         component: ProjectCloneComponent
+      },
+      {
+        path: 'archive/:id',
+        component: ProjectArchiveDetailComponent
       },
       {
         path: ':id',

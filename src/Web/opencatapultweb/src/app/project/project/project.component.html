@@ -22,7 +22,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-nav-list>
-            <a mat-list-item *ngFor="let project of archivedProjects">{{project.name}}</a>
+            <a mat-list-item *ngFor="let project of archivedProjects" routerLink="/project/archive/{{project.id}}">{{project.name}}</a>
           </mat-nav-list>
         </mat-expansion-panel>
     </mat-accordion>

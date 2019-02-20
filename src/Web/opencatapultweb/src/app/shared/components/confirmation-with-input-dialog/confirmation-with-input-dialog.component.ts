@@ -25,7 +25,7 @@ export class ConfirmationWithInputDialogComponent {
     }
 
     onCancelClick() {
-    this.dialogRef.close();
+      this.dialogRef.close();
     }
 
     onOkClick() {

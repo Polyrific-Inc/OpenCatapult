@@ -12,9 +12,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ProjectNewComponent } from './project-new/project-new.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { ProjectCloneComponent } from './project-clone/project-clone.component';
+import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
 
 @NgModule({
-  declarations: [ProjectComponent, ProjectDetailComponent, ProjectInfoComponent, ProjectInfoFormComponent, ProjectNewComponent, ProjectCloneComponent],
+  declarations: [ProjectComponent, ProjectDetailComponent, ProjectInfoComponent, ProjectInfoFormComponent, ProjectNewComponent, ProjectCloneComponent, ProjectArchiveDetailComponent],
   imports: [
     CommonModule,
     ProjectRoutingModule,

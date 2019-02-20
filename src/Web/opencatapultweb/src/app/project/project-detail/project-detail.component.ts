@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProjectService, ProjectDto } from '@app/core';
 import { MatDialog } from '@angular/material';
-import { SnackbarService, ConfirmationWithInputDialogComponent } from '@app/shared';
+import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
 
 @Component({
   selector: 'app-project-detail',
@@ -50,10 +50,31 @@ export class ProjectDetailComponent implements OnInit {
         this.projectService.deleteProject(this.project.id)
           .subscribe(data => {
             this.snackbar.open('Project has been deleted');
-            this.router.navigate(['project']);
+            
+            this.router.navigate(["project", { dummyData: (new Date).getTime()}]);
           })
       }
-    })
+    });
+  }
+
+  onArchiveClick() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Archive Project',
+        confirmationText: `Are you sure you want to archive project "${this.project.name}"?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed){
+        this.projectService.archiveProject(this.project.id)
+          .subscribe(data => {
+            this.snackbar.open('Project has been archived');
+            this.router.navigate(["project", { dummyData: (new Date).getTime()}])
+              .then(() => this.router.navigate([`project/archive/${this.project.id}`]));
+          })
+      }
+    });
   }
 
 }

@@ -43,7 +43,7 @@ export class ProjectInfoComponent implements OnInit {
           this.project = project;
           this.populateForm();
         });
-    })
+    });
   }
 
   populateForm() {

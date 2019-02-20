@@ -18,9 +18,10 @@ import { TestTaskConfigFormComponent } from './components/test-task-config-form/
 import { JobListFormComponent } from './components/job-list-form/job-list-form.component';
 import { AdditionalConfigFieldComponent } from './components/additional-config-field/additional-config-field.component';
 import { ConfirmationWithInputDialogComponent } from './components/confirmation-with-input-dialog/confirmation-with-input-dialog.component';
+import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 
 @NgModule({
-  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent, JobListFormComponent, AdditionalConfigFieldComponent, ConfirmationWithInputDialogComponent],
+  declarations: [TaskConfigFormComponent, JobConfigFormComponent, TaskConfigListFormComponent, BuildTaskConfigFormComponent, CloneTaskConfigFormComponent, GenerateTaskConfigFormComponent, PushTaskConfigFormComponent, MergeTaskConfigFormComponent, DeployDbTaskConfigFormComponent, DeployTaskConfigFormComponent, AdditionalConfigFormComponent, TestTaskConfigFormComponent, JobListFormComponent, AdditionalConfigFieldComponent, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent],
   imports: [
     CommonModule,
     MatDividerModule,
@@ -49,10 +50,12 @@ import { ConfirmationWithInputDialogComponent } from './components/confirmation-
     JobListFormComponent,
     AdditionalConfigFormComponent,
     AdditionalConfigFieldComponent,
-    ConfirmationWithInputDialogComponent
+    ConfirmationWithInputDialogComponent,
+    ConfirmationDialogComponent
   ],
   entryComponents: [    
-    ConfirmationWithInputDialogComponent
+    ConfirmationWithInputDialogComponent,
+    ConfirmationDialogComponent
   ]
 })
 export class SharedModule {

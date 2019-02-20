@@ -32,4 +32,12 @@ export class ProjectService {
   deleteProject(projectId: number) {
     return this.apiService.delete(`project/${projectId}`);
   }
+
+  archiveProject(projectId: number) {
+    return this.apiService.post(`project/${projectId}/archive`);
+  }
+
+  restoreProject(projectId: number) {
+    return this.apiService.post(`project/${projectId}/restore`);
+  }
 }
