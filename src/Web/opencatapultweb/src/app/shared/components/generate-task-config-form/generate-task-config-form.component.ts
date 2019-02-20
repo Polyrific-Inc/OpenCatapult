@@ -21,7 +21,7 @@ export class GenerateTaskConfigFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.Generate){
+    if (this.taskType === JobTaskDefinitionType.Generate) {
       this.formReady.emit(this.generateConfigForm);
     }
   }
@@ -29,7 +29,7 @@ export class GenerateTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Generate;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.generateConfigForm.patchValue(this.taskConfigs);
     }
   }

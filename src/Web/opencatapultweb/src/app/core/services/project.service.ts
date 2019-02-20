@@ -9,11 +9,11 @@ import { CloneProjectOptionDto } from '../models/project/clone-project-option-dt
 export class ProjectService {
   constructor(private apiService: ApiService) { }
 
-  getProjects(status: string, getAll: boolean) : Observable<ProjectDto[]> {
+  getProjects(status: string, getAll: boolean): Observable<ProjectDto[]> {
     return this.apiService.get<ProjectDto[]>(`project?status=${status}&getAll=${getAll}`);
   }
 
-  getProject(projectId: number) : Observable<ProjectDto> {
+  getProject(projectId: number): Observable<ProjectDto> {
     return this.apiService.get<ProjectDto>(`project/${projectId}`);
   }
 
@@ -21,12 +21,12 @@ export class ProjectService {
     return this.apiService.put(`project/${project.id}`, project);
   }
 
-  createProject(project: NewProjectDto) : Observable<ProjectDto> {
+  createProject(project: NewProjectDto): Observable<ProjectDto> {
     return this.apiService.post('project', project);
   }
 
-  cloneProject(projectId: number, cloneOption: CloneProjectOptionDto) : Observable<ProjectDto> {
-    return this.apiService.post(`project/${projectId}/clone`, cloneOption)
+  cloneProject(projectId: number, cloneOption: CloneProjectOptionDto): Observable<ProjectDto> {
+    return this.apiService.post(`project/${projectId}/clone`, cloneOption);
   }
 
   deleteProject(projectId: number) {

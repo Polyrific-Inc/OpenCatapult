@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { TaskProviderDto, AdditionalConfigDto } from '@app/core';
-import { FormBuilder, FormArray, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-additional-config-form',
@@ -25,19 +25,18 @@ export class AdditionalConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.taskProvider && !changes.taskProvider.firstChange) {
 
-      if (this.taskProvider.additionalConfigs && this.taskProvider.additionalConfigs.length > 0){
+      if (this.taskProvider.additionalConfigs && this.taskProvider.additionalConfigs.length > 0) {
         this.showForm = true;
-        for (let additionalConfig of this.taskProvider.additionalConfigs) {
-          let additionalConfigValue = this.additionalConfigs ? this.additionalConfigs.get(additionalConfig.name) : null;
-          let additionalConfigControl = additionalConfig.isRequired ? new FormControl(additionalConfigValue, Validators.required) 
+        for (const additionalConfig of this.taskProvider.additionalConfigs) {
+          const additionalConfigValue = this.additionalConfigs ? this.additionalConfigs.get(additionalConfig.name) : null;
+          const additionalConfigControl = additionalConfig.isRequired ? new FormControl(additionalConfigValue, Validators.required)
             : new FormControl(additionalConfigValue);
           this.additionalConfigForm.setControl(additionalConfig.name, additionalConfigControl);
         }
-        
+
         this.requiredAdditionalConfigs = this.taskProvider.additionalConfigs.filter(c => c.isRequired);
         this.optionalAdditionalConfigs = this.taskProvider.additionalConfigs.filter(c => !c.isRequired);
-      }
-      else {
+      } else {
         this.showForm = false;
       }
     }

@@ -26,14 +26,14 @@ export class ProjectDetailComponent implements OnInit {
     this.activeLink = this.route.firstChild.snapshot.url.pop().path;
   }
 
-  getProject() : void {
-    this.route.params.subscribe(params => {      
+  getProject(): void {
+    this.route.params.subscribe(params => {
       this.activeLink = 'info';
 
       const id = +params.id;
       this.projectService.getProject(id)
         .subscribe(project => this.project = project);
-    })
+    });
   }
 
   onDeleteClick() {
@@ -46,13 +46,13 @@ export class ProjectDetailComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed){
+      if (confirmed) {
         this.projectService.deleteProject(this.project.id)
           .subscribe(data => {
             this.snackbar.open('Project has been deleted');
-            
-            this.router.navigate(["project", { dummyData: (new Date).getTime()}]);
-          })
+
+            this.router.navigate(['project', { dummyData: (new Date).getTime()}]);
+          });
       }
     });
   }
@@ -61,18 +61,18 @@ export class ProjectDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm Archive Project',
-        confirmationText: `Are you sure you want to archive project "${this.project.name}"?`
+        confirmationText: `Are you sure you want to archive project '${this.project.name}'?`
       }
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
-      if (confirmed){
+      if (confirmed) {
         this.projectService.archiveProject(this.project.id)
           .subscribe(data => {
             this.snackbar.open('Project has been archived');
-            this.router.navigate(["project", { dummyData: (new Date).getTime()}])
+            this.router.navigate(['project', { dummyData: (new Date).getTime()}])
               .then(() => this.router.navigate([`project/archive/${this.project.id}`]));
-          })
+          });
       }
     });
   }

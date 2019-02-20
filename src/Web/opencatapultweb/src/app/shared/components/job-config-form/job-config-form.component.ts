@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange, SimpleChanges } from '@angular/core';
-import { CreateJobDefinitionDto, JobTaskDefinitionType } from '@app/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { CreateJobDefinitionDto } from '@app/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
@@ -10,9 +10,9 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 export class JobConfigFormComponent implements OnInit, OnChanges {
   @Input() job: CreateJobDefinitionDto;
   @Output() formReady = new EventEmitter<FormGroup>();
-  jobForm: FormGroup
+  jobForm: FormGroup;
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder) {
     this.jobForm = this.fb.group(
       {
         name: null
@@ -27,10 +27,10 @@ export class JobConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.jobForm.patchValue({
       name: this.job.name
-    })
+    });
   }
 
   onTaskConfigListChanged(form: FormArray) {
-    this.jobForm.setControl("tasks", form);
+    this.jobForm.setControl('tasks', form);
   }
 }

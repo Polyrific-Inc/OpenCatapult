@@ -23,12 +23,12 @@ export class HeaderComponent implements OnInit {
     this.isLoggedIn$ = this.authService.isLoggedIn;
   }
 
-  onLogout(){
+  onLogout() {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
-  isMenuShown(authorizePolicy : AuthorizePolicy) {
+  isMenuShown(authorizePolicy: AuthorizePolicy) {
     return this.authService.checkRoleAuthorization(authorizePolicy, null);
   }
 }

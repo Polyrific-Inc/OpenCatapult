@@ -6,7 +6,7 @@ export class SnackbarService {
 
   constructor(private snackbar: MatSnackBar) { }
 
-  open(message: string, action?: string, config?: MatSnackBarConfig<any>){
+  open(message: string, action?: string, config?: MatSnackBarConfig<any>) {
     config = config || {};
     config.duration = config.duration || 2000;
 

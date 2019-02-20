@@ -26,12 +26,12 @@ export class LoginComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private authService: AuthService) {
-      if (this.authService.currentUserValue) { 
+      if (this.authService.currentUserValue) {
           this.router.navigate(['/']);
       }
     }
 
-  ngOnInit() {    
+  ngOnInit() {
     // get return url from route parameters or default to '/'
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
@@ -52,10 +52,11 @@ export class LoginComponent implements OnInit {
                 this.router.navigate([this.returnUrl]);
             },
             (err: HttpErrorResponse) => {
-                if (err.error && typeof err.error === "string")
+                if (err.error && typeof err.error === 'string') {
                   this.error = err.error;
-                else
+                } else {
                   this.error = err.message;
+                }
                 this.loading = false;
             });
     }

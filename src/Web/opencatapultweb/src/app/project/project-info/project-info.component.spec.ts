@@ -5,9 +5,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule, MatInputModule, MatSnackBarModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { ProjectService, CoreModule } from '@app/core';
-import { ApiService } from '@app/core/services/api.service';
-import { SnackbarService } from '@app/shared';
+import { CoreModule } from '@app/core';
 import { ProjectInfoFormComponent } from '../components/project-info-form/project-info-form.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -31,7 +29,7 @@ describe('ProjectInfoComponent', () => {
         MatSnackBarModule,
         CoreModule,
         SharedModule.forRoot()
-      ],      
+      ],
       providers: [
         {
           provide: ActivatedRoute, useValue: {

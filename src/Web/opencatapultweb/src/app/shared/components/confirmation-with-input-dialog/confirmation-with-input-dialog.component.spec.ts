@@ -14,16 +14,16 @@ describe('ConfirmationWithInputDialogComponent', () => {
       declarations: [ ConfirmationWithInputDialogComponent ],
       imports: [ BrowserAnimationsModule, ReactiveFormsModule, MatInputModule ],
       providers: [
-        {          
+        {
           provide: MatDialogRef, useValue: {
             close: function (result) {
 
             }
           }
         },
-        {          
+        {
           provide: MAT_DIALOG_DATA, useValue: {
-            
+
           }
         }
       ]

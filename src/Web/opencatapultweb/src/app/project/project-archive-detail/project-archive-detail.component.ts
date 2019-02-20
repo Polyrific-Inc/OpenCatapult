@@ -33,8 +33,8 @@ export class ProjectArchiveDetailComponent implements OnInit {
     this.getProject();
   }
 
-  getProject() : void {    
-    this.route.params.subscribe(params => {      
+  getProject(): void {
+    this.route.params.subscribe(params => {
       const id = +params.id;
       this.projectService.getProject(id)
         .subscribe(project => {
@@ -48,7 +48,7 @@ export class ProjectArchiveDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm Archive Project',
-        confirmationText: `Are you sure you want to archive project "${this.project.name}"?`
+        confirmationText: `Are you sure you want to archive project '${this.project.name}'?`
       }
     });
 
@@ -60,16 +60,16 @@ export class ProjectArchiveDetailComponent implements OnInit {
             this.projectService.restoreProject(this.project.id)
               .subscribe(
                   () => {
-                    this.snackbar.open("The project has been activated");  
-                    
-                    this.router.navigate(["project", { dummyData: (new Date).getTime()}])
+                    this.snackbar.open('The project has been activated');
+
+                    this.router.navigate(['project', { dummyData: (new Date).getTime()}])
                       .then(() => this.router.navigate([`project/${this.project.id}`]));
                   },
                   err => {
                     this.snackbar.open(err);
                     this.loading = false;
                   });
-          })
+          });
       }
     });
   }

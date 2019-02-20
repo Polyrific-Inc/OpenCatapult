@@ -16,7 +16,7 @@ export class TestTaskConfigFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder
-  ) {     
+  ) {
     this.testConfigForm = this.fb.group({
       TestLocation: null,
       ContinueWhenFailed: null
@@ -24,7 +24,7 @@ export class TestTaskConfigFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.Test){      
+    if (this.taskType === JobTaskDefinitionType.Test) {
       this.formReady.emit(this.testConfigForm);
     }
   }
@@ -32,7 +32,7 @@ export class TestTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.showForm = this.taskType === JobTaskDefinitionType.Test;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.testConfigForm.patchValue(this.taskConfigs);
     }
   }

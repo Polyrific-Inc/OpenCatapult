@@ -7,13 +7,13 @@ import { catchError } from 'rxjs/operators';
 export class ProjectTemplateService {
 
   constructor(
-    private http : HttpClient
+    private http: HttpClient
     ) { }
 
   getTemplate(template: string): Observable<string> {
     return this.http.get(`assets/template/${template}`, {
       responseType: 'text'
-    }).pipe(catchError((err : HttpErrorResponse) => {
+    }).pipe(catchError((err: HttpErrorResponse) => {
       console.log(err);
       if (err.status === 404) {
         return throwError(`Template ${template} is not found in the server`);

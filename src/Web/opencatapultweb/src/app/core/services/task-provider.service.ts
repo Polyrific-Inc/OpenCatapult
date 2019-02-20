@@ -6,9 +6,9 @@ import { ApiService } from './api.service';
 @Injectable()
 export class TaskProviderService {
 
-  constructor(private apiService : ApiService) { }
+  constructor(private apiService: ApiService) { }
 
-  getTaskProviderByName(name: string) : Observable<TaskProviderDto> {
+  getTaskProviderByName(name: string): Observable<TaskProviderDto> {
     return this.apiService.get<TaskProviderDto>(`provider/name/${name}`);
   }
 }

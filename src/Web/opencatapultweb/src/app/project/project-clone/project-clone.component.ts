@@ -37,7 +37,7 @@ export class ProjectCloneComponent implements OnInit {
     this.getProject();
   }
 
-  getProject() : void {    
+  getProject(): void {
     const id = +this.route.snapshot.paramMap.get('id');
     this.projectService.getProject(id)
       .subscribe(project => {
@@ -50,16 +50,16 @@ export class ProjectCloneComponent implements OnInit {
 
   onSubmit() {
     this.formSubmitAttempt = true;
-    let projectInfo = this.projectInfoForm.value;
-    let cloneProjectOption = {
+    const projectInfo = this.projectInfoForm.value;
+    const cloneProjectOption = {
       newProjectName: projectInfo.name,
       displayName: projectInfo.displayName,
       client: projectInfo.client,
       ...this.cloneProjectForm.value
-    }
+    };
 
     if (cloneProjectOption.newProjectName === this.sourceProject.name) {
-      this.snackBar.open("Please input a different project name");
+      this.snackBar.open('Please input a different project name');
       return;
     }
 
@@ -68,9 +68,9 @@ export class ProjectCloneComponent implements OnInit {
       this.projectService.cloneProject(this.sourceProject.id, cloneProjectOption)
         .subscribe(
             (data: ProjectDto) => {
-              this.snackBar.open("The project has been cloned");  
-              
-              this.router.navigate(["project", { dummyData: (new Date).getTime()}])
+              this.snackBar.open('The project has been cloned');
+
+              this.router.navigate(['project', { dummyData: (new Date).getTime()}])
                 .then(() => this.router.navigate([`project/${data.id}`]));
             },
             err => {

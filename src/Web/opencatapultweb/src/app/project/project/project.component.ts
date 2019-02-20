@@ -29,11 +29,10 @@ export class ProjectComponent implements OnInit {
   ngOnInit() {
     this.getProjects();
 
-    this.route.paramMap.subscribe(() =>
-    {
+    this.route.paramMap.subscribe(() => {
       // refresh the project when some dummy param is supplied
       this.getProjects();
-    })
+    });
   }
 
   getProjects() {

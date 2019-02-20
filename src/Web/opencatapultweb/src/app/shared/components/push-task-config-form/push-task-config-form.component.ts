@@ -36,13 +36,9 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Push;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.pushConfigForm.patchValue(this.taskConfigs);
     }
-  }
-
-  onchanged(obj) {
-    console.log(obj);
   }
 
 }

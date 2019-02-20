@@ -14,14 +14,14 @@ export class DeployDbTaskConfigFormComponent implements OnInit, OnChanges {
   deployDbConfigForm: FormGroup;
   showForm: boolean;
 
-  constructor(private fb: FormBuilder) {    
+  constructor(private fb: FormBuilder) {
     this.deployDbConfigForm = this.fb.group({
       MigrationLocation: null
     });
    }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.DeployDb){      
+    if (this.taskType === JobTaskDefinitionType.DeployDb) {
       this.formReady.emit(this.deployDbConfigForm);
     }
   }
@@ -29,7 +29,7 @@ export class DeployDbTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.DeployDb;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.deployDbConfigForm.patchValue(this.taskConfigs);
     }
   }

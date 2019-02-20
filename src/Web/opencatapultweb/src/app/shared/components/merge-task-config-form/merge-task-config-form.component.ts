@@ -14,14 +14,14 @@ export class MergeTaskConfigFormComponent implements OnInit, OnChanges {
   mergeConfigForm: FormGroup;
   showForm: boolean;
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder) {
     this.mergeConfigForm = this.fb.group({
       Repository: [null, Validators.required]
     });
   }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.Merge){
+    if (this.taskType === JobTaskDefinitionType.Merge) {
       this.formReady.emit(this.mergeConfigForm);
     }
   }
@@ -29,7 +29,7 @@ export class MergeTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     this.showForm = this.taskType === JobTaskDefinitionType.Merge;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.mergeConfigForm.patchValue(this.taskConfigs);
     }
   }

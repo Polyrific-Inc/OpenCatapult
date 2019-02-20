@@ -14,7 +14,7 @@ describe('ProjectComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ProjectComponent ],
-      imports: [        
+      imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
         HttpClientTestingModule,

@@ -12,14 +12,15 @@ export class ApiService {
     private http: HttpClient
   ) {}
 
-  private formatErrors(error: HttpErrorResponse) {    
+  private formatErrors(error: HttpErrorResponse) {
     if (error.error) {
-      if (typeof error.error === "string")
+      if (typeof error.error === 'string') {
         return throwError(error.error);
-      else if (error.error[""] && Array.isArray(error.error[""]))
-        return throwError(error.error[""].join('\n'));
+      } else if (error.error[''] && Array.isArray(error.error[''])) {
+        return throwError(error.error[''].join('\n'));
+      }
     }
-    
+
     return throwError(error.message);
   }
 

@@ -25,7 +25,7 @@ describe('AdditionalConfigFieldComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AdditionalConfigFieldComponent);
 
-    var fb = new FormBuilder();
+    const fb = new FormBuilder();
     component = fixture.componentInstance;
     component.additionalConfig = {
       type: 'string',

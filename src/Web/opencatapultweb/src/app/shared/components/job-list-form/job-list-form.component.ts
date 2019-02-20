@@ -13,7 +13,7 @@ export class JobListFormComponent implements OnInit {
   @Output() formReady = new EventEmitter<FormArray>();
   jobsForm = this.fb.array([]);
 
-  constructor(private fb: FormBuilder) { 
+  constructor(private fb: FormBuilder) {
 
   }
 

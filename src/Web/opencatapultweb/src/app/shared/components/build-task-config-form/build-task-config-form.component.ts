@@ -16,7 +16,7 @@ export class BuildTaskConfigFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder
-  ) { 
+  ) {
     this.buildConfigForm = this.fb.group({
       SourceLocation: null,
       OutputArtifactLocation: null
@@ -29,7 +29,7 @@ export class BuildTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.showForm = this.taskType === JobTaskDefinitionType.Build;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.buildConfigForm.patchValue(this.taskConfigs);
     }
   }

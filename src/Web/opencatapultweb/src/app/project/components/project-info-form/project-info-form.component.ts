@@ -25,7 +25,7 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
     this.projectInfoForm = this.fb.group({
       name: [{value: null, disabled: this.disableForm}, Validators.required],
       displayName: [{value: null, disabled: this.disableForm}],
-      client: {value: null, disabled: this.disableForm}    
+      client: {value: null, disabled: this.disableForm}
     });
 
     this.normalizeProjectName();
@@ -42,7 +42,7 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
       });
     }
 
-    if (changes.disableForm && !changes.disableForm.firstChange){
+    if (changes.disableForm && !changes.disableForm.firstChange) {
       if (this.disableForm) {
         this.projectInfoForm.patchValue({
           name: this.project.name,
@@ -50,8 +50,7 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
           client: this.project.client
         });
         this.projectInfoForm.disable();
-      }
-      else {
+      } else {
         this.projectInfoForm.enable();
       }
     }
@@ -67,8 +66,8 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
       distinctUntilChanged()
     ).subscribe(projectName => {
       projectName = projectName.trim();
-      if (projectName.indexOf(' ')){        
-        projectName = projectName.replace(/ /g, "-");
+      if (projectName.indexOf(' ')) {
+        projectName = projectName.replace(/ /g, '-');
       }
 
       this.projectInfoForm.patchValue({
@@ -83,6 +82,6 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
       (this.projectInfoForm.get(field).untouched && this.formSubmitAttempt)
     );
   }
-  
+
 
 }

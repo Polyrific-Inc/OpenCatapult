@@ -23,9 +23,9 @@ describe('TaskConfigFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ 
-        TaskConfigFormComponent, 
-        TaskConfigFormComponent, 
+      declarations: [
+        TaskConfigFormComponent,
+        TaskConfigFormComponent,
         CloneTaskConfigFormComponent,
         GenerateTaskConfigFormComponent,
         PushTaskConfigFormComponent,
@@ -34,16 +34,16 @@ describe('TaskConfigFormComponent', () => {
         DeployDbTaskConfigFormComponent,
         DeployTaskConfigFormComponent,
         TestTaskConfigFormComponent,
-        AdditionalConfigFormComponent, 
-        AdditionalConfigFieldComponent 
+        AdditionalConfigFormComponent,
+        AdditionalConfigFieldComponent
       ],
-      imports: [ 
+      imports: [
         BrowserAnimationsModule,
-        MatExpansionModule, 
-        ReactiveFormsModule, 
-        MatInputModule, 
-        MatCheckboxModule, 
-        CoreModule, 
+        MatExpansionModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatCheckboxModule,
+        CoreModule,
         HttpClientTestingModule
       ]
     })

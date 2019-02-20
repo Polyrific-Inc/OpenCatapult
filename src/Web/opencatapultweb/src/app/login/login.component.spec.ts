@@ -15,13 +15,13 @@ describe('LoginComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ LoginComponent ],
-      imports: [ 
+      imports: [
         BrowserAnimationsModule,
-        MatProgressBarModule, 
-        ReactiveFormsModule, 
+        MatProgressBarModule,
+        ReactiveFormsModule,
         MatInputModule,
-        MatCardModule, 
-        RouterTestingModule, 
+        MatCardModule,
+        RouterTestingModule,
         HttpClientTestingModule ],
       providers: [ AuthService ]
     })

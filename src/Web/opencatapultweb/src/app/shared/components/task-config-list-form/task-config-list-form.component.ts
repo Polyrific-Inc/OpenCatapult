@@ -18,7 +18,7 @@ export class TaskConfigListFormComponent implements OnInit {
     this.formReady.emit(this.tasksForm);
   }
 
-  onConfigFormChanged(form : FormGroup) {
+  onConfigFormChanged(form: FormGroup) {
     this.tasksForm.push(form);
   }
 

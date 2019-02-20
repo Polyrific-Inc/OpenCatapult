@@ -20,9 +20,18 @@ const routes: Routes = [
       },
       {path: 'project', loadChildren: './project/project.module#ProjectModule'},
       {path: 'service', loadChildren: './external-service/external-service.module#ExternalServiceModule'},
-      {path: 'engine', loadChildren: './engine/engine.module#EngineModule', data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}},
-      {path: 'provider', loadChildren: './task-provider/task-provider.module#TaskProviderModule', data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}},
-      {path: 'user', loadChildren: './account/account.module#AccountModule', data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}},
+      {
+        path: 'engine', loadChildren: './engine/engine.module#EngineModule',
+        data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}
+      },
+      {
+        path: 'provider', loadChildren: './task-provider/task-provider.module#TaskProviderModule',
+        data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}
+      },
+      {
+        path: 'user', loadChildren: './account/account.module#AccountModule',
+        data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}
+      },
       {
         path: 'unauthorized',
         component: UnauthorizedComponent

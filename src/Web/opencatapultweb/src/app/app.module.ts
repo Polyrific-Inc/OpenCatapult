@@ -5,7 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule, MatCardModule, MatInputModule, MatProgressBarModule } from '@angular/material';
+import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule,
+          MatCardModule, MatInputModule, MatProgressBarModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ProjectModule } from './project/project.module';
 import { HeaderComponent } from './header/header.component';

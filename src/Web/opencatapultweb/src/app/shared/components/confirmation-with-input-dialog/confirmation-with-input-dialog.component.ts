@@ -15,12 +15,12 @@ export interface DialogData {
 })
 export class ConfirmationWithInputDialogComponent {
   inputControl: FormControl;
-  
+
   constructor(
     public dialogRef: MatDialogRef<ConfirmationWithInputDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DialogData
     ) {
-      this.inputControl =  new FormControl(data.enteredConfirmation, 
+      this.inputControl =  new FormControl(data.enteredConfirmation,
         Validators.compose([Validators.required, Validators.pattern(data.confirmationMatch)]));
     }
 
@@ -29,8 +29,9 @@ export class ConfirmationWithInputDialogComponent {
     }
 
     onOkClick() {
-      if (this.inputControl.valid)
+      if (this.inputControl.valid) {
         this.dialogRef.close(true);
+      }
     }
 
 }

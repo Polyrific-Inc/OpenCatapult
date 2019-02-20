@@ -10,7 +10,7 @@ import { Role } from './role';
 import { ProjectMemberRole } from './project-member-role';
 
 @Injectable()
-export class AuthService {  
+export class AuthService {
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
@@ -22,7 +22,7 @@ export class AuthService {
 
   constructor(
     private http: HttpClient
-  ) {    
+  ) {
     this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
     this.currentUser = this.currentUserSubject.asObservable();
   }
@@ -31,9 +31,9 @@ export class AuthService {
       return this.currentUserSubject.value;
   }
 
-  login(user: User){
+  login(user: User) {
     return this.http.post(`${environment.apiUrl}/Token`, { Email: user.email, Password: user.password },
-    {      
+    {
       responseType: 'text'
     })
         .pipe(
@@ -42,9 +42,9 @@ export class AuthService {
             if (token) {
                 // store user details and jwt token in local storage to keep user logged in between page refreshes
                 user.token = token;
-                let decodedToken = this.getDecodedAccessToken(token);
+                const decodedToken = this.getDecodedAccessToken(token);
 
-                if (decodedToken.Projects){
+                if (decodedToken.Projects) {
                   user.projects = JSON.parse(decodedToken.Projects).map(pm => ({
                       projectId: pm.ProjectId,
                       projectName: pm.ProjectName,
@@ -52,8 +52,8 @@ export class AuthService {
                     }));
                 }
 
-                if (decodedToken.hasOwnProperty("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")) {
-                  user.role = decodedToken["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"];
+                if (decodedToken.hasOwnProperty('http://schemas.microsoft.com/ws/2008/06/identity/claims/role')) {
+                  user.role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
                 }
 
                 localStorage.setItem('currentUser', JSON.stringify(user));
@@ -70,40 +70,40 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  checkRoleAuthorization(authPolicy : AuthorizePolicy, projectId : number) : boolean {
-    let currentUser = this.currentUserValue;
-    if (currentUser.role === Role.Administrator)
+  checkRoleAuthorization(authPolicy: AuthorizePolicy, projectId: number): boolean {
+    const currentUser = this.currentUserValue;
+    if (currentUser.role === Role.Administrator) {
       return true;
+    }
 
     switch (authPolicy) {
       case AuthorizePolicy.UserRoleAdminAccess:
         return currentUser.role === Role.Administrator;
       case AuthorizePolicy.UserRoleBasicAccess:
         return [Role.Administrator, Role.Basic].includes(Role[currentUser.role]);
-      case AuthorizePolicy.UserRoleGuestAccess:        
+      case AuthorizePolicy.UserRoleGuestAccess:
         return [Role.Administrator, Role.Basic, Role.Guest].includes(Role[currentUser.role]);
       case AuthorizePolicy.ProjectAccess:
       case AuthorizePolicy.ProjectMemberAccess:
-        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId);
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId === projectId);
       case AuthorizePolicy.ProjectContributorAccess:
-        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId === projectId &&
           [ProjectMemberRole.Owner, ProjectMemberRole.Maintainer, ProjectMemberRole.Contributor].includes(ProjectMemberRole[p.memberRole]));
       case AuthorizePolicy.ProjectMaintainerAccess:
-        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId === projectId &&
           [ProjectMemberRole.Owner, ProjectMemberRole.Maintainer].includes(ProjectMemberRole[p.memberRole]));
       case AuthorizePolicy.ProjectOwnerAccess:
-        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId == projectId && 
-          p.memberRole == ProjectMemberRole.Owner);
+        return projectId > 0 && currentUser.projects && currentUser.projects.some(p => p.projectId === projectId &&
+          p.memberRole === ProjectMemberRole.Owner);
       default:
       return false;
      }
   }
 
   private getDecodedAccessToken(token: string): any {
-    try{
+    try {
         return jwt_decode(token);
-    }
-    catch(Error){
+    } catch (Error) {
         return null;
     }
   }

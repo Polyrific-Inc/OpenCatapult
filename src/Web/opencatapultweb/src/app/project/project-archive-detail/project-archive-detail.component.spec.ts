@@ -29,7 +29,7 @@ describe('ProjectArchiveDetailComponent', () => {
         MatSnackBarModule,
         CoreModule,
         SharedModule.forRoot()
-      ],      
+      ],
       providers: [
         {
           provide: ActivatedRoute, useValue: {

@@ -16,17 +16,17 @@ export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder
-  ) { 
+  ) {
     this.cloneConfigForm = this.fb.group({
       Repository: [null, Validators.required],
       IsPrivateRepository: null,
-      CloneLocation:null,
+      CloneLocation: null,
       BaseBranch: null
     });
   }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.Clone){
+    if (this.taskType === JobTaskDefinitionType.Clone) {
       this.formReady.emit(this.cloneConfigForm);
     }
   }
@@ -34,10 +34,10 @@ export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.showForm = this.taskType === JobTaskDefinitionType.Clone;
 
-    if (changes.taskConfigs && this.taskConfigs){
+    if (changes.taskConfigs && this.taskConfigs) {
       this.cloneConfigForm.patchValue(this.taskConfigs);
     }
   }
 
-  
+
 }

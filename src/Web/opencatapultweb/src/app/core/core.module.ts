@@ -28,7 +28,7 @@ import { TaskProviderService } from './services/task-provider.service';
     AuthService
   ]
 })
-export class CoreModule { 
+export class CoreModule {
   constructor(@Optional() @SkipSelf() core: CoreModule) {
     if (core) {
       throw new Error('The core module is injected twice. It should only be injected in AppModule');

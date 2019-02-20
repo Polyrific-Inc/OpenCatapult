@@ -31,12 +31,12 @@ export class ProjectInfoComponent implements OnInit {
     });
 
     this.getProject();
-    
-    this.editing = false;
-  }  
 
-  getProject() : void {
-    this.route.parent.params.subscribe(params => {      
+    this.editing = false;
+  }
+
+  getProject(): void {
+    this.route.parent.params.subscribe(params => {
       const id = +params.id;
       this.projectService.getProject(id)
         .subscribe(project => {
@@ -47,7 +47,7 @@ export class ProjectInfoComponent implements OnInit {
   }
 
   populateForm() {
-    var datePipe = new DatePipe('en-US');
+    const datePipe = new DatePipe('en-US');
     this.projectInfoForm.patchValue({
       ...this.project,
       createdDate: datePipe.transform(this.project.created, 'MMMM d, yyyy')
@@ -61,7 +61,7 @@ export class ProjectInfoComponent implements OnInit {
     this.projectInfoForm = this.fb.group({
       ...this.projectInfoForm.controls,
       ...form.controls
-    })
+    });
   }
 
   onSubmit() {
@@ -74,7 +74,7 @@ export class ProjectInfoComponent implements OnInit {
       })
         .subscribe(
             data => {
-              this.snackBar.open("Project info has been updated");  
+              this.snackBar.open('Project info has been updated');
               this.loading = false;
               this.project = {
                 ...this.projectInfoForm.value,
@@ -90,8 +90,7 @@ export class ProjectInfoComponent implements OnInit {
     }
   }
 
-  setEditing(editing : boolean)
-  {
+  setEditing(editing: boolean) {
     this.editing = editing;
   }
 }

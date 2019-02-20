@@ -8,7 +8,7 @@ export class ExternalServiceService {
 
   constructor(private apiService: ApiService) { }
 
-  getExternalServiceByName(name: string) : Observable<ExternalServiceDto> {
+  getExternalServiceByName(name: string): Observable<ExternalServiceDto> {
     return this.apiService.get<ExternalServiceDto>(`service/name/${name}`);
   }
 }
