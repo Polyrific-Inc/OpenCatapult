@@ -8,9 +8,9 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
+  it('should display correct title', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Welcome to opencatapultweb!');
+    expect(page.getTitleText()).toEqual('Catapult Dashboard');
   });
 
   afterEach(async () => {
