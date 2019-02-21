@@ -8,7 +8,6 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule,
           MatCardModule, MatInputModule, MatProgressBarModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ProjectModule } from './project/project.module';
 import { HeaderComponent } from './header/header.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
 import { LoginLayoutComponent } from './layouts/login-layout/login-layout.component';
@@ -42,7 +41,6 @@ import { CoreModule } from './core';
     MatCardModule,
     MatInputModule,
     ReactiveFormsModule,
-    ProjectModule,
     SharedModule.forRoot()
   ],
   bootstrap: [AppComponent]

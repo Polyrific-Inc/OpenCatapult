@@ -1,3 +1,24 @@
-<p>
-  data-model works!
-</p>
+<div class="action-buttons">
+  <button mat-raised-button>New Data Model</button>
+</div>
+<mat-accordion class="headers-align">
+  <mat-expansion-panel *ngFor="let dataModel of dataModels">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        {{dataModel.name}}
+      </mat-panel-title>
+      <mat-panel-description>
+        <button mat-icon-button (click)="onModelInfoClick(dataModel); $event.stopPropagation();">
+          <mat-icon>info</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onModelDeleteClick(dataModel); $event.stopPropagation();">
+          <mat-icon>delete</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onModelPropertyAddClick(dataModel); $event.stopPropagation();">
+          <mat-icon>add_circle</mat-icon>
+        </button>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-data-model-property [properties]="dataModel.properties"></app-data-model-property>
+  </mat-expansion-panel>
+</mat-accordion>

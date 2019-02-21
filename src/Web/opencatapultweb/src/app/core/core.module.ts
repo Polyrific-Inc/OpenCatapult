@@ -10,6 +10,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthService } from './auth/auth.service';
 import { ExternalServiceService } from './services/external-service.service';
 import { TaskProviderService } from './services/task-provider.service';
+import { DataModelService } from './services/data-model.service';
 
 @NgModule({
   declarations: [],
@@ -25,7 +26,8 @@ import { TaskProviderService } from './services/task-provider.service';
     ExternalServiceService,
     TaskProviderService,
     AuthGuard,
-    AuthService
+    AuthService,
+    DataModelService
   ]
 })
 export class CoreModule {

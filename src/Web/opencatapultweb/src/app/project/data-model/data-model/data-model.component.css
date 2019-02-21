@@ -1,0 +1,15 @@
+.action-buttons {
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.headers-align .mat-expansion-panel-header-title,
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: flex-end;
+  align-items: center;
+}
