@@ -33,9 +33,7 @@ describe('ProjectArchiveDetailComponent', () => {
       providers: [
         {
           provide: ActivatedRoute, useValue: {
-            parent: {
-              params: of({ id: 1})
-            }
+            params: of({ id: 1})
           }
         }
       ]
