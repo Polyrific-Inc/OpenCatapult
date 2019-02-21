@@ -10,3 +10,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .margin10 {
     margin-top: 10px;
 }
+
+.mat-dialog-actions {
+  justify-content: flex-end;
+}

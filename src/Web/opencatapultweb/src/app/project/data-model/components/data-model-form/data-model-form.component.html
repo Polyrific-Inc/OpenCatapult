@@ -1,0 +1,23 @@
+<div [formGroup]="dataModelForm">
+  <mat-form-field class="full-width-input">
+    <mat-label>Name</mat-label>
+    <input #modelNameInput matInput placeholder="Name of the model"
+      formControlName="name" required (input)="onNameChanged(modelNameInput.value)">
+    <mat-error *ngIf="isFieldInvalid('name', 'required')">
+      Please inform the model name
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+    <mat-label>Description</mat-label>
+    <input matInput placeholder="Description of the model" formControlName="description">
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+    <mat-label>Label</mat-label>
+    <input matInput placeholder="The display label of the model" formControlName="label">
+  </mat-form-field>
+  <mat-checkbox formControlName="isManaged">Is managed?</mat-checkbox>
+  <mat-form-field class="full-width-input">
+    <mat-label>Select Key</mat-label>
+    <input matInput placeholder="Select key of the model" formControlName="selectKey">
+  </mat-form-field>
+</div>
