@@ -1,6 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataModelPropertyFormComponent } from './data-model-property-form.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule, MatCheckboxModule, MatSelectModule, MatDividerModule } from '@angular/material';
 
 describe('DataModelPropertyFormComponent', () => {
   let component: DataModelPropertyFormComponent;
@@ -8,7 +11,15 @@ describe('DataModelPropertyFormComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DataModelPropertyFormComponent ]
+      declarations: [ DataModelPropertyFormComponent ],
+      imports: [
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatDividerModule
+      ]
     })
     .compileComponents();
   }));

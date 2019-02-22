@@ -1,9 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataModelPropertyComponent } from './data-model-property.component';
-import { MatButtonModule, MatListModule, MatIconModule } from '@angular/material';
+import { MatButtonModule, MatListModule, MatIconModule, MatDialogModule, MatSnackBarModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SnackbarService } from '@app/shared';
 
 describe('DataModelPropertyComponent', () => {
   let component: DataModelPropertyComponent;
@@ -17,7 +19,13 @@ describe('DataModelPropertyComponent', () => {
         MatListModule,
         FlexLayoutModule,
         MatIconModule,
-        CoreModule
+        CoreModule,
+        MatDialogModule,
+        HttpClientTestingModule,
+        MatSnackBarModule
+      ],
+      providers: [
+        SnackbarService
       ]
     })
     .compileComponents();

@@ -1,5 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { CreateDataModelPropertyDto, DataModelPropertyDto } from '@app/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { CreateDataModelPropertyDto, DataModelPropertyDto, DataModelDto, DataModelService } from '@app/core';
+import { MatDialog } from '@angular/material';
+import {
+  DataModelPropertyInfoDialogComponent
+} from '../components/data-model-property-info-dialog/data-model-property-info-dialog.component';
+import { ConfirmationWithInputDialogComponent, SnackbarService } from '@app/shared';
 
 @Component({
   selector: 'app-data-model-property',
@@ -8,13 +13,54 @@ import { CreateDataModelPropertyDto, DataModelPropertyDto } from '@app/core';
 })
 export class DataModelPropertyComponent implements OnInit {
   @Input() properties: CreateDataModelPropertyDto[];
-  constructor() { }
+  @Input() dataModel: DataModelDto;
+  @Input() dataModels: DataModelDto[];
+  @Output() propertiesChanged = new EventEmitter<DataModelDto>();
+  constructor(
+    private dialog: MatDialog,
+    private dataModelService: DataModelService,
+    private snackbar: SnackbarService
+    ) { }
 
   ngOnInit() {
   }
 
-  onPropertyInfoClick(property: DataModelPropertyDto) { }
+  onPropertyInfoClick(property: DataModelPropertyDto) {
+    const dialogRef = this.dialog.open(DataModelPropertyInfoDialogComponent, {
+      data: {
+        projectId: this.dataModel.projectId,
+        dataModelName: this.dataModel.name,
+        relatedDataModels: this.dataModels.filter(m => m.id !== this.dataModel.id),
+        ...property
+      }
+    });
 
-  onPropertyDeleteClick(property: DataModelPropertyDto) { }
+    dialogRef.afterClosed().subscribe(success => {
+      if (success) {
+        this.propertiesChanged.emit(this.dataModel);
+      }
+    });
+  }
+
+  onPropertyDeleteClick(property: DataModelPropertyDto) {
+    const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
+      data: {
+        title: 'Confirm Delete Data Model',
+        confirmationText: 'Please enter data model name to confirm deletion process:',
+        confirmationMatch: property.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.dataModelService.deleteDataModelProperty(this.dataModel.projectId, property.projectDataModelId, property.id)
+          .subscribe(() => {
+            this.snackbar.open('Property has been deleted');
+
+            this.propertiesChanged.emit(this.dataModel);
+          });
+      }
+    });
+  }
 
 }

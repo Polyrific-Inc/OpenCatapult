@@ -26,6 +26,6 @@
         </button>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-data-model-property [properties]="dataModel.properties"></app-data-model-property>
+    <app-data-model-property [properties]="dataModel.properties" [dataModel]="dataModel" [dataModels]="dataModels" (propertiesChanged)="onPropertiesUpdated(dataModel)" ></app-data-model-property>
   </mat-expansion-panel>
 </mat-accordion>

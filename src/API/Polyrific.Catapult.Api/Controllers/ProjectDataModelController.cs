@@ -162,7 +162,15 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Deleting data model {modelId} in project {projectId}", modelId, projectId);
 
-            await _projectDataModelService.DeleteDataModel(modelId);
+            try
+            {
+                await _projectDataModelService.DeleteDataModel(modelId);
+            }
+            catch (RelatedProjectDataModelException ex)
+            {
+                _logger.LogWarning(ex, "The data model is being used by other model(s)");
+                return BadRequest(ex.Message);
+            }
 
             return NoContent();
         }

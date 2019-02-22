@@ -97,6 +97,15 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            var model = await _dataModelRepository.GetById(id, cancellationToken);
+
+            var relatedDataModelsSpec = new ProjectDataModelFilterSpecification(model.ProjectId, id);
+            var relatedDataModels = await _dataModelRepository.GetBySpec(relatedDataModelsSpec, cancellationToken);
+            if (relatedDataModels.Any())
+            {
+                throw new RelatedProjectDataModelException(model.Name, relatedDataModels.Select(m => m.Name).ToArray());
+            }
+
             var propertyByDataModelSpec = new ProjectDataModelPropertyFilterSpecification(id);
             var properties = await _dataModelPropertyRepository.GetBySpec(propertyByDataModelSpec, cancellationToken);
             foreach (var property in properties.ToList())

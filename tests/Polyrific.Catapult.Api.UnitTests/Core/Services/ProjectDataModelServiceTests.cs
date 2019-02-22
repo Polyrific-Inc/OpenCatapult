@@ -230,6 +230,35 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public void DeleteDataModel_ValidItem_RelatedModelException()
+        {
+            var relatedModel = new ProjectDataModel
+            {
+                Name = "Category",
+                ProjectId = 1,
+                Properties = new List<ProjectDataModelProperty>
+                {
+                    new ProjectDataModelProperty
+                    {
+                        Name = "Products",
+                        RelatedProjectDataModelId = 1
+                    }
+                }
+            };
+
+            _data.Add(relatedModel);
+
+            var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
+
+            var exception = Record.ExceptionAsync(() => projectDataModelService.DeleteDataModel(1));
+
+            Assert.IsType<RelatedProjectDataModelException>(exception?.Result);
+            Assert.Equal($"The data model \"Product\" is referenced by the following models: Category", exception?.Result.Message);
+
+            _data.Remove(relatedModel);
+        }
+
+        [Fact]
         public async void RenameDataModel_ValidItem()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);

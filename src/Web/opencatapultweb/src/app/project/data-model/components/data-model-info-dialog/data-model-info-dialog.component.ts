@@ -3,7 +3,6 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { DataModelService, DataModelDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { DataModelNewDialogComponent } from '../data-model-new-dialog/data-model-new-dialog.component';
 
 @Component({
   selector: 'app-data-model-info-dialog',
@@ -21,7 +20,7 @@ export class DataModelInfoDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dataModelService: DataModelService,
     private snackbar: SnackbarService,
-    public dialogRef: MatDialogRef<DataModelNewDialogComponent>,
+    public dialogRef: MatDialogRef<DataModelInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataModel: DataModelDto
     ) {
     }
