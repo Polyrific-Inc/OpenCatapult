@@ -45,6 +45,9 @@ Generated\ Files/
 *.VisualState.xml
 TestResult.xml
 
+# JUnit
+**/TESTS-*.xml
+
 # Build Results of an ATL Project
 [Dd]ebugPS/
 [Rr]eleasePS/
@@ -333,3 +336,4 @@ ASALocalRun/
 
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
+
