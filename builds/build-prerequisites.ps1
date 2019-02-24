@@ -14,9 +14,10 @@ $dotnetSdkVersion = [System.Version]"2.1.500"
 $allGood = $true
 
 $currentSdkVersion = dotnet --version
+$versionPattern = [Regex]::new("(\d+\.)(\d+\.)(\d+)")
+$parsedSdkVersion = $versionPattern.Matches($currentSdkVersion)
 
-
-if ([System.Version]$currentSdkVersion -lt $dotnetSdkVersion) {	
+if ([System.Version]$parsedSdkVersion.Value -lt $dotnetSdkVersion) {	
 	$allGood = $false
 	# Ask user if she want to automatically install the dotnet SDK
 	Write-host "We need to install the dotnet SDK version $dotnetSdkVersion for you. Proceed? (y/n)" -ForegroundColor Yellow 
