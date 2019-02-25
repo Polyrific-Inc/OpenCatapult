@@ -172,6 +172,9 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> CheckJob()
         {
+            if (!await CheckEngineStatus())
+                return Unauthorized();
+
             // log as debug so it won't be put to log when min level is Info
             _logger.LogDebug("Checking for job queue");
 
@@ -200,6 +203,9 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> UpdateJobQueue(int queueId, UpdateJobDto job)
         {
+            if (!await CheckEngineStatus())
+                return Unauthorized();
+                
             _logger.LogInformation("Updating job queue. Request body: {@job}", job);
 
             try
@@ -278,6 +284,13 @@ namespace Polyrific.Catapult.Api.Controllers
             }
 
             return null;
+        }
+
+        private async Task<bool> CheckEngineStatus()
+        {
+            var engine = await _engineService.GetCatapultEngine(User.Identity.Name);
+
+            return engine != null ? engine.IsActive : false;
         }
     }
 }

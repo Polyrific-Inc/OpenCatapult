@@ -157,6 +157,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     {
                         CatapultEngineId = engineName
                     });
+            
+            _catapultEngineService.Setup(s => s.GetCatapultEngine(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string name, CancellationToken cancellationToken) => new CatapultEngine
+                {
+                    Name = name,
+                    IsActive = true
+                });
 
             var httpContext = new DefaultHttpContext()
             {
@@ -182,11 +189,90 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void CheckJob_SuspendedEngine_ReturnsUnauthorized()
+        {
+            _catapultEngineService.Setup(s => s.GetCatapultEngine(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string name, CancellationToken cancellationToken) => new CatapultEngine
+                {
+                    Name = name,
+                    IsActive = false
+                });
+
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[] {
+                        new Claim(ClaimTypes.Name, "Engine01"),
+                        new Claim(ClaimTypes.Role, UserRole.Engine)
+                    })
+                }),
+            };
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
+
+            var result = await controller.CheckJob();
+
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
+        public async void CheckJob_UnregisteredEngine_ReturnsUnauthorized()
+        {
+            _catapultEngineService.Setup(s => s.GetCatapultEngine(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((CatapultEngine)null);
+
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[] {
+                        new Claim(ClaimTypes.Name, "Engine01"),
+                        new Claim(ClaimTypes.Role, UserRole.Engine)
+                    })
+                }),
+            };
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
+
+            var result = await controller.CheckJob();
+
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+        [Fact]
         public async void UpdateJobQueue_ReturnsSuccess()
         {
             _jobQueueService.Setup(s => s.UpdateJobQueue(It.IsAny<JobQueue>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object);
+            _catapultEngineService.Setup(s => s.GetCatapultEngine(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string name, CancellationToken cancellationToken) => new CatapultEngine
+                {
+                    Name = name,
+                    IsActive = true
+                });
+            
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[] {
+                        new Claim(ClaimTypes.Name, "Engine01"),
+                        new Claim(ClaimTypes.Role, UserRole.Engine)
+                    })
+                }),
+            };
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
 
             var result = await controller.UpdateJobQueue(1, new UpdateJobDto
             {
@@ -201,7 +287,28 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _jobQueueService.Setup(s => s.UpdateJobQueue(It.IsAny<JobQueue>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object);
+            _catapultEngineService.Setup(s => s.GetCatapultEngine(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string name, CancellationToken cancellationToken) => new CatapultEngine
+                {
+                    Name = name,
+                    IsActive = true
+                });
+            
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[] {
+                        new Claim(ClaimTypes.Name, "Engine01"),
+                        new Claim(ClaimTypes.Role, UserRole.Engine)
+                    })
+                }),
+            };
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
 
             var result = await controller.UpdateJobQueue(1, new UpdateJobDto());
 
