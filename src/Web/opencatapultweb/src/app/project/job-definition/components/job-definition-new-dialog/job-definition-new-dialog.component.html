@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>New Data Model</h1>
+<form [formGroup]="jobDefinitionForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+        <app-job-definition-form (formReady)="onFormReady($event)"></app-job-definition-form>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+

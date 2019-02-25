@@ -163,6 +163,23 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Delete job definition in batch
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="jobIds">Ids of the job definitions to be deleted</param>
+        /// <returns></returns>
+        [HttpDelete("Project/{projectId}/job/bulkdelete")]
+        [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
+        public async Task<IActionResult> DeleteJobDefinitions(int projectId, [FromQuery(Name = "jobIds")]int[] jobIds)
+        {
+            _logger.LogInformation("Deleting job definitions {jobIds} in project {projectId}", jobIds, projectId);
+
+            await _jobDefinitionService.DeleteJobDefinitions(projectId, jobIds);
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Create a new job task definition for a job definition
         /// </summary>
         /// <param name="projectId">Id of the project</param>

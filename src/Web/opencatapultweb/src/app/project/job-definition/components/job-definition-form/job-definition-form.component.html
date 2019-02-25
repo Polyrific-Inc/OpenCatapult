@@ -1,0 +1,10 @@
+<div [formGroup]="jobDefinitionForm">
+  <mat-form-field class="full-width-input">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Name of the job definition"
+      formControlName="name" required>
+    <mat-error *ngIf="isFieldInvalid('name', 'required')">
+      Please inform the job definition name
+    </mat-error>
+  </mat-form-field>
+</div>

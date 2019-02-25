@@ -1,0 +1,16 @@
+<mat-list>
+  <mat-list-item *ngFor="let task of jobTaskDefinitions">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="property-item">
+      <div>{{task.name}} <span class="property-type">({{task.provider}})</span></div>
+      <div class="action-buttons">
+        <button mat-icon-button (click)="onTaskInfoClick(task)">
+          <mat-icon>info</mat-icon>
+        </button>
+        <button mat-icon-button (click)="onTaskDeleteClick(task)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>

@@ -250,6 +250,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public async void DeleteJobDefinitions_ValidItem()
+        {
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            await projectJobDefinitionService.DeleteJobDefinitions(1, new int[] { 1 });
+
+            Assert.Empty(_data);
+            Assert.Empty(_dataTask);
+        }
+
+        [Fact]
         public async void RenameJobDefinition_ValidItem()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);

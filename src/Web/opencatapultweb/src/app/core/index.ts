@@ -4,6 +4,7 @@ export * from './services/project-template.service';
 export * from './services/task-provider.service';
 export * from './services/external-service.service';
 export * from './services/data-model.service';
+export * from './services/job-definition.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -17,6 +18,8 @@ export * from './models/task-provider/additional-config-dto';
 export * from './models/external-service/external-service-dto';
 export * from './models/data-model/data-model-dto';
 export * from './models/data-model/data-model-property-dto';
+export * from './models/job-definition/job-definition-dto';
+export * from './models/job-definition/job-task-definition-dto';
 
 /* Enums */
 export * from './enums/project-status-filter-type';

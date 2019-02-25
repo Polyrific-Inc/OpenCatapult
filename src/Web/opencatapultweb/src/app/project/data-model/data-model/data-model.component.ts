@@ -135,7 +135,7 @@ export class DataModelComponent implements OnInit {
       if (confirmed) {
         this.dataModelService.deleteDataModel(model.projectId, model.id)
           .subscribe(() => {
-            this.snackbar.open('Project has been deleted');
+            this.snackbar.open('Model has been deleted');
 
             this.getDataModels();
           }, error => {

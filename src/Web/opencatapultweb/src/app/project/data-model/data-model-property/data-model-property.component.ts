@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CreateDataModelPropertyDto, DataModelPropertyDto, DataModelDto, DataModelService } from '@app/core';
+import { DataModelPropertyDto, DataModelDto, DataModelService } from '@app/core';
 import { MatDialog } from '@angular/material';
 import {
   DataModelPropertyInfoDialogComponent
@@ -12,7 +12,7 @@ import { ConfirmationWithInputDialogComponent, SnackbarService } from '@app/shar
   styleUrls: ['./data-model-property.component.css']
 })
 export class DataModelPropertyComponent implements OnInit {
-  @Input() properties: CreateDataModelPropertyDto[];
+  @Input() properties: DataModelPropertyDto[];
   @Input() dataModel: DataModelDto;
   @Input() dataModels: DataModelDto[];
   @Output() propertiesChanged = new EventEmitter<DataModelDto>();
@@ -45,8 +45,8 @@ export class DataModelPropertyComponent implements OnInit {
   onPropertyDeleteClick(property: DataModelPropertyDto) {
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
-        title: 'Confirm Delete Data Model',
-        confirmationText: 'Please enter data model name to confirm deletion process:',
+        title: 'Confirm Delete Data Model Property',
+        confirmationText: 'Please enter data model property name to confirm deletion process:',
         confirmationMatch: property.name
       }
     });

@@ -1,0 +1,33 @@
+.action-buttons {
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.action-buttons button {
+  margin-left: 10px;
+}
+
+.headers-align .mat-expansion-panel-header-title,
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-title {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.job-checkbox {
+  margin-right: 5px;
+}
+
+.all-checkbox {
+  margin-left: 24px;
+}

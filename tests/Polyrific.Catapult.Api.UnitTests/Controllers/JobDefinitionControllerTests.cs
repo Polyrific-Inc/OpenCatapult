@@ -158,6 +158,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void DeleteJobDefinitions_ReturnsNoContent()
+        {
+            _jobDefinitionService.Setup(s => s.DeleteJobDefinitions(It.IsAny<int>(), It.IsAny<int[]>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteJobDefinitions(1, new int[] { 1, 2 });
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
         public async void CreateJobTaskDefinition_ReturnsCreatedJobTaskDefinition()
         {
             _jobDefinitionService

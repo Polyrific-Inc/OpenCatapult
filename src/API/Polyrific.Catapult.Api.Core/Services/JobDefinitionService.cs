@@ -87,6 +87,19 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _jobDefinitionRepository.Delete(id, cancellationToken);
         }
 
+        public async Task DeleteJobDefinitions(int projectId, int[] jobIds, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var jobDefinitionSpec = new JobDefinitionFilterSpecification(projectId, jobIds);
+            var jobDefinitions = (await _jobDefinitionRepository.GetBySpec(jobDefinitionSpec, cancellationToken)).ToList();
+
+            foreach (var jobDefinition in jobDefinitions)
+            {
+                await DeleteJobDefinition(jobDefinition.Id, cancellationToken);
+            }
+        }
+
         public async Task<JobDefinition> GetJobDefinitionById(int modelId, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

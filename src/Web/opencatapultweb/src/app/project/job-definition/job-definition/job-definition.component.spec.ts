@@ -1,6 +1,17 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobDefinitionComponent } from './job-definition.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { MatButtonModule, MatExpansionModule, MatListModule, MatIconModule,
+  MatCheckboxModule, MatDialogModule, MatSnackBarModule } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { CoreModule } from '@app/core';
+import { FormsModule } from '@angular/forms';
+import { SnackbarService } from '@app/shared';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { JobTaskDefinitionComponent } from '../job-task-definition/job-task-definition.component';
 
 describe('JobDefinitionComponent', () => {
   let component: JobDefinitionComponent;
@@ -8,7 +19,33 @@ describe('JobDefinitionComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobDefinitionComponent ]
+      declarations: [ JobDefinitionComponent, JobTaskDefinitionComponent ],
+      imports: [
+        RouterTestingModule,
+        HttpClientTestingModule,
+        MatButtonModule,
+        MatExpansionModule,
+        MatListModule,
+        FlexLayoutModule,
+        MatIconModule,
+        CoreModule,
+        MatCheckboxModule,
+        FormsModule,
+        MatDialogModule,
+        MatSnackBarModule
+      ],
+      providers: [
+        SnackbarService,
+        {
+          provide: ActivatedRoute, useValue: {
+            parent: {
+              parent: {
+                snapshot: { params: of({ id: 1}) }
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
   }));

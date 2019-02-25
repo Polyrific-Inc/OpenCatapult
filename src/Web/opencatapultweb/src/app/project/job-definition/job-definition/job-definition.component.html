@@ -1,3 +1,37 @@
-<p>
-  job-definition works!
-</p>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="action-buttons">
+      <mat-checkbox class="all-checkbox" (change)="onCheckboxAllChanged($event)"></mat-checkbox>
+      <button mat-raised-button [disabled]="!isJobDefinitionsSelected()" (click)="onBulkDeleteClick()">Bulk Delete</button>
+  </div>
+  <div class="action-buttons">
+    <button mat-raised-button (click)="onNewJobDefinitionClick()">New Job Definition</button>
+  </div>
+</div>
+<mat-accordion class="headers-align">
+<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-checkbox class="job-checkbox" [(ngModel)]="jobDefinition.selected" (click)="$event.stopPropagation();"></mat-checkbox>
+      <span>{{jobDefinition.name}}</span>
+    </mat-panel-title>
+    <mat-panel-description>
+      <button mat-icon-button (click)="onQueueJobClick(jobDefinition); $event.stopPropagation();">
+        <mat-icon>play_circle_filled</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobDefinitionInfoClick(jobDefinition); $event.stopPropagation();">
+        <mat-icon>info</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobDefinitionDeleteClick(jobDefinition); $event.stopPropagation();">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobTaskDefinitionAddClick(jobDefinition); $event.stopPropagation();">
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-job-task-definition [jobTaskDefinitions]="jobDefinition.tasks"
+    [jobDefinition]="jobDefinition"
+    (tasksChanged)="onTasksUpdated(jobDefinition)" >
+  </app-job-task-definition>
+</mat-expansion-panel>
+</mat-accordion>

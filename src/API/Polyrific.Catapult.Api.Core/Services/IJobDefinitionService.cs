@@ -30,10 +30,19 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Delete a job definition
         /// </summary>
-        /// <param name="id">Delete a job definition</param>
+        /// <param name="id">Id of the job definition</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task DeleteJobDefinition(int id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete job definitions in batch
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="jobIds">Ids of the job definitions to be deleted</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task DeleteJobDefinitions(int projectId, int[] jobIds, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get list of job definitions
