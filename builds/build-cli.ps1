@@ -6,6 +6,8 @@ param(
     [switch]$noConfig = $false
 )
 
+$host.UI.RawUI.WindowTitle = "OpenCatapult CLI";
+
 $rootPath = Split-Path $PSScriptRoot
 $cliCsprojPath = Join-Path $rootPath "/src/CLI/Polyrific.Catapult.Cli/Polyrific.Catapult.Cli.csproj"
 $cliPublishPath = Join-Path $rootPath "/publish/cli"

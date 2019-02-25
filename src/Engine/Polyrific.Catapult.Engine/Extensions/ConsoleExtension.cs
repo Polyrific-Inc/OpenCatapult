@@ -173,6 +173,16 @@ namespace Polyrific.Catapult.Engine.Extensions
         }
 
         /// <summary>
+        /// Set title of the opened console window.
+        /// </summary>
+        /// <param name="console">The console</param>
+        /// <param name="title">The title</param>
+        public static void SetWindowTitle(this IConsole console, string title)
+        {
+            Console.Title = title;
+        }
+
+        /// <summary>
         /// Base implementation of GetPassword and GetPasswordAsString. Prompts the user for
         /// a password and yields each key as the user inputs. Password is masked as input. Pressing Escape will reset the password
         /// by flushing the stream with backspace keys.

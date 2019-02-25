@@ -136,6 +136,16 @@ namespace Polyrific.Catapult.Cli.Extensions
             while (true);
         }
 
+        /// <summary>
+        /// Set title of the opened console window.
+        /// </summary>
+        /// <param name="console">The console</param>
+        /// <param name="title">The title</param>
+        public static void SetWindowTitle(this IConsole console, string title)
+        {
+            Console.Title = title;
+        }
+
         private static void Write(string value, ConsoleColor? foreground, ConsoleColor? background)
         {
             if (foreground.HasValue)

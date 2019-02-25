@@ -10,6 +10,8 @@ param(
     [string]$environment = "Development"
 )
 
+$host.UI.RawUI.WindowTitle = "OpenCatapult API";
+
 $env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = $true
 $env:ASPNETCORE_ENVIRONMENT = $environment
 

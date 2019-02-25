@@ -4,6 +4,7 @@ using System;
 using System.Diagnostics;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Cli.Commands
@@ -41,6 +42,8 @@ namespace Polyrific.Catapult.Cli.Commands
 
         protected virtual int OnExecute(CommandLineApplication app)
         {
+            Console.SetWindowTitle("OpenCatapult CLI");
+
             Console.WriteLine("----------------------------");
             Console.WriteLine("|     OpenCatapult CLI     |");
             Console.WriteLine("----------------------------");

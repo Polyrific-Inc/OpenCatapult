@@ -2,6 +2,7 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Engine.Extensions;
 using System;
 using System.Diagnostics;
 
@@ -35,6 +36,8 @@ namespace Polyrific.Catapult.Engine.Commands
 
         protected virtual int OnExecute(CommandLineApplication app)
         {
+            Console.SetWindowTitle("OpenCatapult Engine");
+
             Console.WriteLine("-------------------------------");
             Console.WriteLine("|     OpenCatapult Engine     |");
             Console.WriteLine("-------------------------------");

@@ -6,6 +6,8 @@ param(
     [switch]$noConfig = $false
 )
 
+$host.UI.RawUI.WindowTitle = "OpenCatapult Engine";
+
 $rootPath = Split-Path $PSScriptRoot
 $engineCsprojPath = Join-Path $rootPath "/src/Engine/Polyrific.Catapult.Engine/Polyrific.Catapult.Engine.csproj"
 $enginePublishPath = Join-Path $rootPath "/publish/engine"

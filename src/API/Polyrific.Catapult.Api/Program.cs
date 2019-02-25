@@ -14,6 +14,8 @@ namespace Polyrific.Catapult.Api
     {
         public static void Main(string[] args)
         {
+            Console.Title = "OpenCatapult API";
+
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(Configuration)
                 .CreateLogger();
