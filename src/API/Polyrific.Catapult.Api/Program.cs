@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Serilog;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Polyrific.Catapult.Api
@@ -21,7 +22,11 @@ namespace Polyrific.Catapult.Api
             {
                 Log.Information("Starting Catapult API host..");
 
-                CreateWebHostBuilder(args).Build().Run();
+                var webhost = CreateWebHostBuilder(args).Build();
+
+                Console.WriteLine($"Ready for debugger to attach. Process ID: {Process.GetCurrentProcess().Id}.");
+
+                webhost.Run();
             }
             catch (Exception ex)
             {
