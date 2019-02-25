@@ -75,23 +75,37 @@ export class DataModelComponent implements OnInit {
 
   onBulkDeleteClick() {
     const deletingModels = this.dataModels.filter(m => m.selected);
+    const deletingModelsString = deletingModels.reduce((agg, item, idx) => {
+      agg += `  - ${item.name}`;
+
+      if (idx + 1 < deletingModels.length) {
+        agg += '\n';
+      }
+
+      return agg;
+    }, '');
+
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
         title: 'Confirm Delete Data Model',
-        confirmationText: 'Please enter the text "yes" to confirm deletion process:',
+        confirmationText: `Please enter the text "yes" to delete the following models:`,
+        subText: deletingModelsString,
         confirmationMatch: 'yes'
       }
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        // TODO: delete the models
-        // this.dataModelService.deleteDataModel(this.projectId, model.id)
-        //   .subscribe(() => {
-        //     this.snackbar.open('Project has been deleted');
+        this.dataModelService.deleteDataModels(this.projectId, deletingModels.map(m => m.id))
+          .subscribe(() => {
+            this.snackbar.open('Data models has been deleted');
 
-        //     this.getDataModels();
-        //   });
+            this.getDataModels();
+          }, error => {
+            this.snackbar.open(error, null, {
+              duration: 5000
+            });
+          });
       }
     });
   }

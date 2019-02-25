@@ -93,17 +93,20 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _dataModelRepository.Create(newDataModel, cancellationToken);
         }
 
-        public async Task DeleteDataModel(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteDataModel(int id, bool validateRelatedModel = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var model = await _dataModelRepository.GetById(id, cancellationToken);
-
-            var relatedDataModelsSpec = new ProjectDataModelFilterSpecification(model.ProjectId, id);
-            var relatedDataModels = await _dataModelRepository.GetBySpec(relatedDataModelsSpec, cancellationToken);
-            if (relatedDataModels.Any())
+            if (validateRelatedModel)
             {
-                throw new RelatedProjectDataModelException(model.Name, relatedDataModels.Select(m => m.Name).ToArray());
+                var model = await _dataModelRepository.GetById(id, cancellationToken);
+
+                var relatedDataModelsSpec = new ProjectDataModelFilterSpecification(model.ProjectId, id);
+                var relatedDataModels = await _dataModelRepository.GetBySpec(relatedDataModelsSpec, cancellationToken);
+                if (relatedDataModels.Any())
+                {
+                    throw new RelatedProjectDataModelException(model.Name, relatedDataModels.Select(m => m.Name).ToArray());
+                }
             }
 
             var propertyByDataModelSpec = new ProjectDataModelPropertyFilterSpecification(id);
@@ -114,6 +117,32 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
 
             await _dataModelRepository.Delete(id, cancellationToken);
+        }
+
+        public async Task DeleteDataModels(int projectId, int[] ids, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var modelsSpec = new ProjectDataModelFilterSpecification(ids);
+            modelsSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
+            var models = (await _dataModelRepository.GetBySpec(modelsSpec, cancellationToken)).ToList();
+
+            // search for models to be deleted that dependency is not included in the current deletion
+            var relatedDataModelsSpec = new ProjectDataModelFilterSpecification(projectId, ids.Select(id => (int?)id).ToArray());
+            var relatedDataModels = (await _dataModelRepository.GetBySpec(relatedDataModelsSpec, cancellationToken)).ToList();
+
+            if (relatedDataModels.Count > 0)
+            {
+                throw new RelatedProjectDataModelException(relatedDataModels.Select(m => m.Name).Distinct().ToArray());
+            }
+
+            // sort the deletion order so the conflict foreign key error is not thrown
+            models.Sort(CompareDataModelRelation);
+
+            foreach (var model in models)
+            {
+                await this.DeleteDataModel(model.Id, false, cancellationToken);
+            }
         }
 
         public async Task DeleteDataModelProperty(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -229,6 +258,22 @@ namespace Polyrific.Catapult.Api.Core.Services
                 property.RelationalType = editedProperty.RelationalType;
                 property.IsManaged = editedProperty.IsManaged;
                 await _dataModelPropertyRepository.Update(property, cancellationToken);
+            }
+        }
+
+        private int CompareDataModelRelation(ProjectDataModel m1, ProjectDataModel m2)
+        {
+            if (m1.Properties?.Any(p => p.RelatedProjectDataModelId == m2.Id) ?? false)
+            {
+                return -1;
+            }
+            else if (m2.Properties?.Any(p => p.RelatedProjectDataModelId == m1.Id) ?? false)
+            {
+                return 1;
+            }
+            else
+            {
+                return 0;
             }
         }
     }                  

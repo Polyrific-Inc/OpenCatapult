@@ -5,6 +5,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export interface DialogData {
   title: string;
   confirmationText: string;
+  subText: string;
   confirmationMatch: string;
   enteredConfirmation: string;
 }

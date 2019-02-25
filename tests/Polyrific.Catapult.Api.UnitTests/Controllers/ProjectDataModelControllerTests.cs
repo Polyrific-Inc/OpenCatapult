@@ -154,12 +154,25 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void DeleteProjectDataModel_ReturnsNoContent()
         {
-            _projectDataModelService.Setup(s => s.DeleteDataModel(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _projectDataModelService.Setup(s => s.DeleteDataModel(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new ProjectDataModelController(_projectDataModelService.Object, _mapper, _logger.Object);
 
             var result = await controller.DeleteProjectDataModel(1, 1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async void DeleteProjectDataModels_ReturnsNoContent()
+        {
+            _projectDataModelService.Setup(s => s.DeleteDataModels(It.IsAny<int>(), It.IsAny<int[]>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new ProjectDataModelController(_projectDataModelService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteProjectDataModels(1, new int[] { 1 });
 
             Assert.IsType<NoContentResult>(result);
         }

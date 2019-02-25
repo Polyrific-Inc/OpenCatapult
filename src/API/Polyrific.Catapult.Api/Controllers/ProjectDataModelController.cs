@@ -8,6 +8,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -169,6 +170,31 @@ namespace Polyrific.Catapult.Api.Controllers
             catch (RelatedProjectDataModelException ex)
             {
                 _logger.LogWarning(ex, "The data model is being used by other model(s)");
+                return BadRequest(ex.Message);
+            }
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Delete project data models in batch
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="modelIds">Ids of the project data models</param>
+        /// <returns></returns>
+        [HttpDelete("Project/{projectId}/model/bulkdelete")]
+        [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
+        public async Task<IActionResult> DeleteProjectDataModels(int projectId, [FromQuery(Name = "modelIds")]int[] modelIds)
+        {
+            _logger.LogInformation("Deleting data models {modelIds} in project {projectId}", modelIds, projectId);
+
+            try
+            {
+                await _projectDataModelService.DeleteDataModels(projectId, modelIds);
+            }
+            catch (RelatedProjectDataModelException ex)
+            {
+                _logger.LogWarning(ex, "The data models are being used by other model(s)");
                 return BadRequest(ex.Message);
             }
 

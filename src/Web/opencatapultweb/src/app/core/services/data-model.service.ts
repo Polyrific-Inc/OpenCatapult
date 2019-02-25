@@ -29,6 +29,19 @@ export class DataModelService {
     return this.apiService.delete(`project/${projectId}/model/${modelId}`);
   }
 
+  deleteDataModels(projectId: number, modelIds: number[]) {
+    let queryParams = '';
+    for (let i = 0; i < modelIds.length; i++) {
+      queryParams += `modelIds=${modelIds[i]}`;
+
+      if (i + 1 < modelIds.length) {
+        queryParams += '&';
+      }
+    }
+
+    return this.apiService.delete(`project/${projectId}/model/bulkdelete?${queryParams}`);
+  }
+
   createDataModelProperty(projectId: number, modelId: number, property: CreateDataModelPropertyDto) {
     return this.apiService.post<DataModelPropertyDto>(`project/${projectId}/model/${modelId}/property`, property);
   }

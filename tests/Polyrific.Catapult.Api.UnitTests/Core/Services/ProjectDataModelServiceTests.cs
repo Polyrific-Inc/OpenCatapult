@@ -1,15 +1,16 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Core.Specifications;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using Polyrific.Catapult.Api.UnitTests.Utilities;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services
@@ -30,7 +31,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 {
                     Id = 1,
                     ProjectId = 1,
-                    Name = "Product"
+                    Name = "Product",
+                    Properties = new List<ProjectDataModelProperty>()
                 }
             };
 
@@ -230,7 +232,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
-        public void DeleteDataModel_ValidItem_RelatedModelException()
+        public void DeleteDataModel_RelatedModelException()
         {
             var relatedModel = new ProjectDataModel
             {
@@ -254,8 +256,96 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             Assert.IsType<RelatedProjectDataModelException>(exception?.Result);
             Assert.Equal($"The data model \"Product\" is referenced by the following models: Category", exception?.Result.Message);
+        }
 
-            _data.Remove(relatedModel);
+        [Fact]
+        public async void DeleteDataModels_ValidItem()
+        {
+            var relatedModel = new ProjectDataModel
+            {
+                Id = 2,
+                Name = "Category",
+                ProjectId = 1,
+                Properties = new List<ProjectDataModelProperty>
+                {
+                    new ProjectDataModelProperty
+                    {
+                        Name = "Products",
+                        RelatedProjectDataModelId = 1
+                    }
+                }
+            };
+
+            _data.Add(relatedModel);
+            
+            int callOrder = 0;
+            _dataModelRepository.Setup(r => r.Delete(2, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask).Callback((int id, CancellationToken cancellationToken) =>
+                {
+                    Assert.Equal(0, callOrder++);
+                });
+
+            _dataModelRepository.Setup(r => r.Delete(1, It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask).Callback((int id, CancellationToken cancellationToken) =>
+                {
+                    Assert.Equal(1, callOrder);
+                });
+
+            var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
+            await projectDataModelService.DeleteDataModels(1, new int[] { 1, 2 });
+
+
+        }
+
+        [Fact]
+        public void DeleteDataModels_RelatedModelException()
+        {
+            _data.Add(new ProjectDataModel
+            {
+                Id = 2,
+                Name = "Category",
+                ProjectId = 1,
+                Properties = new List<ProjectDataModelProperty>
+                {
+                    new ProjectDataModelProperty
+                    {
+                        Name = "Products",
+                        RelatedProjectDataModelId = 1,
+                        RelatedProjectDataModel = new ProjectDataModel
+                        {
+                            Id = 1,
+                            Name = "Product"
+                        }
+                    }
+                },
+            });
+
+            _data.Add(new ProjectDataModel
+            {
+                Id = 3,
+                Name = "Service",
+                ProjectId = 1,
+                Properties = new List<ProjectDataModelProperty>
+                {
+                    new ProjectDataModelProperty
+                    {
+                        Name = "Category",
+                        RelatedProjectDataModelId = 2,
+                        RelatedProjectDataModel = new ProjectDataModel
+                        {
+                            Id = 1,
+                            Name = "Category"
+                        }
+                    }
+                },
+            });
+
+            var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
+
+            var exception = Record.ExceptionAsync(() => projectDataModelService.DeleteDataModels(1, new int[] { 1, 2 }));
+
+            Assert.IsType<RelatedProjectDataModelException>(exception?.Result);
+            Assert.Equal($"Cannot perform bulk delete because the following models depend on the models to be deleted: Service", exception?.Result.Message);
         }
 
         [Fact]

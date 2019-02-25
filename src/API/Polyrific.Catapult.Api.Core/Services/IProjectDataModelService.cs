@@ -34,9 +34,18 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Delete a data model
         /// </summary>
         /// <param name="id">Delete a data model</param>
+        /// <param name="validateRelatedModel">Validate the related data model?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task DeleteDataModel(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteDataModel(int id ,bool validateRelatedModel = true, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Delete data models in bulk
+        /// </summary>
+        /// <param name="ids">The ids of the models</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task DeleteDataModels(int projectId, int[] ids, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get list of project data models
