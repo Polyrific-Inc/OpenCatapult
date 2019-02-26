@@ -6,11 +6,11 @@ using Polyrific.Catapult.Cli.Commands.Property;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Project data model property related command")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
+    [Command("property", Description = "Project data model property related command")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(UpdateCommand))]
     public class PropertyCommand : BaseCommand
     {
         public PropertyCommand(IConsole console, ILogger<PropertyCommand> logger) : base(console, logger)

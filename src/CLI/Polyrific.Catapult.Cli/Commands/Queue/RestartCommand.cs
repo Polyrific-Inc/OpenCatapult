@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
-    [Command(Description = "Restart a pending queued job")]
+    [Command("restart", Description = "Restart a pending queued job")]
     public class RestartCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

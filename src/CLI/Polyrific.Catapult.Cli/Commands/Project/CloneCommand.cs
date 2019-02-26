@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Create project by copying from existing")]
+    [Command("clone", Description = "Create project by copying from existing")]
     public class CloneCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

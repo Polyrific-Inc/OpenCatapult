@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Logout from the application")]
+    [Command("logout", Description = "Logout from the application")]
     public class LogoutCommand : BaseCommand
     {
         private readonly ITokenStore _tokenStore;

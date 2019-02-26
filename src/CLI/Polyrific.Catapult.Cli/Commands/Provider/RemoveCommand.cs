@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "Remove a task provider registration")]
+    [Command("remove", Description = "Remove a task provider registration")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IProviderService _providerService;

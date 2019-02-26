@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "Get a single task provider details")]
+    [Command("get", Description = "Get a single task provider details")]
     public class GetCommand : BaseCommand
     {
         private readonly IProviderService _providerService;

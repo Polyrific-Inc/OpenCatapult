@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Polyrific.Catapult.Engine.Commands.Config
 {
-    [Command(Description = "Remove configurations")]
+    [Command("remove", Description = "Remove configurations")]
     public class RemoveCommand : BaseCommand
     {
         private readonly ICatapultEngineConfig _engineConfig;

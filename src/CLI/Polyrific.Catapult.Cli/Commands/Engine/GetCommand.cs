@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
-    [Command(Description = "Get a single engine record")]
+    [Command("get", Description = "Get a single engine record")]
     public class GetCommand : BaseCommand
     {
         private readonly ICatapultEngineService _engineService;

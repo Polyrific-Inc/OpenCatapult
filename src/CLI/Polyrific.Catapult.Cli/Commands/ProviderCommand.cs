@@ -6,11 +6,11 @@ using Polyrific.Catapult.Cli.Commands.Provider;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Task provider registration commands")]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("register", typeof(RegisterCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
+    [Command("provider", Description = "Task provider registration commands")]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(RegisterCommand))]
+    [Subcommand(typeof(RemoveCommand))]
     public class ProviderCommand : BaseCommand
     {
         public ProviderCommand(IConsole console, ILogger<ProviderCommand> logger) : base(console, logger)

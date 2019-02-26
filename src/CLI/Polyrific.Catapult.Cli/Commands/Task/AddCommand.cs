@@ -13,7 +13,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
-    [Command(Description = "Add task to a job definition")]
+    [Command("add", Description = "Add task to a job definition")]
     public class AddCommand : BaseCommand
     {
         private readonly IConsoleReader _consoleReader;

@@ -11,7 +11,7 @@ using Polyrific.Catapult.Cli.Extensions;
 
 namespace Polyrific.Catapult.Cli.Commands.Config
 {
-    [Command(Description = "Set config value")]
+    [Command("set", Description = "Set config value")]
     public class SetCommand : BaseCommand
     {
         private readonly ICliConfig _cliConfig;

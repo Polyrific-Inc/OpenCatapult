@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Archive a project")]
+    [Command("archive", Description = "Archive a project")]
     public class ArchiveCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

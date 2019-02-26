@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
-    [Command(Description = "Update a job definition")]
+    [Command("update", Description = "Update a job definition")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

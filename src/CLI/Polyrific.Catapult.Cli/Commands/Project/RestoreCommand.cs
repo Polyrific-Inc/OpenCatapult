@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Restore an archived project")]
+    [Command("restore", Description = "Restore an archived project")]
     public class RestoreCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

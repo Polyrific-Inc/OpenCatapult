@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "List users")]
+    [Command("list", Description = "List users")]
     public class ListCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account.Password
 {
-    [Command(Description = "Reset user password")]
+    [Command("reset", Description = "Reset user password")]
     public class ResetCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Suspend a user")]
+    [Command("suspend", Description = "Suspend a user")]
     public class SuspendCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

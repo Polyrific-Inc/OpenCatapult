@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
-    [Command(Description = "List properties of a data model")]
+    [Command("list", Description = "List properties of a data model")]
     public class ListCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

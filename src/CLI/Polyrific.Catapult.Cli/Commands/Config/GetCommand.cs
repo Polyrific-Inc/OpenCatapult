@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.Cli.Commands.Config
 {
-    [Command(Description = "Get config value")]
+    [Command("get", Description = "Get config value")]
     public class GetCommand : BaseCommand
     {
         private readonly ICliConfig _cliConfig;

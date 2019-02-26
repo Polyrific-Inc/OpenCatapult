@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Check version of the components")]
+    [Command("version", Description = "Check version of the components")]
     public class VersionCommand : BaseCommand
     {
         private readonly IVersionService _versionService;

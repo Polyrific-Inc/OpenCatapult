@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Activate a suspended user")]
+    [Command("activate", Description = "Activate a suspended user")]
     public class ActivateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

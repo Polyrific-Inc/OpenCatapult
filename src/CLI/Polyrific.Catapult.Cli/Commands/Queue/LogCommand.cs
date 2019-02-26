@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
-    [Command(Description = "Get complete logs of a queued job")]
+    [Command("log", Description = "Get complete logs of a queued job")]
     public class LogCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

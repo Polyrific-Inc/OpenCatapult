@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
-    [Command(Description = "Remove a job task definition")]
+    [Command("remove", Description = "Remove a job task definition")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

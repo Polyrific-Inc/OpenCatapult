@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "List projects which the user has access to")]
+    [Command("list", Description = "List projects which the user has access to")]
     public class ListCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

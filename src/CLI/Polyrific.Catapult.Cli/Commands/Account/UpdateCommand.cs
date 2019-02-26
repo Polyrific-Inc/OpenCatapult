@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Update user profile")]
+    [Command("update", Description = "Update user profile")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

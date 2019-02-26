@@ -7,7 +7,7 @@ using Polyrific.Catapult.Engine.Core;
 
 namespace Polyrific.Catapult.Engine.Commands.Config
 {
-    [Command(Description = "Get config value")]
+    [Command("get", Description = "Get config value")]
     public class GetCommand : BaseCommand
     {
         private readonly ICatapultEngineConfig _engineConfig;

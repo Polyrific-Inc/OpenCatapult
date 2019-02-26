@@ -10,7 +10,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
 {
-    [Command(Description = "Display a single external service")]
+    [Command("get", Description = "Display a single external service")]
     public class GetCommand : BaseCommand
     {
         private readonly IExternalServiceService _externalServiceService;

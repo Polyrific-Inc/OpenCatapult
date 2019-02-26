@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
-    [Command(Description = "Suspend an engine")]
+    [Command("suspend", Description = "Suspend an engine")]
     public class SuspendCommand : BaseCommand
     {
         private readonly ICatapultEngineService _engineService;

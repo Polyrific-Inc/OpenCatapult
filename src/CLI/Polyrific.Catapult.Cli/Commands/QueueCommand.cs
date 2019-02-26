@@ -6,13 +6,13 @@ using Polyrific.Catapult.Cli.Commands.Queue;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Job queue related command")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("log", typeof(LogCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("restart", typeof(RestartCommand))]
-    [Subcommand("cancel", typeof(CancelCommand))]
+    [Command("queue", Description = "Job queue related command")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(LogCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RestartCommand))]
+    [Subcommand(typeof(CancelCommand))]
     public class QueueCommand : BaseCommand
     {
         public QueueCommand(IConsole console, ILogger<QueueCommand> logger) : base(console, logger)

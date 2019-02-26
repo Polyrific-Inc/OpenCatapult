@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
-    [Command(Description = "Add a new job definition")]
+    [Command("add", Description = "Add a new job definition")]
     public class AddCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

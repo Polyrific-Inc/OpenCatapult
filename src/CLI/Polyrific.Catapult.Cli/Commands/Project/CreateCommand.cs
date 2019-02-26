@@ -19,7 +19,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Create a project")]
+    [Command("create", Description = "Create a project")]
     public class CreateCommand : BaseCommand
     {
         private readonly IConsoleReader _consoleReader;

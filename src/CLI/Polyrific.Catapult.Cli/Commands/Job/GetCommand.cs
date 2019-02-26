@@ -10,7 +10,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
-    [Command(Description = "Get a single job definition record")]
+    [Command("get", Description = "Get a single job definition record")]
     public class GetCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

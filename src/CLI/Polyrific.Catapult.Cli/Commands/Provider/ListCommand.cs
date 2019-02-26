@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "List registered task providers")]
+    [Command("list", Description = "List registered task providers")]
     public class ListCommand : BaseCommand
     {
         private readonly IProviderService _providerService;

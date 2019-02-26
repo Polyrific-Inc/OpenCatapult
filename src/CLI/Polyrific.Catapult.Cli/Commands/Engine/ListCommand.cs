@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
-    [Command(Description = "List registered engines")]
+    [Command("list", Description = "List registered engines")]
     public class ListCommand : BaseCommand
     {
         private readonly ICatapultEngineService _engineService;

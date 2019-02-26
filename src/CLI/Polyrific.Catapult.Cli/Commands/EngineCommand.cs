@@ -6,14 +6,14 @@ using Polyrific.Catapult.Cli.Commands.Engine;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Catapult Engine registration commands")]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("register", typeof(RegisterCommand))]
-    [Subcommand("token", typeof(TokenCommand))]
-    [Subcommand("suspend", typeof(SuspendCommand))]
-    [Subcommand("activate", typeof(ActivateCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
+    [Command("engine", Description = "Catapult Engine registration commands")]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(RegisterCommand))]
+    [Subcommand(typeof(TokenCommand))]
+    [Subcommand(typeof(SuspendCommand))]
+    [Subcommand(typeof(ActivateCommand))]
+    [Subcommand(typeof(RemoveCommand))]
     public class EngineCommand : BaseCommand
     {
         public EngineCommand(IConsole console, ILogger<EngineCommand> logger) : base(console, logger)

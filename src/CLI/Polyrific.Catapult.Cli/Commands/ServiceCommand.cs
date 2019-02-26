@@ -6,12 +6,12 @@ using Polyrific.Catapult.Cli.Commands.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "External service related commands")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
+    [Command("service", Description = "External service related commands")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(UpdateCommand))]
     public class ServiceCommand : BaseCommand
     {
         public ServiceCommand(IConsole console, ILogger<ServiceCommand> logger) : base(console, logger)

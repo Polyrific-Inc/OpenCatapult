@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Remove a user")]
+    [Command("remove", Description = "Remove a user")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

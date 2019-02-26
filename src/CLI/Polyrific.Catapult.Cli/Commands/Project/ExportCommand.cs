@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Export project into a yaml file")]
+    [Command("export", Description = "Export project into a yaml file")]
     public class ExportCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

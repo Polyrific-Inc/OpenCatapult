@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
-    [Command(Description = "Get a single job task definition")]
+    [Command("get", Description = "Get a single job task definition")]
     public class GetCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

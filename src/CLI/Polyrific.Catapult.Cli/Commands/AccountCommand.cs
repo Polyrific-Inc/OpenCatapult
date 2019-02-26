@@ -6,15 +6,15 @@ using Polyrific.Catapult.Cli.Commands.Account;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "User account related command")]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("activate", typeof(ActivateCommand))]
-    [Subcommand("register", typeof(RegisterCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("suspend", typeof(SuspendCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
-    [Subcommand("password", typeof(PasswordCommand))]
-    [Subcommand("setrole", typeof(SetRoleCommand))]
+    [Command("account", Description = "User account related command")]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(ActivateCommand))]
+    [Subcommand(typeof(RegisterCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(SuspendCommand))]
+    [Subcommand(typeof(UpdateCommand))]
+    [Subcommand(typeof(PasswordCommand))]
+    [Subcommand(typeof(SetRoleCommand))]
     public class AccountCommand : BaseCommand
     {
         public AccountCommand(IConsole console, ILogger<AccountCommand> logger) : base(console, logger)

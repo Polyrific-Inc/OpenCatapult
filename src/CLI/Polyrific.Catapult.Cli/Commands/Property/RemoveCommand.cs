@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
-    [Command(Description = "Remove a project data model property")]
+    [Command("remove", Description = "Remove a project data model property")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

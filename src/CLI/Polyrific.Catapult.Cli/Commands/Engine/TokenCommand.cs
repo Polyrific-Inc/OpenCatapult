@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
 
-    [Command(Description = "Generate a token for the engine")]
+    [Command("token", Description = "Generate a token for the engine")]
     public class TokenCommand : BaseCommand
     {
         private readonly ITokenService _tokenService;

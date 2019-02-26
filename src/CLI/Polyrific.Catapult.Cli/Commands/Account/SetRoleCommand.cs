@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Set the role of a user")]
+    [Command("setrole", Description = "Set the role of a user")]
     public class SetRoleCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

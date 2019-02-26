@@ -12,7 +12,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
 {
-    [Command(Description = "Update an external service")]
+    [Command("update", Description = "Update an external service")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IConsoleReader _consoleReader;

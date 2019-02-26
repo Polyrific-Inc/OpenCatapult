@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Job
 {
-    [Command(Description = "List project definitions")]
+    [Command("list", Description = "List project definitions")]
     public class ListCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

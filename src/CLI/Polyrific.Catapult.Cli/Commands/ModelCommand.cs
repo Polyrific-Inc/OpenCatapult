@@ -6,12 +6,12 @@ using Polyrific.Catapult.Cli.Commands.Model;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Project data model related command")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
+    [Command("model", Description = "Project data model related command")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(UpdateCommand))]
     public class ModelCommand : BaseCommand
     {
         public ModelCommand(IConsole console, ILogger<ModelCommand> logger) : base(console, logger)

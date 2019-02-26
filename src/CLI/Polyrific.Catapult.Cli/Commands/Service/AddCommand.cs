@@ -13,7 +13,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
 {
-    [Command(Description = "Add new external service")]
+    [Command("add", Description = "Add new external service")]
     public class AddCommand : BaseCommand
     {
         private readonly IConsoleReader _consoleReader;

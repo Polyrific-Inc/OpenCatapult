@@ -6,10 +6,10 @@ using Polyrific.Catapult.Cli.Commands.Account.Password;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Account password related command")]
-    [Subcommand("update", typeof(Password.UpdateCommand))]
-    [Subcommand("resettoken", typeof(ResetTokenCommand))]
-    [Subcommand("reset", typeof(ResetCommand))]
+    [Command("password", Description = "Account password related command")]
+    [Subcommand(typeof(Password.UpdateCommand))]
+    [Subcommand(typeof(ResetTokenCommand))]
+    [Subcommand(typeof(ResetCommand))]
     public class PasswordCommand : BaseCommand
     {
         public PasswordCommand(IConsole console, ILogger<PasswordCommand> logger) : base(console, logger)

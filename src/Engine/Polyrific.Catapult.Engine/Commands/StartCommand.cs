@@ -9,7 +9,7 @@ using System.Timers;
 
 namespace Polyrific.Catapult.Engine.Commands
 {
-    [Command(Description = "Start the engine")]
+    [Command("start", Description = "Start the engine")]
     public class StartCommand : BaseCommand
     {
         private readonly ICatapultEngine _engine;

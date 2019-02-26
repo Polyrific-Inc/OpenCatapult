@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
-    [Command(Description = "Register a new user")]
+    [Command("register", Description = "Register a new user")]
     public class RegisterCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

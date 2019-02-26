@@ -10,7 +10,7 @@ using YamlDotNet.Serialization.NamingConventions;
 
 namespace Polyrific.Catapult.Cli.Commands.Provider
 {
-    [Command(Description = "Register a new task provider")]
+    [Command("register", Description = "Register a new task provider")]
     public class RegisterCommand : BaseCommand
     {
         private readonly IProviderService _providerService;

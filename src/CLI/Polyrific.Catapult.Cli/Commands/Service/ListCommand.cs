@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
 {
-    [Command(Description = "List external service names the user has access to")]
+    [Command("list", Description = "List external service names the user has access to")]
     public class ListCommand : BaseCommand
     {
         private readonly IExternalServiceService _externalServiceService;

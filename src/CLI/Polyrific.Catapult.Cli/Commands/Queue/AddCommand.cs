@@ -12,7 +12,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
-    [Command(Description = "Add job to queue")]
+    [Command("add", Description = "Add job to queue")]
     public class AddCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

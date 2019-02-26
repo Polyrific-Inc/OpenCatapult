@@ -11,7 +11,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Queue
 {
-    [Command(Description = "Cancelling a processing job")]
+    [Command("cancel", Description = "Cancelling a processing job")]
     public class CancelCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

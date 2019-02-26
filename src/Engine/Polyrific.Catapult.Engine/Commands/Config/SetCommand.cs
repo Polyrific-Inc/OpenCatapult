@@ -12,7 +12,7 @@ using Polyrific.Catapult.Engine.Extensions;
 
 namespace Polyrific.Catapult.Engine.Commands.Config
 {
-    [Command(Description = "Set config value")]
+    [Command("set", Description = "Set config value")]
     public class SetCommand : BaseCommand
     {
         private readonly ICatapultEngineConfig _engineConfig;

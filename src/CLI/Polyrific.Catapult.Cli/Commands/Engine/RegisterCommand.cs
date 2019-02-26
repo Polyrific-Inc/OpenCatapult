@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Engine
 {
-    [Command(Description = "Register a new engine")]
+    [Command("register", Description = "Register a new engine")]
     public class RegisterCommand : BaseCommand
     {
         private readonly ICatapultEngineService _engineService;

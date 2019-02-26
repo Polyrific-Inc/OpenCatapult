@@ -12,7 +12,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Polyrific.Catapult.Cli.Commands.Config
 {
-    [Command(Description = "Import configuration from a config file")]
+    [Command("import", Description = "Import configuration from a config file")]
     public class ImportCommand : BaseCommand
     {
         private readonly ICliConfig _cliConfig;

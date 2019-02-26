@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Get a single project record")]
+    [Command("get", Description = "Get a single project record")]
     public class GetCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

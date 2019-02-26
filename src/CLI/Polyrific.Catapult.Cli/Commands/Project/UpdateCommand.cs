@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
-    [Command(Description = "Update a project")]
+    [Command("update", Description = "Update a project")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

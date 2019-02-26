@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
-    [Command(Description = "Remove a project member")]
+    [Command("remove", Description = "Remove a project member")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IProjectMemberService _projectMemberService;

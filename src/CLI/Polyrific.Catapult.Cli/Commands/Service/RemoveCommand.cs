@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Service
 {
-    [Command(Description = "Remove an external service")]
+    [Command("remove", Description = "Remove an external service")]
     public class RemoveCommand : BaseCommand
     {
         private readonly IExternalServiceService _externalServiceService;

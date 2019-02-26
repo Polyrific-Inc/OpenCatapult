@@ -9,7 +9,7 @@ using Polyrific.Catapult.Cli.Extensions;
 
 namespace Polyrific.Catapult.Cli.Commands.Config
 {
-    [Command(Description = "Remove configurations")]
+    [Command("remove", Description = "Remove configurations")]
     public class RemoveCommand : BaseCommand
     {
         private readonly ICliConfig _cliConfig;

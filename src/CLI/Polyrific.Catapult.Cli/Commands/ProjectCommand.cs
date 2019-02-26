@@ -6,16 +6,16 @@ using Polyrific.Catapult.Cli.Commands.Project;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Project related command")]
-    [Subcommand("archive", typeof(ArchiveCommand))]
-    [Subcommand("create", typeof(CreateCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("restore", typeof(RestoreCommand))]
-    [Subcommand("clone", typeof(CloneCommand))]
-    [Subcommand("export", typeof(ExportCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
+    [Command("project", Description = "Project related command")]
+    [Subcommand(typeof(ArchiveCommand))]
+    [Subcommand(typeof(CreateCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(RestoreCommand))]
+    [Subcommand(typeof(CloneCommand))]
+    [Subcommand(typeof(ExportCommand))]
+    [Subcommand(typeof(UpdateCommand))]
     public class ProjectCommand : BaseCommand
     {
         public ProjectCommand(IConsole console, ILogger<ProjectCommand> logger) : base(console, logger)

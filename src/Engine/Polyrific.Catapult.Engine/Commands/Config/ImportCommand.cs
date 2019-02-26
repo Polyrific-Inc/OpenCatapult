@@ -14,7 +14,7 @@ using Polyrific.Catapult.Engine.Core;
 
 namespace Polyrific.Catapult.Engine.Commands.Config
 {
-    [Command(Description = "Import configuration from a config file")]
+    [Command("import", Description = "Import configuration from a config file")]
     public class ImportCommand : BaseCommand
     {
         private readonly ICatapultEngineConfig _engineConfig;

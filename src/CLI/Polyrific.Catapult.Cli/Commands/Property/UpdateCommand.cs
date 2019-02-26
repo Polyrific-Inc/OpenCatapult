@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
-    [Command(Description = "Update a project data model property")]
+    [Command("update", Description = "Update a project data model property")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

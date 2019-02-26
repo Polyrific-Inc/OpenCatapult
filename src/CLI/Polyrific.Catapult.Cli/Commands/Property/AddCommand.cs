@@ -10,7 +10,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Property
 {
-    [Command(Description = "Add a project data model property")]
+    [Command("add", Description = "Add a project data model property")]
     public class AddCommand : BaseCommand
     {
         private readonly IProjectService _projectService;

@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account.Password
 {
-    [Command(Description = "Request reset password token")]
+    [Command("resettoken", Description = "Request reset password token")]
     public class ResetTokenCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

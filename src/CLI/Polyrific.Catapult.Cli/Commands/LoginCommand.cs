@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Login as a user")]
+    [Command("login", Description = "Login as a user")]
     public class LoginCommand : BaseCommand
     {
         private readonly ITokenService _tokenService;

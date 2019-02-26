@@ -9,7 +9,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
-    [Command(Description = "Update the role of a project member")]
+    [Command("update", Description = "Update the role of a project member")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IProjectMemberService _projectMemberService;

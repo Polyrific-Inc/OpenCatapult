@@ -10,7 +10,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Member
 {
-    [Command(Description = "Add user as a project member")]
+    [Command("add", Description = "Add user as a project member")]
     public class AddCommand : BaseCommand
     {
         private readonly IProjectMemberService _projectMemberService;

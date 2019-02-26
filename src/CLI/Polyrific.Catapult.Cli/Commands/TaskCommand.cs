@@ -6,12 +6,12 @@ using Polyrific.Catapult.Cli.Commands.Task;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Job task definition related command")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("get", typeof(GetCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
+    [Command("task", Description = "Job task definition related command")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(GetCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(UpdateCommand))]
+    [Subcommand(typeof(RemoveCommand))]
     public class TaskCommand : BaseCommand
     {
         public TaskCommand(IConsole console, ILogger<TaskCommand> logger) : base(console, logger)

@@ -14,7 +14,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Task
 {
-    [Command(Description = "Update a job task definition")]
+    [Command("update", Description = "Update a job task definition")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IConsoleReader _consoleReader;

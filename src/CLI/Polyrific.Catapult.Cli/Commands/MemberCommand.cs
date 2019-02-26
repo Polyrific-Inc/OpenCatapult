@@ -6,11 +6,11 @@ using Polyrific.Catapult.Cli.Commands.Member;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command(Description = "Project member related command")]
-    [Subcommand("add", typeof(AddCommand))]
-    [Subcommand("list", typeof(ListCommand))]
-    [Subcommand("remove", typeof(RemoveCommand))]
-    [Subcommand("update", typeof(UpdateCommand))]
+    [Command("member", Description = "Project member related command")]
+    [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(ListCommand))]
+    [Subcommand(typeof(RemoveCommand))]
+    [Subcommand(typeof(UpdateCommand))]
     public class MemberCommand : BaseCommand
     {
         public MemberCommand(IConsole console, ILogger<MemberCommand> logger) : base(console, logger)

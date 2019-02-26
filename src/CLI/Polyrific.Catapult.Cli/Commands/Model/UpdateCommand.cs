@@ -8,7 +8,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Model
 {
-    [Command(Description = "Update project data model")]
+    [Command("update", Description = "Update project data model")]
     public class UpdateCommand : BaseCommand
     {
         private readonly IProjectService _projectService;
