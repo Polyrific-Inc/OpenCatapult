@@ -105,13 +105,6 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
 
   onAdditionalConfigFormReady(form: FormGroup) {
     this.taskForm.setControl('additionalConfigs', form);
-
-    // if (this.disableForm) {
-    //   form.disable();
-    // } else {
-    //   form.enable();
-    // }
-
     this.formReady.emit(this.taskForm);
   }
 
