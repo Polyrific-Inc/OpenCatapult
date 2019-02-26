@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SnackbarService } from '@app/shared';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 describe('JobTaskDefinitionComponent', () => {
   let component: JobTaskDefinitionComponent;
@@ -22,6 +23,7 @@ describe('JobTaskDefinitionComponent', () => {
         CoreModule,
         MatDialogModule,
         HttpClientTestingModule,
+        DragDropModule,
         MatSnackBarModule
       ],
       providers: [

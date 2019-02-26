@@ -12,6 +12,7 @@ import { SnackbarService } from '@app/shared';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { JobTaskDefinitionComponent } from '../job-task-definition/job-task-definition.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 describe('JobDefinitionComponent', () => {
   let component: JobDefinitionComponent;
@@ -32,7 +33,8 @@ describe('JobDefinitionComponent', () => {
         MatCheckboxModule,
         FormsModule,
         MatDialogModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        DragDropModule
       ],
       providers: [
         SnackbarService,
