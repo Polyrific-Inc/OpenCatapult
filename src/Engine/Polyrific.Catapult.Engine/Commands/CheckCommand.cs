@@ -7,7 +7,7 @@ using Polyrific.Catapult.Engine.Extensions;
 
 namespace Polyrific.Catapult.Engine.Commands
 {
-    [Command("check", Description = "Check for any available job in queue")]
+    [Command(Description = "Check for any available job in queue")]
     public class CheckCommand : BaseCommand
     {
         private readonly ICatapultEngine _engine;
