@@ -47,6 +47,10 @@ namespace Polyrific.Catapult.Cli.Extensions
                 {
                     sb.AppendLine(enumProp.ToListCliString($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}:", obfuscatedFields, indentation, excludedFields));
                 }
+                else if (prop is DateTime)
+                {
+                    sb.AppendLine($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}: {GetDisplayValue(item.Name, TimeZoneInfo.ConvertTimeFromUtc((DateTime)prop, TimeZoneInfo.Local).ToString(), obfuscatedFields)}");
+                }
                 else
                 {
                     sb.AppendLine($"{indentationString}{GetDisplayName(item.Name, nameDictionary)}: {GetDisplayValue(item.Name, prop.ToString(), obfuscatedFields)}");
