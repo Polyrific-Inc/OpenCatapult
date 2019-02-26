@@ -47,7 +47,7 @@
         {{relationalType[1]}}
       </mat-option>
     </mat-select>
-    <mat-hint *ngIf="relationalTypeControl.value != null">
+    <mat-hint *ngIf="relationalTypeControl.selected != null">
       <div [ngSwitch]="relationalTypeControl.value">
         <div *ngSwitchCase="'one-to-one'">One {{dataModelName}} related to one {{relatedDataModelControl.selected.viewValue}}</div>
         <div *ngSwitchCase="'one-to-many'">One {{dataModelName}} related to many {{relatedDataModelControl.selected.viewValue}}</div>

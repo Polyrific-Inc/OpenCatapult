@@ -11,4 +11,8 @@ export class ExternalServiceService {
   getExternalServiceByName(name: string): Observable<ExternalServiceDto> {
     return this.apiService.get<ExternalServiceDto>(`service/name/${name}`);
   }
+
+  getExternalServices() {
+    return this.apiService.get<ExternalServiceDto[]>(`service`);
+  }
 }

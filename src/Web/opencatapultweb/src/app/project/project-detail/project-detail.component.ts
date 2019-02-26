@@ -51,7 +51,8 @@ export class ProjectDetailComponent implements OnInit {
           .subscribe(data => {
             this.snackbar.open('Project has been deleted');
 
-            this.router.navigate(['project', { dummyData: (new Date).getTime()}]);
+            this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+              .then(() => this.router.navigate(['project']));
           });
       }
     });

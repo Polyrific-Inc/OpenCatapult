@@ -3,6 +3,8 @@ import { ApiService } from './api.service';
 import { JobDefinitionDto } from '../models/job-definition/job-definition-dto';
 import { JobTaskDefinitionDto } from '../models/job-definition/job-task-definition-dto';
 import { CreateJobDefinitionDto } from '../models/job-definition/create-job-definition-dto';
+import { UpdateTaskOrderDto } from '../models/job-definition/update-task-order-dto';
+import { CreateJobTaskDefinitionDto } from '../models/job-definition/create-job-task-definition-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -23,8 +25,12 @@ export class JobDefinitionService {
     return this.api.post<JobDefinitionDto>(`project/${projectId}/job`, jobDefinition);
   }
 
-  updateJobDefinition(projectId: number, jobDefinitionId: number, jobDefinition: CreateJobDefinitionDto) {
-    return this.api.put(`project/${projectId}/job/${jobDefinitionId}`, jobDefinition);
+  updateJobDefinition(projectId: number, jobDefinition: JobDefinitionDto) {
+    return this.api.put(`project/${projectId}/job/${jobDefinition.id}`, jobDefinition);
+  }
+
+  updateTaskOrder(projectId: number, jobDefinitionId: number, dto: UpdateTaskOrderDto) {
+    return this.api.put(`project/${projectId}/job/${jobDefinitionId}/task/order`, dto);
   }
 
   deleteJobDefinition(projectId: number, jobDefinitionId: number) {
@@ -46,5 +52,15 @@ export class JobDefinitionService {
 
   deleteJobTaskDefinition(projectId: number, jobDefinitionId: number, jobTaskDefinitionId: number) {
     return this.api.delete(`project/${projectId}/job/${jobDefinitionId}/task/${jobTaskDefinitionId}`);
+  }
+
+  updateJobTaskDefinition(
+    projectId: number, jobDefinitionId: number,
+    jobTaskDefinitionId: number, jobTaskDefinition: JobTaskDefinitionDto) {
+    return this.api.put(`project/${projectId}/job/${jobDefinitionId}/task/${jobTaskDefinitionId}`, jobTaskDefinition);
+  }
+
+  createJobTaskDefinition(projectId: number, jobDefinitionId: number, jobTaskDefinition: CreateJobTaskDefinitionDto) {
+    return this.api.post<JobTaskDefinitionDto>(`project/${projectId}/job/${jobDefinitionId}/task`, jobTaskDefinition);
   }
 }

@@ -39,7 +39,7 @@ export class JobDefinitionInfoDialogComponent implements OnInit {
   onSubmit() {
     if (this.jobDefinitionForm.valid) {
       this.loading = true;
-      this.jobDefinitionService.updateJobDefinition(this.jobDefinition.projectId, this.jobDefinition.id,
+      this.jobDefinitionService.updateJobDefinition(this.jobDefinition.projectId,
         { id: this.jobDefinition.id, ...this.jobDefinitionForm.value })
         .subscribe(
             () => {

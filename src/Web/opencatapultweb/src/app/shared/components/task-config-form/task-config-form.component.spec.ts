@@ -57,8 +57,8 @@ describe('TaskConfigFormComponent', () => {
       name: 'test',
       type: 'Clone',
       provider: 'test',
-      configs: new Map<string, string>(),
-      additionalConfigs: new Map<string, string>(),
+      configs: {},
+      additionalConfigs: {},
       sequence: 1
     };
     fixture.detectChanges();

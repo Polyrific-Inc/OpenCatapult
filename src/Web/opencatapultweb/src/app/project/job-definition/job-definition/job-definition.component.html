@@ -8,7 +8,8 @@
   </div>
 </div>
 <mat-accordion class="headers-align">
-<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions">
+<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions"
+  (afterExpand)="onTaskExpanded(jobDefinition)">
   <mat-expansion-panel-header>
     <mat-panel-title>
       <mat-checkbox class="job-checkbox" [(ngModel)]="jobDefinition.selected" (click)="$event.stopPropagation();"></mat-checkbox>
@@ -31,7 +32,7 @@
   </mat-expansion-panel-header>
   <app-job-task-definition [jobTaskDefinitions]="jobDefinition.tasks"
     [jobDefinition]="jobDefinition"
-    (tasksChanged)="onTasksUpdated(jobDefinition)" >
+    (tasksChanged)="onTasksUpdated(jobDefinition)">
   </app-job-task-definition>
 </mat-expansion-panel>
 </mat-accordion>

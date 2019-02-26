@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Polyrific.Catapult.Api.AutoMapperProfiles
 {
@@ -23,10 +24,15 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
                 );
             CreateMap<CreateJobTaskDefinitionDto, JobTaskDefinition>()
                 .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)))
-                .ForMember(dest => dest.AdditionalConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs)));
+                .ForMember(dest => dest.AdditionalConfigString, 
+                    opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs.Where(c => c.Value != null)
+                        .ToDictionary(c => c.Key, c => c.Value))));
+
             CreateMap<UpdateJobTaskDefinitionDto, JobTaskDefinition>()
                 .ForMember(dest => dest.ConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.Configs)))
-                .ForMember(dest => dest.AdditionalConfigString, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs)));
+                .ForMember(dest => dest.AdditionalConfigString, 
+                    opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.AdditionalConfigs.Where(c => c.Value != null)
+                        .ToDictionary(c => c.Key, c => c.Value))));
         }
         
     }

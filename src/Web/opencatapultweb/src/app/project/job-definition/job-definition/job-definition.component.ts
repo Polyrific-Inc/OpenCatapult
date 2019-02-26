@@ -9,6 +9,7 @@ import { JobTaskDefinitionNewDialogComponent } from '../components/job-task-defi
 
 interface JobDefinitionViewModel extends JobDefinitionDto {
   selected: boolean;
+  expanded: boolean;
 }
 
 @Component({
@@ -38,6 +39,7 @@ export class JobDefinitionComponent implements OnInit {
       .subscribe(data => {
         this.jobDefinitions = data.map(item => ({
           selected: false,
+          expanded: false,
           ...item
         }));
       });
@@ -170,8 +172,7 @@ export class JobDefinitionComponent implements OnInit {
       data: {
         projectId: this.projectId,
         jobDefinitionId: jobDefinition.id,
-        jobDefinitionName: jobDefinition.name,
-        relatedJobDefinitions: this.jobDefinitions.filter(m => m.id !== jobDefinition.id)
+        jobDefinitionName: jobDefinition.name
       }
     });
 
@@ -188,5 +189,12 @@ export class JobDefinitionComponent implements OnInit {
 
   onTasksUpdated(jobDefinition: JobDefinitionDto) {
     this.getJobTaskDefinitions(jobDefinition);
+  }
+
+  onTaskExpanded(jobDefinition: JobDefinitionViewModel) {
+    if (!jobDefinition.expanded) {
+      this.getJobTaskDefinitions(jobDefinition);
+      jobDefinition.expanded = true;
+    }
   }
 }

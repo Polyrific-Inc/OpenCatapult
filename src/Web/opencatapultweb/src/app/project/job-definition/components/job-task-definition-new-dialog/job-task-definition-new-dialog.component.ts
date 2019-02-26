@@ -1,4 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+import { JobDefinitionService, JobTaskDefinitionDto } from '@app/core';
+import { SnackbarService } from '@app/shared';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+export interface NewJobDefinitionDialogData {
+  projectId: number;
+  jobDefinitionId: number;
+  jobDefinitionName: string;
+}
+
 
 @Component({
   selector: 'app-job-task-definition-new-dialog',
@@ -6,10 +17,39 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./job-task-definition-new-dialog.component.css']
 })
 export class JobTaskDefinitionNewDialogComponent implements OnInit {
+  jobTaskDefinitionForm: FormGroup = new FormGroup({});
+  loading: boolean;
 
-  constructor() { }
+  constructor (
+    private jobDefinitionService: JobDefinitionService,
+    private snackbar: SnackbarService,
+    public dialogRef: MatDialogRef<JobTaskDefinitionNewDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: NewJobDefinitionDialogData
+    ) {
+    }
 
   ngOnInit() {
+  }
+
+  onFormReady(form: FormGroup) {
+    this.jobTaskDefinitionForm = form;
+  }
+
+  onSubmit() {
+    if (this.jobTaskDefinitionForm.valid) {
+      this.loading = true;
+      this.jobDefinitionService.createJobTaskDefinition(this.data.projectId, this.data.jobDefinitionId, this.jobTaskDefinitionForm.value)
+        .subscribe(
+            (data: JobTaskDefinitionDto) => {
+              this.loading = false;
+              this.snackbar.open('New job task definition has been created');
+              this.dialogRef.close(true);
+            },
+            err => {
+              this.snackbar.open(err);
+              this.loading = false;
+            });
+    }
   }
 
 }

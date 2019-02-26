@@ -9,7 +9,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class DeployTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
-  @Input() taskConfigs: Map<string, string>;
+  @Input() taskConfigs: { [key: string]: string };
   @Output() formReady = new EventEmitter<FormGroup>();
   deployConfigForm: FormGroup;
   showForm: boolean;

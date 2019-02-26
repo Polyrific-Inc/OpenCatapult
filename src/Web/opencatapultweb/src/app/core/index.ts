@@ -30,6 +30,7 @@ export * from './enums/property-control-type';
 /* Constants */
 export * from './constants/property-data-types';
 export * from './constants/property-control-types';
+export * from './constants/job-task-definition-types';
 
 /* module */
 export * from './core.module';

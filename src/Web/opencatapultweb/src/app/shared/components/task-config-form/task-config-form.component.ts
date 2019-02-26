@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto, JobTaskDefinitionType } from '@app/core';
+import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto } from '@app/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
@@ -9,6 +9,8 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 })
 export class TaskConfigFormComponent implements OnInit, OnChanges {
   @Input() task: CreateJobTaskDefinitionDto;
+  @Input() hideTaskInfo: boolean;
+  @Input() disableForm: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   taskForm: FormGroup;
   taskConfigForm: FormGroup = this.fb.group({});
@@ -29,7 +31,6 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
-    this.formReady.emit(this.taskForm);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -50,7 +51,8 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
               for (const requiredService of this.taskProvider.requiredServices) {
                 const externalServiceName = `${requiredService}ExternalService`;
                 const taskExternalService = this.task.configs ? this.task.configs[externalServiceName] : null;
-                this.taskConfigForm.setControl(externalServiceName, new FormControl(taskExternalService, Validators.required));
+                this.taskConfigForm.setControl(externalServiceName,
+                  this.fb.control({ value: taskExternalService, disabled: this.disableForm}, Validators.required));
 
                 if (taskExternalService) {
                   this.externalServiceService.getExternalServiceByName(taskExternalService)
@@ -93,10 +95,24 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
       const control = form.get(key);
       this.taskConfigForm.setControl(key, control);
     });
+
+    if (this.disableForm) {
+      this.taskConfigForm.disable();
+    } else {
+      this.taskConfigForm.enable();
+    }
   }
 
   onAdditionalConfigFormReady(form: FormGroup) {
     this.taskForm.setControl('additionalConfigs', form);
+
+    // if (this.disableForm) {
+    //   form.disable();
+    // } else {
+    //   form.enable();
+    // }
+
+    this.formReady.emit(this.taskForm);
   }
 
 }

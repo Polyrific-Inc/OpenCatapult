@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// </summary>
         /// <param name="jobDefinitionId">The job definition id</param>
         public JobTaskDefinitionFilterSpecification(int jobDefinitionId)
-            : base(m => m.JobDefinitionId == jobDefinitionId)
+            : base(m => m.JobDefinitionId == jobDefinitionId, m => m.Sequence)
         {
             JobDefinitionId = jobDefinitionId;
         }

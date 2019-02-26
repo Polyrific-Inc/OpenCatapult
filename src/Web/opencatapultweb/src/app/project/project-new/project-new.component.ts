@@ -53,7 +53,19 @@ export class ProjectNewComponent implements OnInit {
     this.formSubmitAttempt = true;
     if (this.projectForm.valid) {
       this.loading = true;
-      this.projectService.createProject(this.projectForm.value)
+      const newProject = {
+        ...this.projectForm.value
+      };
+
+      if (this.projectTemplate != null && this.projectTemplate.models) {
+        newProject.models = this.projectTemplate.models;
+      }
+
+      if (this.projectTemplate != null && this.projectTemplate.members) {
+        newProject.members = this.projectTemplate.members;
+      }
+
+      this.projectService.createProject(newProject)
         .subscribe(
             (data: ProjectDto) => {
               this.snackBar.open('New project has been created');

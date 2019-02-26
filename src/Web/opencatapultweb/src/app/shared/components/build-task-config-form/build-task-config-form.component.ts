@@ -9,7 +9,7 @@ import { JobTaskDefinitionType } from '@app/core';
 })
 export class BuildTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
-  @Input() taskConfigs: Map<string, string>;
+  @Input() taskConfigs: { [key: string]: string };
   @Output() formReady = new EventEmitter<FormGroup>();
   buildConfigForm: FormGroup;
   showForm: boolean;

@@ -4,7 +4,7 @@ export interface JobTaskDefinitionDto {
   jobDefinitionId: number;
   type: string;
   provider: string;
-  configs: Map<string, string>;
-  additionalConfigs: Map<string, string>;
+  configs: { [key: string]: string };
+  additionalConfigs: { [key: string]: string };
   sequence: number;
 }

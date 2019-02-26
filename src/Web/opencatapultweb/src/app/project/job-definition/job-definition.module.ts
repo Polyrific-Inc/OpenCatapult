@@ -15,6 +15,9 @@ import {
   JobTaskDefinitionInfoDialogComponent
 } from './components/job-task-definition-info-dialog/job-task-definition-info-dialog.component';
 import { JobDefinitionFormComponent } from './components/job-definition-form/job-definition-form.component';
+import { JobTaskDefinitionFormComponent } from './components/job-task-definition-form/job-task-definition-form.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -24,7 +27,8 @@ import { JobDefinitionFormComponent } from './components/job-definition-form/job
     JobDefinitionInfoDialogComponent,
     JobTaskDefinitionNewDialogComponent,
     JobTaskDefinitionInfoDialogComponent,
-    JobDefinitionFormComponent
+    JobDefinitionFormComponent,
+    JobTaskDefinitionFormComponent
   ],
   imports: [
     CommonModule,
@@ -40,7 +44,9 @@ import { JobDefinitionFormComponent } from './components/job-definition-form/job
     MatInputModule,
     MatDialogModule,
     MatProgressBarModule,
-    MatSelectModule
+    MatSelectModule,
+    DragDropModule,
+    SharedModule
   ],
   entryComponents: [
     JobDefinitionNewDialogComponent,

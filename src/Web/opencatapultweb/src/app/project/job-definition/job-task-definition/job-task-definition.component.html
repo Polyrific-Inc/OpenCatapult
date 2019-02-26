@@ -1,7 +1,9 @@
-<mat-list>
-  <mat-list-item *ngFor="let task of jobTaskDefinitions">
-    <div fxLayout="row" fxLayoutAlign="space-between center" class="property-item">
-      <div>{{task.name}} <span class="property-type">({{task.provider}})</span></div>
+<mat-list cdkDropList [cdkDropListData]="jobTaskDefinitions" (cdkDropListDropped)="drop($event)">
+  <mat-list-item *ngFor="let task of jobTaskDefinitions" cdkDrag>
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="task-item">
+      <div fxLayout="row" fxLayoutAlign="flex-start center">
+          <mat-icon>drag_handle</mat-icon> {{task.name}} <span class="task-provider">({{task.provider}})</span>
+      </div>
       <div class="action-buttons">
         <button mat-icon-button (click)="onTaskInfoClick(task)">
           <mat-icon>info</mat-icon>

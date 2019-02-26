@@ -1,7 +1,7 @@
 <div [formGroup]="taskForm">
-    <h5>Task: {{task.type}}</h5>
-    
-    <mat-form-field class="full-width-input">
+    <h5 *ngIf="!hideTaskInfo">Task: {{task.type}}</h5>
+
+    <mat-form-field class="full-width-input" *ngIf="!hideTaskInfo">
         <mat-label>Provider</mat-label>
         <input matInput formControlName="provider" readonly />
         <mat-error *ngIf="isFieldInvalid('provider')">
@@ -30,8 +30,8 @@
             <app-deploy-task-config-form *ngSwitchCase="'Deploy'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-deploy-task-config-form>
             <app-test-task-config-form *ngSwitchCase="'Test'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-test-task-config-form>
         </div>
-        
+
         <div class="margin10"></div>
-        <app-additional-config-form [taskProvider]="taskProvider" [additionalConfigs]="task.additionalConfigs" (formReady)="onAdditionalConfigFormReady($event)"></app-additional-config-form>        
+        <app-additional-config-form [taskProvider]="taskProvider" [disableForm]="disableForm" [additionalConfigs]="task.additionalConfigs" (formReady)="onAdditionalConfigFormReady($event)"></app-additional-config-form>
     </div>
 </div>

@@ -5,6 +5,8 @@ import { SnackbarService, ConfirmationWithInputDialogComponent } from '@app/shar
 import {
   JobTaskDefinitionInfoDialogComponent
 } from '../components/job-task-definition-info-dialog/job-task-definition-info-dialog.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-job-task-definition',
@@ -59,6 +61,27 @@ export class JobTaskDefinitionComponent implements OnInit {
           });
       }
     });
+  }
+
+  drop(event: CdkDragDrop<JobTaskDefinitionDto[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+      const taskOrders = event.container.data.reduce((agg, item, idx) => {
+        agg[item.id] = idx + 1;
+        return agg;
+      }, {});
+
+      this.jobDefinitionService.updateTaskOrder(
+        this.jobDefinition.projectId,
+        this.jobDefinition.id,
+        {
+          taskOrders: taskOrders
+        }).pipe(catchError((err) => {
+          this.snackbar.open(err);
+          return err;
+        })).subscribe();
+    }
   }
 
 }

@@ -297,6 +297,40 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void UpdateJobTaskOrder_ReturnsSuccess()
+        {
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<JobTaskDefinition>
+                {
+                    new JobTaskDefinition
+                    {
+                        Id = 1,
+                        Name = "Generate"
+                    },
+                    new JobTaskDefinition
+                    {
+                        Id = 2,
+                        Name = "Push"
+                    }
+                });
+
+            _jobDefinitionService.Setup(s => s.UpdateJobTaskDefinition(It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
+
+            var result = await controller.UpdateJobTaskOrder(1, 1, new UpdateTaskOrderDto()
+            {
+                TaskOrders = new Dictionary<int, int>
+                {
+                    {2, 1},
+                    {1, 2 }
+                }
+            });
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
         public async void UpdateJobTaskDefinition_ReturnsBadRequest()
         {
             var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);

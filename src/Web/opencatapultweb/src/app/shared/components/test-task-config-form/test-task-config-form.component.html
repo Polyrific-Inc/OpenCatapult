@@ -1,4 +1,4 @@
-<div [formGroup]="cloneConfigForm" *ngIf="showForm">  
+<div [formGroup]="testConfigForm" *ngIf="showForm">
     <mat-expansion-panel>
         <mat-expansion-panel-header>
           <mat-panel-title>
@@ -9,7 +9,7 @@
         <mat-form-field class="full-width-input">
             <mat-label>Test Location</mat-label>
             <input matInput placeholder="Custom directory path of test" formControlName="TestLocation">
-        </mat-form-field>    
+        </mat-form-field>
         <mat-checkbox formControlName="ContinueWhenFailed">Continue when failed?</mat-checkbox>
     </mat-expansion-panel>
 </div>

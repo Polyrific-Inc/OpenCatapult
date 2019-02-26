@@ -146,6 +146,24 @@ namespace Polyrific.Catapult.Api.Controllers
             }
         }
 
+
+        [HttpPut("Project/{projectId}/job/{jobId}/task/order")]
+        public async Task<IActionResult> UpdateJobTaskOrder(int projectId, int jobId, UpdateTaskOrderDto dto)
+        {
+            _logger.LogInformation("Updating tasks order for job {jobId} in project {projectId}. Request body: {@dto}", jobId, projectId, dto);
+
+            var jobs = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
+
+            foreach (var jobOrder in dto.TaskOrders)
+            {
+                var job = jobs.FirstOrDefault(j => j.Id == jobOrder.Key);
+                job.Sequence = jobOrder.Value;
+                await _jobDefinitionService.UpdateJobTaskDefinition(job);
+            }
+
+            return Ok();
+        }
+
         /// <summary>
         /// Delete a job definition
         /// </summary>
