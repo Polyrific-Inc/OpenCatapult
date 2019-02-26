@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JobDefinitionDto, JobDefinitionService } from '@app/core';
+import { JobDefinitionDto, JobDefinitionService, JobQueueService } from '@app/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
@@ -20,12 +20,14 @@ interface JobDefinitionViewModel extends JobDefinitionDto {
 export class JobDefinitionComponent implements OnInit {
   jobDefinitions: JobDefinitionViewModel[];
   projectId: number;
+  loading: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private jobDefinitionService: JobDefinitionService,
+    private jobQueueService: JobQueueService,
     private snackbar: SnackbarService
   ) { }
 
@@ -35,6 +37,7 @@ export class JobDefinitionComponent implements OnInit {
   }
 
   getJobDefinitions() {
+    this.loading = true;
     this.jobDefinitionService.getJobDefinitions(this.projectId)
       .subscribe(data => {
         this.jobDefinitions = data.map(item => ({
@@ -42,6 +45,7 @@ export class JobDefinitionComponent implements OnInit {
           expanded: false,
           ...item
         }));
+        this.loading = false;
       });
   }
 
@@ -123,8 +127,15 @@ export class JobDefinitionComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(success => {
       if (success) {
-        // TODO: Add Queue
-        this.router.navigateByUrl(`project/${this.projectId}/job-queue`);
+        this.jobQueueService.addJobQueue(this.projectId, {
+          projectId: this.projectId,
+          jobDefinitionId: jobDefinition.id,
+          jobType: null,
+          originUrl: window.location.origin
+        }).subscribe(data => this.router.navigateByUrl(`project/${this.projectId}/job-queue`),
+          err => {
+            this.snackbar.open(err);
+          });
       }
     });
    }

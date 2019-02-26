@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule,
-          MatCardModule, MatInputModule, MatProgressBarModule } from '@angular/material';
+          MatCardModule, MatInputModule, MatProgressBarModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core';
+import { DummyComponent } from './dummy/dummy.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { CoreModule } from './core';
     HomeLayoutComponent,
     LoginLayoutComponent,
     LoginComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    DummyComponent
   ],
   imports: [
     CoreModule,
@@ -41,7 +43,10 @@ import { CoreModule } from './core';
     MatCardModule,
     MatInputModule,
     ReactiveFormsModule,
-    SharedModule.forRoot()
+    SharedModule.forRoot(),
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule
   ],
   bootstrap: [AppComponent]
 })

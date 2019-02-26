@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DataModelComponent } from './data-model.component';
 import { MatButtonModule, MatExpansionModule, MatListModule,
-  MatIconModule, MatCheckboxModule, MatDialogModule, MatSnackBarModule } from '@angular/material';
+  MatIconModule, MatCheckboxModule, MatDialogModule, MatSnackBarModule, MatProgressSpinnerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DataModelPropertyComponent } from '../data-model-property/data-model-property.component';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -32,7 +32,8 @@ describe('DataModelComponent', () => {
         MatCheckboxModule,
         FormsModule,
         MatDialogModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatProgressSpinnerModule
       ],
       providers: [
         SnackbarService,

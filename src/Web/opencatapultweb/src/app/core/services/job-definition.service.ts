@@ -6,9 +6,7 @@ import { CreateJobDefinitionDto } from '../models/job-definition/create-job-defi
 import { UpdateTaskOrderDto } from '../models/job-definition/update-task-order-dto';
 import { CreateJobTaskDefinitionDto } from '../models/job-definition/create-job-task-definition-dto';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class JobDefinitionService {
 
   constructor(private api: ApiService) { }

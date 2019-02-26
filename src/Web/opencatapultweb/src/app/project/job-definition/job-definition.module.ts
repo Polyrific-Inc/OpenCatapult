@@ -6,7 +6,8 @@ import { JobDefinitionComponent } from './job-definition/job-definition.componen
 import { JobTaskDefinitionComponent } from './job-task-definition/job-task-definition.component';
 import { JobDefinitionNewDialogComponent } from './components/job-definition-new-dialog/job-definition-new-dialog.component';
 import { MatButtonModule, MatExpansionModule, MatListModule, MatIconModule,
-  MatCheckboxModule, MatInputModule, MatDialogModule, MatProgressBarModule, MatSelectModule } from '@angular/material';
+  MatCheckboxModule, MatInputModule, MatDialogModule, MatProgressBarModule,
+  MatSelectModule, MatProgressSpinnerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { JobDefinitionInfoDialogComponent } from './components/job-definition-info-dialog/job-definition-info-dialog.component';
@@ -46,7 +47,8 @@ import { SharedModule } from '@app/shared/shared.module';
     MatProgressBarModule,
     MatSelectModule,
     DragDropModule,
-    SharedModule
+    SharedModule,
+    MatProgressSpinnerModule
   ],
   entryComponents: [
     JobDefinitionNewDialogComponent,

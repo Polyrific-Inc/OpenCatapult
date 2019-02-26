@@ -4,7 +4,8 @@ import { CommonModule } from '@angular/common';
 import { DataModelRoutingModule } from './data-model-routing.module';
 import { DataModelComponent } from './data-model/data-model.component';
 import { MatButtonModule, MatExpansionModule, MatListModule, MatIconModule,
-  MatInputModule, MatCheckboxModule, MatDialogModule, MatProgressBarModule, MatSelectModule } from '@angular/material';
+  MatInputModule, MatCheckboxModule, MatDialogModule,
+  MatProgressBarModule, MatSelectModule, MatProgressSpinnerModule } from '@angular/material';
 import { DataModelPropertyComponent } from './data-model-property/data-model-property.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { DataModelFormComponent } from './components/data-model-form/data-model-form.component';
@@ -42,7 +43,8 @@ import {
     MatInputModule,
     MatDialogModule,
     MatProgressBarModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressSpinnerModule
   ],
   entryComponents: [
     DataModelNewDialogComponent,

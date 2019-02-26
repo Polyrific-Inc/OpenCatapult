@@ -1,0 +1,11 @@
+table {
+  width: 100%;
+}
+
+.no-records {
+  text-align: center;
+}
+
+.action-buttons {
+  color: #757575;
+}

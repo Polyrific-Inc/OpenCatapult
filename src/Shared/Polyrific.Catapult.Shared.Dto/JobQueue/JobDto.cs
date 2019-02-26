@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 
 namespace Polyrific.Catapult.Shared.Dto.JobQueue
@@ -80,5 +81,10 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         /// Remarks related to the job
         /// </summary>
         public string Remarks { get; set; }
+
+        /// <summary>
+        /// The date time of the job created
+        /// </summary>
+        public DateTime Created { get; set; }
     }
 }

@@ -11,6 +11,8 @@ import { AuthService } from './auth/auth.service';
 import { ExternalServiceService } from './services/external-service.service';
 import { TaskProviderService } from './services/task-provider.service';
 import { DataModelService } from './services/data-model.service';
+import { JobQueueService } from './services/job-queue.service';
+import { JobDefinitionService } from './services/job-definition.service';
 
 @NgModule({
   declarations: [],
@@ -27,7 +29,9 @@ import { DataModelService } from './services/data-model.service';
     TaskProviderService,
     AuthGuard,
     AuthService,
-    DataModelService
+    DataModelService,
+    JobQueueService,
+    JobDefinitionService
   ]
 })
 export class CoreModule {

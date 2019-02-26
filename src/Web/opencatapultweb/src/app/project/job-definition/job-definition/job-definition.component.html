@@ -7,7 +7,10 @@
     <button mat-raised-button (click)="onNewJobDefinitionClick()">New Job Definition</button>
   </div>
 </div>
-<mat-accordion class="headers-align">
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
+    <mat-spinner></mat-spinner>
+</div>
+<mat-accordion class="headers-align" *ngIf="!loading">
 <mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions"
   (afterExpand)="onTaskExpanded(jobDefinition)">
   <mat-expansion-panel-header>

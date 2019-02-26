@@ -5,6 +5,7 @@ export * from './services/task-provider.service';
 export * from './services/external-service.service';
 export * from './services/data-model.service';
 export * from './services/job-definition.service';
+export * from './services/job-queue.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -20,12 +21,16 @@ export * from './models/data-model/data-model-dto';
 export * from './models/data-model/data-model-property-dto';
 export * from './models/job-definition/job-definition-dto';
 export * from './models/job-definition/job-task-definition-dto';
+export * from './models/job-queue/new-job-dto';
+export * from './models/job-queue/job-dto';
+export * from './models/job-queue/job-task-status-dto';
 
 /* Enums */
 export * from './enums/project-status-filter-type';
 export * from './enums/job-task-definition-type';
 export * from './enums/property-data-type';
 export * from './enums/property-control-type';
+export * from './enums/job-queue-filter-type';
 
 /* Constants */
 export * from './constants/property-data-types';

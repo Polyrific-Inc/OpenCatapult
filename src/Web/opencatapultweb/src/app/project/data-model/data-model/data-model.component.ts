@@ -19,6 +19,7 @@ interface DataModelViewModel extends DataModelDto {
 export class DataModelComponent implements OnInit {
   dataModels: DataModelViewModel[];
   projectId: number;
+  loading: boolean;
 
   constructor(
     private route: ActivatedRoute,
@@ -33,12 +34,14 @@ export class DataModelComponent implements OnInit {
   }
 
   getDataModels() {
+    this.loading = true;
     this.dataModelService.getDataModels(this.projectId, true)
       .subscribe(data => {
         this.dataModels = data.map(item => ({
           selected: false,
           ...item
         }));
+        this.loading = false;
       });
   }
 

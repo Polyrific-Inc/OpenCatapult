@@ -1,6 +1,16 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobQueueComponent } from './job-queue.component';
+import { JobQueueListComponent } from '../job-queue-list/job-queue-list.component';
+import { MatTabsModule, MatIconModule, MatBadgeModule, MatTableModule, MatButtonModule,
+  MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CoreModule } from '@app/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('JobQueueComponent', () => {
   let component: JobQueueComponent;
@@ -8,7 +18,34 @@ describe('JobQueueComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobQueueComponent ]
+      declarations: [ JobQueueComponent, JobQueueListComponent ],
+      imports: [
+        BrowserAnimationsModule,
+        RouterTestingModule,
+        HttpClientTestingModule,
+        MatTabsModule,
+        MatIconModule,
+        MatBadgeModule,
+        MatTableModule,
+        MatButtonModule,
+        MatTooltipModule,
+        MatProgressSpinnerModule,
+        FlexLayoutModule,
+        MatPaginatorModule,
+        MatSortModule,
+        CoreModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            parent: {
+              parent: {
+                snapshot: { params: of({ id: 1}) }
+              }
+            }
+          }
+        }
+      ]
     })
     .compileComponents();
   }));
