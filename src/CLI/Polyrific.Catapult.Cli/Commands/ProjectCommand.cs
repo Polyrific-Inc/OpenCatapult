@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Project;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("project", Description = "Project related command")]
+    [Command(Description = "Project related command")]
     [Subcommand(typeof(ArchiveCommand))]
     [Subcommand(typeof(CreateCommand))]
     [Subcommand(typeof(GetCommand))]

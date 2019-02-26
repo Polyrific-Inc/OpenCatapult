@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Account;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("account", Description = "User account related command")]
+    [Command(Description = "User account related command")]
     [Subcommand(typeof(ListCommand))]
     [Subcommand(typeof(ActivateCommand))]
     [Subcommand(typeof(RegisterCommand))]

@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("currentuser", Description = "Get current user")]
+    [Command(Description = "Get current user")]
     public class CurrentUserCommand : BaseCommand
     {
         private readonly IAccountService _accountService;

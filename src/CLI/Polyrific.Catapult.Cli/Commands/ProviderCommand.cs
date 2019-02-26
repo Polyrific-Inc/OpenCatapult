@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Provider;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("provider", Description = "Task provider registration commands")]
+    [Command(Description = "Task provider registration commands")]
     [Subcommand(typeof(ListCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(RegisterCommand))]

@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Queue;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("queue", Description = "Job queue related command")]
+    [Command(Description = "Job queue related command")]
     [Subcommand(typeof(AddCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(LogCommand))]

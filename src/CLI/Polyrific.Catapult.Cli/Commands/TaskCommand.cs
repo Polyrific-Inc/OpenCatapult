@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Task;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("task", Description = "Job task definition related command")]
+    [Command(Description = "Job task definition related command")]
     [Subcommand(typeof(AddCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(ListCommand))]

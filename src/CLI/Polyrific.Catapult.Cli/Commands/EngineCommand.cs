@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Engine;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("engine", Description = "Catapult Engine registration commands")]
+    [Command(Description = "Catapult Engine registration commands")]
     [Subcommand(typeof(ListCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(RegisterCommand))]

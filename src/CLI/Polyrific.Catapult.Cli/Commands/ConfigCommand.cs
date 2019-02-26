@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Config;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("config", Description = "Configure the CLI")]
+    [Command(Description = "Configure the CLI")]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(SetCommand))]
     [Subcommand(typeof(RemoveCommand))]

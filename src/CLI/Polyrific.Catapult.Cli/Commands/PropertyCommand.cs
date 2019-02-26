@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Property;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("property", Description = "Project data model property related command")]
+    [Command(Description = "Project data model property related command")]
     [Subcommand(typeof(AddCommand))]
     [Subcommand(typeof(ListCommand))]
     [Subcommand(typeof(RemoveCommand))]

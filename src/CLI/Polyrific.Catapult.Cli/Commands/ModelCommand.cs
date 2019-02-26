@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Model;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("model", Description = "Project data model related command")]
+    [Command(Description = "Project data model related command")]
     [Subcommand(typeof(AddCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(ListCommand))]

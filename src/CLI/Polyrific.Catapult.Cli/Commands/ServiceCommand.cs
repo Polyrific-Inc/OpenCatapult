@@ -6,7 +6,7 @@ using Polyrific.Catapult.Cli.Commands.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
-    [Command("service", Description = "External service related commands")]
+    [Command(Description = "External service related commands")]
     [Subcommand(typeof(AddCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(ListCommand))]
