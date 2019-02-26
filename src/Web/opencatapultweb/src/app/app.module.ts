@@ -16,7 +16,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core';
-import { DummyComponent } from './dummy/dummy.component';
 
 @NgModule({
   declarations: [
@@ -25,8 +24,7 @@ import { DummyComponent } from './dummy/dummy.component';
     HomeLayoutComponent,
     LoginLayoutComponent,
     LoginComponent,
-    UnauthorizedComponent,
-    DummyComponent
+    UnauthorizedComponent
   ],
   imports: [
     CoreModule,
@@ -43,10 +41,7 @@ import { DummyComponent } from './dummy/dummy.component';
     MatCardModule,
     MatInputModule,
     ReactiveFormsModule,
-    SharedModule.forRoot(),
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule
+    SharedModule.forRoot()
   ],
   bootstrap: [AppComponent]
 })
