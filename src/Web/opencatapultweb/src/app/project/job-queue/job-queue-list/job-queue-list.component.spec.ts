@@ -2,8 +2,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobQueueListComponent } from './job-queue-list.component';
 import { MatTabsModule, MatIconModule, MatBadgeModule, MatTableModule, MatButtonModule,
-  MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+  MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule, MatChipsModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { JobQueueStatusComponent } from '../components/job-queue-status/job-queue-status.component';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('JobQueueListComponent', () => {
   let component: JobQueueListComponent;
@@ -11,8 +13,9 @@ describe('JobQueueListComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobQueueListComponent ],
+      declarations: [ JobQueueListComponent, JobQueueStatusComponent ],
       imports: [
+        RouterTestingModule,
         MatTabsModule,
         MatIconModule,
         MatBadgeModule,
@@ -22,7 +25,8 @@ describe('JobQueueListComponent', () => {
         MatProgressSpinnerModule,
         FlexLayoutModule,
         MatPaginatorModule,
-        MatSortModule
+        MatSortModule,
+        MatChipsModule
       ]
     })
     .compileComponents();
