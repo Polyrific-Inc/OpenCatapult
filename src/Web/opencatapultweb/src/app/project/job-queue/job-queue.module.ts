@@ -5,11 +5,13 @@ import { JobQueueRoutingModule } from './job-queue-routing.module';
 import { JobQueueComponent } from './job-queue/job-queue.component';
 import { JobQueueListComponent } from './job-queue-list/job-queue-list.component';
 import { MatTabsModule, MatIconModule, MatBadgeModule, MatTableModule,
-  MatButtonModule, MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+  MatButtonModule, MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule, MatSortModule, MatChipsModule, MatDividerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { JobQueueDetailComponent } from './job-queue-detail/job-queue-detail.component';
+import { JobQueueLogComponent } from './job-queue-log/job-queue-log.component';
 
 @NgModule({
-  declarations: [JobQueueComponent, JobQueueListComponent],
+  declarations: [JobQueueComponent, JobQueueListComponent, JobQueueDetailComponent, JobQueueLogComponent],
   imports: [
     CommonModule,
     JobQueueRoutingModule,
@@ -22,7 +24,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatProgressSpinnerModule,
     FlexLayoutModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatChipsModule,
+    MatDividerModule
   ]
 })
 export class JobQueueModule { }

@@ -29,11 +29,11 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let element" class="action-buttons">
-        <button mat-icon-button (click)="onInfoClick(element);"
+        <button mat-icon-button routerLink="{{element.id}}"
           matTooltip="Info">
           <mat-icon>info</mat-icon>
         </button>
-        <button mat-icon-button (click)="onLogClick(element);"
+        <button mat-icon-button routerLink="{{element.id}}/logs"
           matTooltip="View Logs">
           <mat-icon>description</mat-icon>
         </button>

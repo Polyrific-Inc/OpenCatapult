@@ -1,0 +1,25 @@
+<div class="margin10" fxLayout="row" fxLayoutAlign="flex-start center">
+  <a mat-button routerLink="../">
+    <mat-icon>arrow_back</mat-icon>
+  </a>
+  <h4>Job Queue</h4>
+</div>
+<div fxLayout="column" class="job-detail">
+  <div fxLayout="row">
+    <div fxFlex="10">Id</div>
+    <div>{{job?.id}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Code</div>
+    <div>{{job?.code}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="flex-start center">
+    <div fxFlex="10">Status</div>
+    <mat-chip-list>
+        <mat-chip [ngClass]="job?.status === 'ERROR' ? 'error' : 'success'">{{job?.status}}</mat-chip>
+    </mat-chip-list>
+  </div>
+  <mat-divider></mat-divider>
+</div>

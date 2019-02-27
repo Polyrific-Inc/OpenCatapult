@@ -1,0 +1,14 @@
+.job-detail {
+  margin-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+}
+
+.job-detail > div, .job-detail > mat-divider {
+  margin-top: 10px;
+}
+
+.error {
+  background-color: red;
+  color: white;
+}

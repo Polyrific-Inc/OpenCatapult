@@ -12,6 +12,10 @@ export class JobQueueService {
     return this.api.get<JobDto[]>(`project/${projectId}/queue?filter=${filter}`);
   }
 
+  getJobQueue(projectId: number, queueId: number) {
+    return this.api.get<JobDto>(`project/${projectId}/queue/${queueId}`);
+  }
+
   addJobQueue(projectId: number, dto: NewJobDto) {
     return this.api.post<JobDto>(`project/${projectId}/queue`, dto);
   }
