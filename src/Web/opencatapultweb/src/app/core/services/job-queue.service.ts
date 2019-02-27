@@ -19,4 +19,8 @@ export class JobQueueService {
   addJobQueue(projectId: number, dto: NewJobDto) {
     return this.api.post<JobDto>(`project/${projectId}/queue`, dto);
   }
+
+  updateJobQueue(projectId: number, queueId: number, dto: JobDto) {
+    return this.api.put(`project/${projectId}/queue/${queueId}`, dto);
+  }
 }

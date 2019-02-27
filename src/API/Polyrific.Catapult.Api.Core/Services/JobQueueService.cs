@@ -74,6 +74,28 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _jobQueueRepository.Create(newJobQueue, cancellationToken);
         }
 
+
+        public async Task UpdateJobQueue(int projectId, JobQueue updatedJob, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var jobSpec = new JobQueueFilterSpecification(projectId, updatedJob.Id);
+            var job = await _jobQueueRepository.GetSingleBySpec(jobSpec, cancellationToken);
+
+            if (job != null)
+            {
+                job.CatapultEngineId = updatedJob.CatapultEngineId;
+                job.CatapultEngineIPAddress = updatedJob.CatapultEngineIPAddress;
+                job.CatapultEngineMachineName = updatedJob.CatapultEngineMachineName;
+                job.Status = updatedJob.Status;
+                job.JobTasksStatus = updatedJob.JobTasksStatus;
+                job.JobType = updatedJob.JobType;
+                job.OutputValues = updatedJob.OutputValues;
+                job.Remarks = updatedJob.Remarks;
+                await _jobQueueRepository.Update(job, cancellationToken);
+            }
+        }
+
         public async Task UpdateJobQueue(JobQueue updatedJob, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

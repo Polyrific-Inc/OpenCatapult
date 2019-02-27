@@ -63,6 +63,15 @@ namespace Polyrific.Catapult.Shared.Service
         Task UpdateJobQueue(int queueId, UpdateJobDto job);
 
         /// <summary>
+        /// Update job queue details using project authorization
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="queueId">Id of the job queue</param>
+        /// <param name="job">Job details</param>
+        /// <returns></returns>
+        Task UpdateJobQueue(int projectId, int queueId, UpdateJobDto job);
+
+        /// <summary>
         /// Get execution status of a job in queue
         /// </summary>
         /// <param name="queueId">Id of the job queue</param>

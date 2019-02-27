@@ -1,0 +1,8 @@
+<mat-chip-list [ngSwitch]="status">
+    <mat-chip *ngSwitchCase="'QUEUED'">{{status}}</mat-chip>
+    <mat-chip *ngSwitchCase="'PROCESSING'" color="primary" selected>{{status}}</mat-chip>
+    <mat-chip *ngSwitchCase="'PENDING'" class="pending">{{status}}</mat-chip>
+    <mat-chip *ngSwitchCase="'COMPLETED'" class="success">{{status}}</mat-chip>
+    <mat-chip *ngSwitchCase="'ERROR'" class="error">{{status}}</mat-chip>
+    <mat-chip *ngSwitchCase="'CANCELLED'" color="accent" selected>{{status}}</mat-chip>
+</mat-chip-list>

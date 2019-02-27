@@ -247,6 +247,21 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void UpdateJobQueueWithProject_ReturnsSuccess()
+        {
+            _jobQueueService.Setup(s => s.UpdateJobQueue(It.IsAny<int>(), It.IsAny<JobQueue>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object);
+
+            var result = await controller.UpdateJobQueue(1, 1, new UpdateJobDto
+            {
+                Id = 1
+            });
+
+            Assert.IsType<OkResult>(result);
+        }
+
+        [Fact]
         public async void UpdateJobQueue_ReturnsSuccess()
         {
             _jobQueueService.Setup(s => s.UpdateJobQueue(It.IsAny<JobQueue>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

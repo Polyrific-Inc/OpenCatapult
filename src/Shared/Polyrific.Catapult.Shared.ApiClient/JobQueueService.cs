@@ -74,5 +74,12 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             await Api.Put(path, job);
         }
+
+        public async Task UpdateJobQueue(int projectId, int queueId, UpdateJobDto job)
+        {
+            var path = $"project/{projectId}/queue/{queueId}";
+
+            await Api.Put(path, job);
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
 
                 if (queue != null)
                 {
-                    _jobQueueService.UpdateJobQueue(queue.Id, new UpdateJobDto
+                    _jobQueueService.UpdateJobQueue(project.Id, queue.Id, new UpdateJobDto
                     {
                         Id = queue.Id,
                         Status = JobStatus.Queued,

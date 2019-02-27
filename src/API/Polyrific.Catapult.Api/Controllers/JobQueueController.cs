@@ -196,11 +196,35 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Update a job queue
         /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="queueId">Id of the job queue</param>
+        /// <param name="job">Update job queue request body</param>
+        /// <returns></returns>
+        [HttpPut("Project/{projectId}/queue/{queueId}")]
+        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        public async Task<IActionResult> UpdateJobQueue(int projectId, int queueId, UpdateJobDto job)
+        {
+            _logger.LogInformation("Update job queue {queueId} in project {projectId}", queueId, projectId);
+
+            if (queueId != job.Id)
+            {
+                return BadRequest("Queue Id doesn't match.");
+            }
+
+            var entity = _mapper.Map<JobQueue>(job);
+            await _jobQueueService.UpdateJobQueue(projectId, entity);
+
+            return Ok();
+        }
+
+        /// <summary>
+        /// Update a job queue
+        /// </summary>
         /// <param name="queueId">Id of the job queue</param>
         /// <param name="job">Update job queue request body</param>
         /// <returns></returns>
         [HttpPut("Queue/{queueId}")]
-        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicEngineAccess)]
         public async Task<IActionResult> UpdateJobQueue(int queueId, UpdateJobDto job)
         {
             if (!await CheckEngineStatus())

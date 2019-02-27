@@ -1,8 +1,15 @@
-<div class="margin10" fxLayout="row" fxLayoutAlign="flex-start center">
-  <a mat-button routerLink="../">
-    <mat-icon>arrow_back</mat-icon>
-  </a>
-  <h4>Job Queue</h4>
+<div class="margin10" fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxLayout="row"  fxLayoutAlign="flex-start center">
+      <a mat-button routerLink="../">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h4>Job Queue</h4>
+  </div>
+  <div class="action-buttons">
+    <button mat-raised-button routerLink="logs">View Logs</button>
+    <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
+  </div>
 </div>
 <div fxLayout="column" class="job-detail">
   <div fxLayout="row">
@@ -15,11 +22,61 @@
     <div>{{job?.code}}</div>
   </div>
   <mat-divider></mat-divider>
-  <div fxLayout="row" fxLayoutAlign="flex-start center">
-    <div fxFlex="10">Status</div>
-    <mat-chip-list>
-        <mat-chip [ngClass]="job?.status === 'ERROR' ? 'error' : 'success'">{{job?.status}}</mat-chip>
-    </mat-chip-list>
+  <div fxLayout="row">
+    <div fxFlex="10">Job Definition</div>
+    <div>{{job?.jobDefinitionName}}</div>
   </div>
   <mat-divider></mat-divider>
+  <div fxLayout="row" fxLayoutAlign="flex-start center">
+    <div fxFlex="10">Status</div>
+    <app-job-queue-status [status]="job?.status"></app-job-queue-status>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Engine</div>
+    <div>{{job?.catapultEngineId}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Job Type</div>
+    <div>{{job?.jobType}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Origin Url</div>
+    <div>{{job?.originUrl}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Output Values</div>
+    <div *ngIf="job?.outputValues">{{job?.outputValues | json}}</div>
+  </div>
+  <mat-divider></mat-divider>
+  <div fxLayout="row">
+    <div fxFlex="10">Remarks</div>
+    <div>{{job?.remarks}}</div>
+  </div>
+  <mat-divider></mat-divider>
+</div>
+<div class="job-task-status" *ngIf="job?.jobTasksStatus && job.jobTasksStatus.length > 0">
+    <h5>Job Task Status</h5>
+    <div fxLayout="column" class="job-detail">
+        <div *ngFor="let taskStatus of job.jobTasksStatus">
+            <div fxLayout="row" fxLayoutAlign="space-between center" class="task-status-item">
+                <div fxLayout="column">
+                    <h5>{{taskStatus.sequence}}. {{taskStatus.taskName}}</h5>
+                </div>
+                <mat-chip-list [ngSwitch]="taskStatus.status">
+                    <mat-chip *ngSwitchCase="'NotExecuted'">Not Executed</mat-chip>
+                    <mat-chip *ngSwitchCase="'Executing'" color="primary" selected>{{taskStatus.status}}</mat-chip>
+                    <mat-chip *ngSwitchCase="'Success'" class="success">{{taskStatus.status}}</mat-chip>
+                    <mat-chip *ngSwitchCase="'Failed'" class="error">{{taskStatus.status}}</mat-chip>
+                    <mat-chip *ngSwitchCase="'Pending'" class="pending">{{taskStatus.status}}</mat-chip>
+                </mat-chip-list>
+              </div>
+              <div class="remarks">{{taskStatus.remarks}}</div>
+              <div class="margin10"></div>
+            <mat-divider></mat-divider>
+        </div>
+    </div>
 </div>

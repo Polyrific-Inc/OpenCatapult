@@ -66,7 +66,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                         if (!Console.GetYesNo($"The job queue {Number} was being processed by engine {queue.CatapultEngineId}. Make sure the engine process has stopped. Continue the job cancellation?", false))
                             return string.Empty;
 
-                    _jobQueueService.UpdateJobQueue(queue.Id, new UpdateJobDto
+                    _jobQueueService.UpdateJobQueue(project.Id, queue.Id, new UpdateJobDto
                     {
                         Id = queue.Id,
                         Status = JobStatus.Cancelled,
