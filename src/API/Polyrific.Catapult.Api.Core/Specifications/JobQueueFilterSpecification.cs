@@ -39,18 +39,6 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         }
 
         /// <summary>
-        /// Filter by project id and job queue id
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="jobQueueId"></param>
-        public JobQueueFilterSpecification(int projectId, int jobQueueId)
-            : base(m => m.ProjectId == projectId && m.Id == jobQueueId)
-        {
-            JobQueueId = jobQueueId;
-            ProjectId = projectId;
-        }
-
-        /// <summary>
         /// Filter by the project and a range of status
         /// </summary>
         /// <param name="projectId"></param>
