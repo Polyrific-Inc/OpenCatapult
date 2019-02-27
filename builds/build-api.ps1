@@ -18,20 +18,30 @@ $env:ASPNETCORE_ENVIRONMENT = $environment
 # define paths
 $rootPath = Split-Path $PSScriptRoot
 $appSettingsPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/appsettings.json"
+$appSettingsEnvPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/appsettings.$environment.json"
 $apiCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/Polyrific.Catapult.Api.csproj"
 $apiPublishPath = Join-Path $rootPath "/publish/api"
 $apiDll = Join-Path $apiPublishPath "/ocapi.dll"
 $dataCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api.Data/Polyrific.Catapult.Api.Data.csproj"
 
-# read connection string in appsettings.json
-try {
-    $appSettingsFile = ([System.IO.File]::ReadAllText($appSettingsPath) | ConvertFrom-Json)
-}
-catch {
-    Write-Error -Message "[ERROR] $_" -ErrorAction Stop
+$appSettingsEnvContent = [PSCustomObject]@{
+    ConnectionStrings = [PSCustomObject]@{
+        DefaultConnection = ""
+    }
 }
 
-$currentConnString = $appSettingsFile.ConnectionStrings.DefaultConnection
+# read connection string in appsettings.[env].json
+if (!(Test-Path $appSettingsEnvPath)) {
+    $appSettingsContent = Get-Content -Path $appSettingsPath | ConvertFrom-Json
+    $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $appSettingsContent.ConnectionStrings.DefaultConnection
+
+    $_ = New-Item -Path $appSettingsEnvPath -ItemType "file" -Value ($appSettingsEnvContent | ConvertTo-Json)
+    Write-Host "New `"appsettings.$environment.json`" file has been created"
+} else {
+    $appSettingsEnvContent = Get-Content -Path $appSettingsEnvPath | ConvertFrom-Json
+}
+
+$currentConnString = $appSettingsEnvContent.ConnectionStrings.DefaultConnection
 
 # ask for new connection string
 if ($connString -eq "") {
@@ -49,10 +59,10 @@ if ($connString -eq "") {
 
 # update connection string
 if ($connString -ne $currentConnString) {
-    $appSettingsFile.ConnectionStrings.DefaultConnection = $connString
+    $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
 
     try {
-        $appSettingsFile | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsPath -Encoding utf8 -Force    
+        $appSettingsEnvContent | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsEnvPath -Encoding utf8 -Force    
     }
     catch {
         Write-Error -Message "[ERROR] $_" -ErrorAction Stop
