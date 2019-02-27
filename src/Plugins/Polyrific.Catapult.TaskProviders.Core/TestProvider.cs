@@ -3,38 +3,31 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.TaskProvider.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
-using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
-namespace Polyrific.Catapult.TaskProvider.Core
+namespace Polyrific.Catapult.TaskProviders.Core
 {
-    public abstract class CodeGeneratorProvider : TaskProvider
+    public abstract class TestProvider : TaskProvider
     {
-        protected CodeGeneratorProvider(string[] args) 
+        protected TestProvider(string[] args) 
             : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => PluginType.GeneratorProvider;
+        public override string Type => PluginType.TestProvider;
 
         public sealed override void ParseArguments()
         {
             base.ParseArguments();
-            
+
             foreach (var key in ParsedArguments.Keys)
             {
                 switch (key.ToLower())
                 {
-                    case "project":
-                        ProjectName = ParsedArguments[key].ToString();
-                        break;
-                    case "models":
-                        Models = JsonConvert.DeserializeObject<List<ProjectDataModelDto>>(ParsedArguments[key].ToString());
-                        break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<GenerateTaskConfig>(ParsedArguments[key].ToString());
+                        Config = JsonConvert.DeserializeObject<TestTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
                         AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
@@ -50,27 +43,27 @@ namespace Polyrific.Catapult.TaskProvider.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeGenerate();
+                    var error = await BeforeTest();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Generate();
-                    result.Add("outputLocation", outputLocation);
+                    (string testResultLocation, Dictionary<string, string> outputValues, string errorMessage) = await Test();
+                    result.Add("testResultLocation", testResultLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterGenerate();
+                    error = await AfterTest();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 default:
-                    await BeforeGenerate();
-                    (outputLocation, outputValues, errorMessage) = await Generate();
-                    await AfterGenerate();
+                    await BeforeTest();
+                    (testResultLocation, outputValues, errorMessage) = await Test();
+                    await AfterTest();
 
-                    result.Add("outputLocation", outputLocation);
+                    result.Add("testResultLocation", testResultLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -80,19 +73,9 @@ namespace Polyrific.Catapult.TaskProvider.Core
         }
 
         /// <summary>
-        /// Name of the project
+        /// Test task configuration
         /// </summary>
-        public string ProjectName { get; set; }
-
-        /// <summary>
-        /// Project data models
-        /// </summary>
-        public List<ProjectDataModelDto> Models { get; set; }
-
-        /// <summary>
-        /// Generate task configuration
-        /// </summary>
-        public GenerateTaskConfig Config { get; set; }
+        public TestTaskConfig Config { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider
@@ -100,25 +83,25 @@ namespace Polyrific.Catapult.TaskProvider.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing the code generation
+        /// Process to run before executing test
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeGenerate()
+        public virtual Task<string> BeforeTest()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Generate code from data models
+        /// Run test scenario
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate();
+        public abstract Task<(string testResultLocation, Dictionary<string, string> outputValues, string errorMessage)> Test();
 
         /// <summary>
-        /// Process to run after executing code generation
+        /// Process to run after executing test
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterGenerate()
+        public virtual Task<string> AfterTest()
         {
             return Task.FromResult("");
         }

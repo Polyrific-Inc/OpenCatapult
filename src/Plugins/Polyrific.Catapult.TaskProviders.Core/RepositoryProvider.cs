@@ -3,10 +3,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.TaskProvider.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
-namespace Polyrific.Catapult.TaskProvider.Core
+namespace Polyrific.Catapult.TaskProviders.Core
 {
     public abstract class RepositoryProvider : TaskProvider
     {

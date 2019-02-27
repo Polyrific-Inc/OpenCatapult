@@ -3,20 +3,20 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.TaskProvider.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
-namespace Polyrific.Catapult.TaskProvider.Core
+namespace Polyrific.Catapult.TaskProviders.Core
 {
-    public abstract class BuildProvider : TaskProvider
+    public abstract class StorageProvider : TaskProvider
     {
-        protected BuildProvider(string[] args) 
+        protected StorageProvider(string[] args) 
             : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => PluginType.BuildProvider;
+        public override string Type => PluginType.StorageProvider;
 
         public sealed override void ParseArguments()
         {
@@ -46,27 +46,27 @@ namespace Polyrific.Catapult.TaskProvider.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeBuild();
+                    var error = await BeforePublishArtifact();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (string outputArtifact, Dictionary<string, string> outputValues, string errorMessage) = await Build();
-                    result.Add("outputArtifact", outputArtifact);
+                    (string storageLocation, Dictionary<string, string> outputValues, string errorMessage) = await PublishArtifact();
+                    result.Add("storageLocation", storageLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterBuild();
+                    error = await AfterPublishArtifact();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 default:
-                    await BeforeBuild();
-                    (outputArtifact, outputValues, errorMessage) = await Build();
-                    await AfterBuild();
+                    await BeforePublishArtifact();
+                    (storageLocation, outputValues, errorMessage) = await PublishArtifact();
+                    await AfterPublishArtifact();
 
-                    result.Add("outputArtifact", outputArtifact);
+                    result.Add("storageLocation", storageLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -91,25 +91,25 @@ namespace Polyrific.Catapult.TaskProvider.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing build
+        /// Process to run before publishing artifact
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeBuild()
+        public virtual Task<string> BeforePublishArtifact()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Build the code, and produce a ready to deploy artifact
+        /// Publish artifact to a storage
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build();
+        public abstract Task<(string storageLocation, Dictionary<string, string> outputValues, string errorMessage)> PublishArtifact();
 
         /// <summary>
-        /// Process to run after executing build
+        /// Process to run after publishing artifact
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterBuild()
+        public virtual Task<string> AfterPublishArtifact()
         {
             return Task.FromResult("");
         }

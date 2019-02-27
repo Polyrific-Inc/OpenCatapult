@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.TaskProvider.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Plugins.DotNetCoreTest.Helpers;
 using Xunit;
 

@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Polyrific.Catapult.TaskProvider.Core</id>
+    <id>Polyrific.Catapult.TaskProviders.Core</id>
     <version>1.0.0-beta2.1</version>
-    <title>Polyrific.Catapult.TaskProvider.Core</title>
+    <title>Polyrific.Catapult.TaskProviders.Core</title>
     <authors>frandi-polyrific</authors>
     <owners>frandi-polyrific</owners>
     <licenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</licenseUrl>

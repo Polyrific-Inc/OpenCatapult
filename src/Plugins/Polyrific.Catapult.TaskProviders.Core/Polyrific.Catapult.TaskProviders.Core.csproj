@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
-    <RootNamespace>Polyrific.Catapult.TaskProvider.Core</RootNamespace>
+    <RootNamespace>Polyrific.Catapult.TaskProviders.Core</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

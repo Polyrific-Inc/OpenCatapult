@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Polyrific.Catapult.TaskProvider.Core;
+using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.Plugins.GitHub
 {

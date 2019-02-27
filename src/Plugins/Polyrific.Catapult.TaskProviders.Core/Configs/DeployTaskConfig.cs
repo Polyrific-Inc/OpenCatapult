@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.TaskProvider.Core.Configs
+namespace Polyrific.Catapult.TaskProviders.Core.Configs
 {
     public class DeployTaskConfig : BaseJobTaskConfig
     {

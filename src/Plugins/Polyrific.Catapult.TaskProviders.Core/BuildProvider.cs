@@ -3,25 +3,25 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.TaskProvider.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
-namespace Polyrific.Catapult.TaskProvider.Core
+namespace Polyrific.Catapult.TaskProviders.Core
 {
-    public abstract class HostingProvider : TaskProvider
+    public abstract class BuildProvider : TaskProvider
     {
-        protected HostingProvider(string[] args) 
+        protected BuildProvider(string[] args) 
             : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => PluginType.HostingProvider;
+        public override string Type => PluginType.BuildProvider;
 
         public sealed override void ParseArguments()
         {
             base.ParseArguments();
-            
+
             foreach (var key in ParsedArguments.Keys)
             {
                 switch (key.ToLower())
@@ -30,7 +30,7 @@ namespace Polyrific.Catapult.TaskProvider.Core
                         ProjectName = ParsedArguments[key].ToString();
                         break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<DeployTaskConfig>(ParsedArguments[key].ToString());
+                        Config = JsonConvert.DeserializeObject<BuildTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
                         AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
@@ -46,27 +46,27 @@ namespace Polyrific.Catapult.TaskProvider.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeDeploy();
+                    var error = await BeforeBuild();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (string hostLocation, Dictionary<string, string> outputValues, string errorMessage) = await Deploy();
-                    result.Add("hostLocation", hostLocation);
+                    (string outputArtifact, Dictionary<string, string> outputValues, string errorMessage) = await Build();
+                    result.Add("outputArtifact", outputArtifact);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterDeploy();
+                    error = await AfterBuild();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 default:
-                    await BeforeDeploy();
-                    (hostLocation, outputValues, errorMessage) = await Deploy();
-                    await AfterDeploy();
+                    await BeforeBuild();
+                    (outputArtifact, outputValues, errorMessage) = await Build();
+                    await AfterBuild();
 
-                    result.Add("hostLocation", hostLocation);
+                    result.Add("outputArtifact", outputArtifact);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -79,11 +79,11 @@ namespace Polyrific.Catapult.TaskProvider.Core
         /// Name of the project
         /// </summary>
         public string ProjectName { get; set; }
-        
+
         /// <summary>
-        /// Deploy task configuration
+        /// Build task configuration
         /// </summary>
-        public DeployTaskConfig Config { get; set; }
+        public BuildTaskConfig Config { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider
@@ -91,25 +91,25 @@ namespace Polyrific.Catapult.TaskProvider.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing the deployment
+        /// Process to run before executing build
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeDeploy()
+        public virtual Task<string> BeforeBuild()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Deploy artifact
+        /// Build the code, and produce a ready to deploy artifact
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy();
+        public abstract Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build();
 
         /// <summary>
-        /// Process to run after executing deployment
+        /// Process to run after executing build
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterDeploy()
+        public virtual Task<string> AfterBuild()
         {
             return Task.FromResult("");
         }

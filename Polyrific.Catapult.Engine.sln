@@ -46,7 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StorageProvider", "StorageP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Engine.SignalRLogger", "src\Engine\Polyrific.Catapult.Engine.SignalRLogger\Polyrific.Catapult.Engine.SignalRLogger.csproj", "{D65FD9E2-D564-4684-9A05-353BF7F1612B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProvider.Core", "src\Plugins\Polyrific.Catapult.TaskProvider.Core\Polyrific.Catapult.TaskProvider.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.Core", "src\Plugins\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.AspNetCoreMvc", "src\Plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj", "{11811214-D216-4D09-B361-EE938FA9F8D6}"
 EndProject
