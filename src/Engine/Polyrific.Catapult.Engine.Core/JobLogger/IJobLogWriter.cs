@@ -6,7 +6,7 @@ namespace Polyrific.Catapult.Engine.Core.JobLogger
 {
     public interface IJobLogWriter
     {
-        Task WriteLog(int jobQueueId, string taskName, string message);
+        Task WriteLog(int projectId, int jobQueueId, string taskName, string message);
         Task EndJobLog(int jobQueueId);
     }
 }

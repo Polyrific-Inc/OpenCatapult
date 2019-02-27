@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Engine.Core
 
         public async Task ExecuteJob(JobDto jobQueue)
         {
-            using (_logger.BeginScope(new JobScope(jobQueue.Id)))
+            using (_logger.BeginScope(new JobScope(jobQueue.ProjectId, jobQueue.Id)))
             {
                 try
                 {

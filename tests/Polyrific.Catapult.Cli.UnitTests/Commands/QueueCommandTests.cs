@@ -193,7 +193,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 ProjectId = 1,
                 Status = JobStatus.Processing
             });
-            _jobQueueLogListener.Setup(s => s.Listen(1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
+            _jobQueueLogListener.Setup(s => s.Listen(1, 1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>())).Returns(Task.CompletedTask);
 
             var command = new LogCommand(_console, LoggerMock.GetLogger<LogCommand>().Object, _projectService.Object, _jobQueueService.Object, _jobQueueLogListener.Object)
             {
@@ -203,7 +203,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             command.Execute();
 
-            _jobQueueLogListener.Verify(s => s.Listen(1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>()), Times.Once);
+            _jobQueueLogListener.Verify(s => s.Listen(It.IsAny<int>(), 1, It.IsAny<Action<string>>(), It.IsAny<Action<string>>()), Times.Once);
         }
 
         [Fact]

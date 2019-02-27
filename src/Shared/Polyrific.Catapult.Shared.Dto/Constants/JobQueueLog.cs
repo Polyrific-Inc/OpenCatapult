@@ -4,6 +4,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
 {
     public static class JobQueueLog
     {
-        public const string FolderNamePrefix = "JobQueue_";
+        public const string FolderNamePrefix = "JobQueue";
     }
 }

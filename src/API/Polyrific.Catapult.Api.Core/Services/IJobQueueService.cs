@@ -65,18 +65,20 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get a job queue by id
         /// </summary>
+        /// <param name="projectId">Id of the project</param>
         /// <param name="jobQueueId">Id of the job queue</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>job queue entity</returns>
-        Task<JobQueue> GetJobQueueById(int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<JobQueue> GetJobQueueById(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a job queue by code
         /// </summary>
+        /// <param name="projectId">Id of the project</param>
         /// <param name="jobQueueCode">Code of the job queue</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>job queue entity</returns>
-        Task<JobQueue> GetJobQueueByCode(string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken));
+        Task<JobQueue> GetJobQueueByCode(int projectId, string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the execution status of a job
@@ -90,10 +92,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get the execution logs of a job
         /// </summary>
-        /// <param name="id">The job queue id</param>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="jobQueueId">The job queue id</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The log text</returns>
-        Task<string> GetJobLogs(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetJobLogs(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the first unassigned queued job to be run

@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                     switch (queue.Status)
                     {
                         case JobStatus.Processing:
-                            _jobQueueLogListener.Listen(queue.Id, OnLogReceived, OnLogError).Wait();
+                            _jobQueueLogListener.Listen(queue.ProjectId, queue.Id, OnLogReceived, OnLogError).Wait();
                             message = "";
                             return message;
                         case JobStatus.Completed:
@@ -65,7 +65,7 @@ namespace Polyrific.Catapult.Cli.Commands.Queue
                             if (Wait)
                             {
                                 Console.WriteLine("Waiting for log stream...");
-                                _jobQueueLogListener.Listen(queue.Id, OnLogReceived, OnLogError).Wait();
+                                _jobQueueLogListener.Listen(queue.ProjectId, queue.Id, OnLogReceived, OnLogError).Wait();
                                 message = "";
                             }
                             else

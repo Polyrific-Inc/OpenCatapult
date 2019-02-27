@@ -7,6 +7,6 @@ namespace Polyrific.Catapult.Cli
 {
     public interface IJobQueueLogListener
     {
-        Task Listen(int jobQueueId, Action<string> onLogReceived, Action<string> onError);
+        Task Listen(int projectId, int jobQueueId, Action<string> onLogReceived, Action<string> onError);
     }
 }

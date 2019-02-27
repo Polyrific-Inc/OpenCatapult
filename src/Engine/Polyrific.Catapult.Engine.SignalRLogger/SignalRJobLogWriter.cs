@@ -35,20 +35,20 @@ namespace Polyrific.Catapult.Engine.SignalRLogger
             }
         }
 
-        public async Task WriteLog(int jobQueueId, string taskName, string message)
+        public async Task WriteLog(int projectId, int jobQueueId, string taskName, string message)
         {
             if (_hubConnection == null)
                 _hubConnection = await GetConnection();
 
             try
             {
-                await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
+                await _hubConnection.SendAsync("SendMessage", projectId, jobQueueId, taskName, message);
             }
             catch (InvalidOperationException)
             {
                 // handle error occured when _hubConnection is available but the connection is not active
                 await _hubConnection.StartAsync();
-                await _hubConnection.SendAsync("SendMessage", jobQueueId, taskName, message);
+                await _hubConnection.SendAsync("SendMessage", projectId, jobQueueId, taskName, message);
             }
         }
 

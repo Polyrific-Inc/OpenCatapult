@@ -33,22 +33,25 @@ namespace Polyrific.Catapult.Engine.Core.JobLogger
 
         public void WriteLog(string message)
         {
+            int projectId = 0;
             int jobQueueId = 0;
             string taskName = null;
 
             if (CurrentScope.State is JobScope jobScope)
             {
+                projectId = jobScope.ProjectId;
                 jobQueueId = jobScope.JobQueueId;
                 taskName = null;
             }
             else if (CurrentScope.State is TaskScope taskScope && CurrentScope.Parent?.State is JobScope parentJobScope)
             {
+                projectId = parentJobScope.ProjectId;
                 jobQueueId = parentJobScope.JobQueueId;
                 taskName = taskScope.TaskName;
             }
 
             if (jobQueueId != 0)
-                _jobLogWriter.WriteLog(jobQueueId, taskName, message).Wait();
+                _jobLogWriter.WriteLog(projectId, jobQueueId, taskName, message).Wait();
         }
     }
 }
