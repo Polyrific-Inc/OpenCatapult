@@ -81,10 +81,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get the execution logs of a job
         /// </summary>
-        /// <param name="id">The job queue id</param>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="jobQueueId">The job queue id</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The log text</returns>
-        Task<string> GetJobLogs(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task<string> GetJobLogs(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the first unassigned queued job to be run

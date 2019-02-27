@@ -245,9 +245,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             return $"{DateTime.UtcNow:yyyyMMdd}.{sequence}";
         }
 
-        public Task<string> GetJobLogs(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public Task<string> GetJobLogs(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return _textWriter.Read($"{JobQueueLog.FolderNamePrefix}{id}", null);
+            return _textWriter.Read($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", null);
         }
     }
 }

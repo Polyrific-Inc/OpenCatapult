@@ -15,8 +15,9 @@ namespace Polyrific.Catapult.Api.Hubs
     public class JobQueueHub : Hub
     {
         private const string GroupPrefix = "jobQueue_";
+        private const string ProjectIdQueryParamKey = "projectId";
         private const string JobQueueIdQueryParamKey = "jobQueueId";
-
+        
         private readonly ITextWriter _textWriter;
 
         public JobQueueHub(ITextWriter textWriter)
@@ -24,11 +25,11 @@ namespace Polyrific.Catapult.Api.Hubs
             _textWriter = textWriter;
         }
 
-        public async Task SendMessage(int jobQueueId, string taskName, string message)
+        public async Task SendMessage(int projectId, int jobQueueId, string taskName, string message)
         {
             var group = GetGroupName(jobQueueId.ToString());
             List<string> groups = new List<string>() { group };
-            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", taskName ?? "job", message);
+            await _textWriter.Write($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", taskName ?? "job", message);
             await Clients.Groups(groups).SendAsync("ReceiveMessage", taskName, message);
         }
 
@@ -42,13 +43,14 @@ namespace Polyrific.Catapult.Api.Hubs
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
+            var projectId = httpContext.Request.Query[ProjectIdQueryParamKey];
             var jobQueueId = httpContext.Request.Query[JobQueueIdQueryParamKey];
-
+            
             if (!string.IsNullOrEmpty(jobQueueId))
             {
                 await Groups.AddToGroupAsync(Context.ConnectionId, GetGroupName(jobQueueId));
 
-                var previousMessages = await _textWriter.Read($"{JobQueueLog.FolderNamePrefix}{jobQueueId}", null);
+                var previousMessages = await _textWriter.Read($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", null);
                 await Clients.Caller.SendAsync("ReceiveInitialMessage", previousMessages);
             }
             

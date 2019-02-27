@@ -266,7 +266,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting logs for job queue {queueId}", queueId);
 
-            var logs = await _jobQueueService.GetJobLogs(queueId);
+            var logs = await _jobQueueService.GetJobLogs(projectId, queueId);
 
             return Ok(logs);
         }
