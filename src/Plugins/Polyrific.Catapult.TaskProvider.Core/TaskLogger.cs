@@ -3,7 +3,7 @@
 using System;
 using Microsoft.Extensions.Logging;
 
-namespace Polyrific.Catapult.Plugins.Core
+namespace Polyrific.Catapult.TaskProvider.Core
 {
     public class TaskLogger : ILogger
     {

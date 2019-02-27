@@ -1,19 +1,19 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Polyrific.Catapult.Plugins.Core</id>
+    <id>Polyrific.Catapult.TaskProvider.Core</id>
     <version>1.0.0-beta2.1</version>
-    <title>Polyrific.Catapult.Plugins.Core</title>
+    <title>Polyrific.Catapult.TaskProvider.Core</title>
     <authors>frandi-polyrific</authors>
     <owners>frandi-polyrific</owners>
     <licenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://opencatapult.net</projectUrl>
     <iconUrl>https://opencatapult.net/img/opencatapult-logo.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Core library for OpenCatapult plugins, to be used as a contract between Engine and the plugins.</description>
+    <description>Core library for OpenCatapult's task providers, to be used as a contract between Engine and the task providers.</description>
     <releaseNotes>Preview release</releaseNotes>
     <copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</copyright>
-    <tags>catapult opencatapult devops plugins</tags>
+    <tags>catapult opencatapult devops task-provider</tags>
     <dependencies>
       <dependency id="Microsoft.Extensions.Logging.Abstractions" version="2.1.1" />
       <dependency id="Newtonsoft.Json" version="11.0.2" />

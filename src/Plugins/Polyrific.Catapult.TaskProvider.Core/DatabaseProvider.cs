@@ -3,20 +3,20 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core.Configs;
+using Polyrific.Catapult.TaskProvider.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
-namespace Polyrific.Catapult.Plugins.Core
+namespace Polyrific.Catapult.TaskProvider.Core
 {
-    public abstract class TestProvider : TaskProvider
+    public abstract class DatabaseProvider : TaskProvider
     {
-        protected TestProvider(string[] args) 
+        protected DatabaseProvider(string[] args) 
             : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => PluginType.TestProvider;
+        public override string Type => PluginType.DatabaseProvider;
 
         public sealed override void ParseArguments()
         {
@@ -26,8 +26,11 @@ namespace Polyrific.Catapult.Plugins.Core
             {
                 switch (key.ToLower())
                 {
+                    case "project":
+                        ProjectName = ParsedArguments[key].ToString();
+                        break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<TestTaskConfig>(ParsedArguments[key].ToString());
+                        Config = JsonConvert.DeserializeObject<DeployDbTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
                         AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
@@ -43,27 +46,27 @@ namespace Polyrific.Catapult.Plugins.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeTest();
+                    var error = await BeforeDeployDatabase();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (string testResultLocation, Dictionary<string, string> outputValues, string errorMessage) = await Test();
-                    result.Add("testResultLocation", testResultLocation);
+                    (string databaseLocation, Dictionary<string, string> outputValues, string errorMessage) = await DeployDatabase();
+                    result.Add("databaseLocation", databaseLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterTest();
+                    error = await AfterDeployDatabase();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 default:
-                    await BeforeTest();
-                    (testResultLocation, outputValues, errorMessage) = await Test();
-                    await AfterTest();
+                    await BeforeDeployDatabase();
+                    (databaseLocation, outputValues, errorMessage) = await DeployDatabase();
+                    await AfterDeployDatabase();
 
-                    result.Add("testResultLocation", testResultLocation);
+                    result.Add("databaseLocation", databaseLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -73,9 +76,14 @@ namespace Polyrific.Catapult.Plugins.Core
         }
 
         /// <summary>
-        /// Test task configuration
+        /// Name of the project
         /// </summary>
-        public TestTaskConfig Config { get; set; }
+        public string ProjectName { get; set; }
+
+        /// <summary>
+        /// DeployDb task configuration
+        /// </summary>
+        public DeployDbTaskConfig Config { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider
@@ -83,25 +91,25 @@ namespace Polyrific.Catapult.Plugins.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing test
+        /// Process to run before executing deploy database
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeTest()
+        public virtual Task<string> BeforeDeployDatabase()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Run test scenario
+        /// Deploy database
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string testResultLocation, Dictionary<string, string> outputValues, string errorMessage)> Test();
+        public abstract Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase();
 
         /// <summary>
-        /// Process to run after executing test
+        /// Process to run after executing deploy database
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterTest()
+        public virtual Task<string> AfterDeployDatabase()
         {
             return Task.FromResult("");
         }

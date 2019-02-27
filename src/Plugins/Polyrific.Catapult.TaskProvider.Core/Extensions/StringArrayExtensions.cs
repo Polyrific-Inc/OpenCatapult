@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-namespace Polyrific.Catapult.Plugins.Core.Extensions
+namespace Polyrific.Catapult.TaskProvider.Core.Extensions
 {
     public static class StringArrayExtensions
     {

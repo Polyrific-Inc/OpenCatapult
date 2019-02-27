@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.Plugins.Core.Configs
+namespace Polyrific.Catapult.TaskProvider.Core.Configs
 {
     public class PublishArtifactTaskConfig : BaseJobTaskConfig
     {

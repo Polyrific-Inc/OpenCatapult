@@ -3,20 +3,21 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core.Configs;
+using Polyrific.Catapult.TaskProvider.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
-namespace Polyrific.Catapult.Plugins.Core
+namespace Polyrific.Catapult.TaskProvider.Core
 {
-    public abstract class HostingProvider : TaskProvider
+    public abstract class CodeGeneratorProvider : TaskProvider
     {
-        protected HostingProvider(string[] args) 
+        protected CodeGeneratorProvider(string[] args) 
             : base(args)
         {
             ParseArguments();
         }
 
-        public override string Type => PluginType.HostingProvider;
+        public override string Type => PluginType.GeneratorProvider;
 
         public sealed override void ParseArguments()
         {
@@ -29,8 +30,11 @@ namespace Polyrific.Catapult.Plugins.Core
                     case "project":
                         ProjectName = ParsedArguments[key].ToString();
                         break;
+                    case "models":
+                        Models = JsonConvert.DeserializeObject<List<ProjectDataModelDto>>(ParsedArguments[key].ToString());
+                        break;
                     case "config":
-                        Config = JsonConvert.DeserializeObject<DeployTaskConfig>(ParsedArguments[key].ToString());
+                        Config = JsonConvert.DeserializeObject<GenerateTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "additional":
                         AdditionalConfigs = JsonConvert.DeserializeObject<Dictionary<string, string>>(ParsedArguments[key].ToString());
@@ -46,27 +50,27 @@ namespace Polyrific.Catapult.Plugins.Core
             switch (ProcessToExecute)
             {
                 case "pre":
-                    var error = await BeforeDeploy();
+                    var error = await BeforeGenerate();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (string hostLocation, Dictionary<string, string> outputValues, string errorMessage) = await Deploy();
-                    result.Add("hostLocation", hostLocation);
+                    (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Generate();
+                    result.Add("outputLocation", outputLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
                 case "post":
-                    error = await AfterDeploy();
+                    error = await AfterGenerate();
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
                 default:
-                    await BeforeDeploy();
-                    (hostLocation, outputValues, errorMessage) = await Deploy();
-                    await AfterDeploy();
+                    await BeforeGenerate();
+                    (outputLocation, outputValues, errorMessage) = await Generate();
+                    await AfterGenerate();
 
-                    result.Add("hostLocation", hostLocation);
+                    result.Add("outputLocation", outputLocation);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -79,11 +83,16 @@ namespace Polyrific.Catapult.Plugins.Core
         /// Name of the project
         /// </summary>
         public string ProjectName { get; set; }
-        
+
         /// <summary>
-        /// Deploy task configuration
+        /// Project data models
         /// </summary>
-        public DeployTaskConfig Config { get; set; }
+        public List<ProjectDataModelDto> Models { get; set; }
+
+        /// <summary>
+        /// Generate task configuration
+        /// </summary>
+        public GenerateTaskConfig Config { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider
@@ -91,25 +100,25 @@ namespace Polyrific.Catapult.Plugins.Core
         public Dictionary<string, string> AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// Process to run before executing the deployment
+        /// Process to run before executing the code generation
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeDeploy()
+        public virtual Task<string> BeforeGenerate()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Deploy artifact
+        /// Generate code from data models
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy();
+        public abstract Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate();
 
         /// <summary>
-        /// Process to run after executing deployment
+        /// Process to run after executing code generation
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterDeploy()
+        public virtual Task<string> AfterGenerate()
         {
             return Task.FromResult("");
         }
