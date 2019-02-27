@@ -56,18 +56,20 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Get a job queue by id
         /// </summary>
+        /// <param name="projectId">Id of the project</param>
         /// <param name="jobQueueId">Id of the job queue</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>job queue entity</returns>
-        Task<JobQueue> GetJobQueueById(int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<JobQueue> GetJobQueueById(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a job queue by code
         /// </summary>
+        /// <param name="projectId">Id of the project</param>
         /// <param name="jobQueueCode">Code of the job queue</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>job queue entity</returns>
-        Task<JobQueue> GetJobQueueByCode(string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken));
+        Task<JobQueue> GetJobQueueByCode(int projectId, string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the execution status of a job

@@ -29,10 +29,12 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// <summary>
         /// Filter by the job queue id
         /// </summary>
+        /// <param name="projectId"></param>
         /// <param name="jobQueueId"></param>
-        public JobQueueFilterSpecification(int jobQueueId)
-            : base(m => m.Id == jobQueueId)
+        public JobQueueFilterSpecification(int projectId, int jobQueueId)
+            : base(m => m.ProjectId == projectId && m.Id == jobQueueId)
         {
+            ProjectId = projectId;
             JobQueueId = jobQueueId;
         }
 
@@ -51,12 +53,17 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// <summary>
         /// Filter by the queue code or status
         /// </summary>
+        /// <param name="projectId">The Id of the project</param>
         /// <param name="queueCode">Code of the job queue</param>
         /// <param name="status">Status of the job queue</param>
         /// <param name="engineId">Id of the Catapult Engine which executes the queue</param>
-        public JobQueueFilterSpecification(string queueCode, string status, string engineId = null)
-            : base(m => (queueCode == null || m.Code == queueCode) && (status == null || m.Status == status) && (engineId == null || m.CatapultEngineId == engineId), m => m.Created)
+        public JobQueueFilterSpecification(int projectId, string queueCode, string status, string engineId = null)
+            : base(m => (projectId == 0 || m.ProjectId == projectId)
+                && (queueCode == null || m.Code == queueCode) 
+                && (status == null || m.Status == status) 
+                && (engineId == null || m.CatapultEngineId == engineId), m => m.Created)
         {
+            ProjectId = projectId;
             QueueCode = queueCode;
             Status = status;
             EngineId = engineId;

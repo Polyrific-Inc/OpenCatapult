@@ -70,7 +70,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting job queue {queueId} in project {projectId}", queueId, projectId);
 
-            var job = await _jobQueueService.GetJobQueueById(queueId);
+            var job = await _jobQueueService.GetJobQueueById(projectId, queueId);
             var result = _mapper.Map<JobDto>(job);
             return Ok(result);
         }
@@ -87,7 +87,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting job queue {queueCode} in project {projectId}", queueCode, projectId);
 
-            var job = await _jobQueueService.GetJobQueueByCode(queueCode);
+            var job = await _jobQueueService.GetJobQueueByCode(projectId, queueCode);
             var result = _mapper.Map<JobDto>(job);
             return Ok(result);
         }
@@ -118,7 +118,7 @@ namespace Polyrific.Catapult.Api.Controllers
                     newJobQueue.JobType,
                     newJobQueue.JobDefinitionId);
 
-                var job = await _jobQueueService.GetJobQueueById(queueId);
+                var job = await _jobQueueService.GetJobQueueById(projectId, queueId);
                 var result = _mapper.Map<JobDto>(job);
 
                 return CreatedAtRoute("GetJobQueueById", new

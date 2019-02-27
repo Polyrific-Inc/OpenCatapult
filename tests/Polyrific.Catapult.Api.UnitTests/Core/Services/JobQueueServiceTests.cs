@@ -213,7 +213,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
-            var entity = await jobQueueService.GetJobQueueById(1);
+            var entity = await jobQueueService.GetJobQueueById(1, 1);
 
             Assert.NotNull(entity);
             Assert.Equal(1, entity.Id);
@@ -228,7 +228,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
-            var jobQueue = await jobQueueService.GetJobQueueById(2);
+            var jobQueue = await jobQueueService.GetJobQueueById(1, 2);
 
             Assert.Null(jobQueue);
         }
@@ -237,7 +237,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetJobQueueByCode_ReturnItem()
         {
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
-            var entity = await jobQueueService.GetJobQueueByCode("20180817.1");
+            var entity = await jobQueueService.GetJobQueueByCode(1, "20180817.1");
 
             Assert.NotNull(entity);
             Assert.Equal(1, entity.Id);
@@ -247,7 +247,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetJobQueueByCode_ReturnNull()
         {
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
-            var entity = await jobQueueService.GetJobQueueByCode("20180817.2");
+            var entity = await jobQueueService.GetJobQueueByCode(1, "20180817.2");
 
             Assert.Null(entity);
         }

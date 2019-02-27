@@ -62,11 +62,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetJobQueue_ReturnsJobQueue()
         {
-            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int projectId, int id, CancellationToken cancellationToken) =>
                     new JobQueue
                     {
-                        Id = id
+                        Id = id,
+                        ProjectId = projectId
                     });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
@@ -82,12 +83,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetJobQueueByCode_ReturnsJobQueue()
         {
-            _jobQueueService.Setup(s => s.GetJobQueueByCode(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string code, CancellationToken cancellationToken) =>
+            _jobQueueService.Setup(s => s.GetJobQueueByCode(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int projectId, string code, CancellationToken cancellationToken) =>
                     new JobQueue
                     {
                         Id = 1,
-                        Code = code
+                        Code = code,
+                        ProjectId = projectId
                     });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
@@ -106,11 +108,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _jobQueueService
                 .Setup(s => s.AddJobQueue(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
-            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int projectId, int id, CancellationToken cancellationToken) =>
                     new JobQueue
                     {
-                        Id = id
+                        Id = id,
+                        ProjectId = projectId
                     });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object);
@@ -341,7 +344,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetJobLogs_ReturnsJobQueue()
         {
-            _jobQueueService.Setup(s => s.GetJobLogs(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _jobQueueService.Setup(s => s.GetJobLogs(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("logs");
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
