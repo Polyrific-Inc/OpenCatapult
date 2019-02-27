@@ -19,10 +19,10 @@ namespace Polyrific.Catapult.Cli
             _tokenStore = tokenStore;
         }
 
-        public async Task Listen(int jobQueueId, Action<string> onLogReceived, Action<string> onError)
+        public async Task Listen(int projectId, int jobQueueId, Action<string> onLogReceived, Action<string> onError)
         {
             var jobQueueCompleted = new TaskCompletionSource<bool>();
-            var connection = GetConnection(new Uri(_config.ApiUrl, $"{JobQueueHubEndpoint}?jobQueueId={jobQueueId}").AbsoluteUri);
+            var connection = GetConnection(new Uri(_config.ApiUrl, $"{JobQueueHubEndpoint}?projectId={projectId}&jobQueueId={jobQueueId}").AbsoluteUri);
 
             connection.On<string>("ReceiveInitialMessage", (initialMessage) =>
             {
