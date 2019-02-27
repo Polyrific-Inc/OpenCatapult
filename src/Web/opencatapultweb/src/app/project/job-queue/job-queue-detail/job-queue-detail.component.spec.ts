@@ -13,6 +13,7 @@ import { of } from 'rxjs';
 import { CoreModule } from '@app/core';
 import { JobQueueStatusComponent } from '../components/job-queue-status/job-queue-status.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JobQueueTaskStatusComponent } from '../components/job-queue-task-status/job-queue-task-status.component';
 
 describe('JobQueueDetailComponent', () => {
   let component: JobQueueDetailComponent;
@@ -20,7 +21,7 @@ describe('JobQueueDetailComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobQueueDetailComponent, JobQueueCancelDialogComponent, JobQueueStatusComponent ],
+      declarations: [ JobQueueDetailComponent, JobQueueCancelDialogComponent, JobQueueStatusComponent, JobQueueTaskStatusComponent ],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,

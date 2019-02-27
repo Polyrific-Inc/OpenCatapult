@@ -1,0 +1,7 @@
+<mat-chip-list [ngSwitch]="taskStatus">
+    <mat-chip *ngSwitchCase="'NotExecuted'">Not Executed</mat-chip>
+    <mat-chip *ngSwitchCase="'Executing'" color="primary" selected>{{taskStatus}}</mat-chip>
+    <mat-chip *ngSwitchCase="'Success'" class="success">{{taskStatus}}</mat-chip>
+    <mat-chip *ngSwitchCase="'Failed'" class="error">{{taskStatus}}</mat-chip>
+    <mat-chip *ngSwitchCase="'Pending'" class="pending">{{taskStatus}}</mat-chip>
+</mat-chip-list>

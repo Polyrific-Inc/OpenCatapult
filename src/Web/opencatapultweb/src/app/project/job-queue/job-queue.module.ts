@@ -7,7 +7,7 @@ import { JobQueueListComponent } from './job-queue-list/job-queue-list.component
 import { MatTabsModule, MatIconModule, MatBadgeModule, MatTableModule,
   MatButtonModule, MatTooltipModule, MatProgressSpinnerModule, MatPaginatorModule,
   MatSortModule, MatChipsModule, MatDividerModule, MatListModule, MatInputModule,
-  MatProgressBarModule, MatDialogModule } from '@angular/material';
+  MatProgressBarModule, MatDialogModule, MatExpansionModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { JobQueueDetailComponent } from './job-queue-detail/job-queue-detail.component';
 import { JobQueueLogComponent } from './job-queue-log/job-queue-log.component';
@@ -15,6 +15,7 @@ import { JobQueueStatusComponent } from './components/job-queue-status/job-queue
 import { SharedModule } from '@app/shared/shared.module';
 import { JobQueueCancelDialogComponent } from './components/job-queue-cancel-dialog/job-queue-cancel-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { JobQueueTaskStatusComponent } from './components/job-queue-task-status/job-queue-task-status.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     JobQueueDetailComponent,
     JobQueueLogComponent,
     JobQueueStatusComponent,
-    JobQueueCancelDialogComponent
+    JobQueueCancelDialogComponent,
+    JobQueueTaskStatusComponent
   ],
   imports: [
     CommonModule,
@@ -45,7 +47,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatInputModule,
     MatProgressBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatExpansionModule
   ],
   entryComponents: [
     JobQueueCancelDialogComponent

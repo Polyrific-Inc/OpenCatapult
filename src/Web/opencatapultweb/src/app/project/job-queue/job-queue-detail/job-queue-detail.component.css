@@ -8,21 +8,6 @@
   margin-top: 10px;
 }
 
-.error {
-  background-color: red;
-  color: white;
-}
-
-.success {
-  background-color: green;
-  color: white;
-}
-
-.pending {
-  background-color: orange;
-  color: white;
-}
-
 .job-task-status {
   margin-left: 20px;
 }
@@ -35,12 +20,8 @@
   width: 100%;
 }
 
-.task-status-item mat-chip {
-  width: 110px;
-  text-align: center;
-}
-
 .remarks {
   color: #939393;
   font-size: 14px;
+  overflow-wrap: break-word;
 }

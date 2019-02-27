@@ -18,6 +18,7 @@ export class JobQueueDetailComponent implements OnInit {
   job: JobDto;
   allowRestart: boolean;
   allowCancel: boolean;
+  allowRefresh: boolean;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
@@ -40,8 +41,9 @@ export class JobQueueDetailComponent implements OnInit {
       }))
       .subscribe(data => {
         this.job = data;
-        this.allowRestart = data.status !== JobStatus.Queued && data.status !== JobStatus.Processing;
+        this.allowRestart = data.status === JobStatus.Cancelled || data.status === JobStatus.Pending || data.status === JobStatus.Error;
         this.allowCancel = data.status === JobStatus.Processing || data.status === JobStatus.Pending;
+        this.allowRefresh = data.status !== JobStatus.Completed;
       });
   }
 
