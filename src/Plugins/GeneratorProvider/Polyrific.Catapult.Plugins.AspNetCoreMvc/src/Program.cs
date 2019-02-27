@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.TaskProvider.Core;
 
 namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
 {

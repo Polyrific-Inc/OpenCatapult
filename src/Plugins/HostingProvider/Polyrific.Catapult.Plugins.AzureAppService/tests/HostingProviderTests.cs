@@ -4,7 +4,7 @@ using System.IO;
 using Microsoft.Azure.Management.AppService.Fluent;
 using Moq;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core.Configs;
+using Polyrific.Catapult.TaskProvider.Core.Configs;
 using Xunit;
 
 namespace Polyrific.Catapult.Plugins.AzureAppService.UnitTests

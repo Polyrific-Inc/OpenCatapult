@@ -16,7 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj" />
+      <ProjectReference Include="..\..\..\Polyrific.Catapult.TaskProvider.Core\Polyrific.Catapult.TaskProvider.Core.csproj" />
     </ItemGroup>
 
 </Project>
