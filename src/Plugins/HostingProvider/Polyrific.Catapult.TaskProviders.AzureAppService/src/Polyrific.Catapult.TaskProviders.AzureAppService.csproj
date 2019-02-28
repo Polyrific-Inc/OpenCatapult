@@ -8,7 +8,7 @@
   </PropertyGroup>
 
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService.UnitTests
+namespace Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests
 {
     public class HostingProviderTests
     {

@@ -2,9 +2,9 @@
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.AzureAppService.Helpers;
+using Polyrific.Catapult.TaskProviders.AzureAppService.Helpers;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public class DotnetDeployUtils : IDeployUtils
     {

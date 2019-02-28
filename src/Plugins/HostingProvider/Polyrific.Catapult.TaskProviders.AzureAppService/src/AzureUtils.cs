@@ -11,7 +11,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 using Microsoft.Extensions.Logging;
 using Microsoft.Rest.Azure;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public class AzureUtils : IAzureUtils
     {

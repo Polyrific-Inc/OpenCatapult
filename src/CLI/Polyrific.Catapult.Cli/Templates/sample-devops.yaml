@@ -159,6 +159,6 @@ jobs:
     provider: Polyrific.Catapult.Plugins.EntityFrameworkCore
   - name: Deploy
     type: Deploy
-    provider: Polyrific.Catapult.Plugins.AzureAppService
+    provider: Polyrific.Catapult.TaskProviders.AzureAppService
     configs:
       AzureExternalService: azure-default

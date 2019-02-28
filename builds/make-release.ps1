@@ -72,8 +72,8 @@ Write-Host "4. Processing Task Provider components" -ForegroundColor Yellow
 
 $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
 $aspNetCoreMvcPublishPath = Join-Path $publishOuterPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
-$azureAppServiceCsprojPath = Join-Path $rootPath "/src/Plugins/HostingProvider/Polyrific.Catapult.Plugins.AzureAppService/src/Polyrific.Catapult.Plugins.AzureAppService.csproj"
-$azureAppServicePublishPath = Join-Path $publishOuterPath "/plugins/HostingProvider/Polyrific.Catapult.Plugins.AzureAppService"
+$azureAppServiceCsprojPath = Join-Path $rootPath "/src/Plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService/src/Polyrific.Catapult.TaskProviders.AzureAppService.csproj"
+$azureAppServicePublishPath = Join-Path $publishOuterPath "/plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService"
 $dotNetCoreCsprojPath = Join-Path $rootPath "/src/Plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore/src/Polyrific.Catapult.TaskProviders.DotNetCore.csproj"
 $dotNetCorePublishPath = Join-Path $publishOuterPath "/plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
 $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"

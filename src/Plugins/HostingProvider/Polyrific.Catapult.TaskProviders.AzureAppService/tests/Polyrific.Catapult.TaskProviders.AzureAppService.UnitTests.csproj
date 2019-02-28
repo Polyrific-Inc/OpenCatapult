@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Polyrific.Catapult.Plugins.AzureAppService.csproj" />
+    <ProjectReference Include="..\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj" />
   </ItemGroup>
 
 </Project>

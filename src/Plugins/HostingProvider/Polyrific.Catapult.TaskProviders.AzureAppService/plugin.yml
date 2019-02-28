@@ -1,4 +1,4 @@
-name: 'Polyrific.Catapult.Plugins.AzureAppService'
+name: 'Polyrific.Catapult.TaskProviders.AzureAppService'
 type: 'HostingProvider'
 author: 'Polyrific'
 version: '1.0.0-beta2'

@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public interface IDeployUtils
     {

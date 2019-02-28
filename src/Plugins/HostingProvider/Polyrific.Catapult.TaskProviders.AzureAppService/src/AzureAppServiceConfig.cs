@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public class AzureAppServiceConfig
     {

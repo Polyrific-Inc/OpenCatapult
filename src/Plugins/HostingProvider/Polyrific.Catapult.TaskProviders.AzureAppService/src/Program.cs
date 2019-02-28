@@ -3,11 +3,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public class Program : HostingProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.AzureAppService";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.AzureAppService";
 
         private IAzureAutomation _azure;
         private readonly IAzureUtils _azureUtils;

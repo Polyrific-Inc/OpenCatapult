@@ -54,7 +54,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.GitHub", "src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\src\Polyrific.Catapult.Plugins.GitHub.csproj", "{8186D079-1637-4DCE-A3A6-118CA1B8256B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.AzureAppService", "src\Plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService\src\Polyrific.Catapult.Plugins.AzureAppService.csproj", "{4565991D-28E4-47C1-BCF1-EB6379BA4E2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService", "src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj", "{4565991D-28E4-47C1-BCF1-EB6379BA4E2B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.EntityFrameworkCore", "src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj", "{8DDDC97F-EE3D-4C15-8C79-312EDEA8BC74}"
 EndProject
@@ -68,7 +68,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests", "src\Plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\tests\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests.csproj", "{D8F27509-7A0D-42F4-B40D-C43AC32F4D8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.AzureAppService.UnitTests", "src\Plugins\HostingProvider\Polyrific.Catapult.Plugins.AzureAppService\tests\Polyrific.Catapult.Plugins.AzureAppService.UnitTests.csproj", "{30069801-C8AE-48DB-850E-10703DEF80CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests", "src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\tests\Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests.csproj", "{30069801-C8AE-48DB-850E-10703DEF80CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.GitHub.UnitTests", "src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\tests\Polyrific.Catapult.Plugins.GitHub.UnitTests.csproj", "{73A389BE-FDD1-4E0C-90FA-8AAC1BAD01ED}"
 EndProject

@@ -2,7 +2,7 @@
 
 using Microsoft.Azure.Management.AppService.Fluent;
 
-namespace Polyrific.Catapult.Plugins.AzureAppService
+namespace Polyrific.Catapult.TaskProviders.AzureAppService
 {
     public interface IAzureUtils
     {
