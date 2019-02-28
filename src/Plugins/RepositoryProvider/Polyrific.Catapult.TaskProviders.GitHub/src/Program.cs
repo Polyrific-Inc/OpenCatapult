@@ -5,11 +5,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.GitHub
+namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public class Program : RepositoryProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.GitHub";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.GitHub";
 
         private IGitAutomation _gitAutomation;
         private readonly IGitHubUtils _gitHubUtils;

@@ -3,14 +3,14 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Plugins.GitHub.Helpers;
+using Polyrific.Catapult.TaskProviders.GitHub.Helpers;
 using LibGit2Sharp;
 using Microsoft.Extensions.Logging;
 using Octokit;
 using Repository = LibGit2Sharp.Repository;
 using System.IO;
 
-namespace Polyrific.Catapult.Plugins.GitHub
+namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public class GitHubUtils : IGitHubUtils
     {

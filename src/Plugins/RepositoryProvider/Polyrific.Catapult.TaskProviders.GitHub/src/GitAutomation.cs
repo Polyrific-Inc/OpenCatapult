@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Polyrific.Catapult.Plugins.GitHub
+namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public class GitAutomation : IGitAutomation
     {

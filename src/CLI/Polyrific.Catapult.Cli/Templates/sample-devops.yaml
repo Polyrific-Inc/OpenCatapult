@@ -134,7 +134,7 @@ jobs:
   tasks:
   - name: Clone
     type: Clone
-    provider: Polyrific.Catapult.Plugins.GitHub
+    provider: Polyrific.Catapult.TaskProviders.GitHub
     configs:
       GitHubExternalService: github-default
   - name: Generate
@@ -142,13 +142,13 @@ jobs:
     provider: Polyrific.Catapult.TaskProviders.AspNetCoreMvc
   - name: Push
     type: Push
-    provider: Polyrific.Catapult.Plugins.GitHub
+    provider: Polyrific.Catapult.TaskProviders.GitHub
     configs:
       GitHubExternalService: github-default
       CreatePullRequest: true
   - name: Merge
     type: Merge
-    provider: Polyrific.Catapult.Plugins.GitHub
+    provider: Polyrific.Catapult.TaskProviders.GitHub
     configs:
       GitHubExternalService: github-default
   - name: Build

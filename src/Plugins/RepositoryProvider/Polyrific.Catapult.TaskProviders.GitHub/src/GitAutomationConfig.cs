@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-namespace Polyrific.Catapult.Plugins.GitHub
+namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public class GitAutomationConfig
     {

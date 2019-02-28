@@ -23,8 +23,8 @@ $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyr
 $dotNetCoreTestPublishPath = Join-Path $enginePublishPath "/plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
 $entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
 $entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
-$gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub/src/Polyrific.Catapult.Plugins.GitHub.csproj"
-$gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub"
+$gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
+$gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
 
 $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
 [System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),

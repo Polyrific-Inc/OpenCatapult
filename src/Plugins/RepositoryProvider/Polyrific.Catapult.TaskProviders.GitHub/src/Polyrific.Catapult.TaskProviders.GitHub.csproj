@@ -9,7 +9,7 @@
   </PropertyGroup>
   
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\</OutputPath>
     </PropertyGroup>
 
   <ItemGroup>

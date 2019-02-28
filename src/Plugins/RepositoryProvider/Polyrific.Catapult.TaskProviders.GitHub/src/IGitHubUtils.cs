@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Plugins.GitHub
+namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public interface IGitHubUtils
     {

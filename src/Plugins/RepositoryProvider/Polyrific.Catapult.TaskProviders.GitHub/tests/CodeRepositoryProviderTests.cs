@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.GitHub.UnitTests
+namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
 {
     public class CodeRepositoryProviderTests
     {
