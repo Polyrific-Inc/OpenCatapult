@@ -13,6 +13,7 @@ import { TaskProviderService } from './services/task-provider.service';
 import { DataModelService } from './services/data-model.service';
 import { JobQueueService } from './services/job-queue.service';
 import { JobDefinitionService } from './services/job-definition.service';
+import { SignalrService } from './services/signalr.service';
 
 @NgModule({
   declarations: [],
@@ -31,7 +32,8 @@ import { JobDefinitionService } from './services/job-definition.service';
     AuthService,
     DataModelService,
     JobQueueService,
-    JobDefinitionService
+    JobDefinitionService,
+    SignalrService
   ]
 })
 export class CoreModule {

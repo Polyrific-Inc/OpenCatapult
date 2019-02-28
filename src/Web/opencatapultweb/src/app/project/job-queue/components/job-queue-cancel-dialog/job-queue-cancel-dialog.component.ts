@@ -1,9 +1,8 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { JobQueueService, JobDto } from '@app/core';
+import { JobQueueService, JobDto, JobStatus } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { JobStatus } from '@app/core/enums/job-status';
 
 @Component({
   selector: 'app-job-queue-cancel-dialog',

@@ -6,12 +6,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule, MatBadgeModule, MatButtonModule, MatDividerModule, MatDialogModule,
-  MatChipsModule, MatProgressBarModule, MatInputModule, MatExpansionModule } from '@angular/material';
+  MatChipsModule, MatProgressBarModule, MatInputModule, MatExpansionModule, MatProgressSpinnerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { JobQueueTaskLogComponent } from '../job-queue-task-log/job-queue-task-log.component';
 
 describe('JobQueueLogComponent', () => {
   let component: JobQueueLogComponent;
@@ -19,7 +20,7 @@ describe('JobQueueLogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ JobQueueLogComponent, JobQueueTaskStatusComponent ],
+      declarations: [ JobQueueLogComponent, JobQueueTaskStatusComponent, JobQueueTaskLogComponent ],
       imports: [
         RouterTestingModule,
         HttpClientTestingModule,
@@ -35,7 +36,8 @@ describe('JobQueueLogComponent', () => {
         MatChipsModule,
         MatProgressBarModule,
         MatInputModule,
-        MatExpansionModule
+        MatExpansionModule,
+        MatProgressSpinnerModule
       ],
       providers: [
         {

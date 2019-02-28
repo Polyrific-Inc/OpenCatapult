@@ -16,6 +16,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { JobQueueCancelDialogComponent } from './components/job-queue-cancel-dialog/job-queue-cancel-dialog.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { JobQueueTaskStatusComponent } from './components/job-queue-task-status/job-queue-task-status.component';
+import { JobQueueTaskLogComponent } from './job-queue-task-log/job-queue-task-log.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { JobQueueTaskStatusComponent } from './components/job-queue-task-status/
     JobQueueLogComponent,
     JobQueueStatusComponent,
     JobQueueCancelDialogComponent,
-    JobQueueTaskStatusComponent
+    JobQueueTaskStatusComponent,
+    JobQueueTaskLogComponent
   ],
   imports: [
     CommonModule,

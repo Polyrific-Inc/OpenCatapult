@@ -31,6 +31,8 @@ export * from './enums/job-task-definition-type';
 export * from './enums/property-data-type';
 export * from './enums/property-control-type';
 export * from './enums/job-queue-filter-type';
+export * from './enums/job-status';
+export * from './enums/job-task-status';
 
 /* Constants */
 export * from './constants/property-data-types';

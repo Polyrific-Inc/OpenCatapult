@@ -36,18 +36,6 @@ namespace Polyrific.Catapult.Engine.Core
 
             // update the status to processing so the clients can start listening for logs
             job.Status = JobStatus.Processing;
-            await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
-            {
-                Id = job.Id,
-                CatapultEngineId = job.CatapultEngineId,
-                CatapultEngineIPAddress = job.CatapultEngineIPAddress,
-                CatapultEngineMachineName = job.CatapultEngineMachineName,
-                CatapultEngineVersion = job.CatapultEngineVersion,
-                JobTasksStatus = job.JobTasksStatus,
-                JobType = job.JobType,
-                Status = job.Status,
-                OutputValues = job.OutputValues
-            });
 
             var orderedJobTasks = jobTasks.OrderBy(t => t.Sequence).ToList();
 
@@ -75,6 +63,20 @@ namespace Polyrific.Catapult.Engine.Core
                         results[jobTask.Id] = new TaskRunnerResult(true, "");
                         continue;
                     }
+
+                    jobTaskStatus.Status = JobTaskStatusType.Executing;
+                    await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto
+                    {
+                        Id = job.Id,
+                        CatapultEngineId = job.CatapultEngineId,
+                        CatapultEngineIPAddress = job.CatapultEngineIPAddress,
+                        CatapultEngineMachineName = job.CatapultEngineMachineName,
+                        CatapultEngineVersion = job.CatapultEngineVersion,
+                        JobTasksStatus = job.JobTasksStatus,
+                        JobType = job.JobType,
+                        Status = job.Status,
+                        OutputValues = outputValues
+                    });
 
                     var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
 

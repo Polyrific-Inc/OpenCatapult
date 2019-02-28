@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobQueueService, JobDto } from '@app/core';
+import { JobQueueService, JobDto, JobStatus } from '@app/core';
 import { tap } from 'rxjs/operators';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
-import { JobStatus } from '@app/core/enums/job-status';
 import { MatDialog } from '@angular/material';
 import { JobQueueCancelDialogComponent } from '../components/job-queue-cancel-dialog/job-queue-cancel-dialog.component';
 

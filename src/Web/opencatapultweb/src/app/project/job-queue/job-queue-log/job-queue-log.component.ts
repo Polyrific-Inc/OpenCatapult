@@ -1,7 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { JobDto, JobQueueService } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
+import { JobStatus } from '@app/core/enums/job-status';
 
 @Component({
   selector: 'app-job-queue-log',
@@ -11,6 +14,9 @@ import { tap } from 'rxjs/operators';
 export class JobQueueLogComponent implements OnInit {queueId: number;
   projectId: number;
   job: JobDto;
+  log$: Observable<JobLogDto>;
+  listened: boolean;
+  logReceived: boolean;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
@@ -31,7 +37,24 @@ export class JobQueueLogComponent implements OnInit {queueId: number;
       }))
       .subscribe(data => {
         this.job = data;
+
+        if (!this.listened && (data.status === JobStatus.Queued || data.status === JobStatus.Processing)) {
+          this.listenQueueLog();
+        }
       });
+  }
+
+  listenQueueLog() {
+    const self = this;
+    this.log$ = this.jobQueueService.listenJobQueueLog(this.projectId, this.queueId);
+    let previousTask = '';
+    this.log$.subscribe((log) => {
+      if (previousTask !== log.taskName) {
+        previousTask = log.taskName;
+        self.getQueue();
+      }
+    });
+    this.listened = true;
   }
 
 }

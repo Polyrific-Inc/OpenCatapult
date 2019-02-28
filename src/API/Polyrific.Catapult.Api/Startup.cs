@@ -149,7 +149,8 @@ namespace Polyrific.Catapult.Api
             app.UseCors(builder => builder
                 .WithOrigins(Configuration["AllowedOrigin"])
                 .AllowAnyHeader()
-                .AllowAnyMethod());
+                .AllowAnyMethod()
+                .AllowCredentials());
 
             app.UseMvc();
 
