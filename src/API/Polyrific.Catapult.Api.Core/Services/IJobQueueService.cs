@@ -19,15 +19,6 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The new job queue id</returns>
         Task<int> AddJobQueue(int projectId, string originUrl, string jobType, int? jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken));
-        
-        /// <summary>
-        /// update a job queue in a project
-        /// </summary>
-        /// <param name="projectId">Id of the project</param>
-        /// <param name="updatedJob">The updated job queue</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
-        /// <returns></returns>
-        Task UpdateJobQueue(int projectId, JobQueue updatedJob, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// update a job queue
@@ -97,6 +88,16 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The log text</returns>
         Task<string> GetJobLogs(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get the execution logs of a task
+        /// </summary>
+        /// <param name="projectId">The id of the project</param>
+        /// <param name="jobQueueId">The job queue id</param>
+        /// <param name="taskName">The task name</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<string> GetTaskLogs(int projectId, int jobQueueId, string taskName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the first unassigned queued job to be run

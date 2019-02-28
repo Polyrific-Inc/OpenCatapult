@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// <param name="projectId"></param>
         /// <param name="jobQueueId"></param>
         public JobQueueFilterSpecification(int projectId, int jobQueueId)
-            : base(m => m.ProjectId == projectId && m.Id == jobQueueId)
+            : base(m => (m.ProjectId == projectId || projectId == 0) && m.Id == jobQueueId)
         {
             ProjectId = projectId;
             JobQueueId = jobQueueId;
