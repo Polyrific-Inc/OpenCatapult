@@ -1,0 +1,51 @@
+name: 'Polyrific.Catapult.TaskProviders.AzureAppService'
+type: 'HostingProvider'
+author: 'Polyrific'
+version: '1.0.0-beta2'
+required-services:
+  - Azure
+additional-configs:
+  - name: SubscriptionId
+    label: Subscription Id
+    type: string
+    is-required: true
+    is-secret: false
+  - name: ResourceGroupName
+    label: Resource Group
+    type: string
+    is-required: true
+    is-secret: false
+  - name: AppServiceName
+    label: App Service
+    type: string
+    is-required: false
+    is-secret: false
+  - name: AllowAutomaticRename
+    label: Allow Automatic Rename?
+    type: boolean
+    is-required: false
+    is-secret: false
+    hint:  Do you want to automatically reassign app service name when it is not available?
+  - name: DeploymentSlot
+    label: Deployment Slot
+    type: string
+    is-required: false
+    is-secret: false
+  - name: ConnectionString
+    label: Connection String
+    hint: Please make sure to enter the connection string if the website needs to connect to the database
+    type: string
+    is-required: false
+    is-secret: true
+    is-input-masked: false
+  - name: Region
+    label: Default Region
+    type: string
+    is-required: false
+    is-secret: false
+  - name: AppServicePlan
+    label: Default App Service Plan
+    type: string
+    is-required: false
+    is-secret: false
+    

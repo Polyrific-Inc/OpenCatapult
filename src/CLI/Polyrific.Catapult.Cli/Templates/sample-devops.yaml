@@ -139,7 +139,7 @@ jobs:
       GitHubExternalService: github-default
   - name: Generate
     type: Generate
-    provider: Polyrific.Catapult.Plugins.AspNetCoreMvc
+    provider: Polyrific.Catapult.TaskProviders.AspNetCoreMvc
   - name: Push
     type: Push
     provider: Polyrific.Catapult.Plugins.GitHub
@@ -153,12 +153,12 @@ jobs:
       GitHubExternalService: github-default
   - name: Build
     type: Build
-    provider: Polyrific.Catapult.Plugins.DotNetCore
+    provider: Polyrific.Catapult.TaskProviders.DotNetCore
   - name: DeployDb
     type: DeployDb
     provider: Polyrific.Catapult.Plugins.EntityFrameworkCore
   - name: Deploy
     type: Deploy
-    provider: Polyrific.Catapult.Plugins.AzureAppService
+    provider: Polyrific.Catapult.TaskProviders.AzureAppService
     configs:
       AzureExternalService: azure-default

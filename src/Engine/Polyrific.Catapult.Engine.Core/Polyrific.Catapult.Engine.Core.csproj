@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Plugins\Polyrific.Catapult.Plugins.Core\Polyrific.Catapult.Plugins.Core.csproj" />
+    <ProjectReference Include="..\..\Plugins\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Common\Polyrific.Catapult.Shared.Common.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Dto\Polyrific.Catapult.Shared.Dto.csproj" />
     <ProjectReference Include="..\..\Shared\Polyrific.Catapult.Shared.Service\Polyrific.Catapult.Shared.Service.csproj" />

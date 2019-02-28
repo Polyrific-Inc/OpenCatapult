@@ -190,7 +190,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 newProjectArgs += $" --target-framework-override {framework}";
             
             await Execute("dotnet", newProjectArgs);
-            var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.Plugins.Core.dll");
+            var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.TaskProviders.Core.dll");
             AddDllReference(projectFile, pluginCoreDll);
             WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
 
@@ -201,7 +201,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         {
             var sb = new StringBuilder();
             sb.AppendLine("using System.Threading.Tasks;");
-            sb.AppendLine("using Polyrific.Catapult.Plugins.Core;");
+            sb.AppendLine("using Polyrific.Catapult.TaskProviders.Core;");
             sb.AppendLine("");
             sb.AppendLine($"namespace {pluginName}");
             sb.AppendLine("{");

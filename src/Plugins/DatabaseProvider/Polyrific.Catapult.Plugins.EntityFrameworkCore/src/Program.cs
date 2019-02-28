@@ -3,7 +3,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
 {

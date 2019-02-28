@@ -9,7 +9,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.TaskProviders.Core;
 using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Engine.Core

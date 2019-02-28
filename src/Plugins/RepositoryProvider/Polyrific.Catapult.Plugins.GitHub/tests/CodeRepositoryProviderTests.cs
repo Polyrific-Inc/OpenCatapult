@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Moq;
 using Newtonsoft.Json;
-using Polyrific.Catapult.Plugins.Core.Configs;
+using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Xunit;
 
 namespace Polyrific.Catapult.Plugins.GitHub.UnitTests

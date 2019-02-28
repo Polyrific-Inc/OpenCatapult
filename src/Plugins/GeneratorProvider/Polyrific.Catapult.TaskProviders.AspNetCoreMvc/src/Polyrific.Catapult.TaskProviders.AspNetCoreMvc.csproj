@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+    <PropertyGroup>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\</OutputPath>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\.gitignore" />
+      <None Remove="Resources\Images\logo.png" />
+      <None Remove="Resources\README.md" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\.gitignore">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Resources\Images\logo.png">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Resources\README.md">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Humanizer.Core" Version="2.5.16" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj" />
+    </ItemGroup>
+
+</Project>
