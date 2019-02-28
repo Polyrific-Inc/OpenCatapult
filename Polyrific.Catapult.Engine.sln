@@ -50,7 +50,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.AspNetCoreMvc", "src\Plugins\GeneratorProvider\Polyrific.Catapult.Plugins.AspNetCoreMvc\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj", "{11811214-D216-4D09-B361-EE938FA9F8D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.DotNetCore", "src\Plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\src\Polyrific.Catapult.Plugins.DotNetCore.csproj", "{D3645509-455D-4733-8F3B-7C7ADA180DEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore", "src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj", "{D3645509-455D-4733-8F3B-7C7ADA180DEF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.GitHub", "src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\src\Polyrific.Catapult.Plugins.GitHub.csproj", "{8186D079-1637-4DCE-A3A6-118CA1B8256B}"
 EndProject
@@ -62,7 +62,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4E071EF4-E175-40AC-BE21-07CD6A3E3ECA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.DotNetCore.UnitTests", "src\Plugins\BuildProvider\Polyrific.Catapult.Plugins.DotNetCore\tests\Polyrific.Catapult.Plugins.DotNetCore.UnitTests.csproj", "{950E5F7D-AF1C-4331-9A4C-D3B7341D8284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests", "src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\tests\Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests.csproj", "{950E5F7D-AF1C-4331-9A4C-D3B7341D8284}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.EntityFrameworkCore.UnitTests", "src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\tests\Polyrific.Catapult.Plugins.EntityFrameworkCore.UnitTests.csproj", "{8799784F-8EED-4A24-BD39-4E0CC3C1659A}"
 EndProject

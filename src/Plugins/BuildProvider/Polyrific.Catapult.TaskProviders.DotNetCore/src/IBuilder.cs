@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Plugins.DotNetCore
+namespace Polyrific.Catapult.TaskProviders.DotNetCore
 {
     public interface IBuilder
     {

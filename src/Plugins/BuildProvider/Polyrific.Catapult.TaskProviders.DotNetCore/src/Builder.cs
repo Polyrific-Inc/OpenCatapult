@@ -4,9 +4,9 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Plugins.DotNetCore.Helpers;
+using Polyrific.Catapult.TaskProviders.DotNetCore.Helpers;
 
-namespace Polyrific.Catapult.Plugins.DotNetCore
+namespace Polyrific.Catapult.TaskProviders.DotNetCore
 {
     public class Builder : IBuilder
     {

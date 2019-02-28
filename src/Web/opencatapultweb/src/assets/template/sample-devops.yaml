@@ -153,7 +153,7 @@ jobs:
       GitHubExternalService: github-default
   - name: Build
     type: Build
-    provider: Polyrific.Catapult.Plugins.DotNetCore
+    provider: Polyrific.Catapult.TaskProviders.DotNetCore
   - name: DeployDb
     type: DeployDb
     provider: Polyrific.Catapult.Plugins.EntityFrameworkCore

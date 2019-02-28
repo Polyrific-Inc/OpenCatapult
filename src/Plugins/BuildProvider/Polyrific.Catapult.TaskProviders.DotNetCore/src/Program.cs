@@ -5,11 +5,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.DotNetCore
+namespace Polyrific.Catapult.TaskProviders.DotNetCore
 {
     public class Program : BuildProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.DotNetCore";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.DotNetCore";
 
         private IBuilder _builder;
 

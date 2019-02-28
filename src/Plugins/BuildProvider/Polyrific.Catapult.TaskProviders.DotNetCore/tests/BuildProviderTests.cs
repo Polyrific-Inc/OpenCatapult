@@ -4,10 +4,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
-using Polyrific.Catapult.Plugins.DotNetCore.Helpers;
+using Polyrific.Catapult.TaskProviders.DotNetCore.Helpers;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.DotNetCore.UnitTests
+namespace Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests
 {
     public class BuildProviderTests
     {
