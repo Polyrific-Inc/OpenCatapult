@@ -3,9 +3,9 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.DotNetCoreTest.Helpers;
+using Polyrific.Catapult.TaskProviders.DotNetCoreTest.Helpers;
 
-namespace Polyrific.Catapult.Plugins.DotNetCoreTest
+namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest
 {
     public class TestRunner : ITestRunner
     {

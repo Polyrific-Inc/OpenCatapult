@@ -5,11 +5,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.DotNetCoreTest
+namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest
 {
     public class Program : TestProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.DotNetCoreTest";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.DotNetCoreTest";
 
         private ITestRunner _testRunner;
 

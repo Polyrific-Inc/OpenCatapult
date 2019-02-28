@@ -2,7 +2,7 @@
 
 using System.Threading.Tasks;
 
-namespace Polyrific.Catapult.Plugins.DotNetCoreTest
+namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest
 {
     public interface ITestRunner
     {

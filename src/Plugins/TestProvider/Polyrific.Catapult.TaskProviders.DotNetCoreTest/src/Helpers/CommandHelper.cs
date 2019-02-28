@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Polyrific.Catapult.Plugins.DotNetCoreTest.Helpers
+namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest.Helpers
 {
     public class CommandHelper
     {

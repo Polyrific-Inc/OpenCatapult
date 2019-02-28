@@ -5,10 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
-using Polyrific.Catapult.Plugins.DotNetCoreTest.Helpers;
+using Polyrific.Catapult.TaskProviders.DotNetCoreTest.Helpers;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.DotNetCoreTest.UnitTests
+namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests
 {
     public class TestProviderTests
     {

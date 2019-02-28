@@ -8,7 +8,7 @@
   </PropertyGroup>
 
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\</OutputPath>
     </PropertyGroup>
 
   <ItemGroup>

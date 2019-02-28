@@ -58,7 +58,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.EntityFrameworkCore", "src\Plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj", "{8DDDC97F-EE3D-4C15-8C79-312EDEA8BC74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.DotNetCoreTest", "src\Plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest\src\Polyrific.Catapult.Plugins.DotNetCoreTest.csproj", "{788858A8-F67B-4A65-A452-C53C3D3B45FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest", "src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj", "{788858A8-F67B-4A65-A452-C53C3D3B45FB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4E071EF4-E175-40AC-BE21-07CD6A3E3ECA}"
 EndProject
@@ -72,7 +72,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.GitHub.UnitTests", "src\Plugins\RepositoryProvider\Polyrific.Catapult.Plugins.GitHub\tests\Polyrific.Catapult.Plugins.GitHub.UnitTests.csproj", "{73A389BE-FDD1-4E0C-90FA-8AAC1BAD01ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Plugins.DotNetCoreTest.UnitTests", "src\Plugins\TestProvider\Polyrific.Catapult.Plugins.DotNetCoreTest\tests\Polyrific.Catapult.Plugins.DotNetCoreTest.UnitTests.csproj", "{7883B10F-C23D-4045-B0D1-160EBE06FEE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests", "src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\tests\Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests.csproj", "{7883B10F-C23D-4045-B0D1-160EBE06FEE4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
