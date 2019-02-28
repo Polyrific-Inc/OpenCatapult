@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.EntityFrameworkCore.UnitTests
+namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore.UnitTests
 {
     public class DatabaseProviderTests
     {

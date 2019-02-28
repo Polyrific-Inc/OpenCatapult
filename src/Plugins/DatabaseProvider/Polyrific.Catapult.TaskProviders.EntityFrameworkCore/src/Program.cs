@@ -5,11 +5,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
+namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 {
     public class Program : DatabaseProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.EntityFrameworkCore";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore";
 
         private IDatabaseCommand _databaseCommand;
 

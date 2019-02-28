@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.EntityFrameworkCore.Helpers;
+using Polyrific.Catapult.TaskProviders.EntityFrameworkCore.Helpers;
 
-namespace Polyrific.Catapult.Plugins.EntityFrameworkCore
+namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 {
     public class DatabaseCommand : IDatabaseCommand
     {

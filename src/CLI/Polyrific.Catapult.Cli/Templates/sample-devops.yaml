@@ -156,7 +156,7 @@ jobs:
     provider: Polyrific.Catapult.TaskProviders.DotNetCore
   - name: DeployDb
     type: DeployDb
-    provider: Polyrific.Catapult.Plugins.EntityFrameworkCore
+    provider: Polyrific.Catapult.TaskProviders.EntityFrameworkCore
   - name: Deploy
     type: Deploy
     provider: Polyrific.Catapult.TaskProviders.AzureAppService

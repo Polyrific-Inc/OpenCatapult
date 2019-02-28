@@ -8,7 +8,7 @@
   </PropertyGroup>
 
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\DatabaseProvider\Polyrific.Catapult.Plugins.EntityFrameworkCore\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj" />
   </ItemGroup>
 
 </Project>

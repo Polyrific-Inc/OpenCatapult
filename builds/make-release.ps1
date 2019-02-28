@@ -78,8 +78,8 @@ $dotNetCoreCsprojPath = Join-Path $rootPath "/src/Plugins/BuildProvider/Polyrifi
 $dotNetCorePublishPath = Join-Path $publishOuterPath "/plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
 $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"
 $dotNetCoreTestPublishPath = Join-Path $publishOuterPath "/plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
-$entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.Plugins.EntityFrameworkCore/src/Polyrific.Catapult.Plugins.EntityFrameworkCore.csproj"
-$entityFrameworkCorePublishPath = Join-Path $publishOuterPath "/plugins/DatabaseProvider/Polyrific.Catapult.Plugins.EntityFrameworkCore"
+$entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
+$entityFrameworkCorePublishPath = Join-Path $publishOuterPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
 $gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub/src/Polyrific.Catapult.Plugins.GitHub.csproj"
 $gitHubPublishPath = Join-Path $publishOuterPath "/plugins/RepositoryProvider/Polyrific.Catapult.Plugins.GitHub"
 
