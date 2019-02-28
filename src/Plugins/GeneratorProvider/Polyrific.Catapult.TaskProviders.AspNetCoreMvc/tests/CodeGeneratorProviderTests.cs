@@ -7,7 +7,7 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Xunit;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.UnitTests
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests
 {
     public class CodeGeneratorProviderTests
     {

@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Polyrific.Catapult.Plugins.AspNetCoreMvc.csproj" />
+    <ProjectReference Include="..\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj" />
   </ItemGroup>
 
 </Project>

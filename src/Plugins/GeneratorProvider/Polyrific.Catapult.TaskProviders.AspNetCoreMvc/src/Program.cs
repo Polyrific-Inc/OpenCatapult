@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
 {
     public class Program : CodeGeneratorProvider
     {
-        private const string TaskProviderName = "Polyrific.Catapult.Plugins.AspNetCoreMvc";
+        private const string TaskProviderName = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc";
 
         public override string Name => TaskProviderName;
 

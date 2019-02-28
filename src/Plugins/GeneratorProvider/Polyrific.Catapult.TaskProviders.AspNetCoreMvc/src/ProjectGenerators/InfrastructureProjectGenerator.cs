@@ -4,10 +4,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers;
+using Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
 {
     internal class InfrastructureProjectGenerator
     {

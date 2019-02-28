@@ -8,12 +8,12 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers;
-using Polyrific.Catapult.Plugins.AspNetCoreMvc.ProjectGenerators;
+using Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers;
+using Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
 {
     public class CodeGenerator
     {

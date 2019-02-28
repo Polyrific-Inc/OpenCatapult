@@ -2,7 +2,7 @@
 
 using Humanizer;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
 {
     public static class TextHelper
     {

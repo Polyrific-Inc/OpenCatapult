@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-namespace Polyrific.Catapult.Plugins.AspNetCoreMvc.Helpers
+namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
 {
     public class CommandHelper
     {

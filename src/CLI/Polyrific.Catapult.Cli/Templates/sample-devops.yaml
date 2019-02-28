@@ -139,7 +139,7 @@ jobs:
       GitHubExternalService: github-default
   - name: Generate
     type: Generate
-    provider: Polyrific.Catapult.Plugins.AspNetCoreMvc
+    provider: Polyrific.Catapult.TaskProviders.AspNetCoreMvc
   - name: Push
     type: Push
     provider: Polyrific.Catapult.Plugins.GitHub
