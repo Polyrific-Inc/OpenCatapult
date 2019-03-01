@@ -1,0 +1,36 @@
+<h1 mat-dialog-title>New ProjectMember</h1>
+<form [formGroup]="newMemberForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+        <mat-form-field class="full-width-input">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" required>
+          <mat-error *ngIf="isFieldInvalid('email', 'required')">
+            Please inform the email
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" required>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" required>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <mat-select placeholder="Role" formControlName="projectMemberRoleId" required>
+            <mat-option *ngFor="let role of projectMemberRoles" [value]="role[0]">
+              {{role[1]}}
+            </mat-option>
+          </mat-select>
+          <mat-error *ngIf="isFieldInvalid('projectMemberRoleId', 'required')">
+            Please select a role
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+
