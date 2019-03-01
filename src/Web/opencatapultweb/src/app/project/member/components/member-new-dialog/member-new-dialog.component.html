@@ -4,18 +4,22 @@
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">
           <mat-label>Email</mat-label>
-          <input matInput formControlName="email" required>
+          <input matInput #emailControl formControlName="email" (input)="onEmailChanged(emailControl.value)" required>
+          <mat-hint *ngIf="newUser" class="new-user-hint">Creating new user</mat-hint>
           <mat-error *ngIf="isFieldInvalid('email', 'required')">
             Please inform the email
+          </mat-error>
+          <mat-error *ngIf="isFieldInvalid('email', 'email')">
+            Please input valid email
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input">
           <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" required>
+          <input matInput formControlName="firstName">
         </mat-form-field>
         <mat-form-field class="full-width-input">
           <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" required>
+          <input matInput formControlName="lastName">
         </mat-form-field>
         <mat-form-field class="full-width-input">
           <mat-select placeholder="Role" formControlName="projectMemberRoleId" required>

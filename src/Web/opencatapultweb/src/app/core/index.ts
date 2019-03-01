@@ -6,6 +6,7 @@ export * from './services/external-service.service';
 export * from './services/data-model.service';
 export * from './services/job-definition.service';
 export * from './services/job-queue.service';
+export * from './services/account.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -27,6 +28,7 @@ export * from './models/job-queue/job-task-status-dto';
 export * from './models/member/new-project-member-dto';
 export * from './models/member/project-member-dto';
 export * from './models/member/update-project-member-dto';
+export * from './models/account/user-dto';
 
 /* Enums */
 export * from './auth/project-member-role';
