@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new JobQueueInProgressException(projectId);
             }
 
-            // detemine the job type if it is not provided by the caller
+            // detemine the jobQueue type if it is not provided by the caller
             if (string.IsNullOrWhiteSpace(jobType))
             {
                 jobType = JobType.Create;
@@ -74,29 +74,29 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _jobQueueRepository.Create(newJobQueue, cancellationToken);
         }
 
-        public async Task UpdateJobQueue(JobQueue updatedJob, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UpdateJobQueue(JobQueue updatedJobQueue, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var jobSpec = new JobQueueFilterSpecification(updatedJob.ProjectId, updatedJob.Id);
-            var job = await _jobQueueRepository.GetSingleBySpec(jobSpec, cancellationToken);
+            var jobQueueSpec = new JobQueueFilterSpecification(updatedJobQueue.ProjectId, updatedJobQueue.Id);
+            var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
 
-            if (job != null)
+            if (jobQueue != null)
             {
-                if (updatedJob.ProjectId == 0 && !string.IsNullOrEmpty(job.CatapultEngineId) && job.CatapultEngineId != updatedJob.CatapultEngineId)
+                if (updatedJobQueue.ProjectId == 0 && !string.IsNullOrEmpty(jobQueue.CatapultEngineId) && jobQueue.CatapultEngineId != updatedJobQueue.CatapultEngineId)
                 {
-                    throw new JobProcessedByOtherEngineException(job.Id);
+                    throw new JobProcessedByOtherEngineException(jobQueue.Id);
                 }
 
-                job.CatapultEngineId = updatedJob.CatapultEngineId;
-                job.CatapultEngineIPAddress = updatedJob.CatapultEngineIPAddress;
-                job.CatapultEngineMachineName = updatedJob.CatapultEngineMachineName;
-                job.Status = updatedJob.Status;
-                job.JobTasksStatus = updatedJob.JobTasksStatus;
-                job.JobType = updatedJob.JobType;
-                job.OutputValues = updatedJob.OutputValues;
-                job.Remarks = updatedJob.Remarks;
-                await _jobQueueRepository.Update(job, cancellationToken);
+                jobQueue.CatapultEngineId = updatedJobQueue.CatapultEngineId;
+                jobQueue.CatapultEngineIPAddress = updatedJobQueue.CatapultEngineIPAddress;
+                jobQueue.CatapultEngineMachineName = updatedJobQueue.CatapultEngineMachineName;
+                jobQueue.Status = updatedJobQueue.Status;
+                jobQueue.JobTasksStatus = updatedJobQueue.JobTasksStatus;
+                jobQueue.JobType = updatedJobQueue.JobType;
+                jobQueue.OutputValues = updatedJobQueue.OutputValues;
+                jobQueue.Remarks = updatedJobQueue.Remarks;
+                await _jobQueueRepository.Update(jobQueue, cancellationToken);
             }
         }
 
@@ -104,17 +104,17 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var job = await _jobQueueRepository.GetById(id, cancellationToken);
+            var jobQueue = await _jobQueueRepository.GetById(id, cancellationToken);
 
-            if (job != null)
+            if (jobQueue != null)
             {
-                if (!_inProgressJobStatus.Contains(job.Status))
+                if (!_inProgressJobStatus.Contains(jobQueue.Status))
                 {
                     throw new CancelCompletedJobException(id);
                 }
 
-                job.Status = JobStatus.Cancelled;
-                await _jobQueueRepository.Update(job, cancellationToken);
+                jobQueue.Status = JobStatus.Cancelled;
+                await _jobQueueRepository.Update(jobQueue, cancellationToken);
             }
         }
 
@@ -122,39 +122,39 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            JobQueueFilterSpecification queueSpec;
+            JobQueueFilterSpecification jobQueueSpec;
             switch (filter?.ToLower())
             {
                 case JobQueueFilterType.All:
-                    queueSpec = new JobQueueFilterSpecification(projectId, null);
+                    jobQueueSpec = new JobQueueFilterSpecification(projectId, null);
                     break;
                 case JobQueueFilterType.Current:
-                    queueSpec = new JobQueueFilterSpecification(projectId, _inProgressJobStatus);
+                    jobQueueSpec = new JobQueueFilterSpecification(projectId, _inProgressJobStatus);
                     break;
                 case JobQueueFilterType.Past:
-                    queueSpec = new JobQueueFilterSpecification(projectId, _pastJobStatus);
+                    jobQueueSpec = new JobQueueFilterSpecification(projectId, _pastJobStatus);
                     break;
                 case JobQueueFilterType.Succeeded:
-                    queueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Completed });
+                    jobQueueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Completed });
                     break;
                 case JobQueueFilterType.Failed:
-                    queueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Error });
+                    jobQueueSpec = new JobQueueFilterSpecification(projectId, new string[] { JobStatus.Error });
                     break;
                 default:
                     throw new FilterTypeNotFoundException(filter);
             }
 
-            queueSpec.Includes.Add(q => q.JobDefinition);
+            jobQueueSpec.Includes.Add(q => q.JobDefinition);
 
-            var jobQueues = await _jobQueueRepository.GetBySpec(queueSpec, cancellationToken);
+            var jobQueues = await _jobQueueRepository.GetBySpec(jobQueueSpec, cancellationToken);
 
             return jobQueues.ToList();
         }
 
         public async Task<List<JobQueue>> GetJobQueuesByStatus(string status, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var queueSpec = new JobQueueFilterSpecification(0, null, status);
-            var jobQueues = await _jobQueueRepository.GetBySpec(queueSpec, cancellationToken);
+            var jobQueueSpec = new JobQueueFilterSpecification(0, null, status);
+            var jobQueues = await _jobQueueRepository.GetBySpec(jobQueueSpec, cancellationToken);
             return jobQueues.ToList();
         }
 
@@ -162,33 +162,33 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var queueSpec = new JobQueueFilterSpecification(projectId, id);
-            queueSpec.Includes.Add(q => q.JobDefinition);
-            var queue = await _jobQueueRepository.GetSingleBySpec(queueSpec, cancellationToken);
+            var jobQueueSpec = new JobQueueFilterSpecification(projectId, id);
+            jobQueueSpec.Includes.Add(q => q.JobDefinition);
+            var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
 
-            return queue;
+            return jobQueue;
         }
 
         public async Task<JobQueue> GetJobQueueByCode(int projectId, string jobQueueCode, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var queueSpec = new JobQueueFilterSpecification(projectId, jobQueueCode, null);
-            queueSpec.Includes.Add(q => q.JobDefinition);
-            var queue = await _jobQueueRepository.GetSingleBySpec(queueSpec, cancellationToken);
+            var jobQueueSpec = new JobQueueFilterSpecification(projectId, jobQueueCode, null);
+            jobQueueSpec.Includes.Add(q => q.JobDefinition);
+            var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
 
-            return queue;
+            return jobQueue;
         }
 
         public async Task<List<JobTaskStatus>> GetJobTaskStatus(int id, string filter, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var job = await _jobQueueRepository.GetById(id, cancellationToken);
+            var jobQueue = await _jobQueueRepository.GetById(id, cancellationToken);
 
-            if (!string.IsNullOrEmpty(job?.JobTasksStatus))
+            if (!string.IsNullOrEmpty(jobQueue?.JobTasksStatus))
             {
-                var tasks = JsonConvert.DeserializeObject<List<JobTaskStatus>>(job.JobTasksStatus);
+                var tasks = JsonConvert.DeserializeObject<List<JobTaskStatus>>(jobQueue.JobTasksStatus);
                 switch (filter?.ToLower())
                 {
                     case JobTaskStatusFilterType.All:
@@ -216,28 +216,28 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var queuedJobSpec = new JobQueueFilterSpecification();
-            var job = await _jobQueueRepository.GetSingleBySpec(queuedJobSpec, cancellationToken);
+            var jobQueue = await _jobQueueRepository.GetSingleBySpec(queuedJobSpec, cancellationToken);
 
             if (!string.IsNullOrEmpty(engine))
             {
-                if (job == null)
+                if (jobQueue == null)
                 {
                     var pendingJobSpec = new JobQueueFilterSpecification(0, null, JobStatus.Queued, engine);
-                    job = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
+                    jobQueue = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
                 }
 
                 try
                 {
-                    job.CatapultEngineId = engine;
-                    await _jobQueueRepository.Update(job, cancellationToken);
+                    jobQueue.CatapultEngineId = engine;
+                    await _jobQueueRepository.Update(jobQueue, cancellationToken);
                 }
                 catch (Exception)
                 {
-                    job = null;
+                    jobQueue = null;
                 }
             }
 
-            return job;
+            return jobQueue;
         }
 
         private async Task<string> GetNextJobCode()
@@ -248,8 +248,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<string> GetJobLogs(int projectId, int jobQueueId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var queue = await GetJobQueueById(projectId, jobQueueId);
-            if (queue != null)
+            var jobQueue = await GetJobQueueById(projectId, jobQueueId);
+            if (jobQueue != null)
                 return await _textWriter.Read($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", null);
             
             return "";
@@ -257,8 +257,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<string> GetTaskLogs(int projectId, int jobQueueId, string taskName, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var queue = await GetJobQueueById(projectId, jobQueueId);
-            if (queue != null)
+            var jobQueue = await GetJobQueueById(projectId, jobQueueId);
+            if (jobQueue != null)
                 return await _textWriter.Read($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", taskName);
 
             return "";
