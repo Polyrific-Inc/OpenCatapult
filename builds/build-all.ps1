@@ -124,9 +124,9 @@ Invoke-BuildScript "build-api.ps1" $args
 
 ## Build Engine
 $args = "-configuration " + $configuration
-$args = " -url " + $https
+$args += " -url " + $https
 if ($noConfig) {
-    $args = " -noConfig"
+    $args += " -noConfig"
 }
 Invoke-BuildScriptNewWindow "build-engine.ps1" $args
 
