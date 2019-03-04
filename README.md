@@ -1,7 +1,9 @@
 # OpenCatapult Digital Developer
-The home of open source Catapult project created by the custom application development experts at [Polyrific](https://polyrific.com). 
+The home of open source Catapult project created by the custom application development experts at [Polyrific](https://polyrific.com). Please check the [docs](https://docs.opencatapult.net) for more details.
 
-Build status:
+If you have any questions or feedback, let's discuss them in our [community forum](https://community.opencatapult.net).
+
+## Build status
 
 | Component | Status |
 |-----------|--------|
@@ -15,3 +17,6 @@ Build status:
 | Plugin: DotNetCoreTest | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.TaskProvider-DotNetCoreTest)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=338) |
 | Plugin: EntityFrameworkCore | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.TaskProvider-EntityFrameworkCore)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=339) |
 | Plugin: GitHub | [![Build status](https://dev.azure.com/polyrific/OpenCatapult/_apis/build/status/Plugins/OpenCatapult.master.TaskProvider-GitHub)](https://dev.azure.com/polyrific/OpenCatapult/_build/latest?definitionId=340) |
+
+## Contributing
+We welcome everyone to make contribution to OpenCatapult, both the source code and the docs. Please read the guidelines [here](https://github.com/Polyrific-Inc/OpenCatapult/blob/master/CONTRIBUTING.md).
