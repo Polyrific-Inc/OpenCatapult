@@ -7,6 +7,7 @@ export * from './services/data-model.service';
 export * from './services/job-definition.service';
 export * from './services/job-queue.service';
 export * from './services/account.service';
+export * from './services/external-service-type.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -29,6 +30,8 @@ export * from './models/member/new-project-member-dto';
 export * from './models/member/project-member-dto';
 export * from './models/member/update-project-member-dto';
 export * from './models/account/user-dto';
+export * from './models/external-service/update-external-service-dto';
+export * from './models/external-service/create-external-service-dto';
 
 /* Enums */
 export * from './auth/project-member-role';
@@ -45,6 +48,7 @@ export * from './constants/property-data-types';
 export * from './constants/property-control-types';
 export * from './constants/job-task-definition-types';
 export * from './constants/project-member-roles';
+export * from './constants/generic-external-service';
 
 /* module */
 export * from './core.module';

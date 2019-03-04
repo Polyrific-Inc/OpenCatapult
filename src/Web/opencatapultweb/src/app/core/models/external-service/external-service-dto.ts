@@ -4,5 +4,5 @@ export interface ExternalServiceDto {
     description: string;
     externalServiceTypeId: number;
     externalServcieTypeName: string;
-    Config: { [key: string]: string };
+    config: { [key: string]: string };
 }

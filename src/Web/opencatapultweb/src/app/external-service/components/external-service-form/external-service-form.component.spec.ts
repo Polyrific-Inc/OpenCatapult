@@ -1,24 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ExternalServiceComponent } from './external-service.component';
+import { ExternalServiceFormComponent } from './external-service-form.component';
 import { FlexModule } from '@angular/flex-layout';
-import { ExternalServiceRoutingModule } from '../external-service-routing.module';
 import { MatTableModule, MatIconModule, MatButtonModule, MatDialogModule,
   MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
-import { GenericService } from '../services/generic.service';
+import { GenericService } from '@app/external-service/services/generic.service';
 import { SharedModule } from '@app/shared/shared.module';
+import { ExternalServiceGenericFormComponent } from '../external-service-generic-form/external-service-generic-form.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ExternalServicePropertyFormComponent } from '../external-service-property-form/external-service-property-form.component';
 import { CoreModule } from '@app/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('ExternalServiceComponent', () => {
-  let component: ExternalServiceComponent;
-  let fixture: ComponentFixture<ExternalServiceComponent>;
+describe('ExternalServiceFormComponent', () => {
+  let component: ExternalServiceFormComponent;
+  let fixture: ComponentFixture<ExternalServiceFormComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ExternalServiceComponent ],
+      declarations: [ ExternalServiceFormComponent, ExternalServiceGenericFormComponent, ExternalServicePropertyFormComponent ],
       imports: [
         BrowserAnimationsModule,
         HttpClientTestingModule,
@@ -43,7 +44,7 @@ describe('ExternalServiceComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ExternalServiceComponent);
+    fixture = TestBed.createComponent(ExternalServiceFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

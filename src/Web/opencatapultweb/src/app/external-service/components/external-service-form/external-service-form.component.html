@@ -1,0 +1,44 @@
+<div [formGroup]="externalServiceForm">
+  <mat-form-field class="full-width-input">
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Name of the external service"
+      formControlName="name" required>
+    <mat-error *ngIf="isFieldInvalid('name', 'required')">
+      Please inform the external service name
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+      <mat-label>Description</mat-label>
+      <textarea matInput placeholder="The description of the external service" formControlName="description"></textarea>
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+    <mat-select #serviceTypeControl placeholder="External Service Type" formControlName="externalServiceTypeId" (selectionChange)="onServiceTypeChanged($event)">
+      <mat-option *ngFor="let serviceType of externalServiceTypes$ | async" [value]="serviceType.id">
+        {{serviceType.name}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="isFieldInvalid('externalServiceTypeId', 'required')">
+      Please inform the external service type
+    </mat-error>
+  </mat-form-field>
+
+  <div *ngIf="showGenericProperties">
+      <app-external-service-generic-form *ngFor="let genericForm of genericServiceProperties.controls; let idx = index"
+        [form]="genericForm" [disableForm]="disableForm" [index]="idx" (deleteClicked)="onDeleteClicked($event)">
+      </app-external-service-generic-form>
+      <div class="action-buttons">
+          <button type="button" mat-raised-button (click)="onAddGenericPropertyClick()" *ngIf="!disableForm">Add</button>
+      </div>
+  </div>
+  <div *ngIf="!showGenericProperties">
+    <div *ngFor="let serviceProperty of externalServiceProperties">
+      <app-external-service-property-form *ngIf="!isPropertyHidden(serviceProperty)"
+        [externalServiceProperty]="serviceProperty"
+        [isRequired]="isPropertyRequired(serviceProperty)"
+        [form]="externalServiceConfigForm"
+        [disabledForm]="disableForm"
+        >
+      </app-external-service-property-form>
+    </div>
+  </div>
+</div>

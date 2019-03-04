@@ -16,6 +16,7 @@ import { JobDefinitionService } from './services/job-definition.service';
 import { SignalrService } from './services/signalr.service';
 import { MemberService } from './services/member.service';
 import { AccountService } from './services/account.service';
+import { ExternalServiceTypeService } from './services/external-service-type.service';
 
 @NgModule({
   declarations: [],
@@ -37,7 +38,8 @@ import { AccountService } from './services/account.service';
     JobDefinitionService,
     SignalrService,
     MemberService,
-    AccountService
+    AccountService,
+    ExternalServiceTypeService
   ]
 })
 export class CoreModule {

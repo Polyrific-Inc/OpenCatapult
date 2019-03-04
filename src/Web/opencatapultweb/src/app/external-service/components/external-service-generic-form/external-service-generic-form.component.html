@@ -1,0 +1,19 @@
+<div [formGroup]="form" fxLayout="row" fxLayoutAlign="space-between center">
+    <mat-form-field fxFlex="45" class="full-width-input">
+        <input matInput placeholder="Key"
+          formControlName="key" required>
+        <mat-error *ngIf="isFieldInvalid('key', 'required')">
+          Please inform the key
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field  fxFlex="45" class="full-width-input">
+        <input matInput placeholder="Value"
+          formControlName="value" required>
+        <mat-error *ngIf="isFieldInvalid('value', 'required')">
+          Please inform the value
+        </mat-error>
+      </mat-form-field>
+      <button class="action-buttons" mat-icon-button fxFlex="10" (click)="onDeleteClick();" *ngIf="!disableForm">
+        <mat-icon>delete</mat-icon>
+      </button>
+</div>
