@@ -9,6 +9,7 @@ export * from './services/job-queue.service';
 export * from './services/account.service';
 export * from './services/external-service-type.service';
 export * from './services/engine.service';
+export * from './services/yaml.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -37,6 +38,7 @@ export * from './models/engine/engine-dto';
 export * from './models/engine/engine-token-request-dto';
 export * from './models/engine/engine-token-response-dto';
 export * from './models/engine/register-engine-dto';
+export * from './models/task-provider/register-task-provider-dto';
 
 /* Enums */
 export * from './auth/project-member-role';

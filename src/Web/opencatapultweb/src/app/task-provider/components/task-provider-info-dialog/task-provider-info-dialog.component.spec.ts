@@ -1,25 +1,25 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TaskProviderComponent } from './task-provider.component';
+import { TaskProviderInfoDialogComponent } from './task-provider-info-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSelectModule,
-  MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+import { MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
+  MatSelectModule, MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule,
+  MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { FlexModule } from '@angular/flex-layout';
-import { TaskProviderInfoDialogComponent } from '../components/task-provider-info-dialog/task-provider-info-dialog.component';
-import { TaskProviderRegisterDialogComponent } from '../components/task-provider-register-dialog/task-provider-register-dialog.component';
 import { CoreModule } from '@app/core';
 
-describe('TaskProviderComponent', () => {
-  let component: TaskProviderComponent;
-  let fixture: ComponentFixture<TaskProviderComponent>;
+describe('TaskProviderInfoDialogComponent', () => {
+  let component: TaskProviderInfoDialogComponent;
+  let fixture: ComponentFixture<TaskProviderInfoDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TaskProviderComponent, TaskProviderInfoDialogComponent, TaskProviderRegisterDialogComponent ],
+      declarations: [ TaskProviderInfoDialogComponent ],
       imports: [
+        BrowserAnimationsModule,
         HttpClientTestingModule,
         MatTableModule,
         MatButtonModule,
@@ -34,13 +34,27 @@ describe('TaskProviderComponent', () => {
         FlexModule,
         MatProgressBarModule,
         MatTooltipModule
-      ]
+      ],
+      providers: [
+        {
+          provide: MatDialogRef, useValue: {
+            close: function (result) {
+
+            }
+          }
+        },
+        {
+          provide: MAT_DIALOG_DATA, useValue: {
+
+          }
+        }
+      ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TaskProviderComponent);
+    fixture = TestBed.createComponent(TaskProviderInfoDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

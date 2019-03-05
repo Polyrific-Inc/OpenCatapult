@@ -4,18 +4,31 @@ import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { JobTaskDefinitionType } from '../enums/job-task-definition-type';
 import { ProviderType } from '../enums/provider-type';
+import { RegisterTaskProviderDto } from '../models/task-provider/register-task-provider-dto';
 
 @Injectable()
 export class TaskProviderService {
 
-  constructor(private apiService: ApiService) { }
+  constructor(private api: ApiService) { }
 
   getTaskProviderByName(name: string): Observable<TaskProviderDto> {
-    return this.apiService.get<TaskProviderDto>(`provider/name/${name}`);
+    return this.api.get<TaskProviderDto>(`provider/name/${name}`);
   }
 
-  getTaskProviders() {
-    return this.apiService.get<TaskProviderDto[]>('provider');
+  getTaskProvider(id: number): Observable<TaskProviderDto> {
+    return this.api.get<TaskProviderDto>(`provider/${id}`);
+  }
+
+  getTaskProviders(type: string) {
+    return this.api.get<TaskProviderDto[]>(`provider/type/${type}`);
+  }
+
+  deleteTaskProvider(id: number) {
+    return this.api.delete(`provider/${id}`);
+  }
+
+  registerTaskProvider(dto: RegisterTaskProviderDto) {
+    return this.api.post('provider', dto);
   }
 
   getTaskProviderType(taskType: string) {

@@ -1,0 +1,27 @@
+table {
+  width: 100%;
+}
+
+.item-buttons {
+  color: #757575;
+  text-align: right;
+}
+
+.action-buttons {
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.no-records{
+  text-align: center;
+}
+
+.container {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+mat-select {
+  width: 200px;
+}

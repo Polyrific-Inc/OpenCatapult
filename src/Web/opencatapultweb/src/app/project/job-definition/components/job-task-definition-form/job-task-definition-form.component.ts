@@ -27,7 +27,7 @@ export class JobTaskDefinitionFormComponent implements OnInit, OnChanges {
       provider: [{value: null, disabled: this.disableForm}]
     });
 
-    this.taskProviderService.getTaskProviders()
+    this.taskProviderService.getTaskProviders('all')
       .subscribe(data => {
         this.allTaskProviders = data;
 

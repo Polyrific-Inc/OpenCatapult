@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
-import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto } from '@app/core';
-import * as jsYaml from 'js-yaml';
+import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto, YamlService } from '@app/core';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app/shared';
 
@@ -25,6 +24,7 @@ export class ProjectNewComponent implements OnInit {
     private fb: FormBuilder,
     private projectService: ProjectService,
     private projectTemplateService: ProjectTemplateService,
+    private yamlService: YamlService,
     private snackBar: SnackbarService,
     private router: Router
     ) { }
@@ -98,7 +98,7 @@ export class ProjectNewComponent implements OnInit {
   loadTemplate(template) {
     this.projectTemplateService.getTemplate(template)
       .subscribe(templateContent => {
-        this.projectTemplate = jsYaml.safeLoad(templateContent);
+        this.projectTemplate = this.yamlService.deserialize(templateContent);
       },
       err => {
         this.snackBar.open(err);
@@ -111,7 +111,7 @@ export class ProjectNewComponent implements OnInit {
 
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
-        this.projectTemplate = jsYaml.safeLoad(fileReader.result);
+        this.projectTemplate = this.yamlService.deserialize(fileReader.result);
       };
       fileReader.readAsText(event.target.files[0]);
     }

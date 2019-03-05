@@ -18,6 +18,7 @@ import { MemberService } from './services/member.service';
 import { AccountService } from './services/account.service';
 import { ExternalServiceTypeService } from './services/external-service-type.service';
 import { EngineService } from './services/engine.service';
+import { YamlService } from './services/yaml.service';
 
 @NgModule({
   declarations: [],
@@ -41,7 +42,8 @@ import { EngineService } from './services/engine.service';
     MemberService,
     AccountService,
     ExternalServiceTypeService,
-    EngineService
+    EngineService,
+    YamlService
   ]
 })
 export class CoreModule {
