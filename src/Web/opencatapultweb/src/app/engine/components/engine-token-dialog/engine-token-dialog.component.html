@@ -1,0 +1,38 @@
+<h1 mat-dialog-title>Engine Token</h1>
+<form [formGroup]="engineForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+        <mat-form-field class="full-width-input">
+            <mat-label>Id</mat-label>
+          <input matInput formControlName="id">
+        </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+            <mat-label>Name</mat-label>
+            <input matInput placeholder="Name of engine"
+              formControlName="name">
+          </mat-form-field>
+
+        <mat-form-field class="full-width-input">
+          <input matInput [matDatepicker]="picker" placeholder="Token Expiry (Optional)" formControlName="expires">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <div class="token-container" *ngIf="engineToken">
+          <p>Please copy the following token to the engine configuration:</p>
+          <div fxLayout="row" fxLayoutAlign="start center">
+            <span fxFlex="95" #engineTokenSpan>{{engineToken}}</span>
+            <button type="button" mat-icon-button class="copy-button" (click)="onCopyTokenClick(engineTokenSpan)">
+              <mat-icon>content_copy</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Generate</button>
+          <button mat-button [mat-dialog-close]="false">Close</button>
+      </div>
+</form>

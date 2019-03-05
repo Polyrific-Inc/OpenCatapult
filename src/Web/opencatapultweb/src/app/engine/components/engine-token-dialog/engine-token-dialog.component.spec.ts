@@ -1,24 +1,23 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EngineComponent } from './engine.component';
-import { EngineTokenDialogComponent } from '../components/engine-token-dialog/engine-token-dialog.component';
-import { EngineRegisterDialogComponent } from '../components/engine-register-dialog/engine-register-dialog.component';
+import { EngineTokenDialogComponent } from './engine-token-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatTableModule, MatButtonModule, MatDialogModule, MatIconModule, MatSelectModule,
-  MatTooltipModule, MatProgressBarModule, MatInputModule, MatDatepickerModule, MatNativeDateModule } from '@angular/material';
+   MatTooltipModule, MatProgressBarModule, MatInputModule, MatDatepickerModule, MatNativeDateModule,
+    MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { SharedModule } from '@app/shared/shared.module';
 import { FlexModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
 
-describe('EngineComponent', () => {
-  let component: EngineComponent;
-  let fixture: ComponentFixture<EngineComponent>;
+describe('EngineTokenDialogComponent', () => {
+  let component: EngineTokenDialogComponent;
+  let fixture: ComponentFixture<EngineTokenDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ EngineComponent, EngineTokenDialogComponent, EngineRegisterDialogComponent ],
+      declarations: [ EngineTokenDialogComponent ],
       imports: [
         BrowserAnimationsModule,
         HttpClientTestingModule,
@@ -36,13 +35,27 @@ describe('EngineComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         CoreModule
-      ]
+      ],
+      providers: [
+        {
+          provide: MatDialogRef, useValue: {
+            close: function (result) {
+
+            }
+          }
+        },
+        {
+          provide: MAT_DIALOG_DATA, useValue: {
+
+          }
+        }
+      ],
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EngineComponent);
+    fixture = TestBed.createComponent(EngineTokenDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

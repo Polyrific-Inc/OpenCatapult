@@ -48,6 +48,16 @@ export class ApiService {
     ).pipe(catchError(this.formatErrors));
   }
 
+  postString(path: string, body: Object = {}): Observable<string> {
+    return this.http.post(
+      `${environment.apiUrl}/${path}`,
+      body,
+      {
+        responseType: 'text'
+      }
+    ).pipe(catchError(this.formatErrors));
+  }
+
   delete<T>(path): Observable<T> {
     return this.http.delete<T>(
       `${environment.apiUrl}/${path}`

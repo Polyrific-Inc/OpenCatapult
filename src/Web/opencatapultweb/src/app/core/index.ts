@@ -8,6 +8,7 @@ export * from './services/job-definition.service';
 export * from './services/job-queue.service';
 export * from './services/account.service';
 export * from './services/external-service-type.service';
+export * from './services/engine.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -32,6 +33,10 @@ export * from './models/member/update-project-member-dto';
 export * from './models/account/user-dto';
 export * from './models/external-service/update-external-service-dto';
 export * from './models/external-service/create-external-service-dto';
+export * from './models/engine/engine-dto';
+export * from './models/engine/engine-token-request-dto';
+export * from './models/engine/engine-token-response-dto';
+export * from './models/engine/register-engine-dto';
 
 /* Enums */
 export * from './auth/project-member-role';
@@ -42,6 +47,7 @@ export * from './enums/property-control-type';
 export * from './enums/job-queue-filter-type';
 export * from './enums/job-status';
 export * from './enums/job-task-status';
+export * from './enums/engine-status';
 
 /* Constants */
 export * from './constants/property-data-types';
