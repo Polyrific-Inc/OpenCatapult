@@ -34,10 +34,8 @@ export class ExternalServiceInfoDialogComponent implements OnInit {
   }
 
   onFormReady(formData: ExternalServiceFormOutput) {
-    this.externalServiceForm = this.fb.group({
-      ...this.externalServiceForm.controls,
-      ...formData.mainForm.controls
-    });
+    this.externalServiceForm = formData.mainForm;
+    this.externalServiceForm.setControl('id', this.fb.control({value: null, disabled: true}));
 
     this.genericConfigForm = formData.genericConfigForm;
     this.externalServiceService.getExternalService(this.externalService.id)
