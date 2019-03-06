@@ -2,7 +2,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AccountComponent } from './account.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatTableModule, MatButtonModule, MatIconModule, MatSelectModule, MatTooltipModule, MatInputModule, MatProgressBarModule, MatDialogModule } from '@angular/material';
+import { MatTableModule, MatButtonModule, MatIconModule, MatSelectModule,
+  MatTooltipModule, MatInputModule, MatProgressBarModule, MatDialogModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
