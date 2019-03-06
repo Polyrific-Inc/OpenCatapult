@@ -18,6 +18,8 @@ export class ApiService {
         return throwError(error.error);
       } else if (error.error[''] && Array.isArray(error.error[''])) {
         return throwError(error.error[''].join('\n'));
+      } else if (Array.isArray(error.error)) {
+        return throwError(error.error.join('\n'));
       }
     }
 

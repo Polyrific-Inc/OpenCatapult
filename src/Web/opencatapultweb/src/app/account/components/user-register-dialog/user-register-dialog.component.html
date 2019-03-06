@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Register User</h1>
+<form [formGroup]="userForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+        <mat-form-field class="full-width-input">
+          <mat-label>Email</mat-label>
+          <input matInput placeholder="Email of user"
+            formControlName="email" required>
+          <mat-error *ngIf="isFieldInvalid('email', 'required')">
+            Please inform the user's email
+          </mat-error>
+          <mat-error *ngIf="isFieldInvalid('email', 'email')">
+            Please inform a valid email address
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <mat-label>First Name</mat-label>
+          <input matInput placeholder="First name of the user"
+            formControlName="firstName">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+          <mat-label>Last Name</mat-label>
+          <input matInput placeholder="Last name of the user"
+            formControlName="lastName">
+        </mat-form-field>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+

@@ -39,6 +39,11 @@ export * from './models/engine/engine-token-request-dto';
 export * from './models/engine/engine-token-response-dto';
 export * from './models/engine/register-engine-dto';
 export * from './models/task-provider/register-task-provider-dto';
+export * from './models/account/register-user-dto';
+export * from './models/account/reset-password-dto';
+export * from './models/account/set-user-role-dto';
+export * from './models/account/update-password-dto';
+export * from './models/account/update-user-dto';
 
 /* Enums */
 export * from './auth/project-member-role';
@@ -57,6 +62,7 @@ export * from './constants/property-control-types';
 export * from './constants/job-task-definition-types';
 export * from './constants/project-member-roles';
 export * from './constants/generic-external-service';
+export * from './constants/user-roles';
 
 /* module */
 export * from './core.module';
