@@ -33,6 +33,9 @@ const routes: Routes = [
         data: { authPolicy: AuthorizePolicy.UserRoleAdminAccess}
       },
       {
+        path: 'user-profile', loadChildren: './user-profile/user-profile.module#UserProfileModule'
+      },
+      {
         path: 'unauthorized',
         component: UnauthorizedComponent
       }

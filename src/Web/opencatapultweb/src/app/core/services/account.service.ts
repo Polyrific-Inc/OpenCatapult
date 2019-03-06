@@ -45,7 +45,7 @@ export class AccountService {
   }
 
   updatePassword(dto: UpdatePasswordDto) {
-    return this.api.put('account/password', dto);
+    return this.api.putString('account/password', dto);
   }
 
   requestResetPassword(email: string) {

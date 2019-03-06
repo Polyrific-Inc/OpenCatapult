@@ -1,0 +1,30 @@
+<div fxLayout="row" fxLayout.xs="column" class="form-container">
+<form fxFlex="50" fxFlex.md="70" [formGroup]="userInfoForm" (submit)="onSubmit()" class="container">
+  <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+  <mat-form-field class="full-width-input">
+      <mat-label>Id</mat-label>
+    <input matInput formControlName="id">
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Username</mat-label>
+    <input matInput
+      formControlName="userName">
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+    <mat-label>First Name</mat-label>
+    <input matInput placeholder="First name of the user"
+      formControlName="firstName">
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
+    <mat-label>Last Name</mat-label>
+    <input matInput placeholder="Last name of the user"
+      formControlName="lastName">
+  </mat-form-field>
+  <div class="action-buttons">
+      <button mat-raised-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
+      <button mat-raised-button color="primary" cdkFocusInitial *ngIf="editing">Save</button>
+      <button mat-raised-button *ngIf="editing" (click)="onCancelClick()">Cancel</button>
+  </div>
+</form>
+</div>

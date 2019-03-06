@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { CoreModule } from './core';
     MatCardModule,
     MatInputModule,
     ReactiveFormsModule,
+    FlexLayoutModule,
     SharedModule.forRoot()
   ],
   bootstrap: [AppComponent]

@@ -43,6 +43,14 @@ export class ApiService {
     ).pipe(catchError(this.formatErrors));
   }
 
+  putString(path: string, body: Object = {}): Observable<string> {
+    return this.http.put(
+      `${environment.apiUrl}/${path}`,
+      body,
+      { responseType: 'text' }
+    ).pipe(catchError(this.formatErrors));
+  }
+
   post<T>(path: string, body: Object = {}): Observable<T> {
     return this.http.post<T>(
       `${environment.apiUrl}/${path}`,
