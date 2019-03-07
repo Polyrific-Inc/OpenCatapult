@@ -1,13 +1,10 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-function Get-SqlServiceStatus ([string]$server)
+function Get-SqlServiceStatus ()
 {
-   if(Test-Connection $server -Count 2 -Quiet)
-   {
-    Get-WmiObject win32_Service -Computer $server |
-     where {$_.DisplayName -match "SQL Server \("} | 
-     select SystemName, DisplayName, Name, State, Status, StartMode, StartName
-   }
+  Get-CimInstance -ClassName win32_Service |
+    where {$_.DisplayName -match "SQL Server \("} | 
+    select SystemName, DisplayName, Name, State, Status, StartMode, StartName
 }
 
 $dotnetSdkVersion = [System.Version]"2.1.500"
@@ -45,7 +42,7 @@ if ([System.Version]$parsedSdkVersion.Value -lt $dotnetSdkVersion) {
 Write-Host "Checking sql server local instance..."
 if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
 	# Check SQL Instance in windows
-	$sqlResult = Get-SqlServiceStatus -server localhost
+	$sqlResult = Get-SqlServiceStatus
 	if ($sqlResult) {
 		if ($sqlResult.State -eq "Running") {
 			"SQL Server available in local machine."

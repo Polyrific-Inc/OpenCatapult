@@ -26,6 +26,19 @@ function Invoke-BuildScript ([string]$script, [string]$scriptArgs)
    Invoke-Expression $fullPathScript
 }
 
+function Start-InNewWindow {
+    param(
+        [string] $command
+    )
+
+    $psVersion = $PSVersionTable.PSVersion.Major
+    if ($psVersion -lt 6) {
+        Start-Process Powershell $command
+    } else {
+        Start-Process pwsh $command
+    }
+}
+
 function Start-InNewWindowMacOS {
   param(
      [Parameter(Mandatory)] [ScriptBlock] $ScriptBlock,
@@ -65,12 +78,7 @@ function Invoke-BuildScriptNewWindow([string]$script, [string]$scriptArgs)
         $command += "`" "
         $command += $scriptArgs
         
-        if ($wait) {
-            Start-Process Powershell $command -Wait
-        }
-        else {
-            Start-Process Powershell $command
-        }
+        Start-InNewWindow $command
     }
     else {
         # Linux or Mac
