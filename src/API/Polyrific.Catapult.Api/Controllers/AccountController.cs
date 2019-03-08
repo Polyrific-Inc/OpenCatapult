@@ -6,6 +6,7 @@ using System.Web;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
@@ -25,13 +26,20 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
         private readonly INotificationProvider _notificationProvider;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
-        public AccountController(IUserService service, IMapper mapper, INotificationProvider notificationProvider, ILogger<AccountController> logger)
+        public AccountController(
+            IUserService service, 
+            IMapper mapper, 
+            INotificationProvider notificationProvider,
+            IConfiguration configuration, 
+            ILogger<AccountController> logger)
         {
             _userService = service;
             _mapper = mapper;
             _notificationProvider = notificationProvider;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -331,7 +339,8 @@ namespace Polyrific.Catapult.Api.Controllers
                         }
             }, new Dictionary<string, string>
                     {
-                        {MessageParameter.ResetPasswordToken, token}
+                        {MessageParameter.ResetPasswordToken, token},
+                        {MessageParameter.ResetPasswordLink, $"{_configuration["WebUIUrl"]}/reset-password?email={email}&token={HttpUtility.UrlEncode(token)}"}
                     });
 
             return Ok();

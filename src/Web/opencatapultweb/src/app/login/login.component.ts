@@ -36,9 +36,9 @@ export class LoginComponent implements OnInit {
     this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
   }
 
-  isFieldInvalid(field: string) {
+  isFieldInvalid(field: string, error: string) {
     return (
-      (!this.loginForm.get(field).valid && this.loginForm.get(field).touched) ||
+      (!this.loginForm.get(field).hasError(error) && this.loginForm.get(field).touched) ||
       (this.loginForm.get(field).untouched && this.formSubmitAttempt)
     );
   }

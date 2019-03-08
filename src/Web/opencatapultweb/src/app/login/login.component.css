@@ -19,3 +19,7 @@ mat-progress-bar {
     left: 0;
     width: 100%;
 }
+
+.forgot-password-link {
+  color: #337ab7;
+}

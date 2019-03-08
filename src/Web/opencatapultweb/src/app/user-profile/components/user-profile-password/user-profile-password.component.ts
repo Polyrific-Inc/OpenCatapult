@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup, FormControl, FormGroupDirective, NgForm } from '@angular/forms';
-import { UserDto, AccountService } from '@app/core';
-import { AuthService } from '@app/core/auth/auth.service';
+import { AccountService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { ErrorStateMatcher } from '@angular/material';
 
-class MyErrorStateMatcher implements ErrorStateMatcher {
+class PasswordErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const invalidCtrl = !!(control && control.invalid && control.parent.dirty && control.touched);
     const invalidParent = !!(control && control.parent && control.parent.hasError('notSame') &&
@@ -26,7 +25,7 @@ export class UserProfilePasswordComponent implements OnInit {
     newPassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
     confirmNewPassword: null
   }, {validators: this.checkPasswords});
-  matcher = new MyErrorStateMatcher();
+  matcher = new PasswordErrorStateMatcher();
   loading: boolean;
 
   constructor (

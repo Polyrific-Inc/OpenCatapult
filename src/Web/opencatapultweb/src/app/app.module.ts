@@ -17,6 +17,8 @@ import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +27,9 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     HomeLayoutComponent,
     LoginLayoutComponent,
     LoginComponent,
-    UnauthorizedComponent
+    UnauthorizedComponent,
+    ForgotPasswordComponent,
+    ResetPasswordComponent
   ],
   imports: [
     CoreModule,

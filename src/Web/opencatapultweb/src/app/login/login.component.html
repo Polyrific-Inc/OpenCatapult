@@ -8,19 +8,25 @@
         <p>Please login to continue</p>
         <mat-form-field class="full-width-input">
           <input matInput placeholder="Email" formControlName="email" required>
-          <mat-error *ngIf="isFieldInvalid('email')">
+          <mat-error *ngIf="isFieldInvalid('email', 'required')">
             Please inform your email
+          </mat-error>
+          <mat-error *ngIf="isFieldInvalid('email', 'email')">
+            Please enter valid email address
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input">
           <input matInput type="password" placeholder="Password" formControlName="password" required>
-          <mat-error *ngIf="isFieldInvalid('password')">
+          <mat-error *ngIf="isFieldInvalid('password', 'required')">
             Please inform your password
           </mat-error>
         </mat-form-field>
-        
+
         <mat-error *ngIf="error">{{error}}</mat-error>
         <button mat-raised-button color="primary" [disabled]="loading">Login</button>
+        <div class="margin10">
+          <a [routerLink]="['/forgot-password']" class="forgot-password-link">Forgot password?</a>
+        </div>
       </form>
     </mat-card-content>
   </mat-card>
