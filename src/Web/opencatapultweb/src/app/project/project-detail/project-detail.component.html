@@ -1,14 +1,18 @@
 <h3>{{project?.name}}</h3>
-<div class="action-buttons">    
-  <button mat-raised-button color="primary" routerLink="clone">Clone</button>
-  <button mat-raised-button color="accent" (click)="onArchiveClick()">Archive</button>
-  <button mat-raised-button color="warn" (click)="onDeleteClick()">Delete</button>
+<div class="action-buttons">
+  <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
+  <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
+  <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
 </div>
 <nav mat-tab-nav-bar flex>
     <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
     <a mat-tab-link (click)="activeLink = 'data-model'" [active]="activeLink == 'data-model'" routerLink='data-model'>Data Models</a>
-    <a mat-tab-link (click)="activeLink = 'job-definition'" [active]="activeLink == 'job-definition'" routerLink='job-definition'>Job Definitions</a>
-    <a mat-tab-link (click)="activeLink = 'job-queue'" [active]="activeLink == 'job-queue'" routerLink='job-queue'>Job Queues</a>
+    <a mat-tab-link (click)="activeLink = 'job-definition'"
+      [active]="activeLink == 'job-definition'" routerLink='job-definition'
+      *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
+    <a mat-tab-link (click)="activeLink = 'job-queue'"
+      [active]="activeLink == 'job-queue'" routerLink='job-queue'
+      *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
     <a mat-tab-link (click)="activeLink = 'member'" [active]="activeLink == 'member'" routerLink='member'>Members</a>
 </nav>
 <router-outlet></router-outlet>

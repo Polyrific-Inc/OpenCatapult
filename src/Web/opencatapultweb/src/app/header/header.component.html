@@ -6,9 +6,9 @@
       </span>
       <button mat-button routerLink="/project">Projects</button>
       <button mat-button routerLink="/service">External Services</button>
-      <button mat-button routerLink="/engine" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Engines</button>
-      <button mat-button routerLink="/provider" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Providers</button>
-      <button mat-button routerLink="/user" *ngIf="isMenuShown(authorizePolicyEnum.UserRoleAdminAccess)">Users</button>
+      <button mat-button routerLink="/engine" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Engines</button>
+      <button mat-button routerLink="/provider" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Providers</button>
+      <button mat-button routerLink="/user" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
   </div>
   <div class="profile-buttons">
       <button mat-button routerLink="/user-profile">Edit Profile</button>

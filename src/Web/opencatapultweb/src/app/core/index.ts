@@ -47,6 +47,7 @@ export * from './models/account/update-user-dto';
 
 /* Enums */
 export * from './auth/project-member-role';
+export * from './auth/authorize-policy';
 export * from './enums/project-status-filter-type';
 export * from './enums/job-task-definition-type';
 export * from './enums/property-data-type';

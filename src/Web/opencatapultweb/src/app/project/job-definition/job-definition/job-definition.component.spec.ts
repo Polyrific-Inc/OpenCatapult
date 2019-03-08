@@ -13,6 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { JobTaskDefinitionComponent } from '../job-task-definition/job-task-definition.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('JobDefinitionComponent', () => {
   let component: JobDefinitionComponent;
@@ -35,10 +36,10 @@ describe('JobDefinitionComponent', () => {
         MatDialogModule,
         MatSnackBarModule,
         DragDropModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        SharedModule.forRoot()
       ],
       providers: [
-        SnackbarService,
         {
           provide: ActivatedRoute, useValue: {
             parent: {

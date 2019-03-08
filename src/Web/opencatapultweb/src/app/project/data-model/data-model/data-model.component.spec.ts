@@ -12,6 +12,8 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { SnackbarService } from '@app/shared';
+import { SharedModule } from '@app/shared/shared.module';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('DataModelComponent', () => {
   let component: DataModelComponent;
@@ -33,16 +35,26 @@ describe('DataModelComponent', () => {
         FormsModule,
         MatDialogModule,
         MatSnackBarModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        SharedModule.forRoot()
       ],
       providers: [
-        SnackbarService,
         {
           provide: ActivatedRoute, useValue: {
             parent: {
               parent: {
                 snapshot: { params: of({ id: 1}) }
               }
+            }
+          }
+        },
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
             }
           }
         }

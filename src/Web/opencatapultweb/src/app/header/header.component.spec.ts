@@ -5,6 +5,7 @@ import { MatToolbarModule } from '@angular/material';
 import { AuthService } from '@app/core/auth/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -13,7 +14,7 @@ describe('HeaderComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ HeaderComponent ],
-      imports: [ MatToolbarModule, HttpClientTestingModule, RouterTestingModule ],
+      imports: [ MatToolbarModule, HttpClientTestingModule, RouterTestingModule, SharedModule ],
       providers: [ AuthService ]
     })
     .compileComponents();

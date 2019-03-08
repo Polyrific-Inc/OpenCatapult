@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { DataModelPropertyDto, DataModelDto, DataModelService } from '@app/core';
+import { DataModelPropertyDto, DataModelDto, DataModelService, AuthorizePolicy } from '@app/core';
 import { MatDialog } from '@angular/material';
 import {
   DataModelPropertyInfoDialogComponent
@@ -16,6 +16,7 @@ export class DataModelPropertyComponent implements OnInit {
   @Input() dataModel: DataModelDto;
   @Input() dataModels: DataModelDto[];
   @Output() propertiesChanged = new EventEmitter<DataModelDto>();
+  authorizePolicy = AuthorizePolicy;
   constructor(
     private dialog: MatDialog,
     private dataModelService: DataModelService,

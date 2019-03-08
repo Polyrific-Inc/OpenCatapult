@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatExpansionModule, MatListModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SharedModule } from '@app/shared/shared.module';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('ProjectComponent', () => {
   let component: ProjectComponent;
@@ -20,7 +22,20 @@ describe('ProjectComponent', () => {
         HttpClientTestingModule,
         CoreModule,
         MatExpansionModule,
-        MatListModule
+        MatListModule,
+        SharedModule
+      ],
+      providers: [
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
+            }
+          }
+        }
       ]
     })
     .compileComponents();

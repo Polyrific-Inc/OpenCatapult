@@ -6,6 +6,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SnackbarService } from '@app/shared';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('DataModelPropertyComponent', () => {
   let component: DataModelPropertyComponent;
@@ -22,10 +23,8 @@ describe('DataModelPropertyComponent', () => {
         CoreModule,
         MatDialogModule,
         HttpClientTestingModule,
-        MatSnackBarModule
-      ],
-      providers: [
-        SnackbarService
+        MatSnackBarModule,
+        SharedModule.forRoot()
       ]
     })
     .compileComponents();

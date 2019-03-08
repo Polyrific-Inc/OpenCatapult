@@ -4,6 +4,8 @@ import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ProjectService } from '../services/project.service';
+import { ApiService } from '../services/api.service';
 
 describe('AuthGuard', () => {
   beforeEach(() => {
@@ -14,7 +16,9 @@ describe('AuthGuard', () => {
       ],
       providers: [
         AuthGuard,
-        AuthService
+        AuthService,
+        ProjectService,
+        ApiService
       ]
     });
   });

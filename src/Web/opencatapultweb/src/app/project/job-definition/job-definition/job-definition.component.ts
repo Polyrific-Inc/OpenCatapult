@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JobDefinitionDto, JobDefinitionService, JobQueueService } from '@app/core';
+import { JobDefinitionDto, JobDefinitionService, JobQueueService, ProjectService, AuthorizePolicy } from '@app/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
@@ -21,18 +21,19 @@ export class JobDefinitionComponent implements OnInit {
   jobDefinitions: JobDefinitionViewModel[];
   projectId: number;
   loading: boolean;
+  authorizePolicy = AuthorizePolicy;
 
   constructor(
-    private route: ActivatedRoute,
     private router: Router,
     private dialog: MatDialog,
     private jobDefinitionService: JobDefinitionService,
     private jobQueueService: JobQueueService,
+    private projectService: ProjectService,
     private snackbar: SnackbarService
   ) { }
 
   ngOnInit() {
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = this.projectService.currentProjectId;
     this.getJobDefinitions();
   }
 

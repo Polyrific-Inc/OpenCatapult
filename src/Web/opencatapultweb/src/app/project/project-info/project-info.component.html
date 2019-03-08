@@ -1,19 +1,21 @@
-<div fxLayout="row" fxLayout.xs="column" class="form-container">  
+<div fxLayout="row" fxLayout.xs="column" class="form-container">
     <form fxFlex="50" fxFlex.md="70" [formGroup]="projectInfoForm" (ngSubmit)="onSubmit()">
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">
             <mat-label>Project ID</mat-label>
           <input matInput formControlName="id">
         </mat-form-field>
-        
+
         <app-project-info-form (formReady)="formInitialized($event)" [project]="project" [disableForm]="!editing" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
-        
+
         <mat-form-field class="full-width-input">
             <mat-label>Created</mat-label>
             <input matInput formControlName="createdDate">
         </mat-form-field>
-        <button mat-raised-button [disabled]="loading" *ngIf="!editing" (click)="setEditing(true)">Edit</button>
-        <button mat-raised-button color="primary" [disabled]="loading" *ngIf="editing">Save</button>
-        <button mat-raised-button [disabled]="loading" *ngIf="editing" (click)="setEditing(false)">Cancel</button>
+        <div *appHasAccess="authorizePolicy.ProjectOwnerAccess">
+            <button mat-raised-button [disabled]="loading" *ngIf="!editing" (click)="setEditing(true)">Edit</button>
+            <button mat-raised-button color="primary" [disabled]="loading" *ngIf="editing">Save</button>
+            <button mat-raised-button [disabled]="loading" *ngIf="editing" (click)="setEditing(false)">Cancel</button>
+        </div>
       </form>
 </div>

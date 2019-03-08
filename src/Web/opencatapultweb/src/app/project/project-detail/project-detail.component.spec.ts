@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared/shared.module';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('ProjectDetailComponent', () => {
   let component: ProjectDetailComponent;
@@ -35,6 +36,16 @@ describe('ProjectDetailComponent', () => {
                 parameterMap: new Map(),
                 url: [ { path: 'project' } ]
               }
+            }
+          }
+        },
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
             }
           }
         }

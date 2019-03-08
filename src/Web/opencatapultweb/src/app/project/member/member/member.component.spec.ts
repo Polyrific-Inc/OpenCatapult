@@ -8,11 +8,12 @@ import { MatTableModule, MatIconModule, MatDialogModule, MatInputModule,
 import { SharedModule } from '@app/shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { CoreModule } from '@app/core';
+import { CoreModule, ProjectService } from '@app/core';
 import { MemberInfoDialogComponent } from '../components/member-info-dialog/member-info-dialog.component';
 import { MemberNewDialogComponent } from '../components/member-new-dialog/member-new-dialog.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('MemberComponent', () => {
   let component: MemberComponent;
@@ -44,6 +45,16 @@ describe('MemberComponent', () => {
               parent: {
                 snapshot: { params: of({ id: 1}) }
               }
+            }
+          }
+        },
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
             }
           }
         }

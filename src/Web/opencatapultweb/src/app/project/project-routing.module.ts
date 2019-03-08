@@ -6,35 +6,62 @@ import { ProjectInfoComponent } from './project-info/project-info.component';
 import { ProjectNewComponent } from './project-new/project-new.component';
 import { ProjectCloneComponent } from './project-clone/project-clone.component';
 import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
+import { AuthorizePolicy } from '@app/core';
+import { AuthGuard } from '@app/core/auth/auth.guard';
 
 const routes: Routes = [
   {
     path: '',
     component: ProjectComponent,
+    canActivateChild: [AuthGuard],
     children:
     [
       {
         path: 'new',
-        component: ProjectNewComponent
+        component: ProjectNewComponent,
+        data: { authPolicy: AuthorizePolicy.UserRoleBasicAccess }
       },
       {
-        path: ':id/clone',
-        component: ProjectCloneComponent
+        path: ':projectId/clone',
+        component: ProjectCloneComponent,
+        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess }
       },
       {
-        path: 'archive/:id',
-        component: ProjectArchiveDetailComponent
+        path: 'archive/:projectId',
+        component: ProjectArchiveDetailComponent,
+        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess }
       },
       {
-        path: ':id',
+        path: ':projectId',
         component: ProjectDetailComponent,
+        canActivateChild: [AuthGuard],
         children: [
           {path: '', redirectTo: 'info', pathMatch: 'full'},
-          {path: 'info', component: ProjectInfoComponent },
-          {path: 'data-model', loadChildren: './data-model/data-model.module#DataModelModule' },
-          {path: 'job-definition', loadChildren: './job-definition/job-definition.module#JobDefinitionModule'},
-          {path: 'job-queue', loadChildren: './job-queue/job-queue.module#JobQueueModule'},
-          {path: 'member', loadChildren: './member/member.module#MemberModule'}
+          {
+            path: 'info',
+            component: ProjectInfoComponent,
+            data: { authPolicy: AuthorizePolicy.ProjectAccess }
+          },
+          {
+            path: 'data-model',
+            loadChildren: './data-model/data-model.module#DataModelModule',
+            data: { authPolicy: AuthorizePolicy.ProjectAccess }
+          },
+          {
+            path: 'job-definition',
+            loadChildren: './job-definition/job-definition.module#JobDefinitionModule',
+            data: { authPolicy: AuthorizePolicy.ProjectContributorAccess }
+          },
+          {
+            path: 'job-queue',
+            loadChildren: './job-queue/job-queue.module#JobQueueModule',
+            data: { authPolicy: AuthorizePolicy.ProjectMaintainerAccess }
+          },
+          {
+            path: 'member',
+            loadChildren: './member/member.module#MemberModule',
+            data: { authPolicy: AuthorizePolicy.ProjectAccess }
+          }
         ]
       }
     ]

@@ -2,7 +2,7 @@
   <mat-list-item *ngFor="let property of properties">
     <div fxLayout="row" fxLayoutAlign="space-between center" class="property-item">
       <div>{{property.name}} <span class="property-type">({{property.dataType || property.relatedProjectDataModelName + ' model'}} - {{property.isRequired ? 'required' : 'optional'}})</span></div>
-      <div class="action-buttons">
+      <div class="action-buttons" *appHasAccess="authorizePolicy.ProjectContributorAccess">
         <button mat-icon-button (click)="onPropertyInfoClick(property)">
           <mat-icon>info</mat-icon>
         </button>

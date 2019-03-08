@@ -1,4 +1,4 @@
-<div fxLayout="row" fxLayoutAlign="space-between center">
+<div fxLayout="row" fxLayoutAlign="space-between center" *appHasAccess="authorizePolicy.ProjectContributorAccess">
     <div class="action-buttons">
         <mat-checkbox class="all-checkbox" (change)="onCheckboxAllChanged($event)"></mat-checkbox>
         <button mat-raised-button [disabled]="!isModelsSelected()" (click)="onBulkDeleteClick()">Bulk Delete</button>
@@ -14,10 +14,10 @@
   <mat-expansion-panel *ngFor="let dataModel of dataModels">
     <mat-expansion-panel-header>
       <mat-panel-title>
-        <mat-checkbox class="model-checkbox" [(ngModel)]="dataModel.selected" (click)="$event.stopPropagation();"></mat-checkbox>
+        <mat-checkbox class="model-checkbox" [(ngModel)]="dataModel.selected" (click)="$event.stopPropagation();" *appHasAccess="authorizePolicy.ProjectContributorAccess"></mat-checkbox>
         <span>{{dataModel.name}}</span>
       </mat-panel-title>
-      <mat-panel-description>
+      <mat-panel-description *appHasAccess="authorizePolicy.ProjectContributorAccess">
         <button mat-icon-button (click)="onModelInfoClick(dataModel); $event.stopPropagation();">
           <mat-icon>info</mat-icon>
         </button>

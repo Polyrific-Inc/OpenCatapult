@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProjectService, ProjectDto } from '@app/core';
+import { ProjectService, ProjectDto, AuthorizePolicy } from '@app/core';
 import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
 
@@ -12,6 +12,7 @@ import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDial
 export class ProjectDetailComponent implements OnInit {
   project: ProjectDto;
   activeLink: string;
+  authorizePolicy = AuthorizePolicy;
 
   constructor(
     private route: ActivatedRoute,
@@ -30,7 +31,7 @@ export class ProjectDetailComponent implements OnInit {
     this.route.params.subscribe(params => {
       this.activeLink = 'info';
 
-      const id = +params.id;
+      const id = +params.projectId;
       this.projectService.getProject(id)
         .subscribe(project => this.project = project);
     });

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JobQueueService, JobDto, JobQueueFilterType } from '@app/core';
-import { ActivatedRoute } from '@angular/router';
+import { JobQueueService, JobDto, JobQueueFilterType, ProjectService } from '@app/core';
 import { JobStatus } from '@app/core/enums/job-status';
 import { MatTabChangeEvent } from '@angular/material';
 
@@ -17,12 +16,12 @@ export class JobQueueComponent implements OnInit {
   loading: boolean;
 
   constructor(
-    private route: ActivatedRoute,
-    private jobQueueService: JobQueueService
+    private jobQueueService: JobQueueService,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit() {
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = this.projectService.currentProjectId;
     this.getCurrentJobQueues();
   }
 

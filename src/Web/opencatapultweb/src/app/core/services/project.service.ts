@@ -7,6 +7,8 @@ import { CloneProjectOptionDto } from '../models/project/clone-project-option-dt
 
 @Injectable()
 export class ProjectService {
+  currentProjectId: number;
+
   constructor(private apiService: ApiService) { }
 
   getProjects(status: string, getAll: boolean): Observable<ProjectDto[]> {

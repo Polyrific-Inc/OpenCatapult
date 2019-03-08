@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DataModelDto, DataModelService } from '@app/core';
+import { DataModelDto, DataModelService, ProjectService, AuthorizePolicy } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog, MatCheckboxChange } from '@angular/material';
 import { DataModelNewDialogComponent } from '../components/data-model-new-dialog/data-model-new-dialog.component';
@@ -20,16 +20,17 @@ export class DataModelComponent implements OnInit {
   dataModels: DataModelViewModel[];
   projectId: number;
   loading: boolean;
+  authorizePolicy = AuthorizePolicy;
 
   constructor(
-    private route: ActivatedRoute,
     private dialog: MatDialog,
     private dataModelService: DataModelService,
+    private projectService: ProjectService,
     private snackbar: SnackbarService
   ) { }
 
   ngOnInit() {
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = this.projectService.currentProjectId;
     this.getDataModels();
   }
 

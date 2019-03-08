@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JobDto, JobQueueService } from '@app/core';
+import { JobDto, JobQueueService, ProjectService } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -20,11 +20,12 @@ export class JobQueueLogComponent implements OnInit {queueId: number;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
+    private projectService: ProjectService
   ) { }
 
   ngOnInit() {
     this.queueId = this.route.snapshot.params.id;
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = +this.projectService.currentProjectId;
     this.getQueue();
   }
 

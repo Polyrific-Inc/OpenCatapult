@@ -11,6 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '@app/shared/shared.module';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('ProjectInfoComponent', () => {
   let component: ProjectInfoComponent;
@@ -35,6 +36,16 @@ describe('ProjectInfoComponent', () => {
           provide: ActivatedRoute, useValue: {
             parent: {
               params: of({ id: 1})
+            }
+          }
+        },
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
             }
           }
         }

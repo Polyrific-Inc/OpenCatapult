@@ -3,7 +3,7 @@ import { Validators, FormBuilder, FormControl, FormGroupDirective, NgForm, FormG
 import { AccountService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { ErrorStateMatcher } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 class PasswordErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -31,8 +31,6 @@ export class ResetPasswordComponent implements OnInit {
     newPassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
     confirmNewPassword: null
   }, {validators: this.checkPasswords});
-
-  private formSubmitAttempt: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -68,8 +66,6 @@ export class ResetPasswordComponent implements OnInit {
                 this.loading = false;
             });
     }
-
-    this.formSubmitAttempt = true;
   }
 
   checkPasswords(group: FormGroup) { // here we have the 'passwords' group

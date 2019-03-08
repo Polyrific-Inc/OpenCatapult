@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobQueueService, JobDto, JobStatus } from '@app/core';
+import { JobQueueService, JobDto, JobStatus, ProjectService } from '@app/core';
 import { tap } from 'rxjs/operators';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { MatDialog } from '@angular/material';
@@ -21,13 +21,14 @@ export class JobQueueDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
+    private projectService: ProjectService,
     private snackbar: SnackbarService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.queueId = this.route.snapshot.params.id;
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = this.projectService.currentProjectId;
     this.getQueue();
   }
 

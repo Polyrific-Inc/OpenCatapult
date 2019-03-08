@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ProjectDto, ProjectService } from '@app/core';
+import { ProjectDto, ProjectService, AuthorizePolicy } from '@app/core';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
@@ -15,6 +15,7 @@ export class ProjectArchiveDetailComponent implements OnInit {
   project: ProjectDto;
   loading: boolean;
   formSubmitAttempt = false;
+  authorizePolicy = AuthorizePolicy;
 
   constructor(
     private projectService: ProjectService,
@@ -35,7 +36,7 @@ export class ProjectArchiveDetailComponent implements OnInit {
 
   getProject(): void {
     this.route.params.subscribe(params => {
-      const id = +params.id;
+      const id = +params.projectId;
       this.projectService.getProject(id)
         .subscribe(project => {
           this.project = project;

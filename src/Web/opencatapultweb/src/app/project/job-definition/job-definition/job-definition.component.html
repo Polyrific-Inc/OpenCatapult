@@ -19,7 +19,7 @@
       <span>{{jobDefinition.name}}</span>
     </mat-panel-title>
     <mat-panel-description>
-      <button mat-icon-button (click)="onQueueJobClick(jobDefinition); $event.stopPropagation();">
+      <button mat-icon-button (click)="onQueueJobClick(jobDefinition); $event.stopPropagation();" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">
         <mat-icon>play_circle_filled</mat-icon>
       </button>
       <button mat-icon-button (click)="onJobDefinitionInfoClick(jobDefinition); $event.stopPropagation();">

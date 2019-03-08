@@ -6,6 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MatToolbarModule } from '@angular/material';
 import { AuthService } from '@app/core/auth/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -13,7 +14,7 @@ describe('HomeLayoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ RouterTestingModule, HttpClientTestingModule, MatToolbarModule ],
+      imports: [ RouterTestingModule, HttpClientTestingModule, MatToolbarModule, SharedModule ],
       declarations: [ HomeLayoutComponent, HeaderComponent ],
       providers: [ AuthService ]
     })

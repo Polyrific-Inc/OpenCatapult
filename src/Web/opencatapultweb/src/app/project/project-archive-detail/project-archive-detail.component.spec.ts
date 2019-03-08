@@ -11,6 +11,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { ProjectInfoFormComponent } from '../components/project-info-form/project-info-form.component';
+import { AuthService } from '@app/core/auth/auth.service';
 
 describe('ProjectArchiveDetailComponent', () => {
   let component: ProjectArchiveDetailComponent;
@@ -34,6 +35,16 @@ describe('ProjectArchiveDetailComponent', () => {
         {
           provide: ActivatedRoute, useValue: {
             params: of({ id: 1})
+          }
+        },
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
+            }
           }
         }
       ]

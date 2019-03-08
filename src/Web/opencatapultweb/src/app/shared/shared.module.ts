@@ -20,6 +20,7 @@ import { JobListFormComponent } from './components/job-list-form/job-list-form.c
 import { AdditionalConfigFieldComponent } from './components/additional-config-field/additional-config-field.component';
 import { ConfirmationWithInputDialogComponent } from './components/confirmation-with-input-dialog/confirmation-with-input-dialog.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
+import { HasAccessDirective } from './directives/has-access.directive';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     JobListFormComponent,
     AdditionalConfigFieldComponent,
     ConfirmationWithInputDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    HasAccessDirective
   ],
   imports: [
     CommonModule,
@@ -69,7 +71,8 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
     AdditionalConfigFormComponent,
     AdditionalConfigFieldComponent,
     ConfirmationWithInputDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    HasAccessDirective
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,

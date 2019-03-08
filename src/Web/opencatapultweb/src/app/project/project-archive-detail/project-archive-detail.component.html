@@ -1,9 +1,9 @@
 <h3>Archived Project</h3>
-<div fxLayout="row" fxLayout.xs="column" class="form-container">  
+<div fxLayout="row" fxLayout.xs="column" class="form-container">
   <div fxFlex="50" fxFlex.md="70">
-      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>      
+      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
       <app-project-info-form (formReady)="formInitialized($event)" [disableForm]="true" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
       <div class="margin10"></div>
-      <button mat-raised-button color="primary" (click)="onActivateClick()" [disabled]="loading">Activate</button>
+      <button mat-raised-button color="primary" (click)="onActivateClick()" [disabled]="loading" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Activate</button>
   </div>
 </div>

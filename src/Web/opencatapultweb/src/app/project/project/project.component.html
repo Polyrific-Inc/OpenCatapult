@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayout.xs="column">
-  <div fxFlex="15" fxFlex.sm="30" fxFlex.md="20">    
+  <div fxFlex="15" fxFlex.sm="30" fxFlex.md="20">
     <!-- Project list -->
     <mat-accordion>
         <mat-expansion-panel class="project-list" expanded="true">
@@ -7,10 +7,10 @@
             <mat-panel-title>
               Project List
             </mat-panel-title>
-          </mat-expansion-panel-header>       
-          <div class="button">
+          </mat-expansion-panel-header>
+          <div class="button" *appHasAccess="authorizePolicy.UserRoleBasicAccess">
               <button mat-raised-button color="primary" routerLink="/project/new">New Project</button>
-          </div>             
+          </div>
           <mat-nav-list>
             <a mat-list-item *ngFor="let project of projects" routerLink='/project/{{project.id}}' [routerLinkActive]="['is-active']">{{project.name}}</a>
           </mat-nav-list>

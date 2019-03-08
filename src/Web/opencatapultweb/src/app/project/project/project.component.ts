@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { map } from 'rxjs/operators';
-import { ProjectService, ProjectStatusFilterType, ProjectDto } from '@app/core';
+import { ProjectService, ProjectStatusFilterType, ProjectDto, AuthorizePolicy } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -14,6 +14,7 @@ export class ProjectComponent implements OnInit {
   projects: ProjectDto[];
   archivedProjects: ProjectDto[];
   currentProjectId: number;
+  authorizePolicy = AuthorizePolicy;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(

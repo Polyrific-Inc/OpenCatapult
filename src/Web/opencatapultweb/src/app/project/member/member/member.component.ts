@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectMemberDto } from '@app/core';
+import { ProjectMemberDto, ProjectService, AuthorizePolicy } from '@app/core';
 import { MemberService } from '@app/core/services/member.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
@@ -16,18 +16,19 @@ export class MemberComponent implements OnInit {
   members: ProjectMemberDto[];
   projectId: number;
   roleId = 0;
+  authorizePolicy = AuthorizePolicy;
 
   displayedColumns: string[] = ['username', 'role', 'actions'];
 
   constructor(
-    private route: ActivatedRoute,
     private memberService: MemberService,
+    private projectService: ProjectService,
     private dialog: MatDialog,
     private snackbar: SnackbarService
     ) { }
 
   ngOnInit() {
-    this.projectId = +this.route.parent.parent.snapshot.params.id;
+    this.projectId = this.projectService.currentProjectId;
     this.getMembers();
   }
 

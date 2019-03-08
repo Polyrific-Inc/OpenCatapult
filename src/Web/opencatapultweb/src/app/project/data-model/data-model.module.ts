@@ -17,6 +17,7 @@ import { DataModelPropertyNewDialogComponent } from './components/data-model-pro
 import {
   DataModelPropertyInfoDialogComponent
 } from './components/data-model-property-info-dialog/data-model-property-info-dialog.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import {
     MatDialogModule,
     MatProgressBarModule,
     MatSelectModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    SharedModule
   ],
   entryComponents: [
     DataModelNewDialogComponent,
