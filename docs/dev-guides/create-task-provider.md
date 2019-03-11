@@ -22,9 +22,9 @@ Go into your project folder:
 cd Polyrific.Catapult.Plugins.Angular
 ```
 
-Next, you'd need to add the plugin core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.Plugins.Core/)
+Next, you'd need to add the plugin core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.TaskProviders.Core/)
 ```sh
-dotnet add package Polyrific.Catapult.Plugins.Core --version 1.0.0-beta1-15556
+dotnet add package Polyrific.Catapult.TaskProviders.Core --version 1.0.0-beta2-*
 ```
 
 Angular follows the kebab naming convention for its components. Since the model names that are provided might not follow this convention, we need to convert those name into kebab case. To do this, we can use the [humanizer](https://github.com/Humanizr/Humanizer) library:
@@ -74,7 +74,7 @@ The `Polyrific.Catapult.Plugins.Angular.csproj` file should like this:
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" Version="2.5.16" />
-    <PackageReference Include="Polyrific.Catapult.Plugins.Core" Version="1.0.0-beta1-15556" />
+    <PackageReference Include="Polyrific.Catapult.TaskProviders.Core" Version="1.0.0-beta2-*" />
   </ItemGroup>
 
 </Project>
@@ -88,7 +88,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.Plugins.Angular
 {
@@ -183,7 +183,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Humanizer;
-using Polyrific.Catapult.Plugins.Core;
+using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.Plugins.Angular
 {
