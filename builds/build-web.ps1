@@ -5,4 +5,4 @@ Set-Location -Path $webLocation
 
 npm install
 
-npm run start
+npm run start -- --ssl --host localhost --port 44300
