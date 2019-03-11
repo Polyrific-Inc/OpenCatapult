@@ -29,6 +29,7 @@ namespace Polyrific.Catapult.Api
     {
         private readonly ILogger _logger;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly string _allowSpecificOriginsPolicy = "_allowSpecificOriginsPolicy";
 
         public Startup(IConfiguration configuration, ILoggerFactory loggerFactory, IHostingEnvironment hostingEnvironment)
         {
@@ -111,7 +112,15 @@ namespace Polyrific.Catapult.Api
 
             });
 
-            services.AddCors();
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_allowSpecificOriginsPolicy, builder => builder
+                    .WithOrigins(Configuration["AllowedOrigin"].Split(","))
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials()
+                );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -146,11 +155,7 @@ namespace Polyrific.Catapult.Api
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseCors(builder => builder
-                .WithOrigins(Configuration["AllowedOrigin"])
-                .AllowAnyHeader()
-                .AllowAnyMethod()
-                .AllowCredentials());
+            app.UseCors(_allowSpecificOriginsPolicy);
 
             app.UseMvc();
 
