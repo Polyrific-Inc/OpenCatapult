@@ -12,8 +12,16 @@
               <button mat-raised-button color="primary" routerLink="/project/new">New Project</button>
           </div>
           <mat-nav-list>
-            <a mat-list-item *ngFor="let project of projects" routerLink='/project/{{project.id}}' [routerLinkActive]="['is-active']">{{project.name}}</a>
+            <a mat-list-item *ngFor="let project of shownProjects" routerLink='/project/{{project.id}}' [routerLinkActive]="['is-active']">{{project.name}}</a>
           </mat-nav-list>
+          <div *ngIf="this.projects?.length > 10">
+            <div class="button margin10" (click)="toggleShowAll(true)" *ngIf="projects?.length !== shownProjects?.length">
+              <button mat-button>Show more...</button>
+            </div>
+            <div class="button margin10" (click)="toggleShowAll(false)" *ngIf="projects?.length === shownProjects?.length">
+              <button mat-button>Show less</button>
+            </div>
+          </div>
         </mat-expansion-panel>
         <mat-expansion-panel expanded="false">
           <mat-expansion-panel-header>

@@ -7,20 +7,6 @@
   background-color: #f5f5f5;
 }
 
-.project-list {
-  max-height: 80vh;
-  overflow-y: scroll;
-}
-
-.project-list::-webkit-scrollbar {
-  height: 4px;
-  width: 4px;
-}
-
-.project-list::-webkit-scrollbar-thumb {
-  background: rgba(0,0,0,.26);
-}
-
 .button {
   text-align: center;
 }

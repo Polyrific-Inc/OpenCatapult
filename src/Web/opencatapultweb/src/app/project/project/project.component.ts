@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ProjectComponent implements OnInit {
   projects: ProjectDto[];
+  shownProjects: ProjectDto[];
   archivedProjects: ProjectDto[];
   currentProjectId: number;
   authorizePolicy = AuthorizePolicy;
@@ -38,10 +39,21 @@ export class ProjectComponent implements OnInit {
 
   getProjects() {
     this.projectService.getProjects(ProjectStatusFilterType.active, true)
-      .subscribe(data => this.projects = data);
+      .subscribe(data => {
+        this.projects = data;
+        this.toggleShowAll(false);
+      });
 
     this.projectService.getProjects(ProjectStatusFilterType.archived, true)
       .subscribe(data => this.archivedProjects = data);
+  }
+
+  toggleShowAll(showAll: boolean) {
+    if (showAll) {
+      this.shownProjects = this.projects;
+    } else {
+      this.shownProjects = this.projects.slice(0, 9);
+    }
   }
 
 }
