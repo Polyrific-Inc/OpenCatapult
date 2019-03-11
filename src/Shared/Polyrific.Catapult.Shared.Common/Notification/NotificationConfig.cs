@@ -29,6 +29,8 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
         public const string ResetPassword = "ResetPassword";
 
+        public const string ResetPasswordWeb = "ResetPasswordWeb";
+
         public string[] GetNotificationProviders(string messageType)
         {
             return GetConfigArrayValue(messageType, new string[0]);
@@ -82,8 +84,10 @@ namespace Polyrific.Catapult.Shared.Common.Notification
             {
                 {RegistrationCompleted, $"{NotificationProvider.SmtpEmail}"},
                 {ResetPassword, $"{NotificationProvider.SmtpEmail}"},
+                {ResetPasswordWeb, $"{NotificationProvider.SmtpEmail}"},
                 {$"{RegistrationCompleted}Subject", "Catapult - Please confirm your account"},
-                {$"{ResetPassword}Subject", "Catapult - Reset password token"}
+                {$"{ResetPassword}Subject", "Catapult - Reset password token"},
+                {$"{ResetPasswordWeb}Subject", "Catapult - Reset password token"}
             };
 
             return configs;
