@@ -16,6 +16,7 @@ export class ProjectComponent implements OnInit {
   archivedProjects: ProjectDto[];
   currentProjectId: number;
   authorizePolicy = AuthorizePolicy;
+  shownProjectNumber = 10;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
     .pipe(
@@ -52,7 +53,7 @@ export class ProjectComponent implements OnInit {
     if (showAll) {
       this.shownProjects = this.projects;
     } else {
-      this.shownProjects = this.projects.slice(0, 9);
+      this.shownProjects = this.projects.slice(0, this.shownProjectNumber);
     }
   }
 

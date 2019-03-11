@@ -8,6 +8,7 @@ import { ProjectCloneComponent } from './project-clone/project-clone.component';
 import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
 import { AuthorizePolicy } from '@app/core';
 import { AuthGuard } from '@app/core/auth/auth.guard';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 
 const routes: Routes = [
   {
@@ -16,6 +17,10 @@ const routes: Routes = [
     canActivateChild: [AuthGuard],
     children:
     [
+      {
+        path: '',
+        component: ProjectDashboardComponent
+      },
       {
         path: 'new',
         component: ProjectNewComponent,

@@ -10,6 +10,7 @@ export * from './services/account.service';
 export * from './services/external-service-type.service';
 export * from './services/engine.service';
 export * from './services/yaml.service';
+export * from './services/project-history.service';
 
 /* Models */
 export * from './models/project/project-dto';

@@ -1,0 +1,13 @@
+.recent-projects {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+.recent-projects li {
+  margin-bottom: 5px;
+}
+
+.recent-projects li a {
+  color: #337ab7;
+  text-decoration: none;
+}

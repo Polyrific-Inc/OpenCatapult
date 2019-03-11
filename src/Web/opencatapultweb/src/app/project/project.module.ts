@@ -7,7 +7,7 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ProjectInfoComponent } from './project-info/project-info.component';
 import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatGridListModule,
   MatExpansionModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatProgressBarModule,
-  MatInputModule, MatSelectModule, MatDialogModule, MatCheckboxModule } from '@angular/material';
+  MatInputModule, MatSelectModule, MatDialogModule, MatCheckboxModule, MatCardModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProjectInfoFormComponent } from './components/project-info-form/project-info-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -15,6 +15,7 @@ import { ProjectNewComponent } from './project-new/project-new.component';
 import { SharedModule } from '@app/shared/shared.module';
 import { ProjectCloneComponent } from './project-clone/project-clone.component';
 import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
+import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 
 @NgModule({
   declarations: [ProjectComponent,
@@ -23,7 +24,8 @@ import { ProjectArchiveDetailComponent } from './project-archive-detail/project-
     ProjectInfoFormComponent,
     ProjectNewComponent,
     ProjectCloneComponent,
-    ProjectArchiveDetailComponent
+    ProjectArchiveDetailComponent,
+    ProjectDashboardComponent
   ],
   imports: [
     CommonModule,
@@ -44,7 +46,8 @@ import { ProjectArchiveDetailComponent } from './project-archive-detail/project-
     FlexLayoutModule,
     SharedModule,
     MatDialogModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatCardModule
   ]
 })
 export class ProjectModule { }
