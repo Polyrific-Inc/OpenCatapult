@@ -27,10 +27,7 @@ export class ResetPasswordComponent implements OnInit {
   token: string;
   matcher = new PasswordErrorStateMatcher();
 
-  resetPasswordForm = this.fb.group({
-    newPassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
-    confirmNewPassword: null
-  }, {validators: this.checkPasswords});
+  resetPasswordForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
@@ -42,6 +39,12 @@ export class ResetPasswordComponent implements OnInit {
   ngOnInit() {
     this.email = this.route.snapshot.queryParams['email'];
     this.token = this.route.snapshot.queryParams['token'];
+
+    this.resetPasswordForm = this.fb.group({
+      token: [this.token, Validators.required],
+      newPassword: [null, Validators.compose([Validators.required, Validators.minLength(6)])],
+      confirmNewPassword: null
+    }, {validators: this.checkPasswords});
   }
 
   isFieldInvalid(controlName: string, errorCode: string) {
@@ -52,10 +55,7 @@ export class ResetPasswordComponent implements OnInit {
   onSubmit() {
     if (this.resetPasswordForm.valid) {
       this.loading = true;
-      this.accountService.resetPassword(this.email, {
-        token: this.token,
-        ...this.resetPasswordForm.value
-      })
+      this.accountService.resetPassword(this.email, this.resetPasswordForm.value)
         .subscribe(
             data => {
               this.resetPasswordDone = true;
