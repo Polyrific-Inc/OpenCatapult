@@ -45,6 +45,6 @@ Engine runs as a stand-alone console application which waits for any queued jobs
 OpenCatapult's Engine is a platform-agnostic system. It means that Engine actually knows nothing about the concrete work that the job tasks do.
 Task Provider is an `OpenCatapult` extension which provides specific implementation of a job task.
 
-For example, Engine actually knows nothing about GitHub repository. All Engine knows is just it wants to push some code to a remote repository via `Push` task. So we need to provide a Task Provider, e.g. `Polyrific.Catapult.Plugins.GitHub`, which will handle the source code delivery in a specific way to GitHub. If you want to submit the code into another repository service, you can just plug in a new Task Provider, and reconfigure the `Push` task to use it.
+For example, Engine actually knows nothing about GitHub repository. All Engine knows is just it wants to push some code to a remote repository via `Push` task. So we need to provide a Task Provider, e.g. `Polyrific.Catapult.TaskProviders.GitHub`, which will handle the source code delivery in a specific way to GitHub. If you want to submit the code into another repository service, you can just plug in a new Task Provider, and reconfigure the `Push` task to use it.
 
 `OpenCatapult` is packed with some built-in Task Providers. Please check them in the [Task Provider References](../task-providers/task-provider.md).

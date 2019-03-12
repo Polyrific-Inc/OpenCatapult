@@ -2,20 +2,20 @@
 
 Hosting providers can be used in [Deploy task](../user-guides/job-definitions.md#deploy). The main role of this provider is to provide a specific way to deploy build artifact into a hosting environment.
 
-## Polyrific.Catapult.Plugins.AzureAppService
+## Polyrific.Catapult.TaskProviders.AzureAppService
 
-`OpenCatapult` provides `Polyrific.Catapult.Plugins.AzureAppService` as the built-in provider for Hosting Provider. This provider can be used to deploy a web application into Azure App Service instance. It uses kudu deploy `zipdeploy` api to upload the package and update the application.
+`OpenCatapult` provides `Polyrific.Catapult.TaskProviders.AzureAppService` as the built-in provider for Hosting Provider. This provider can be used to deploy a web application into Azure App Service instance. It uses kudu deploy `zipdeploy` api to upload the package and update the application.
 
 ### Usage
 
-This provider can only be used in Deploy task. You can use the name `Polyrific.Catapult.Plugins.AzureAppService` when adding or updating a Deploy task:
+This provider can only be used in Deploy task. You can use the name `Polyrific.Catapult.TaskProviders.AzureAppService` when adding or updating a Deploy task:
 
 ```sh
-dotnet occli.dll task add -p SampleProject -j Default -n Deploy -t Deploy -prov Polyrific.Catapult.Plugins.AzureAppService
+dotnet occli.dll task add -p SampleProject -j Default -n Deploy -t Deploy -prov Polyrific.Catapult.TaskProviders.AzureAppService
 ```
 
 ```sh
-dotnet occli.dll task update -p SampleProject -j Default -n Deploy -prov Polyrific.Catapult.Plugins.AzureAppService
+dotnet occli.dll task update -p SampleProject -j Default -n Deploy -prov Polyrific.Catapult.TaskProviders.AzureAppService
 ```
 
 ### Required services

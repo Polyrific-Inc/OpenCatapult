@@ -2,20 +2,20 @@
 
 Database providers can be used in [Deploy Db task](../user-guides/job-definitions.md#deploydb). The main role of this provider is to provide specific way to update database in the deployment environment.
 
-## Polyrific.Catapult.Plugins.EntityFrameworkCore
+## Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 
-`OpenCatapult` provides `Polyrific.Catapult.Plugins.EntityFrameworkCore` as the built-in provider for Database Provider. This provider can be used to update a specified database to the latest migration script available in the source code. It uses the `dotnet ef database update` command that comes with the dotnet core entity framework sdk.
+`OpenCatapult` provides `Polyrific.Catapult.TaskProviders.EntityFrameworkCore` as the built-in provider for Database Provider. This provider can be used to update a specified database to the latest migration script available in the source code. It uses the `dotnet ef database update` command that comes with the dotnet core entity framework sdk.
 
 ### Usage
 
-This provider can only be used in DeployDb task. You can use the name `Polyrific.Catapult.Plugins.EntityFrameworkCore` when adding or updating a DeployDb task:
+This provider can only be used in DeployDb task. You can use the name `Polyrific.Catapult.TaskProviders.EntityFrameworkCore` when adding or updating a DeployDb task:
 
 ```sh
-dotnet occli.dll task add -p SampleProject -j Default -n DeployDb -t DeployDb -prov Polyrific.Catapult.Plugins.EntityFrameworkCore
+dotnet occli.dll task add -p SampleProject -j Default -n DeployDb -t DeployDb -prov Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 ```
 
 ```sh
-dotnet occli.dll task update -p SampleProject -j Default -n DeployDb -prov Polyrific.Catapult.Plugins.EntityFrameworkCore
+dotnet occli.dll task update -p SampleProject -j Default -n DeployDb -prov Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 ```
 
 ### Additional configs

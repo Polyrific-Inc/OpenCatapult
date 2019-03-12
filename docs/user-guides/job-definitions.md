@@ -143,9 +143,9 @@ For all of the Task types mentioned, you can also specify the following generic 
 
 ## Built-in Providers
 Following are the built-in providers. You can add other providers later using the [task provider](task-providers.md) command.
-- `Polyrific.Catapult.Plugins.AspNetCoreMvc`: Generate an asp net core mvc application
-- `Polyrific.Catapult.Plugins.GitHub`: Used to clone or push code to GitHub
-- `Polyrific.Catapult.Plugins.DotNetCore`: Build a dotnet core application
-- `Polyrific.Catapult.Plugins.DotNetCoreTest`: Run tests available on the project
-- `Polyrific.Catapult.Plugins.EntityFrameworkCore`: A database provider for deploying the model changes
-- `Polyrific.Catapult.Plugins.AzureAppService`: Deploys the application into Azure App Service instance
+- `Polyrific.Catapult.TaskProviders.AspNetCoreMvc`: Generate an asp net core mvc application
+- `Polyrific.Catapult.TaskProviders.GitHub`: Used to clone or push code to GitHub
+- `Polyrific.Catapult.TaskProviders.DotNetCore`: Build a dotnet core application
+- `Polyrific.Catapult.TaskProviders.DotNetCoreTest`: Run tests available on the project
+- `Polyrific.Catapult.TaskProviders.EntityFrameworkCore`: A database provider for deploying the model changes
+- `Polyrific.Catapult.TaskProviders.AzureAppService`: Deploys the application into Azure App Service instance

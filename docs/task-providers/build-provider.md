@@ -2,20 +2,20 @@
 
 Build providers can be used in [Build task](../user-guides/job-definitions.md#build). The main role of this provider is to provide specific way to build the generated code, and produce a deliverable artifact. The artifact can then be used as input for [Hosting provider](hosting-provider.md) or [Database provider](database-provider.md).
 
-## Polyrific.Catapult.Plugins.DotNetCore
+## Polyrific.Catapult.TaskProviders.DotNetCore
 
-`OpenCatapult` provides `Polyrific.Catapult.Plugins.DotNetCore` as the built-in provider for Build Provider. This provider can be used to build and create deployable artifact for dotnet core applications. It uses the `dotnet publish` command that comes with the dotnet core sdk.
+`OpenCatapult` provides `Polyrific.Catapult.TaskProviders.DotNetCore` as the built-in provider for Build Provider. This provider can be used to build and create deployable artifact for dotnet core applications. It uses the `dotnet publish` command that comes with the dotnet core sdk.
 
 ### Usage
 
-This provider can only be used in Build task. You can use the name `Polyrific.Catapult.Plugins.DotNetCore` when adding or updating a Build task:
+This provider can only be used in Build task. You can use the name `Polyrific.Catapult.TaskProviders.DotNetCore` when adding or updating a Build task:
 
 ```sh
-dotnet occli.dll task add -p SampleProject -j Default -n Build -t Build -prov Polyrific.Catapult.Plugins.DotNetCore
+dotnet occli.dll task add -p SampleProject -j Default -n Build -t Build -prov Polyrific.Catapult.TaskProviders.DotNetCore
 ```
 
 ```sh
-dotnet occli.dll task update -p SampleProject -j Default -n Build -prov Polyrific.Catapult.Plugins.DotNetCore
+dotnet occli.dll task update -p SampleProject -j Default -n Build -prov Polyrific.Catapult.TaskProviders.DotNetCore
 ```
 
 ### Additional configs

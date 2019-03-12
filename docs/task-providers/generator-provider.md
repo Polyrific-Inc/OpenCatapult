@@ -2,20 +2,20 @@
 
 Generator providers can be used in [Generate task](../user-guides/job-definitions.md#generate). The main role of this provider is to provide a specific implementation of source code generation based on the project configuration and the defined data models.
 
-## Polyrific.Catapult.Plugins.AspNetCoreMvc
+## Polyrific.Catapult.TaskProviders.AspNetCoreMvc
 
-`OpenCatapult` provides `Polyrific.Catapult.Plugins.AspNetCoreMvc` as the built-in provider for Generator Provider. This provider will create an AspNet Core Mvc application. The generated code further explained in the last section.
+`OpenCatapult` provides `Polyrific.Catapult.TaskProviders.AspNetCoreMvc` as the built-in provider for Generator Provider. This provider will create an AspNet Core Mvc application. The generated code further explained in the last section.
 
 ### Usage
 
-This provider can only be used in Generate task. You can use the name `Polyrific.Catapult.Plugins.AspNetCoreMvc` when adding or updating a Generate task:
+This provider can only be used in Generate task. You can use the name `Polyrific.Catapult.TaskProviders.AspNetCoreMvc` when adding or updating a Generate task:
 
 ```sh
-dotnet occli.dll task add -p SampleProject -j Default -n Generate -t Generate -prov Polyrific.Catapult.Plugins.AspNetCoreMvc
+dotnet occli.dll task add -p SampleProject -j Default -n Generate -t Generate -prov Polyrific.Catapult.TaskProviders.AspNetCoreMvc
 ```
 
 ```sh
-dotnet occli.dll task update -p SampleProject -j Default -n Generate -prov Polyrific.Catapult.Plugins.AspNetCoreMvc
+dotnet occli.dll task update -p SampleProject -j Default -n Generate -prov Polyrific.Catapult.TaskProviders.AspNetCoreMvc
 ```
 
 ### Additional configs
