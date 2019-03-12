@@ -29,15 +29,11 @@ export class ProjectDetailComponent implements OnInit {
   }
 
   getProject(): void {
-    this.route.params.subscribe(params => {
+    this.route.data.subscribe((data: {project: ProjectDto}) => {
       this.activeLink = 'info';
 
-      const id = +params.projectId;
-      this.projectService.getProject(id)
-        .subscribe(project => {
-          this.project = project;
-          this.projectHistoryService.addProjectHistory(project);
-        });
+      this.project = data.project;
+      this.projectHistoryService.addProjectHistory(this.project);
     });
   }
 

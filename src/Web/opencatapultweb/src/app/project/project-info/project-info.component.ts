@@ -11,6 +11,7 @@ import { SnackbarService } from '@app/shared';
   styleUrls: ['./project-info.component.css']
 })
 export class ProjectInfoComponent implements OnInit {
+  projectForm: FormGroup;
   projectInfoForm: FormGroup;
   project: ProjectDto;
   editing: boolean;
@@ -26,7 +27,7 @@ export class ProjectInfoComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.projectInfoForm = this.fb.group({
+    this.projectForm = this.fb.group({
       id: new FormControl({value: null, disabled: true}),
       createdDate: new FormControl({value: null, disabled: true})
     });
@@ -37,20 +38,16 @@ export class ProjectInfoComponent implements OnInit {
   }
 
   getProject(): void {
-    this.route.parent.params.subscribe(params => {
-      const id = +params.projectId;
-      this.projectService.getProject(id)
-        .subscribe(project => {
-          this.project = project;
-          this.populateForm();
-        });
+    this.route.parent.data.subscribe((data: {project: ProjectDto}) => {
+      this.project = data.project;
+      this.populateForm();
     });
   }
 
   populateForm() {
     const datePipe = new DatePipe('en-US');
-    this.projectInfoForm.patchValue({
-      ...this.project,
+    this.projectForm.patchValue({
+      id: this.project.id,
       createdDate: datePipe.transform(this.project.created, 'MMMM d, yyyy')
     });
   }
@@ -59,10 +56,7 @@ export class ProjectInfoComponent implements OnInit {
    * After a form is initialized, we link it to our main form
    */
   formInitialized(form: FormGroup) {
-    this.projectInfoForm = this.fb.group({
-      ...this.projectInfoForm.controls,
-      ...form.controls
-    });
+    this.projectInfoForm = form;
   }
 
   onSubmit() {

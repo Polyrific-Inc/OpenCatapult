@@ -5,6 +5,7 @@ import { CoreModule } from '@app/core';
 import { MatCardModule, MatDividerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('ProjectDashboardComponent', () => {
   let component: ProjectDashboardComponent;
@@ -15,6 +16,7 @@ describe('ProjectDashboardComponent', () => {
       declarations: [ ProjectDashboardComponent ],
       imports: [
         CoreModule,
+        HttpClientModule,
         MatCardModule,
         FlexLayoutModule,
         MatDividerModule,

@@ -38,14 +38,12 @@ export class ProjectCloneComponent implements OnInit {
   }
 
   getProject(): void {
-    const id = +this.route.snapshot.paramMap.get('projectId');
-    this.projectService.getProject(id)
-      .subscribe(project => {
-        this.sourceProject = project;
-        this.projectInfoForm.patchValue({
-          client: this.sourceProject.client
-        });
+    this.route.data.subscribe((data: {project: ProjectDto}) => {
+      this.sourceProject = data.project;
+      this.projectInfoForm.patchValue({
+        client: this.sourceProject.client
       });
+    });
   }
 
   onSubmit() {

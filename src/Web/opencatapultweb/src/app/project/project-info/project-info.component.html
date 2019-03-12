@@ -1,5 +1,5 @@
 <div fxLayout="row" fxLayout.xs="column" class="form-container">
-    <form fxFlex="50" fxFlex.md="70" [formGroup]="projectInfoForm" (ngSubmit)="onSubmit()">
+    <form fxFlex="50" fxFlex.md="70" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">
             <mat-label>Project ID</mat-label>

@@ -9,6 +9,8 @@ import { ProjectArchiveDetailComponent } from './project-archive-detail/project-
 import { AuthorizePolicy } from '@app/core';
 import { AuthGuard } from '@app/core/auth/auth.guard';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { ProjectErrorComponent } from './project-error/project-error.component';
+import { ProjectResolverService } from './services/project-resolver.service';
 
 const routes: Routes = [
   {
@@ -29,17 +31,30 @@ const routes: Routes = [
       {
         path: ':projectId/clone',
         component: ProjectCloneComponent,
-        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess }
+        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess },
+        resolve: {
+          project: ProjectResolverService
+        }
+      },
+      {
+        path: ':projectId/error',
+        component: ProjectErrorComponent
       },
       {
         path: 'archive/:projectId',
         component: ProjectArchiveDetailComponent,
-        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess }
+        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess },
+        resolve: {
+          project: ProjectResolverService
+        }
       },
       {
         path: ':projectId',
         component: ProjectDetailComponent,
         canActivateChild: [AuthGuard],
+        resolve: {
+          project: ProjectResolverService
+        },
         children: [
           {path: '', redirectTo: 'info', pathMatch: 'full'},
           {

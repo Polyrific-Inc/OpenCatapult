@@ -16,6 +16,8 @@ import { SharedModule } from '@app/shared/shared.module';
 import { ProjectCloneComponent } from './project-clone/project-clone.component';
 import { ProjectArchiveDetailComponent } from './project-archive-detail/project-archive-detail.component';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
+import { ProjectErrorComponent } from './project-error/project-error.component';
+import { ProjectResolverService } from './services/project-resolver.service';
 
 @NgModule({
   declarations: [ProjectComponent,
@@ -25,7 +27,8 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
     ProjectNewComponent,
     ProjectCloneComponent,
     ProjectArchiveDetailComponent,
-    ProjectDashboardComponent
+    ProjectDashboardComponent,
+    ProjectErrorComponent
   ],
   imports: [
     CommonModule,
@@ -48,6 +51,9 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
     MatDialogModule,
     MatCheckboxModule,
     MatCardModule
+  ],
+  providers: [
+    ProjectResolverService
   ]
 })
 export class ProjectModule { }

@@ -35,13 +35,9 @@ export class ProjectArchiveDetailComponent implements OnInit {
   }
 
   getProject(): void {
-    this.route.params.subscribe(params => {
-      const id = +params.projectId;
-      this.projectService.getProject(id)
-        .subscribe(project => {
-          this.project = project;
-          this.projectInfoForm.patchValue(this.project);
-        });
+    this.route.data.subscribe((data: {project: ProjectDto}) => {
+      this.project = data.project;
+      this.projectInfoForm.patchValue(this.project);
     });
   }
 

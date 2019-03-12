@@ -23,9 +23,9 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.projectInfoForm = this.fb.group({
-      name: [{value: null, disabled: this.disableForm}, Validators.required],
-      displayName: [{value: null, disabled: this.disableForm}],
-      client: {value: null, disabled: this.disableForm}
+      name: [{value: this.project ? this.project.name : null, disabled: this.disableForm}, Validators.required],
+      displayName: [{value: this.project ? this.project.displayName : null, disabled: this.disableForm}],
+      client: {value: this.project ? this.project.client : null, disabled: this.disableForm}
     });
 
     this.normalizeProjectName();

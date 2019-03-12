@@ -29,6 +29,7 @@ describe('ProjectDetailComponent', () => {
         {
           provide: ActivatedRoute, useValue: {
             params: of({ id: 1}),
+            data: of({project: { id: 1}}),
             snapshot: {},
             firstChild: {
               snapshot: {
@@ -41,6 +42,7 @@ describe('ProjectDetailComponent', () => {
         },
         {
           provide: AuthService, useValue: {
+            currentUser: of({}),
             currentUserValue: {
               role: 'Administrator'
             },
