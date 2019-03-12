@@ -83,4 +83,19 @@ export class ProjectDetailComponent implements OnInit {
     });
   }
 
+  onExportClick() {
+    this.projectService.exportProject(this.project.id)
+      .subscribe(data => {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/yaml;charset=utf-8,' + encodeURIComponent(data));
+        element.setAttribute('download', `${this.project.name}.yaml`);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      });
+  }
 }

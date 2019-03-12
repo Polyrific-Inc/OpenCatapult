@@ -42,4 +42,8 @@ export class ProjectService {
   restoreProject(projectId: number) {
     return this.apiService.post(`project/${projectId}/restore`);
   }
+
+  exportProject(projectId: number) {
+    return this.apiService.getString(`project/${projectId}/export`);
+  }
 }
