@@ -17,6 +17,8 @@ import { JobQueueCancelDialogComponent } from './components/job-queue-cancel-dia
 import { ReactiveFormsModule } from '@angular/forms';
 import { JobQueueTaskStatusComponent } from './components/job-queue-task-status/job-queue-task-status.component';
 import { JobQueueTaskLogComponent } from './job-queue-task-log/job-queue-task-log.component';
+import { JobQueueResolverService } from './services/job-queue-resolver.service';
+import { JobQueueErrorComponent } from './job-queue-error/job-queue-error.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,8 @@ import { JobQueueTaskLogComponent } from './job-queue-task-log/job-queue-task-lo
     JobQueueStatusComponent,
     JobQueueCancelDialogComponent,
     JobQueueTaskStatusComponent,
-    JobQueueTaskLogComponent
+    JobQueueTaskLogComponent,
+    JobQueueErrorComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +54,9 @@ import { JobQueueTaskLogComponent } from './job-queue-task-log/job-queue-task-lo
     MatProgressBarModule,
     MatDialogModule,
     MatExpansionModule
+  ],
+  providers: [
+    JobQueueResolverService
   ],
   entryComponents: [
     JobQueueCancelDialogComponent

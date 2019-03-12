@@ -19,30 +19,27 @@ export class JobQueueLogComponent implements OnInit {queueId: number;
   logReceived: boolean;
   constructor(
     private route: ActivatedRoute,
-    private jobQueueService: JobQueueService,
-    private projectService: ProjectService
+    private jobQueueService: JobQueueService
   ) { }
 
   ngOnInit() {
-    this.queueId = this.route.snapshot.params.id;
-    this.projectId = +this.projectService.currentProjectId;
     this.getQueue();
   }
 
   getQueue() {
-    this.jobQueueService.getJobQueue(this.projectId, this.queueId)
-      .pipe(tap(results => {
-        if (results.jobTasksStatus) {
-          results.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
-        }
-      }))
-      .subscribe(data => {
-        this.job = data;
+    this.route.data.subscribe((data: {jobQueue: JobDto}) => {
+      if (data.jobQueue.jobTasksStatus) {
+        data.jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
+      }
 
-        if (!this.listened && (data.status === JobStatus.Queued || data.status === JobStatus.Processing)) {
-          this.listenQueueLog();
-        }
-      });
+      this.job = data.jobQueue;
+      this.queueId = this.job.id;
+      this.projectId = this.job.projectId;
+
+      if (!this.listened && (data.jobQueue.status === JobStatus.Queued || data.jobQueue.status === JobStatus.Processing)) {
+        this.listenQueueLog();
+      }
+    });
   }
 
   listenQueueLog() {

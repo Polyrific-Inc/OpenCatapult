@@ -21,30 +21,29 @@ export class JobQueueDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
-    private projectService: ProjectService,
     private snackbar: SnackbarService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.queueId = this.route.snapshot.params.id;
-    this.projectId = this.projectService.currentProjectId;
     this.getQueue();
   }
 
   getQueue() {
-    this.jobQueueService.getJobQueue(this.projectId, this.queueId)
-      .pipe(tap(results => {
-        if (results.jobTasksStatus) {
-          results.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
-        }
-      }))
-      .subscribe(data => {
-        this.job = data;
-        this.allowRestart = data.status === JobStatus.Cancelled || data.status === JobStatus.Pending || data.status === JobStatus.Error;
-        this.allowCancel = data.status === JobStatus.Processing || data.status === JobStatus.Pending;
-        this.allowRefresh = data.status !== JobStatus.Completed;
-      });
+    this.route.data.subscribe((data: {jobQueue: JobDto}) => {
+      if (data.jobQueue.jobTasksStatus) {
+        data.jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
+      }
+
+      this.job = data.jobQueue;
+      this.queueId = this.job.id;
+      this.projectId = this.job.projectId;
+
+      this.allowRestart = data.jobQueue.status === JobStatus.Cancelled || data.jobQueue.status === JobStatus.Pending ||
+        data.jobQueue.status === JobStatus.Error;
+      this.allowCancel = data.jobQueue.status === JobStatus.Processing || data.jobQueue.status === JobStatus.Pending;
+      this.allowRefresh = data.jobQueue.status !== JobStatus.Completed;
+    });
   }
 
   onCancelClick() {

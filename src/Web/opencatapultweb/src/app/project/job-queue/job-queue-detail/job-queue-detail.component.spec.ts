@@ -41,12 +41,8 @@ describe('JobQueueDetailComponent', () => {
       providers: [
         {
           provide: ActivatedRoute, useValue: {
-            snapshot: { params: of({ id: 1}) },
-            parent: {
-              parent: {
-                snapshot: { params: of({ id: 1}) }
-              }
-            }
+            data: of({jobQueue: { id: 1, projectId: 1}}),
+            snapshot: {}
           }
         }
       ]
