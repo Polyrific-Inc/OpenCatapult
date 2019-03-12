@@ -1,6 +1,6 @@
 # Create a task provider - Part 3 (Testing the Task Provider)
 
-> You can find the code in this tutorial in our GitHub repository: https://github.com/Polyrific-Inc/Polyrific.Catapult.Plugins.Angular/tree/tutorial-part-3
+> You can find the code in this tutorial in our GitHub repository: https://github.com/Polyrific-Inc/Polyrific.Catapult.TaskProviders.Angular/tree/tutorial-part-3
 
 When catapult engine execute our task provider, it passes several arguments that is required by the base task provider class, along with the addditional configs as json string. During testing, we can pass the `--file` option instead, and specify the path to the json file containing the arguments. Since we're going to run a Code Generator Provider, you can use this template file:
 - [CodeGeneratorProviderTest.json](../file/CodeGeneratorProviderTest.json)
@@ -17,7 +17,7 @@ Next, We'd utilize the visual studio code so we can run and/or debug our applica
         "name": "Launch",
         "type": "coreclr",
         "request": "launch",
-        "program": "${workspaceFolder}/bin/Debug/netcoreapp2.1/Polyrific.Catapult.Plugins.Angular.dll",
+        "program": "${workspaceFolder}/bin/Debug/netcoreapp2.1/Polyrific.Catapult.TaskProviders.Angular.dll",
         "preLaunchTask": "build",
         "args": "--file \"absolute\\path\\to\\CodeGeneratorProviderTest.json\""
     }]
