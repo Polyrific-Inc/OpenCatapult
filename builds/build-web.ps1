@@ -5,4 +5,6 @@ Set-Location -Path $webLocation
 
 npm install
 
-npm run start -- --ssl --host localhost --port 44300
+Import-Certificate -Filepath "ssl/server.crt" -CertStoreLocation cert:\CurrentUser\Root
+
+npm run start -- --ssl --host localhost --port 44300 --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
