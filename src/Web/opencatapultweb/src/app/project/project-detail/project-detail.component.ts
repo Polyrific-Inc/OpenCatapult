@@ -1,18 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { ProjectService, ProjectDto, AuthorizePolicy, ProjectHistoryService } from '@app/core';
 import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
+import { filter } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-project-detail',
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })
-export class ProjectDetailComponent implements OnInit {
+export class ProjectDetailComponent implements OnInit, OnDestroy {
   project: ProjectDto;
   activeLink: string;
   authorizePolicy = AuthorizePolicy;
+  routerSubscription: Subscription;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,6 +29,15 @@ export class ProjectDetailComponent implements OnInit {
   ngOnInit() {
     this.getProject();
     this.activeLink = this.route.firstChild.snapshot.url.pop().path;
+    this.routerSubscription = this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe((e: NavigationStart) => {
+      if (e.url.includes(`/project/${this.project.id}/`)) {
+        this.activeLink = e.url.replace(`/project/${this.project.id}/`, '').split('/')[0];
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    this.routerSubscription.unsubscribe();
   }
 
   getProject(): void {

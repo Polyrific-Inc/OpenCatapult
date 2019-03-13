@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { JobDto } from '@app/core';
+import { JobQueueDto } from '@app/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
 
 @Component({
@@ -8,11 +8,11 @@ import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
   styleUrls: ['./job-queue-list.component.css']
 })
 export class JobQueueListComponent implements OnInit {
-  @Input() jobList: JobDto[];
+  @Input() jobList: JobQueueDto[];
   @Input() usePaging: boolean;
   paginator: MatPaginator;
   sort: MatSort;
-  dataSource: MatTableDataSource<JobDto>;
+  dataSource: MatTableDataSource<JobQueueDto>;
 
   displayedColumns: string[] = ['jobDefinitionName', 'status', 'created', 'actions'];
 
@@ -30,14 +30,14 @@ export class JobQueueListComponent implements OnInit {
    }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource<JobDto>(this.jobList);
+    this.dataSource = new MatTableDataSource<JobQueueDto>(this.jobList);
   }
 
-  onInfoClick(job: JobDto) {
+  onInfoClick(job: JobQueueDto) {
 
   }
 
-  onLogClick(job: JobDto) {
+  onLogClick(job: JobQueueDto) {
 
   }
 }

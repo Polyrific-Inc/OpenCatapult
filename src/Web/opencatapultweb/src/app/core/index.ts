@@ -27,7 +27,7 @@ export * from './models/data-model/data-model-property-dto';
 export * from './models/job-definition/job-definition-dto';
 export * from './models/job-definition/job-task-definition-dto';
 export * from './models/job-queue/new-job-dto';
-export * from './models/job-queue/job-dto';
+export * from './models/job-queue/job-queue-dto';
 export * from './models/job-queue/job-task-status-dto';
 export * from './models/member/new-project-member-dto';
 export * from './models/member/project-member-dto';

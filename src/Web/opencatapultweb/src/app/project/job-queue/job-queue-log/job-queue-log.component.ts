@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { JobDto, JobQueueService, ProjectService } from '@app/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { JobQueueDto, JobQueueService } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
-import { tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
 import { JobStatus } from '@app/core/enums/job-status';
@@ -11,9 +10,10 @@ import { JobStatus } from '@app/core/enums/job-status';
   templateUrl: './job-queue-log.component.html',
   styleUrls: ['./job-queue-log.component.css']
 })
-export class JobQueueLogComponent implements OnInit {queueId: number;
+export class JobQueueLogComponent implements OnInit, OnDestroy {
+  jobQueueId: number;
   projectId: number;
-  job: JobDto;
+  jobQueue: JobQueueDto;
   log$: Observable<JobLogDto>;
   listened: boolean;
   logReceived: boolean;
@@ -23,33 +23,40 @@ export class JobQueueLogComponent implements OnInit {queueId: number;
   ) { }
 
   ngOnInit() {
-    this.getQueue();
-  }
-
-  getQueue() {
-    this.route.data.subscribe((data: {jobQueue: JobDto}) => {
-      if (data.jobQueue.jobTasksStatus) {
-        data.jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
-      }
-
-      this.job = data.jobQueue;
-      this.queueId = this.job.id;
-      this.projectId = this.job.projectId;
-
-      if (!this.listened && (data.jobQueue.status === JobStatus.Queued || data.jobQueue.status === JobStatus.Processing)) {
-        this.listenQueueLog();
-      }
+    this.route.data.subscribe((data: {jobQueue: JobQueueDto}) => {
+      this.initializeViewData(data.jobQueue);
     });
   }
 
+  ngOnDestroy() {
+    this.jobQueueService.disconnectJobQueueLog();
+  }
+
+  initializeViewData(jobQueue: JobQueueDto) {
+    if (jobQueue.jobTasksStatus) {
+      jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
+    }
+
+    this.jobQueue = jobQueue;
+    this.jobQueueId = this.jobQueue.id;
+    this.projectId = this.jobQueue.projectId;
+
+    if (!this.listened && (jobQueue.status === JobStatus.Queued || jobQueue.status === JobStatus.Processing)) {
+      this.listenQueueLog();
+    }
+  }
+
+  getJobQueue() {
+    this.jobQueueService.getJobQueue(this.projectId, this.jobQueueId).subscribe(data => this.initializeViewData(data));
+  }
+
   listenQueueLog() {
-    const self = this;
-    this.log$ = this.jobQueueService.listenJobQueueLog(this.projectId, this.queueId);
+    this.log$ = this.jobQueueService.listenJobQueueLog(this.projectId, this.jobQueueId);
     let previousTask = '';
     this.log$.subscribe((log) => {
       if (previousTask !== log.taskName) {
         previousTask = log.taskName;
-        self.getQueue();
+        this.getJobQueue();
       }
     });
     this.listened = true;

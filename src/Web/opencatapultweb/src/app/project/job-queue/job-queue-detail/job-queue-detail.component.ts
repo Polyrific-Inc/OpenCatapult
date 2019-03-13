@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobQueueService, JobDto, JobStatus, ProjectService } from '@app/core';
+import { JobQueueService, JobQueueDto, JobStatus, ProjectService } from '@app/core';
 import { tap } from 'rxjs/operators';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { MatDialog } from '@angular/material';
@@ -12,9 +12,9 @@ import { JobQueueCancelDialogComponent } from '../components/job-queue-cancel-di
   styleUrls: ['./job-queue-detail.component.css']
 })
 export class JobQueueDetailComponent implements OnInit {
-  queueId: number;
+  jobQueueId: number;
   projectId: number;
-  job: JobDto;
+  jobQueue: JobQueueDto;
   allowRestart: boolean;
   allowCancel: boolean;
   allowRefresh: boolean;
@@ -26,34 +26,39 @@ export class JobQueueDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.getQueue();
+    this.route.data.subscribe((data: {jobQueue: JobQueueDto}) => {
+      this.initializeViewData(data.jobQueue);
+    });
   }
 
-  getQueue() {
-    this.route.data.subscribe((data: {jobQueue: JobDto}) => {
-      if (data.jobQueue.jobTasksStatus) {
-        data.jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
-      }
+  initializeViewData(jobQueue: JobQueueDto) {
+    if (jobQueue.jobTasksStatus) {
+      jobQueue.jobTasksStatus.sort((a, b) => (a.sequence > b.sequence) ? 1 : ((b.sequence > a.sequence) ? -1 : 0));
+    }
 
-      this.job = data.jobQueue;
-      this.queueId = this.job.id;
-      this.projectId = this.job.projectId;
+    this.jobQueue = jobQueue;
+    this.jobQueueId = this.jobQueue.id;
+    this.projectId = this.jobQueue.projectId;
 
-      this.allowRestart = data.jobQueue.status === JobStatus.Cancelled || data.jobQueue.status === JobStatus.Pending ||
-        data.jobQueue.status === JobStatus.Error;
-      this.allowCancel = data.jobQueue.status === JobStatus.Processing || data.jobQueue.status === JobStatus.Pending;
-      this.allowRefresh = data.jobQueue.status !== JobStatus.Completed;
-    });
+    this.allowRestart = jobQueue.status === JobStatus.Cancelled || jobQueue.status === JobStatus.Pending ||
+      jobQueue.status === JobStatus.Error;
+    this.allowCancel = jobQueue.status === JobStatus.Processing || jobQueue.status === JobStatus.Pending;
+    this.allowRefresh = jobQueue.status !== JobStatus.Completed;
+  }
+
+  getJobQueue() {
+    this.jobQueueService.getJobQueue(this.projectId, this.jobQueueId)
+      .subscribe(data => this.initializeViewData(data));
   }
 
   onCancelClick() {
     const dialogRef = this.dialog.open(JobQueueCancelDialogComponent, {
-      data: this.job
+      data: this.jobQueue
     });
 
     dialogRef.afterClosed().subscribe((success) => {
       if (success) {
-        this.getQueue();
+        this.getJobQueue();
       }
     });
   }
@@ -62,19 +67,19 @@ export class JobQueueDetailComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Confirm Restart Queue',
-        confirmationText: `Are you sure you want to restart the queue '${this.job.code}'?`
+        confirmationText: `Are you sure you want to restart the queue '${this.jobQueue.code}'?`
       }
     });
 
     const self = this;
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.jobQueueService.updateJobQueue(self.projectId, self.queueId, {
-          ...self.job,
+        this.jobQueueService.updateJobQueue(self.projectId, self.jobQueueId, {
+          ...self.jobQueue,
           status: JobStatus.Queued,
           remarks: null,
         }).subscribe(() => {
-          this.getQueue();
+          this.getJobQueue();
           this.snackbar.open('Job has been restarted');
         },
         err => {

@@ -10,7 +10,7 @@
     <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
     <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
 
-    <button mat-raised-button (click)="getQueue()" *ngIf="allowRefresh">
+    <button mat-raised-button (click)="getJobQueue()" *ngIf="allowRefresh">
       <mat-icon>refresh</mat-icon>
     </button>
   </div>
@@ -18,54 +18,54 @@
 <div fxLayout="column" class="job-detail">
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Id</div>
-    <div>{{job?.id}}</div>
+    <div>{{jobQueue?.id}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Code</div>
-    <div>{{job?.code}}</div>
+    <div>{{jobQueue?.code}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Job Definition</div>
-    <div>{{job?.jobDefinitionName}}</div>
+    <div>{{jobQueue?.jobDefinitionName}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row" fxLayoutAlign="flex-start center">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Status</div>
-    <app-job-queue-status [status]="job?.status"></app-job-queue-status>
+    <app-job-queue-status [status]="jobQueue?.status"></app-job-queue-status>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Engine</div>
-    <div>{{job?.catapultEngineId}}</div>
+    <div>{{jobQueue?.catapultEngineId}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Job Type</div>
-    <div>{{job?.jobType}}</div>
+    <div>{{jobQueue?.jobType}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Origin Url</div>
-    <div>{{job?.originUrl}}</div>
+    <div>{{jobQueue?.originUrl}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Output Values</div>
-    <div *ngIf="job?.outputValues">{{job?.outputValues | json}}</div>
+    <div *ngIf="jobQueue?.outputValues">{{jobQueue?.outputValues | json}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Remarks</div>
-    <div>{{job?.remarks}}</div>
+    <div>{{jobQueue?.remarks}}</div>
   </div>
   <mat-divider></mat-divider>
 </div>
-<div class="job-task-status" *ngIf="job?.jobTasksStatus && job.jobTasksStatus.length > 0">
+<div class="job-task-status" *ngIf="jobQueue?.jobTasksStatus && jobQueue.jobTasksStatus.length > 0">
     <h5>Job Task Status</h5>
     <div fxLayout="column" class="job-detail">
-        <div *ngFor="let taskStatus of job.jobTasksStatus">
+        <div *ngFor="let taskStatus of jobQueue.jobTasksStatus">
             <div fxLayout="row" fxLayoutAlign="space-between center" class="task-status-item">
                 <div fxLayout="column">
                     <h5>{{taskStatus.sequence}}. {{taskStatus.taskName}}</h5>

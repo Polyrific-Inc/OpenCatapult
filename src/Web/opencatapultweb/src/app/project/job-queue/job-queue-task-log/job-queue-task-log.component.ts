@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { JobTaskStatusDto, JobTaskStatus, JobQueueService, JobDto } from '@app/core';
+import { JobTaskStatusDto, JobTaskStatus, JobQueueService, JobQueueDto } from '@app/core';
 import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
 import { filter, map, tap } from 'rxjs/operators';
 
@@ -10,7 +10,7 @@ import { filter, map, tap } from 'rxjs/operators';
   styleUrls: ['./job-queue-task-log.component.css']
 })
 export class JobQueueTaskLogComponent implements OnInit {
-  @Input() job: JobDto;
+  @Input() jobQueue: JobQueueDto;
   @Input() taskStatus: JobTaskStatusDto;
   currentLog: string;
   taskStatusMessages = '';
@@ -33,7 +33,7 @@ export class JobQueueTaskLogComponent implements OnInit {
 
   getCurrentTaskLog() {
     if (this.taskStatus.status !== JobTaskStatus.NotExecuted && this.taskStatus.status !== JobTaskStatus.Pending) {
-      this.jobQueueService.getTaskLogs(this.job.projectId, this.job.id, this.taskStatus.taskName)
+      this.jobQueueService.getTaskLogs(this.jobQueue.projectId, this.jobQueue.id, this.taskStatus.taskName)
         .subscribe((log) => this.currentLog = log);
     }
   }

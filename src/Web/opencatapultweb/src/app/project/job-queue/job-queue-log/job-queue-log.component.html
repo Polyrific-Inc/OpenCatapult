@@ -7,12 +7,12 @@
   </div>
 </div>
 
-<div fxLayout="column" fxLayoutAlign="center center" *ngIf="job?.status === 'QUEUED'">
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="jobQueue?.status === 'QUEUED'">
   <mat-spinner></mat-spinner>
   <div>Waiting for engine to pick up the queue...</div>
 </div>
-<mat-accordion class="headers-align" [multi]="true" *ngIf="job?.jobTasksStatus && job.jobTasksStatus.length > 0">
-  <mat-expansion-panel *ngFor="let taskStatus of job?.jobTasksStatus">
+<mat-accordion class="headers-align" [multi]="true" *ngIf="jobQueue?.jobTasksStatus && jobQueue.jobTasksStatus.length > 0">
+  <mat-expansion-panel *ngFor="let taskStatus of jobQueue?.jobTasksStatus">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <h5>{{taskStatus.taskName}}</h5>
@@ -21,6 +21,6 @@
         <app-job-queue-task-status [taskStatus]="taskStatus.status"></app-job-queue-task-status>
       </mat-panel-description>
     </mat-expansion-panel-header>
-    <app-job-queue-task-log [taskStatus]="taskStatus" [job]="job"></app-job-queue-task-log>
+    <app-job-queue-task-log [taskStatus]="taskStatus" [jobQueue]="jobQueue"></app-job-queue-task-log>
   </mat-expansion-panel>
 </mat-accordion>

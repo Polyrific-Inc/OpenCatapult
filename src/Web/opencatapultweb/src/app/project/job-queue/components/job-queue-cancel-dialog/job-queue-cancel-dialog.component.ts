@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { JobQueueService, JobDto, JobStatus } from '@app/core';
+import { JobQueueService, JobQueueDto, JobStatus } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -20,7 +20,7 @@ export class JobQueueCancelDialogComponent implements OnInit {
     private fb: FormBuilder,
     private snackbar: SnackbarService,
     public dialogRef: MatDialogRef<JobQueueCancelDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: JobDto
+    @Inject(MAT_DIALOG_DATA) public data: JobQueueDto
     ) {
     }
 

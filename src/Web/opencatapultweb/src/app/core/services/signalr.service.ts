@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { environment } from '@env/environment';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@aspnet/signalr';
 import { AuthService } from '../auth/auth.service';
-import { JobLogDto } from '../models/job-queue/job-log-dto';
 import { Subject } from 'rxjs';
 
 @Injectable()

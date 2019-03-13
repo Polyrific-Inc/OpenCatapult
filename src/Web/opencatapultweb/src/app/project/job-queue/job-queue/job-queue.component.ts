@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { JobQueueService, JobDto, JobQueueFilterType, ProjectService } from '@app/core';
+import { JobQueueService, JobQueueDto, JobQueueFilterType, ProjectService } from '@app/core';
 import { JobStatus } from '@app/core/enums/job-status';
 import { MatTabChangeEvent } from '@angular/material';
 
@@ -10,9 +10,9 @@ import { MatTabChangeEvent } from '@angular/material';
 })
 export class JobQueueComponent implements OnInit {
   projectId: number;
-  currentJobs: JobDto[] = [];
-  pendingJobs: JobDto[] = [];
-  pastJobs: JobDto[];
+  currentJobs: JobQueueDto[] = [];
+  pendingJobs: JobQueueDto[] = [];
+  pastJobs: JobQueueDto[];
   loading: boolean;
 
   constructor(

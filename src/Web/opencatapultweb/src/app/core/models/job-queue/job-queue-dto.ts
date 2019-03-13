@@ -1,6 +1,6 @@
 import { JobTaskStatusDto } from './job-task-status-dto';
 
-export interface JobDto {
+export interface JobQueueDto {
   id: number;
   projectId: number;
   status: string;
