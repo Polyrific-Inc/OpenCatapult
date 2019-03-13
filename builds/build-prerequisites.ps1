@@ -1,11 +1,12 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-function Get-SqlServiceStatus ()
-{
-  Get-CimInstance -ClassName win32_Service |
-    where {$_.DisplayName -match "SQL Server \("} | 
-    select SystemName, DisplayName, Name, State, Status, StartMode, StartName
-}
+param(
+  [switch]$noPrompt = $false,
+  [switch]$noWeb = $false
+)
+
+## Checking Dotnet
+Write-Host "Checking installed Dotnet..."
 
 $dotnetSdkVersion = [System.Version]"2.1.500"
 $allGood = $true
@@ -17,7 +18,7 @@ $parsedSdkVersion = $versionPattern.Matches($currentSdkVersion)
 if ([System.Version]$parsedSdkVersion.Value -lt $dotnetSdkVersion) {	
 	$allGood = $false
 	# Ask user if she want to automatically install the dotnet SDK
-	Write-host "We need to install the dotnet SDK version $dotnetSdkVersion for you. Proceed? (y/n)" -ForegroundColor Yellow 
+  Write-host "We need to install the dotnet SDK version $dotnetSdkVersion for you. Proceed? (y/n)" -ForegroundColor Yellow 
 	$readInstallDotnet = Read-Host
 	Switch ($readInstallDotnet) { 
 		Y {$installDotnet=$true} 
@@ -37,6 +38,14 @@ if ([System.Version]$parsedSdkVersion.Value -lt $dotnetSdkVersion) {
 			break
 		}
 	}
+}
+
+## Checking SQL Server
+function Get-SqlServiceStatus ()
+{
+  Get-CimInstance -ClassName win32_Service |
+    where {$_.DisplayName -match "SQL Server \("} | 
+    select SystemName, DisplayName, Name, State, Status, StartMode, StartName
 }
 
 Write-Host "Checking sql server local instance..."
@@ -120,6 +129,33 @@ else {
 	}
 }
 
+if (!$noWeb) {
+  # checking npm
+  # TODO: in the future, help user to install Node right from this script
+
+  Write-Host "Checking installed Node..."
+
+  $ltsNodeVersion = [System.Version]"10.15.3"
+  $currentNodeVersion = [System.Version](node --version).Trim("v")
+  
+  if ($currentNodeVersion) {
+    if ($currentSdkVersion -lt $ltsNodeVersion) {
+      Write-Host "Node $currentNodeVersion was found (note: the LTS version is Node v$ltsNodeVersion). " -ForegroundColor Yellow
+      if (!$noPrompt) {
+        $continueConfirm = Read-Host "Do you want to continue? (y/n)"
+        if ($continueConfirm -eq "y") {
+          $allGood = $false
+        }
+      }
+    }
+  } else {
+    Write-Host "Node was not found in this machine. Please install Node v$ltsNodeVersion or above before continuing the process." -ForegroundColor Red
+    $allGood = $false
+  }
+}
+
 if ($allGood){
     Write-Output "All good, all required resources are in place."
 }
+
+$allGood

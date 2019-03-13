@@ -1,3 +1,5 @@
+$host.UI.RawUI.WindowTitle = "OpenCatapult Web";
+
 $rootPath = Split-Path $PSScriptRoot
 $webLocation = Join-Path $rootPath "/src/Web/opencatapultweb"
 
