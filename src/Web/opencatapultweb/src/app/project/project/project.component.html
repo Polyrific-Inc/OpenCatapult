@@ -4,11 +4,11 @@
     <mat-accordion>
         <mat-expansion-panel class="project-list" expanded="true">
           <mat-expansion-panel-header>
-            <mat-panel-title>
-              Project List
+            <mat-panel-title color="primary">
+              <h3>Project List</h3>
             </mat-panel-title>
           </mat-expansion-panel-header>
-          <div class="button" *appHasAccess="authorizePolicy.UserRoleBasicAccess">
+          <div class="button new-project" *appHasAccess="authorizePolicy.UserRoleBasicAccess">
               <button mat-raised-button color="primary" routerLink="/project/new">New Project</button>
           </div>
           <mat-nav-list>
@@ -26,7 +26,7 @@
         <mat-expansion-panel expanded="false">
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Archived Project
+              <h3>Archived Project</h3>
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-nav-list>

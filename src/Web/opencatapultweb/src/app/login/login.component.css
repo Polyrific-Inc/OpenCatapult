@@ -20,6 +20,10 @@ mat-progress-bar {
     width: 100%;
 }
 
+mat-error {
+  margin-bottom: 10px;
+}
+
 .forgot-password-link {
   color: #337ab7;
 }
