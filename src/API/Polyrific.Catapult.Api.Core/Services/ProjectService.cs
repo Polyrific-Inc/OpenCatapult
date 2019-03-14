@@ -313,7 +313,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             var projectMembersByUserSpec = new ProjectMemberFilterSpecification(0, getAll ? 0 : userId, isArchived);
             projectMembersByUserSpec.Includes.Add(p => p.ProjectMemberRole);
             var projectMembers = await _projectMemberRepository.GetBySpec(projectMembersByUserSpec, cancellationToken);
-            var projects = projectMembers.GroupBy(m => m.ProjectId).Select(g => g.FirstOrDefault()).Select(m => (m.Project, m.ProjectMemberRole)).ToList();
+            var projects = projectMembers.GroupBy(m => m.ProjectId).Select(g => g.FirstOrDefault())
+                .OrderBy(m => m.Project.Name)
+                .Select(m => (m.Project, m.ProjectMemberRole)).ToList();
 
             return projects;
         }

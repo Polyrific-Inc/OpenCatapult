@@ -3,6 +3,6 @@ export interface ExternalServiceDto {
     name: string;
     description: string;
     externalServiceTypeId: number;
-    externalServcieTypeName: string;
+    externalServiceTypeName: string;
     config: { [key: string]: string };
 }

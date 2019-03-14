@@ -13,7 +13,7 @@ import { TestTaskConfigFormComponent } from '../test-task-config-form/test-task-
 import { AdditionalConfigFormComponent } from '../additional-config-form/additional-config-form.component';
 import { AdditionalConfigFieldComponent } from '../additional-config-field/additional-config-field.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatExpansionModule, MatInputModule, MatCheckboxModule } from '@angular/material';
+import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -46,7 +46,8 @@ describe('TaskConfigListFormComponent', () => {
         MatInputModule,
         MatCheckboxModule,
         CoreModule,
-        HttpClientTestingModule
+        HttpClientTestingModule,
+        MatSelectModule
       ]
     })
     .compileComponents();

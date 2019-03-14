@@ -1,4 +1,4 @@
-<h3>{{project?.name}}</h3>
+<h3>{{project?.displayName || project?.name}}</h3>
 <div class="action-buttons">
   <button mat-raised-button (click)="onExportClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Export</button>
   <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>

@@ -2,6 +2,9 @@
     <mat-form-field class="full-width-input">
         <mat-label>Repository</mat-label>
         <input matInput placeholder="The remote repository url" formControlName="Repository" required>
+        <mat-error *ngIf="isFieldInvalid('Repository', 'required')">
+          Please inform the repository
+        </mat-error>
     </mat-form-field>
 
     <mat-expansion-panel>

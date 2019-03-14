@@ -76,11 +76,9 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
     });
   }
 
-  isFieldInvalid(field: string) {
-    return (
-      (!this.projectInfoForm.get(field).valid && this.projectInfoForm.get(field).touched) ||
-      (this.projectInfoForm.get(field).untouched && this.formSubmitAttempt)
-    );
+  isFieldInvalid(field: string, errorCode: string) {
+    const control = this.projectInfoForm.get(field);
+    return control.invalid && control.errors && control.getError(errorCode);
   }
 
 

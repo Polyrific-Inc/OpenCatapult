@@ -35,7 +35,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Code = "20180817.1",
                     ProjectId = 1,
                     JobType = JobType.Create,
-                    Status = JobStatus.Completed
+                    Status = JobStatus.Completed,
+                    Project = new Project
+                    {
+                        Id = 1
+                    }
                 }
             };
             
@@ -255,12 +259,21 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void CancelJobQueue_ValidItem()
         {
+            _jobQueueRepository.Setup(r =>
+                    r.GetSingleBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
+                    _data.FirstOrDefault(spec.Criteria.Compile()));
+
             _data.Add(new JobQueue
             {
                 Id = 2,
                 ProjectId = 1,
                 JobType = JobType.Update,
                 Status = JobStatus.Queued,
+                Project = new Project
+                {
+                    Id = 1
+                }
             });
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
@@ -273,6 +286,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void CancelJobQueue_JobCompletedException()
         {
+            _jobQueueRepository.Setup(r =>
+                    r.GetSingleBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
+                    _data.FirstOrDefault(spec.Criteria.Compile()));
+
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.CancelJobQueue(1));
 
@@ -335,7 +353,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 ProjectId = 1,
                 JobType = JobType.Update,
                 Status = JobStatus.Processing,
-                CatapultEngineId = "1"
+                CatapultEngineId = "1",
+                Project = new Project
+                {
+                    Id = 1
+                }
             });
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);
@@ -345,7 +367,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 ProjectId = 0,
                 JobType = JobType.Update,
                 Status = JobStatus.Processing,
-                CatapultEngineId = "2"
+                CatapultEngineId = "2",
+                Project = new Project()
             }));
 
             Assert.IsType<JobProcessedByOtherEngineException>(exception?.Result);
@@ -360,7 +383,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 ProjectId = 1,
                 JobType = JobType.Update,
                 Status = JobStatus.Queued,
-                Created = DateTime.UtcNow.AddHours(1)
+                Created = DateTime.UtcNow.AddHours(1),
+                Project = new Project
+                {
+                    Id = 1
+                }
             });
 
             _data.Add(new JobQueue
@@ -369,7 +396,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 ProjectId = 2,
                 JobType = JobType.Update,
                 Status = JobStatus.Queued,
-                Created = DateTime.UtcNow
+                Created = DateTime.UtcNow,
+                Project = new Project
+                {
+                    Id = 2
+                }
             });
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _jobCounterService.Object, _textWriter.Object);

@@ -15,4 +15,9 @@ export class AdditionalConfigFieldComponent implements OnInit {
   ngOnInit() {
   }
 
+  isFieldInvalid(controlName: string, errorCode: string) {
+    const control = this.form.get(controlName);
+    return control.invalid && control.errors && control.getError(errorCode);
+  }
+
 }

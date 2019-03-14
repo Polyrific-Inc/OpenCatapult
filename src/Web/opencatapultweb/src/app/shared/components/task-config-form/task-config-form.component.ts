@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges, Output, EventEmitter } from '@angular/core';
-import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto } from '@app/core';
+import { CreateJobTaskDefinitionDto, TaskProviderService, ExternalServiceService, TaskProviderDto, ExternalServiceType } from '@app/core';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-config-form',
@@ -15,6 +16,7 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   taskForm: FormGroup;
   taskConfigForm: FormGroup = this.fb.group({});
   taskProvider: TaskProviderDto;
+  externalServices$ = this.externalServiceService.externalServices;
 
   constructor(
     private taskProviderService: TaskProviderService,
@@ -106,6 +108,16 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   onAdditionalConfigFormReady(form: FormGroup) {
     this.taskForm.setControl('additionalConfigs', form);
     this.formReady.emit(this.taskForm);
+  }
+
+  getExternalServices(serviceType: string) {
+    if (serviceType === ExternalServiceType.Azure || serviceType === ExternalServiceType.GitHub) {
+      return this.externalServices$.pipe(map(data => {
+        return data.filter(s => s.externalServiceTypeName === serviceType);
+      }));
+    }
+
+    return this.externalServices$;
   }
 
 }

@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { JobDefinitionService, JobTaskDefinitionDto } from '@app/core';
+import { JobDefinitionService, JobTaskDefinitionDto, ExternalServiceService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -22,6 +22,7 @@ export class JobTaskDefinitionNewDialogComponent implements OnInit {
 
   constructor (
     private jobDefinitionService: JobDefinitionService,
+    private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
     public dialogRef: MatDialogRef<JobTaskDefinitionNewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewJobDefinitionDialogData
@@ -29,6 +30,7 @@ export class JobTaskDefinitionNewDialogComponent implements OnInit {
     }
 
   ngOnInit() {
+    this.externalServiceService.getExternalServices().subscribe();
   }
 
   onFormReady(form: FormGroup) {

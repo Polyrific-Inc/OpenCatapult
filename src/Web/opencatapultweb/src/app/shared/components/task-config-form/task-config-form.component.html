@@ -12,11 +12,15 @@
     <div [formGroup]="taskConfigForm">
         <div *ngIf="taskProvider">
             <mat-form-field class="full-width-input" *ngFor="let requiredService of taskProvider.requiredServices">
-                <mat-label>{{requiredService}}ExternalService</mat-label>
-                <input matInput formControlName="{{requiredService}}ExternalService" />
-                <mat-error *ngIf="isFieldInvalid(requiredService + 'ExternalService')">
-                    {{getServiceFieldError(requiredService + 'ExternalService')}}
-                </mat-error>
+              <mat-label>{{requiredService}}ExternalService</mat-label>
+              <mat-select formControlName="{{requiredService}}ExternalService" required>
+                <mat-option *ngFor="let externalService of (getExternalServices(requiredService) | async)" [value]="externalService.name">
+                  {{externalService.name}}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="isFieldInvalid(requiredService + 'ExternalService')">
+                  {{getServiceFieldError(requiredService + 'ExternalService')}}
+              </mat-error>
             </mat-form-field>
         </div>
 

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TaskConfigFormComponent } from './components/task-config-form/task-config-form.component';
 import { JobConfigFormComponent } from './components/job-config-form/job-config-form.component';
 import { MatDividerModule, MatSnackBarModule, MatFormFieldModule, MatInputModule,
-  MatCheckboxModule, MatExpansionModule, MatDialogModule, MatButtonModule } from '@angular/material';
+  MatCheckboxModule, MatExpansionModule, MatDialogModule, MatButtonModule, MatSelectModule } from '@angular/material';
 import { TaskConfigListFormComponent } from './components/task-config-list-form/task-config-list-form.component';
 import { BuildTaskConfigFormComponent } from './components/build-task-config-form/build-task-config-form.component';
 import { CloneTaskConfigFormComponent } from './components/clone-task-config-form/clone-task-config-form.component';
@@ -52,7 +52,8 @@ import { HasAccessDirective } from './directives/has-access.directive';
     MatCheckboxModule,
     MatExpansionModule,
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule
   ],
   exports: [
     TaskConfigFormComponent,

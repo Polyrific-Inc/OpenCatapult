@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// Filter to get unassigned queued job only
         /// </summary>
         public JobQueueFilterSpecification()
-            : base(m => m.Status == JobStatus.Queued && m.CatapultEngineId == null, m => m.Created)
+            : base(m => m.Status == JobStatus.Queued && m.CatapultEngineId == null && !m.Project.IsArchived, m => m.Created)
         {
             Status = JobStatus.Queued;
             UnassignedOnly = true;

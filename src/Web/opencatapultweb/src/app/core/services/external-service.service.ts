@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
-import { Observable } from 'rxjs';
+import { Observable, Subject, BehaviorSubject, of } from 'rxjs';
 import { ExternalServiceDto } from '../models/external-service/external-service-dto';
 import { UpdateExternalServiceDto } from '../models/external-service/update-external-service-dto';
 import { CreateExternalServiceDto } from '../models/external-service/create-external-service-dto';
+import { concatMap } from 'rxjs/operators';
 
 @Injectable()
 export class ExternalServiceService {
+  private currentExternalServices = new BehaviorSubject<ExternalServiceDto[]>([]);
+  public externalServices: Observable<ExternalServiceDto[]> = this.currentExternalServices.asObservable();
 
   constructor(private api: ApiService) { }
 
@@ -19,7 +22,11 @@ export class ExternalServiceService {
   }
 
   getExternalServices() {
-    return this.api.get<ExternalServiceDto[]>(`service`);
+    return this.api.get<ExternalServiceDto[]>(`service`)
+      .pipe(concatMap((data) => {
+        this.currentExternalServices.next(data);
+        return of(data);
+      }));
   }
 
   createExternalService(dto: CreateExternalServiceDto) {

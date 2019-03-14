@@ -39,5 +39,10 @@ export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
     }
   }
 
+  isFieldInvalid(controlName: string, errorCode: string) {
+    const control = this.cloneConfigForm.get(controlName);
+    return control.invalid && control.errors && control.getError(errorCode);
+  }
+
 
 }

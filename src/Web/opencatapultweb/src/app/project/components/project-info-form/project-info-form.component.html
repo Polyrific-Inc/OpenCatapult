@@ -1,9 +1,9 @@
 <div [formGroup]="projectInfoForm">
   <mat-form-field class="full-width-input">
     <mat-label>Project Name</mat-label>
-    <input #projectNameInput matInput placeholder="Please provide the name without spaces as this will be used by the task providers as an identifier" 
+    <input #projectNameInput matInput placeholder="Please provide the name without spaces as this will be used by the task providers as an identifier"
       formControlName="name" required (input)="onNameChanged(projectNameInput.value)">
-    <mat-error *ngIf="isFieldInvalid('name')">
+    <mat-error *ngIf="isFieldInvalid('name', 'required')">
       Please inform the project name
     </mat-error>
   </mat-form-field>

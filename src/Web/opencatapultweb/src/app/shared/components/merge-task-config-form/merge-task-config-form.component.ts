@@ -34,4 +34,9 @@ export class MergeTaskConfigFormComponent implements OnInit, OnChanges {
     }
   }
 
+  isFieldInvalid(controlName: string, errorCode: string) {
+    const control = this.mergeConfigForm.get(controlName);
+    return control.invalid && control.errors && control.getError(errorCode);
+  }
+
 }

@@ -41,4 +41,9 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
     }
   }
 
+  isFieldInvalid(controlName: string, errorCode: string) {
+    const control = this.pushConfigForm.get(controlName);
+    return control.invalid && control.errors && control.getError(errorCode);
+  }
+
 }

@@ -3,6 +3,7 @@ import { ProjectDto, ProjectService } from '@app/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { ProjectDetailComponent } from '../project-detail/project-detail.component';
 
 @Injectable()
 export class ProjectResolverService implements Resolve<ProjectDto> {
@@ -18,6 +19,11 @@ export class ProjectResolverService implements Resolve<ProjectDto> {
     return this.projectService.getProject(projectId)
       .pipe(mergeMap(project => {
         if (project) {
+          if (project.status === 'archived' && route.component === ProjectDetailComponent) {
+            this.router.navigateByUrl(`/project/archive/${projectId}`);
+            return EMPTY;
+          }
+
           return of(project);
         } else {
           this.router.navigateByUrl(`/project/${projectId}/error`);

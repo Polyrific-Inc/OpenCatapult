@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { JobDefinitionService, JobTaskDefinitionDto } from '@app/core';
+import { JobDefinitionService, JobTaskDefinitionDto, ExternalServiceService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
@@ -25,6 +25,7 @@ export class JobTaskDefinitionInfoDialogComponent implements OnInit {
   constructor (
     private fb: FormBuilder,
     private jobDefinitionService: JobDefinitionService,
+    private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
     public dialogRef: MatDialogRef<JobTaskDefinitionInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public jobTaskDefinition: JobTaskDefinitionViewModel
@@ -32,6 +33,7 @@ export class JobTaskDefinitionInfoDialogComponent implements OnInit {
     }
 
   ngOnInit() {
+    this.externalServiceService.getExternalServices().subscribe();
   }
 
   onFormReady(form: FormGroup) {

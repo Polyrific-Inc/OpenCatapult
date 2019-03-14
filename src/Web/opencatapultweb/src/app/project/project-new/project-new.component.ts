@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
-import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto, YamlService } from '@app/core';
+import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto, YamlService, ExternalServiceService } from '@app/core';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app/shared';
 
@@ -24,6 +24,7 @@ export class ProjectNewComponent implements OnInit {
     private fb: FormBuilder,
     private projectService: ProjectService,
     private projectTemplateService: ProjectTemplateService,
+    private externalServiceService: ExternalServiceService,
     private yamlService: YamlService,
     private snackBar: SnackbarService,
     private router: Router
@@ -32,6 +33,8 @@ export class ProjectNewComponent implements OnInit {
   ngOnInit() {
     this.projectForm = this.fb.group({
     });
+
+    this.externalServiceService.getExternalServices().subscribe();
 
     this.template = this.fb.control('template');
 
@@ -43,10 +46,7 @@ export class ProjectNewComponent implements OnInit {
   }
 
   formInitialized(form: FormGroup) {
-    this.projectForm = this.fb.group({
-      ...this.projectForm.controls,
-      ...form.controls
-    });
+    this.projectForm = form;
   }
 
   onSubmit() {
@@ -77,7 +77,23 @@ export class ProjectNewComponent implements OnInit {
               this.snackBar.open(err);
               this.loading = false;
             });
+    } else {
+      this.validateAllFormFields(this.projectForm);
     }
+  }
+
+  validateAllFormFields(formGroup: any) {
+    Object.keys(formGroup.controls).forEach(field => {
+        const control = formGroup.get(field);
+
+        if (control instanceof FormControl) {
+            control.markAsTouched({ onlySelf: true });
+        } else if (control instanceof FormGroup) {
+            this.validateAllFormFields(control);
+        } else if (control instanceof FormArray) {
+            this.validateAllFormFields(control);
+        }
+    });
   }
 
   onTemplateChanged(template) {

@@ -57,6 +57,7 @@ export * from './enums/job-queue-filter-type';
 export * from './enums/job-status';
 export * from './enums/job-task-status';
 export * from './enums/engine-status';
+export * from './enums/external-service-type';
 
 /* Constants */
 export * from './constants/property-data-types';

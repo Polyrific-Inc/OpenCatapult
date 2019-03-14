@@ -45,7 +45,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Id = 1,
                     ProjectId = 1,
                     UserId = 100,
-                    ProjectMemberRoleId = 1
+                    ProjectMemberRoleId = 1,
+                    Project = new Project()
                 }
             };
 
