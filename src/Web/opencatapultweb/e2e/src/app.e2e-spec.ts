@@ -10,7 +10,7 @@ describe('workspace-project App', () => {
 
   it('should display correct title', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('Catapult Dashboard');
+    expect(page.getTitleText()).toEqual('OpenCatapult Web');
   });
 
   afterEach(async () => {
