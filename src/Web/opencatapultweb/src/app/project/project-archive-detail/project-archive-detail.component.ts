@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ProjectDto, ProjectService, AuthorizePolicy } from '@app/core';
-import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
+import { SnackbarService, ConfirmationDialogComponent, ConfirmationWithInputDialogComponent } from '@app/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
 
@@ -69,6 +69,44 @@ export class ProjectArchiveDetailComponent implements OnInit {
           });
       }
     });
+  }
+
+  onDeleteClick() {
+    const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
+      data: {
+        title: 'Confirm Delete Project',
+        confirmationText: 'Please enter project name to confirm project deletion:',
+        confirmationMatch: this.project.name
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.projectService.deleteProject(this.project.id)
+          .subscribe(data => {
+            this.snackbar.open('Project has been deleted');
+
+            this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+              .then(() => this.router.navigate(['project']));
+          });
+      }
+    });
+  }
+
+  onExportClick() {
+    this.projectService.exportProject(this.project.id)
+      .subscribe(data => {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'data:text/yaml;charset=utf-8,' + encodeURIComponent(data));
+        element.setAttribute('download', `${this.project.name}.yaml`);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+      });
   }
 
 }
