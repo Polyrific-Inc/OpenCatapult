@@ -1,4 +1,4 @@
-<mat-toolbar color="primary" *ngIf="isLoggedIn$ | async as isLoggedIn" fxLayout="row" fxLayoutAlign="space-between center">
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
   <div>
       <span>
         <img src="assets/img/logo.png" class="angular-logo">
@@ -11,7 +11,13 @@
       <button mat-button routerLink="/user" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
   </div>
   <div class="profile-buttons">
-      <button mat-button routerLink="/user-profile">Edit Profile</button>
-      <button mat-button (click)="onLogout()">Logout</button>
+      <span class="greetings">Hi, {{greetingsName}}</span>
+      <button class="greetings-button" mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>person</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+          <button mat-menu-item routerLink="/user-profile">Edit Profile</button>
+          <button mat-menu-item (click)="onLogout()">Logout</button>
+      </mat-menu>
   </div>
 </mat-toolbar>

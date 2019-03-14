@@ -10,9 +10,8 @@ import { AuthorizePolicy } from '../core/auth/authorize-policy';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-
-  isLoggedIn$: Observable<boolean>;
   authorizePolicyEnum = AuthorizePolicy;
+  greetingsName: string;
 
   constructor(
       private authService: AuthService,
@@ -20,7 +19,22 @@ export class HeaderComponent implements OnInit {
     ) { }
 
   ngOnInit() {
-    this.isLoggedIn$ = this.authService.isLoggedIn;
+    this.authService.currentUser.subscribe(user => {
+      if (user) {
+        this.greetingsName = '';
+        if (user.firstName) {
+          this.greetingsName += user.firstName;
+        }
+
+        if (user.lastName) {
+          this.greetingsName += ` ${user.lastName}`;
+        }
+
+        if (!this.greetingsName) {
+          this.greetingsName = user.email;
+        }
+      }
+    });
   }
 
   onLogout() {

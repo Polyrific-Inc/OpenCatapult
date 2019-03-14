@@ -13,17 +13,20 @@ namespace Polyrific.Catapult.Api.Identity
 {
     public class AuthorizationToken
     {
-        public static string GenerateToken(int userId, string userName, string userRole, List<(int, string, string)> userProjects, string tokenKey, string tokenIssuer, string tokenAudience)
+        public static string GenerateToken(int userId, string userName, string firstName, string lastName, string userRole, 
+            List<(int, string, string)> userProjects, string tokenKey, string tokenIssuer, string tokenAudience)
         {
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
-                
+
             var token = new JwtSecurityToken(
                 issuer: tokenIssuer,
                 audience: tokenAudience,
-                claims: new []
+                claims: new[]
                 {
                     new Claim(ClaimTypes.Name, userName),
                     new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                    new Claim(ClaimTypes.GivenName, firstName ?? string.Empty),
+                    new Claim(ClaimTypes.Surname, lastName ?? string.Empty),
                     new Claim(CustomClaimTypes.Projects, JsonConvert.SerializeObject(userProjects.Select(up => new ProjectClaim
                     {
                         ProjectId = up.Item1,

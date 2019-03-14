@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule,
-          MatCardModule, MatInputModule, MatProgressBarModule, MatTableModule, MatPaginatorModule, MatSortModule } from '@angular/material';
+          MatCardModule, MatInputModule, MatProgressBarModule, MatMenuModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -45,6 +45,7 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     MatListModule,
     MatCardModule,
     MatInputModule,
+    MatMenuModule,
     ReactiveFormsModule,
     FlexLayoutModule,
     SharedModule.forRoot()
