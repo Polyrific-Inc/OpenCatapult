@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthorizePolicy } from '@app/core';
 
 @Component({
   selector: 'app-home-layout',
@@ -6,10 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./home-layout.component.css']
 })
 export class HomeLayoutComponent implements OnInit {
+  authorizePolicyEnum = AuthorizePolicy;
 
-  constructor() { }
+  constructor(
+    ) { }
 
   ngOnInit() {
   }
-
 }

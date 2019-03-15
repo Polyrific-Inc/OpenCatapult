@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../core/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthorizePolicy } from '../core/auth/authorize-policy';
+import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'app-header',
@@ -10,6 +10,7 @@ import { AuthorizePolicy } from '../core/auth/authorize-policy';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
+  @Input() sidenav: MatSidenav;
   authorizePolicyEnum = AuthorizePolicy;
   greetingsName: string;
 

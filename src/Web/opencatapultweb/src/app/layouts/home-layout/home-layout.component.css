@@ -1,0 +1,7 @@
+mat-sidenav {
+  min-width: 250px;
+}
+
+mat-sidenav button {
+  text-align: left;
+}

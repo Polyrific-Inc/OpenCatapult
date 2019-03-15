@@ -1,13 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
-import { MatToolbarModule, MatMenuModule, MatIconModule } from '@angular/material';
+import { MatToolbarModule, MatMenuModule, MatIconModule, MatSidenavModule } from '@angular/material';
 import { AuthService } from '@app/core/auth/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core';
 import { of } from 'rxjs';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -24,6 +25,8 @@ describe('HeaderComponent', () => {
         CoreModule,
         MatMenuModule,
         MatMenuModule,
+        MatSidenavModule,
+        FlexLayoutModule,
         MatIconModule
       ],
       providers: [

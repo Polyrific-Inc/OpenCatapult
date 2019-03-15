@@ -1,2 +1,16 @@
-<app-header></app-header>
-<router-outlet></router-outlet>
+<app-header [sidenav]="sidenav"></app-header>
+<mat-sidenav-container fxFlexFill>
+  <mat-sidenav #sidenav fxLayout="column">
+    <div fxLayout="column">
+      <a (click)="sidenav.toggle()" mat-button>Close</a>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/project">Projects</button>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/service">External Services</button>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/engine" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Engines</button>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/provider" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Providers</button>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/user" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
+    </div>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

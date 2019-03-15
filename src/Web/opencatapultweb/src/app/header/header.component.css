@@ -20,3 +20,7 @@
 .greetings-button mat-icon {
   height: 27px;
 }
+
+.menu-buttons {
+  display: inline-block;
+}
