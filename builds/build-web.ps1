@@ -1,3 +1,8 @@
+param(
+    [string]$hostName = "localhost",
+    [string]$portNumber = "44300"
+)
+
 $host.UI.RawUI.WindowTitle = "OpenCatapult Web";
 
 $rootPath = Split-Path $PSScriptRoot
@@ -41,4 +46,4 @@ else {
 
 npm install
 
-npm run start -- --ssl --host localhost --port 44300 --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
+npm run start -- --ssl --host $hostName --port $portNumber --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
