@@ -20,6 +20,7 @@
   * [Manage engine registration](user-guides/engine-registration.md)
   * [Manage task providers](user-guides/task-providers.md)
   * [Sample Devops project template](user-guides/sample-project.md)
+  * [Create your first project using Web UI](user-guides/create-first-project-web.md)
 * [Developer Guide](dev-guides/dev-guides.md)
   * [Build Scripts](dev-guides/build-scripts.md)
   * [Project template](dev-guides/project-template.md)

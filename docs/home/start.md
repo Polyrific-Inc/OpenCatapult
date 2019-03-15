@@ -16,6 +16,8 @@ This document will guide you to get started with `OpenCatapult`.
 - SQL Server 2017 (https://www.microsoft.com/en-us/sql-server/sql-server-2017)
   - If you want to use local instance, you can use the free `Express` or `Developer` edition
   - You can alo use remote instance (e.g. Azure SQL)
+- Node JS (https://nodejs.org)
+  - This is required by the Web UI. You can skip this if you go all CLI.
 - [Optional] Code editor, e.g. Visual Studio Code (https://code.visualstudio.com/)
 
 ### Get the source code
@@ -48,7 +50,7 @@ Please check the following [article](https://docs.microsoft.com/en-us/powershell
 
 #### One script to rule them all
 
-You will need to build the API, CLI, and Engine application to run opencatapult. In production scenario, all three are typically installed in separated machines. However, for this quick start, we will run them all in your local machine. We have prepared the script that will run the build script for API, CLI, and Engine. Run this command in the powershell:
+You will need to build the API, Engine, and either CLI or Web application to run opencatapult. In production scenario, all four are typically installed in separated machines. However, for this quick start, we will run them all in your local machine. We have prepared the script that will run the build script for API, Engine, CLI, and Web. Run this command in the powershell:
 ```powershell
 .\builds\build-all.ps1
 ``` 
@@ -57,7 +59,7 @@ The script will ask you to input the connection string for the API. After the AP
 
 > Please don't close the first powershell window since it is being used to run the API, which is being used by CLI and Engine. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
 
-If you want to build the API, CLI, or Engine one by one, for example if you want to install them in separate machines, you can follow the guide [here](../user-guides/build-scripts.md).
+If you want to build the API, Engine, CLI, or Web one by one, for example if you want to install them in separate machines, you can follow the guide [here](../dev-guides/build-scripts.md).
 
 
 ### Option 2: Build from source code manually
@@ -137,6 +139,22 @@ Set API URL in the CLI's config:
 dotnet .\publish\cli\occli.dll config set -n ApiUrl -v https://localhost:44305
 ```
 
+#### Prepare the Web
+
+Open the new shell, go to the root folder, and go to the following directory:
+```sh
+cd .\src\Web\opencatapultweb
+```
+
+Run the following commands:
+```sh
+npm install
+npm run start -- --ssl --host localhost --port 44300 --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
+```
+
+Lastly, you'd need to trust certificate that is located in `.\src\Web\opencatapultweb\ssl\server.crt`
+
+
 **Note:**
 
 If you have some error related to ssl, you can try to run the following command, and accept the popup prompt:
@@ -155,6 +173,8 @@ $env:ASPNETCORE_ENVIRONMENT = "Development"
 You are now ready to create your first Catapult project.
 
 ## Create your first project
+
+> *Note*: The tutorial below is using the opencatapult CLI. If you want to create the project using Web UI, please follow this [link](../user-guides/create-first-project-web.md)
 
 OpenCatapult allows you to define [task providers](../task-providers/task-provider.md) for all types of applications and devOps resources. We have pre-loaded OpenCatapult with an example [code generator provider](../task-providers/generator-provider.md) based on a .NET Core MVC template which will deploy directly to your local machine at this location: `.\publish\engine\working`.
 
