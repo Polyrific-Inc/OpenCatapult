@@ -47,6 +47,38 @@ function Publish-Component {
     Write-Host "Done. The package has been published to $compressDestPath." -ForegroundColor Green
 }
 
+function Publish-Web {
+    Param(
+        [parameter(Position=1)][string]$projectPath,
+        [parameter(Position=2)][string]$publishPath
+    )
+
+    Write-Host "Publishing web component..."
+
+    $distPath = Join-Path $projectPath "/dist"
+
+    Write-Host "npm install $projectPath"
+    npm install $projectPath
+    
+    Write-Host "npm run build-prod -- --outputPath=$distPath"
+    Set-Location $projectPath
+    npm run build-prod -- --outputPath=$distPath
+    Set-Location $rootPath
+
+    if (Test-Path $distPath) {
+        $compressSrcPath = "$distPath/*"
+        $compressDestPath = "$publishPath-v$version-$runtime.zip"
+
+        Compress-Archive -Path $compressSrcPath -DestinationPath $compressDestPath -Force
+
+        Write-Host "Deleting temporary files.."
+
+        Remove-Item -Path $distPath -Recurse -Force
+
+        Write-Host "Done. The web package has been published to $compressDestPath." -ForegroundColor Green
+    }
+}
+
 Write-Host "Attempting to create component packages for v$version release..."
 Write-Host
 
@@ -68,7 +100,13 @@ $enginePublishPath = Join-Path $publishOuterPath "/engine"
 Publish-Component $engineCsprojPath $enginePublishPath
 Write-Host ""
 
-Write-Host "4. Processing Task Provider components" -ForegroundColor Yellow
+Write-Host "4. Processing Web component" -ForegroundColor Yellow
+$webProjectPath = Join-Path $rootPath "/src/Web/opencatapultweb"
+$webPublishPath = Join-Path $publishOuterPath "/web"
+Publish-Web $webProjectPath $webPublishPath
+Write-Host ""
+
+Write-Host "5. Processing Task Provider components" -ForegroundColor Yellow
 
 $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
 $aspNetCoreMvcPublishPath = Join-Path $publishOuterPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
