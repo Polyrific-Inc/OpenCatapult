@@ -20,5 +20,15 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
         /// <param name="allowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
         /// <returns>Host location and Error message if any</returns>
         Task<(string hostLocation, string error)> DeployWebsite(string artifactLocation, string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot, string connectionString, string regionName, string planName, bool allowAutomaticRename);
+
+        /// <summary>
+        /// Delete website
+        /// </summary>
+        /// <param name="subscriptionId">Azure subscription id</param>
+        /// <param name="resourceGroupName">Name of the resource group</param>
+        /// <param name="appServiceName">Name of the App Service</param>
+        /// <param name="deploymentSlot">Name of the deployment slot</param>
+        /// <returns>Error message if any</returns>
+        Task<string> DeleteWebsite(string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot);
     }
 }

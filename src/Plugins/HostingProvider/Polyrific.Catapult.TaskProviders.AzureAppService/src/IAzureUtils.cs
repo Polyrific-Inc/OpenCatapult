@@ -49,5 +49,30 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
         /// <param name="allowAutomaticRename">Allows renaming the app service automatically if the original app service name is not available?</param>
         /// <returns></returns>
         IWebApp GetOrCreateWebsite(string subscriptionId, string resourceGroupName, string appName, string regionName, string planName, bool allowAutomaticRename);
+
+        /// <summary>
+        /// Get an azure web app
+        /// </summary>
+        /// <param name="subscriptionId">Subscription Id used to access</param>
+        /// <param name="resourceGroupName">Resource group name where the website located</param>
+        /// <param name="name">instance name of the azure app service</param>
+        /// <returns></returns>
+        IWebApp GetWebsite(string subscriptionId, string resourceGroupName, string name);
+
+        /// <summary>
+        /// Delete an azure web app
+        /// </summary>
+        /// <param name="subscriptionId">Subscription Id used to access</param>
+        /// <param name="webId">The azure website id</param>
+        /// <returns></returns>
+        void DeleteWebsite(string subscriptionId, string webId);
+
+        /// <summary>
+        /// Delete an azure deployment slot
+        /// </summary>
+        /// <param name="website">The azure website</param>
+        /// <param name="slotId">The azure deployment slot Id</param>
+        /// <returns></returns>
+        void DeleteSlot(IWebApp website, string slotId);
     }
 }

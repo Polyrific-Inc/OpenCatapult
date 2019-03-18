@@ -61,6 +61,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
                     if (!string.IsNullOrEmpty(error))
                         result.Add("errorMessage", error);
                     break;
+                case "delete":
+                    error = await DeleteHostingResources();
+                    if (!string.IsNullOrEmpty(error))
+                        result.Add("errorMessage", error);
+                    break;
                 default:
                     await BeforeDeploy();
                     (hostLocation, outputValues, errorMessage) = await Deploy();
@@ -104,6 +109,12 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// </summary>
         /// <returns></returns>
         public abstract Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy();
+
+        /// <summary>
+        /// Delete the hostring resources
+        /// </summary>
+        /// <returns></returns>
+        public abstract Task<string> DeleteHostingResources();
 
         /// <summary>
         /// Process to run after executing deployment

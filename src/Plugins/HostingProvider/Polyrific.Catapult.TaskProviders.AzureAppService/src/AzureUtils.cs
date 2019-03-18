@@ -124,6 +124,16 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
             return webApp;
         }
 
+        public void DeleteWebsite(string subscriptionId, string webId)
+        {
+            _authenticatedAzure.WithSubscription(subscriptionId).WebApps.DeleteById(webId);
+        }
+
+        public void DeleteSlot(IWebApp website, string slotId)
+        {
+            website.DeploymentSlots.DeleteById(slotId);
+        }
+
         private IResourceGroup GetOrCreateResourceGroup(string subscriptionId, string resourceGroupName, string region)
         {
             IResourceGroup resourceGroup = null;

@@ -179,5 +179,33 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
             return $"Failed to create a GitHub repository after {MaxAttempt} attempts. Error: {error}";
         }
+
+        public async Task<string> DeleteRepository()
+        {
+            var attempt = 1;
+            string error = null;
+
+            // start attempt delete
+            while (attempt <= MaxAttempt)
+            {
+                _logger.LogInformation($"Deleting the remote repository (attempt #{attempt}) in {_config.RemoteUrl}.");
+
+                attempt++;
+
+                error = await _gitHubUtils.DeleteRepository(_config.ProjectName, _config.RepoOwner);
+                if (string.IsNullOrEmpty(error))
+                {
+                    return "";
+                }
+                else
+                {
+                    _logger.LogError(error);
+                }
+
+                Thread.Sleep(30000);
+            }
+
+            return $"Failed to delete a GitHub repository after {MaxAttempt} attempts. Error: {error}";
+        }
     }
 }

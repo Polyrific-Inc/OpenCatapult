@@ -72,6 +72,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
+                    case "delete":
+                        error = await DeleteRepository();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
                     default:
                         await BeforeClone();
                         (cloneLocation, outputValues, errorMessage) = await Clone();
@@ -104,6 +109,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
+                    case "delete":
+                        error = await DeleteRepository();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
                     default:
                         await BeforePush();
                         (remoteUrl, pullRequestUrl, outputValues, errorMessage) = await Push();
@@ -133,6 +143,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         break;
                     case "post":
                         error = await AfterMerge();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    case "delete":
+                        error = await DeleteRepository();
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
@@ -252,5 +267,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             return Task.FromResult("");
         }
+
+        /// <summary>
+        /// Delete the remote repository
+        /// </summary>
+        /// <returns></returns>
+        public abstract Task<string> DeleteRepository();
     }
 }

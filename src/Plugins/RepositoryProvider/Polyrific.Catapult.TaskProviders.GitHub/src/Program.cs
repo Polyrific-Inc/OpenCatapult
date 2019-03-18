@@ -153,5 +153,20 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             var result = await app.Execute();
             app.ReturnOutput(result);
         }
+
+        public async override Task<string> DeleteRepository()
+        {
+            var repository = CloneTaskConfig?.Repository ?? PushTaskConfig?.Repository ?? MergeTaskConfig?.Repository;
+            var repoConfig = GetGitAutomationConfig("", repository, AdditionalConfigs);
+
+            if (_gitAutomation == null)
+                _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
+
+            var error = await _gitAutomation.DeleteRepository();
+            if (!string.IsNullOrEmpty(error))
+                return error;
+
+            return "";
+        }
     }
 }

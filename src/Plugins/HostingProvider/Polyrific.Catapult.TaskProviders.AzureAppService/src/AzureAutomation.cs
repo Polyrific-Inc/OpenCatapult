@@ -81,5 +81,37 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
                 return (null, ex.Message);
             }
         }
+
+        public Task<string> DeleteWebsite(string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot)
+        {
+            try
+            {
+                var website = _azureUtils.GetWebsite(subscriptionId, resourceGroupName, appServiceName);
+
+                if (website == null)
+                    return Task.FromResult("");
+
+                if (!string.IsNullOrEmpty(deploymentSlot))
+                {
+                    var slot = _azureUtils.GetSlot(website, deploymentSlot);
+
+                    if (slot == null)
+                        return Task.FromResult("");
+
+                    _azureUtils.DeleteSlot(website, slot.Id);
+                }
+                else
+                {
+                    _azureUtils.DeleteWebsite(subscriptionId, website.Id);
+                }
+
+                return Task.FromResult("");
+            }
+            catch (System.Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Task.FromResult(ex.Message);
+            }
+        }
     }
 }

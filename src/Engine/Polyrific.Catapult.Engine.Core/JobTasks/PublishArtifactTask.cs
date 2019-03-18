@@ -86,6 +86,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return new TaskRunnerResult(true, "");
         }
 
+        public Task<TaskRunnerResult> RunDeleteTask()
+        {
+            return Task.FromResult(new TaskRunnerResult(true, ""));
+        }
+
         private (string argString, string securedArgString) GetArgString(string process)
         {
             var dict = new Dictionary<string, object>

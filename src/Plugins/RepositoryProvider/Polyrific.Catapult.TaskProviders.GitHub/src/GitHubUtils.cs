@@ -299,6 +299,32 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             }
         }
 
+        public async Task<string> DeleteRepository(string projectName, string repositoryOwner)
+        {
+            try
+            {
+                var client = new GitHubClient(new ProductHeaderValue(projectName))
+                {
+                    Credentials = _gitHubCredential
+                };
+
+                var repository = await GetGitHubRepository(projectName, repositoryOwner);
+
+                if (repository != null)
+                {
+                    _logger.LogInformation($"Deleting repository {repositoryOwner}/{projectName}...");
+                    await client.Repository.Delete(repository.Id);
+                }
+
+                return "";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return ex.Message;
+            }
+        }
+
         private bool CloneTransferProgressHandler(TransferProgress progress)
         {
             if (progress.TotalObjects > 0)

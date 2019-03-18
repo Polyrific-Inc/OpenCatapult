@@ -57,5 +57,11 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// </summary>
         /// <returns></returns>
         Task<string> CreateRepositoryIfNotExists();
+
+        /// <summary>
+        /// Delete a remote repository
+        /// </summary>
+        /// <returns></returns>
+        Task<string> DeleteRepository();
     }
 }
