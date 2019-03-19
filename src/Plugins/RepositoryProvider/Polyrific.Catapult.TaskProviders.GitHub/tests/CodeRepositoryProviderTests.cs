@@ -90,6 +90,25 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
             Assert.Equal("", result.errorMessage);
         }
 
+        [Fact]
+        public async void DeleteRepository_Success()
+        {
+            var remoteUrl = "https://github.com/polyrific-inc/opencatapult";
+            
+            var taskConfig = new MergeTaskConfig
+            {
+                Repository = remoteUrl
+            };
+
+            var provider = new Program(new string[] { GetMergeArgString("delete", "TestProject", taskConfig, new Dictionary<string, string>(), "100") }, _gitHubUtils.Object);
+
+            var errorMessage = await provider.DeleteRepository();
+
+            _gitHubUtils.Verify(s => s.DeleteRepository("opencatapult", "polyrific-inc"), Times.Once);
+
+            Assert.Equal("", errorMessage);
+        }
+
         private string GetCloneArgString(string process, string projectName, CloneTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)
         {
             var dict = new Dictionary<string, object>

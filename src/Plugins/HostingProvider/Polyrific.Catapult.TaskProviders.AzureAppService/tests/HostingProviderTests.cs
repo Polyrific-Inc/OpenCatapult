@@ -62,6 +62,52 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests
             Assert.Equal("", result.errorMessage);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData("dev")]
+        public async void DeleteHostingResources_Success(string slotName)
+        {
+            var webSite = new Mock<IWebApp>();
+            webSite.SetupGet(x => x.DefaultHostName).Returns("https://test.azurewebsites.net");
+            webSite.SetupGet(x => x.Id).Returns("webid");
+
+            var slot = new Mock<IDeploymentSlot>();
+            slot.SetupGet(x => x.DefaultHostName).Returns("https://test.azurewebsites.net");
+            slot.SetupGet(x => x.Id).Returns("slotid");
+
+            _azureUtils.Setup(x => x.GetWebsite(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>())).Returns(webSite.Object);
+            _azureUtils.Setup(x => x.GetSlot(It.IsAny<IWebApp>(), slotName)).Returns(slot.Object);
+
+            var artifact = Path.Combine(AppContext.BaseDirectory, "working", "20180817.1");
+
+            var taskConfig = new DeployTaskConfig
+            {
+                ArtifactLocation = artifact,
+                WorkingLocation = artifact,
+            };
+            var additionalConfigs = new Dictionary<string, string>
+            {
+                { "ApplicationId", "123" },
+                { "ApplicationKey", "xxx" },
+                { "TenantId", "123" },
+                { "SubscriptionId", "subsid" },
+                { "ResourceGroupName", "resourcegroup" },
+                { "AppServiceName", "myproject" },
+                { "DeploymentSlot", slotName }
+            };
+
+            var provider = new Program(new string[] { GetArgString("delete", "TestProject", taskConfig, additionalConfigs) }, _azureUtils.Object, _deployUtils.Object);
+
+            var errorMessage = await provider.DeleteHostingResources();
+
+            if (string.IsNullOrEmpty(slotName))
+                _azureUtils.Verify(s => s.DeleteWebsite("subsid", "webid"), Times.Once);
+            else
+                _azureUtils.Verify(s => s.DeleteSlot(It.IsAny<IWebApp>(), "slotid"), Times.Once);
+
+            Assert.Equal("", errorMessage);
+        }
+
         private string GetArgString(string process, string projectName, DeployTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)
         {
             var dict = new Dictionary<string, object>
