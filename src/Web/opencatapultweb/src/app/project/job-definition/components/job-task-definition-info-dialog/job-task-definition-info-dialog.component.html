@@ -1,4 +1,4 @@
-<h1 mat-dialog-title>Job Definition</h1>
+<h1 mat-dialog-title>Job Task Definition</h1>
 <form [formGroup]="jobTaskDefinitionForm" (submit)="onSubmit()">
     <div mat-dialog-content>
 
@@ -9,7 +9,7 @@
           <input matInput formControlName="id">
         </mat-form-field>
 
-        <app-job-task-definition-form [jobTaskDefinition]="jobTaskDefinition" [disableForm]="!editing" (formReady)="onFormReady($event)"></app-job-task-definition-form>
+        <app-job-task-definition-form [jobTaskDefinition]="jobTaskDefinition" [disableForm]="!editing" [isDeletion]="jobTaskDefinition.isDeletion" (formReady)="onFormReady($event)"></app-job-task-definition-form>
       </div>
       <div mat-dialog-actions>
           <button mat-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>

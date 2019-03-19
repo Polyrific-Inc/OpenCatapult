@@ -311,14 +311,17 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new ProviderNotInstalledException(jobTaskDefinition.Provider);
             }
 
-            var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == plugin.Type.ToLower());
-            if (allowedTaskType.Equals(default((string, string[]))))
+            if (!(jobDefintion?.IsDeletion ?? false))
             {
-                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider);
-            }
-            else if (!allowedTaskType.Item2.Any(taskType => jobTaskDefinition.Type.ToLower() == taskType.ToLower()))
-            {
-                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
+                var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == plugin.Type.ToLower());
+                if (allowedTaskType.Equals(default((string, string[]))))
+                {
+                    throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider);
+                }
+                else if (!allowedTaskType.Item2.Any(taskType => jobTaskDefinition.Type.ToLower() == taskType.ToLower()))
+                {
+                    throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
+                }
             }
 
             if (!string.IsNullOrEmpty(plugin.RequiredServicesString))

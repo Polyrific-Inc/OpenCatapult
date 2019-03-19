@@ -53,7 +53,8 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
         [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build,
-            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test)]
+            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test,
+            JobTaskDefinitionType.DeleteRepository, JobTaskDefinitionType.DeleteHosting)]
         public string Type { get; set; }
 
         [Option("-prov|--provider <PROVIDER>", "Provider of the job task definition", CommandOptionType.SingleValue)]

@@ -30,6 +30,9 @@ namespace Polyrific.Catapult.Cli.Commands.Job
         [Option("-n|--name <NAME>", "Name of the job definition", CommandOptionType.SingleValue)]
         public string Name { get; set; }
 
+        [Option("-d|--deletion", "Add the job definition for resource deletion", CommandOptionType.NoValue)]
+        public bool IsDeletion { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to add new job definition to project {Project}...");
@@ -42,7 +45,8 @@ namespace Polyrific.Catapult.Cli.Commands.Job
             {
                 var job = _jobDefinitionService.CreateJobDefinition(project.Id, new CreateJobDefinitionDto
                 {
-                    Name = Name
+                    Name = Name,
+                    IsDeletion = IsDeletion
                 }).Result;
 
                 message = job.ToCliString($"Job definition has been added:", excludedFields: new string[] {

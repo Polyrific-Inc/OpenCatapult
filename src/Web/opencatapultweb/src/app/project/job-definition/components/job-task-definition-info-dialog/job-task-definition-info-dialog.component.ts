@@ -7,6 +7,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 export interface JobTaskDefinitionViewModel extends JobTaskDefinitionDto {
   projectId: number;
   jobDefinitionName: string;
+  isDeletion: boolean;
 }
 
 @Component({

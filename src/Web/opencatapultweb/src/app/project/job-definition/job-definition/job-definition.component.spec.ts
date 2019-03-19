@@ -37,6 +37,7 @@ describe('JobDefinitionComponent', () => {
         MatSnackBarModule,
         DragDropModule,
         MatProgressSpinnerModule,
+        MatCheckboxModule,
         SharedModule.forRoot()
       ],
       providers: [

@@ -3,6 +3,9 @@
     <div mat-dialog-content>
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <app-job-definition-form (formReady)="onFormReady($event)"></app-job-definition-form>
+        <div>
+          <mat-checkbox formControlName="isDeletion">Is resource deletion job?</mat-checkbox>
+        </div>
       </div>
       <div mat-dialog-actions>
           <button mat-button cdkFocusInitial>Save</button>

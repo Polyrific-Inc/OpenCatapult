@@ -162,3 +162,15 @@ jobs:
     provider: Polyrific.Catapult.TaskProviders.AzureAppService
     configs:
       AzureExternalService: azure-default
+- name: Delete Resources
+  tasks:
+  - name: Delete Repository
+    type: DeleteRepository
+    provider: Polyrific.Catapult.TaskProviders.GitHub
+    configs:
+      GitHubExternalService: github-default
+  - name: Delete Hosting
+    type: DeleteHosting
+    provider: Polyrific.Catapult.TaskProviders.AzureAppService
+    configs:
+      AzureExternalService: azure-default

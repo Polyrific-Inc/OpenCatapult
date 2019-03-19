@@ -2,7 +2,7 @@
 <form [formGroup]="jobTaskDefinitionForm" (submit)="onSubmit()">
     <div mat-dialog-content>
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
-        <app-job-task-definition-form (formReady)="onFormReady($event)"></app-job-task-definition-form>
+        <app-job-task-definition-form (formReady)="onFormReady($event)" [isDeletion]="data.isDeletion"></app-job-task-definition-form>
       </div>
       <div mat-dialog-actions>
           <button mat-button cdkFocusInitial>Save</button>

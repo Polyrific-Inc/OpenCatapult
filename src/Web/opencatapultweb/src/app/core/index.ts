@@ -63,6 +63,7 @@ export * from './enums/external-service-type';
 export * from './constants/property-data-types';
 export * from './constants/property-control-types';
 export * from './constants/job-task-definition-types';
+export * from './constants/deletion-job-task-definition-types';
 export * from './constants/project-member-roles';
 export * from './constants/generic-external-service';
 export * from './constants/user-roles';

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { JobDefinitionService, JobDefinitionDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
@@ -15,10 +15,13 @@ export interface NewJobDefinitionDialogData {
   styleUrls: ['./job-definition-new-dialog.component.css']
 })
 export class JobDefinitionNewDialogComponent implements OnInit {
-  jobDefinitionForm: FormGroup = new FormGroup({});
+  jobDefinitionForm: FormGroup = this.fb.group({
+    isDeletion: false
+  });
   loading: boolean;
 
   constructor (
+    private fb: FormBuilder,
     private jobDefinitionService: JobDefinitionService,
     private snackbar: SnackbarService,
     public dialogRef: MatDialogRef<JobDefinitionNewDialogComponent>,
@@ -30,7 +33,10 @@ export class JobDefinitionNewDialogComponent implements OnInit {
   }
 
   onFormReady(form: FormGroup) {
-    this.jobDefinitionForm = form;
+    this.jobDefinitionForm = this.fb.group({
+      ...this.jobDefinitionForm.controls,
+      ...form.controls
+    });
   }
 
   onSubmit() {

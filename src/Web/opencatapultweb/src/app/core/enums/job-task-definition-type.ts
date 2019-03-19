@@ -7,5 +7,7 @@ export enum JobTaskDefinitionType {
     Merge = 'Merge',
     Push = 'Push',
     PublishArtifact = 'PublishArtifact',
-    Test = 'Test'
+    Test = 'Test',
+    DeleteRepository = 'DeleteRepository',
+    DeleteHosting = 'DeleteHosting'
 }

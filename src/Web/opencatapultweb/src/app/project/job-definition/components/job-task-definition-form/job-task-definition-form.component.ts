@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { JobTaskDefinitionDto, jobTaskDefinitionTypes, TaskProviderService, TaskProviderDto } from '@app/core';
+import { JobTaskDefinitionDto, jobTaskDefinitionTypes, TaskProviderService,
+  TaskProviderDto, DeletionJobTaskDefinitionTypes } from '@app/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
@@ -10,9 +11,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class JobTaskDefinitionFormComponent implements OnInit, OnChanges {
   @Input() jobTaskDefinition: JobTaskDefinitionDto;
   @Input() disableForm: boolean;
+  @Input() isDeletion: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   jobTaskDefinitionForm: FormGroup;
-  jobTaskDefinitionTypes = jobTaskDefinitionTypes;
+  jobTaskDefinitionTypes: Array<any>;
   taskProviders: TaskProviderDto[];
   allTaskProviders: TaskProviderDto[];
 
@@ -21,6 +23,8 @@ export class JobTaskDefinitionFormComponent implements OnInit, OnChanges {
     private taskProviderService: TaskProviderService) { }
 
   ngOnInit() {
+    this.jobTaskDefinitionTypes = this.isDeletion ? DeletionJobTaskDefinitionTypes : jobTaskDefinitionTypes;
+
     this.jobTaskDefinitionForm = this.fb.group({
       name: [{value: null, disabled: this.disableForm}, Validators.required],
       type: [{value: null, disabled: this.disableForm}],

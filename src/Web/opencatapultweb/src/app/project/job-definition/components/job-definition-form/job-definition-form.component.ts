@@ -17,11 +17,7 @@ export class JobDefinitionFormComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.jobDefinitionForm = this.fb.group({
-      name: [{value: null, disabled: this.disableForm}, Validators.required],
-      description: [{value: null, disabled: this.disableForm}],
-      label: [{value: null, disabled: this.disableForm}],
-      isManaged: [{value: null, disabled: this.disableForm}],
-      selectKey: [{value: null, disabled: this.disableForm}]
+      name: [{value: null, disabled: this.disableForm}, Validators.required]
     });
 
     this.formReady.emit(this.jobDefinitionForm);

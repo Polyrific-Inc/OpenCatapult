@@ -16,7 +16,8 @@
   <mat-expansion-panel-header>
     <mat-panel-title>
       <mat-checkbox class="job-checkbox" [(ngModel)]="jobDefinition.selected" (click)="$event.stopPropagation();"></mat-checkbox>
-      <span>{{jobDefinition.name}}</span>
+      <span class="job-name">{{jobDefinition.name}}</span>
+      <mat-icon *ngIf="jobDefinition.isDeletion" matTooltip="This job can be automatically queued before project deletion">help_outline</mat-icon>
     </mat-panel-title>
     <mat-panel-description>
       <button mat-icon-button (click)="onQueueJobClick(jobDefinition); $event.stopPropagation();" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">

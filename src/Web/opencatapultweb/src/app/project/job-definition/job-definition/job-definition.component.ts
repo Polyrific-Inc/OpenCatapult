@@ -184,7 +184,8 @@ export class JobDefinitionComponent implements OnInit {
       data: {
         projectId: this.projectId,
         jobDefinitionId: jobDefinition.id,
-        jobDefinitionName: jobDefinition.name
+        jobDefinitionName: jobDefinition.name,
+        isDeletion: jobDefinition.isDeletion
       }
     });
 

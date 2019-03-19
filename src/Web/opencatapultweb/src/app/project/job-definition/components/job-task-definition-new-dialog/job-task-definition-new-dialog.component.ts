@@ -8,6 +8,7 @@ export interface NewJobDefinitionDialogData {
   projectId: number;
   jobDefinitionId: number;
   jobDefinitionName: string;
+  isDeletion: boolean;
 }
 
 

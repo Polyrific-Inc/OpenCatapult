@@ -31,6 +31,7 @@ export class JobTaskDefinitionComponent implements OnInit {
       data: {
         projectId: this.jobDefinition.projectId,
         jobDefinitionName: this.jobDefinition.name,
+        isDeletion: this.jobDefinition.isDeletion,
         ...task
       }
     });

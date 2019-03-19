@@ -54,7 +54,8 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Required]
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
         [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build, 
-            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test)]
+            JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test,
+            JobTaskDefinitionType.DeleteRepository, JobTaskDefinitionType.DeleteHosting)]
         public string Type { get; set; } = JobTaskDefinitionType.Generate;
 
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
