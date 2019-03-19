@@ -13,5 +13,7 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string Push = "Push";
         public const string PublishArtifact = "PublishArtifact";
         public const string Test = "Test";
+        public const string DeleteRepository = "DeleteRepository";
+        public const string DeleteHosting = "DeleteHosting";
     }
 }

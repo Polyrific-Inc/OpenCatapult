@@ -36,6 +36,12 @@ namespace Polyrific.Catapult.Api.Core.Services
                 ( PluginType.TestProvider, new string[] { JobTaskDefinitionType.Test } )
             };
 
+        private readonly List<string> _deleteTaskTypes = new List<string>
+        {
+            JobTaskDefinitionType.DeleteRepository,
+            JobTaskDefinitionType.DeleteHosting
+        };
+
         public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
             IProjectRepository projectRepository,
@@ -53,7 +59,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _secretVault = secretVault;
         }
 
-        public async Task<int> AddJobDefinition(int projectId, string name, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddJobDefinition(int projectId, string name, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -69,7 +75,16 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new DuplicateJobDefinitionException(name);
             }
 
-            var newJobDefinition = new JobDefinition { ProjectId = projectId, Name = name };
+            if (isDeletion)
+            {
+                var deletionJobDefinitionSpec = new JobDefinitionFilterSpecification(projectId, true);
+                if (await _jobDefinitionRepository.CountBySpec(deletionJobDefinitionSpec, cancellationToken) > 0)
+                {
+                    throw new MultipleDeletionJobException();
+                }
+            }
+
+            var newJobDefinition = new JobDefinition { ProjectId = projectId, Name = name, IsDeletion = isDeletion };
             return await _jobDefinitionRepository.Create(newJobDefinition, cancellationToken);
         }
 
@@ -158,7 +173,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (jobTaskDefinition.Sequence == null)
                 jobTaskDefinition.Sequence = _jobTaskDefinitionRepository.GetMaxTaskSequence(jobTaskDefinition.JobDefinitionId) + 1;
 
-            await ValidateJobTaskDefinition(jobTaskDefinition, cancellationToken);
+            await ValidateJobTaskDefinition(jobDefinition, jobTaskDefinition, cancellationToken);
 
             return await _jobTaskDefinitionRepository.Create(jobTaskDefinition, cancellationToken);
         }
@@ -191,7 +206,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 if (task.Sequence == null)
                     task.Sequence = ++maxSequence;
 
-                await ValidateJobTaskDefinition(task, cancellationToken);
+                await ValidateJobTaskDefinition(jobDefinition, task, cancellationToken);
             }                
 
             jobTaskDefinitions.ForEach(j => j.JobDefinitionId = jobDefinitionId);
@@ -203,7 +218,9 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var jobTaskDefinition = await _jobTaskDefinitionRepository.GetById(editedJobTaskDefinition.Id, cancellationToken);
+            var jobTaskDefinitionSpec = new JobTaskDefinitionFilterSpecification(editedJobTaskDefinition.JobDefinitionId, editedJobTaskDefinition.Id);
+            jobTaskDefinitionSpec.Includes.Add(t => t.JobDefinition);
+            var jobTaskDefinition = await _jobTaskDefinitionRepository.GetSingleBySpec(jobTaskDefinitionSpec, cancellationToken);
 
             if (jobTaskDefinition != null)
             {
@@ -214,7 +231,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 jobTaskDefinition.AdditionalConfigString = editedJobTaskDefinition.AdditionalConfigString;
                 jobTaskDefinition.Sequence = editedJobTaskDefinition.Sequence;
                 
-                await ValidateJobTaskDefinition(jobTaskDefinition, cancellationToken);
+                await ValidateJobTaskDefinition(jobTaskDefinition.JobDefinition, jobTaskDefinition, cancellationToken);
 
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
@@ -230,7 +247,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 jobTaskDefinition.ConfigString = JsonConvert.SerializeObject(jobTaskConfig);
 
-                await ValidateJobTaskDefinition(jobTaskDefinition, cancellationToken);
+                await ValidateJobTaskDefinition(null, jobTaskDefinition, cancellationToken);
 
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
@@ -274,8 +291,14 @@ namespace Polyrific.Catapult.Api.Core.Services
             return taskDefinition;
         }
 
-        public async Task ValidateJobTaskDefinition(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ValidateJobTaskDefinition(JobDefinition jobDefintion, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (jobDefintion != null && ((jobDefintion.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
+                (!jobDefintion.IsDeletion) && _deleteTaskTypes.Contains(jobTaskDefinition.Type)))
+            {
+                throw new JobTaskDefinitionTypeException(jobDefintion.IsDeletion, jobTaskDefinition.Type);
+            }
+
             var taskSpec = new JobTaskDefinitionFilterSpecification(jobTaskDefinition.JobDefinitionId, jobTaskDefinition.Name, jobTaskDefinition.Id);
             if (await _jobTaskDefinitionRepository.CountBySpec(taskSpec, cancellationToken) > 0)
                 throw new DuplicateJobTaskDefinitionException(jobTaskDefinition.Name);

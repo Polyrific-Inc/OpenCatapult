@@ -22,6 +22,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Name { get; set; }
 
         /// <summary>
+        /// Is the job definition for resource deletion?
+        /// </summary>
+        public bool IsDeletion { get; set; }
+
+        /// <summary>
         /// Tasks of the job definition
         /// </summary>
         public virtual ICollection<JobTaskDefinition> Tasks { get; set; }

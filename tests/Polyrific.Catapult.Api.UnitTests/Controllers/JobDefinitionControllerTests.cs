@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateJobDefinition_ReturnsCreatedJobDefinition()
         {
             _jobDefinitionService
-                .Setup(s => s.AddJobDefinition(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddJobDefinition(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
 
             var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);

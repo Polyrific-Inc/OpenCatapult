@@ -14,9 +14,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="projectId">Id of the project</param>
         /// <param name="name">Name of the job definition</param>
+        /// <param name="isDeletion">Is the job definition for resource deletion?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added job definition</returns>
-        Task<int> AddJobDefinition(int projectId, string name, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddJobDefinition(int projectId, string name, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Rename a job definition
@@ -139,9 +140,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <summary>
         /// Validate the task property and config whether it has satisfy required values
         /// </summary>
+        /// <param name="jobDefinition">The job definition object</param>
         /// <param name="jobTaskDefinition">The job task definition object</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task ValidateJobTaskDefinition(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
+        Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

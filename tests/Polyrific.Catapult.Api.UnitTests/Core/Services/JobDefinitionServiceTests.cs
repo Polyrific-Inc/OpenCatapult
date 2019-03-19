@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddJobDefinition_ValidItem()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
-            int newId = await projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD");
+            int newId = await projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD", false);
 
             Assert.True(newId > 1);
             Assert.True(_data.Count > 1);
@@ -169,7 +169,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobDefinition_DuplicateItem()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Default"));
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Default", false));
 
             Assert.IsType<DuplicateJobDefinitionException>(exception?.Result);
         }
@@ -178,9 +178,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobDefinition_InvalidProject()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(2, "Category"));
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(2, "Category", false));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
+        }
+
+        [Fact]
+        public void AddJobDefinition_MultipleDeletionJob()
+        {
+            _data[0].IsDeletion = true;
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Category", true));
+
+            Assert.IsType<MultipleDeletionJobException>(exception?.Result);
         }
 
         [Fact]
@@ -606,6 +616,21 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             var invalidPluginTypeException = exception?.Result as InvalidPluginTypeException;
             Assert.NotEmpty(invalidPluginTypeException.TaskTypes);
+        }
+
+        [Fact]
+        public void AddJobTaskDefinition_JobTaskDefinitionTypeException()
+        {
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            _data[0].IsDeletion = true;
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Name = "Push",
+                Type = JobTaskDefinitionType.Push
+            }));
+
+            Assert.IsType<JobTaskDefinitionTypeException>(exception?.Result);
         }
 
         [Fact]

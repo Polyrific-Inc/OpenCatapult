@@ -11,15 +11,17 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public string Name { get; set; }
         public int ExcludedJobDefinitionId { get; set; }
         public int[] JobDefinitionIds { get; set; }
+        public bool? IsDeletion { get; set; }
 
         /// <summary>
         /// Filter the job definition by project
         /// </summary>
         /// <param name="projectId">The project id</param>
-        public JobDefinitionFilterSpecification(int projectId)
-            : base(m => m.ProjectId == projectId)
+        public JobDefinitionFilterSpecification(int projectId, bool? isDeletion = null)
+            : base(m => m.ProjectId == projectId && (isDeletion == null || m.IsDeletion == isDeletion))
         {
             ProjectId = projectId;
+            IsDeletion = isDeletion;
         }
 
         /// <summary>

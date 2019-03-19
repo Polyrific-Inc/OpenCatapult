@@ -63,7 +63,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 var newJobDefinitionResponse = _mapper.Map<JobDefinitionDto>(newJobDefinition);
                 newJobDefinitionResponse.ProjectId = projectId;
                 newJobDefinitionResponse.Id = await _jobDefinitionService.AddJobDefinition(projectId,
-                    newJobDefinition.Name);
+                    newJobDefinition.Name,
+                    newJobDefinition.IsDeletion);
 
                 return CreatedAtRoute("GetJobDefinitionById", new
                 {
@@ -80,6 +81,11 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(projEx, "Project not found");
                 return BadRequest(projEx.Message);
+            }
+            catch (MultipleDeletionJobException jobEx)
+            {
+                _logger.LogWarning(jobEx, "A deletion job definition is already exist. A project should only contain one deletion job definition.");
+                return BadRequest(jobEx.Message);
             }
         }
 
@@ -270,6 +276,11 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
+            }
+            catch (JobTaskDefinitionTypeException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Incorrect task definition type");
+                return BadRequest(taskEx.Message);
             }
         }
 
