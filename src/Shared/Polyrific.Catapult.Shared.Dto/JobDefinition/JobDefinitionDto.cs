@@ -22,6 +22,11 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         public string Name { get; set; }
 
         /// <summary>
+        /// Is the job definition for resource deletion?
+        /// </summary>
+        public bool IsDeletion { get; set; }
+
+        /// <summary>
         /// Name of the data model
         /// </summary>
         public List<JobTaskDefinitionDto> Tasks { get; set; }
