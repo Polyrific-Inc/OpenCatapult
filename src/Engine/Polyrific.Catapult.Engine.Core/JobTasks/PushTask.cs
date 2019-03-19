@@ -98,22 +98,6 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return new TaskRunnerResult(true, "");
         }
 
-        public async Task<TaskRunnerResult> RunDeleteTask()
-        {
-            var provider = CodeRepositoryProviders?.FirstOrDefault(p => p.Name == Provider);
-            if (provider == null)
-                return new TaskRunnerResult($"Code repository provider \"{Provider}\" could not be found.");
-
-            await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
-
-            var arg = GetArgString("delete");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
-            if (result.ContainsKey("errorMessage"))
-                return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
-
-            return new TaskRunnerResult(true, "");
-        }
-
         private (string argString, string securedArgString) GetArgString(string process)
         {
             var dict = new Dictionary<string, object>

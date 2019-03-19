@@ -102,11 +102,6 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             return new TaskRunnerResult(true, "");
         }
 
-        public Task<TaskRunnerResult> RunDeleteTask()
-        {
-            return Task.FromResult(new TaskRunnerResult(true, ""));
-        }
-
         public override void ReloadProperties()
         {
             base.ReloadProperties();

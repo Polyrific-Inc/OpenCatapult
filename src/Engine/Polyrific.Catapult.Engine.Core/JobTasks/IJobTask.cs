@@ -67,11 +67,5 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// </summary>
         /// <returns></returns>
         Task<TaskRunnerResult> RunPostprocessingTask();
-
-        /// <summary>
-        /// Run the delete task
-        /// </summary>
-        /// <returns></returns>
-        Task<TaskRunnerResult> RunDeleteTask();
     }
 }
