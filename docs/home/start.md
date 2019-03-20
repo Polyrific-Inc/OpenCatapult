@@ -55,9 +55,11 @@ You will need to build the API, Engine, and either CLI or Web application to run
 .\builds\build-all.ps1
 ``` 
 
-The script will ask you to input the connection string for the API. After the API build succeed, it will open two new powershell windows. One is for Engine and one is for CLI.
+> Note that running this script will run all 4 of the components. If you want to skip CLI or Web, you can add the `-noCli` or `-noWeb` option. For example if you want to go all CLI, use the following command instead: `.\builds\build-all.ps1 -noWeb`
 
-> Please don't close the first powershell window since it is being used to run the API, which is being used by CLI and Engine. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
+The script will ask you to input the connection string for the API. After the API build succeed, it will open the other powershell windows for Engine, CLI, and Web.
+
+> Please don't close the first powershell window since it is being used to run the API, which is being used by Engine, CLI, and Web. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
 
 If you want to build the API, Engine, CLI, or Web one by one, for example if you want to install them in separate machines, you can follow the guide [here](../dev-guides/build-scripts.md).
 
