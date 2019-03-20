@@ -3,16 +3,26 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
-import { environment } from '@env/environment';
+import { Config, ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-    constructor(private authenticationService: AuthService) {}
+    private config: Config;
+
+    constructor(
+      private configService: ConfigService,
+      private authenticationService: AuthService) {
+        this.config = this.configService.getConfig();
+      }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        if (!this.config) {
+          this.config = this.configService.getConfig();
+        }
+
         // add authorization header with jwt token if available
         const currentUser = this.authenticationService.currentUserValue;
-        if (request.url.startsWith(environment.apiUrl) && currentUser && currentUser.token) {
+        if (this.config && request.url.startsWith(this.config.apiUrl) && currentUser && currentUser.token) {
             request = request.clone({
                 setHeaders: {
                     Authorization: `Bearer ${currentUser.token}`

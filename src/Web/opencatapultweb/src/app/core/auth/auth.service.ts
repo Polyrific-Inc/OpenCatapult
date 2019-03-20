@@ -3,14 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { map, } from 'rxjs/operators';
 import { User } from './user';
-import { environment } from '@env/environment';
 import * as jwt_decode from 'jwt-decode';
 import { AuthorizePolicy } from './authorize-policy';
 import { Role } from './role';
 import { ProjectMemberRole } from './project-member-role';
+import { Config, ConfigService } from '../../config/config.service'
 
 @Injectable()
 export class AuthService {
+  private config: Config;
   private currentUserSubject: BehaviorSubject<User>;
   public currentUser: Observable<User>;
 
@@ -21,10 +22,11 @@ export class AuthService {
   }
 
   constructor(
-    private http: HttpClient
-  ) {
-    this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
-    this.currentUser = this.currentUserSubject.asObservable();
+    private configService: ConfigService,
+    private http: HttpClient) {
+      this.config = this.configService.getConfig();
+      this.currentUserSubject = new BehaviorSubject<User>(JSON.parse(localStorage.getItem('currentUser')));
+      this.currentUser = this.currentUserSubject.asObservable();
   }
 
   public get currentUserValue(): User {
@@ -32,7 +34,11 @@ export class AuthService {
   }
 
   login(user: User) {
-    return this.http.post(`${environment.apiUrl}/Token`, { Email: user.email, Password: user.password },
+    if (!this.config) {
+      this.config = this.configService.getConfig();
+    }
+
+    return this.http.post(`${this.config.apiUrl}/Token`, { Email: user.email, Password: user.password },
     {
       responseType: 'text'
     })

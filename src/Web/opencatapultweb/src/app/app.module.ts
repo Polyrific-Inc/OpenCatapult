@@ -20,6 +20,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
+import { ConfigServiceProvider } from './config/config.service.provider';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,6 +52,9 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
     ReactiveFormsModule,
     FlexLayoutModule,
     SharedModule.forRoot()
+  ],
+  providers: [
+    ConfigServiceProvider
   ],
   bootstrap: [AppComponent]
 })

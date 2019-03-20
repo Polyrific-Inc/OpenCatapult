@@ -1,21 +1,29 @@
 import { Injectable } from '@angular/core';
-import { environment } from '@env/environment';
 import { HubConnection, HubConnectionBuilder, HttpTransportType } from '@aspnet/signalr';
 import { AuthService } from '../auth/auth.service';
 import { Subject } from 'rxjs';
+import { Config, ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class SignalrService {
   private connection: HubConnection;
+  private config: Config;
 
   constructor(
-    private authenticationService: AuthService) { }
+    private configService: ConfigService,
+    private authenticationService: AuthService) {
+      this.config = this.configService.getConfig();
+    }
 
   connect(path: string, message$: Subject<any>) {
+    if (!this.config) {
+      this.config = this.configService.getConfig();
+    }
+
     const currentUser = this.authenticationService.currentUserValue;
     if (!this.connection) {
       this.connection = new HubConnectionBuilder()
-        .withUrl(`${environment.apiUrl}/${path}`, {
+        .withUrl(`${this.config.apiUrl}/${path}`, {
           accessTokenFactory: () => currentUser.token,
           transport: HttpTransportType.LongPolling,
         })
