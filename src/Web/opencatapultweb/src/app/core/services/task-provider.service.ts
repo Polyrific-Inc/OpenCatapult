@@ -36,6 +36,7 @@ export class TaskProviderService {
       case JobTaskDefinitionType.Clone:
       case JobTaskDefinitionType.Push:
       case JobTaskDefinitionType.Merge:
+      case JobTaskDefinitionType.DeleteRepository:
         return ProviderType.RepositoryProvider;
       case JobTaskDefinitionType.Generate:
         return ProviderType.GeneratorProvider;
@@ -44,6 +45,7 @@ export class TaskProviderService {
       case JobTaskDefinitionType.DeployDb:
         return ProviderType.DatabaseProvider;
       case JobTaskDefinitionType.Deploy:
+      case JobTaskDefinitionType.DeleteHosting:
         return ProviderType.HostingProvider;
       case JobTaskDefinitionType.PublishArtifact:
         return ProviderType.StorageProvider;

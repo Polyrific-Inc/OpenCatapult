@@ -219,6 +219,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var queuedJobSpec = new JobQueueFilterSpecification();
+            queuedJobSpec.Includes.Add(q => q.JobDefinition);
             var jobQueue = await _jobQueueRepository.GetSingleBySpec(queuedJobSpec, cancellationToken);
 
             if (!string.IsNullOrEmpty(engine))
@@ -226,6 +227,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 if (jobQueue == null)
                 {
                     var pendingJobSpec = new JobQueueFilterSpecification(0, null, JobStatus.Queued, engine);
+                    pendingJobSpec.Includes.Add(q => q.JobDefinition);
                     jobQueue = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
                 }
 

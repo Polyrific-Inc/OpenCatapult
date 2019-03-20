@@ -33,6 +33,7 @@
             <app-deploy-db-task-config-form *ngSwitchCase="'DeployDb'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-deploy-db-task-config-form>
             <app-deploy-task-config-form *ngSwitchCase="'Deploy'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-deploy-task-config-form>
             <app-test-task-config-form *ngSwitchCase="'Test'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-test-task-config-form>
+            <app-delete-repository-config-form *ngSwitchCase="'DeleteRepository'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-delete-repository-config-form>
         </div>
 
         <div class="margin10"></div>

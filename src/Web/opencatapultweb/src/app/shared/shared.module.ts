@@ -21,6 +21,7 @@ import { AdditionalConfigFieldComponent } from './components/additional-config-f
 import { ConfirmationWithInputDialogComponent } from './components/confirmation-with-input-dialog/confirmation-with-input-dialog.component';
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HasAccessDirective } from './directives/has-access.directive';
+import { DeleteRepositoryConfigFormComponent } from './components/delete-repository-config-form/delete-repository-config-form.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { HasAccessDirective } from './directives/has-access.directive';
     AdditionalConfigFieldComponent,
     ConfirmationWithInputDialogComponent,
     ConfirmationDialogComponent,
-    HasAccessDirective
+    HasAccessDirective,
+    DeleteRepositoryConfigFormComponent
   ],
   imports: [
     CommonModule,
@@ -73,7 +75,8 @@ import { HasAccessDirective } from './directives/has-access.directive';
     AdditionalConfigFieldComponent,
     ConfirmationWithInputDialogComponent,
     ConfirmationDialogComponent,
-    HasAccessDirective
+    HasAccessDirective,
+    DeleteRepositoryConfigFormComponent
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,

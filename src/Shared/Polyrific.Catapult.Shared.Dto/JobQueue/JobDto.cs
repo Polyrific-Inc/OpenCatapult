@@ -68,6 +68,11 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         public string JobDefinitionName { get; set; }
 
         /// <summary>
+        /// Is the job definition for resource deletion?
+        /// </summary>
+        public bool IsDeletion { get; set; }
+
+        /// <summary>
         /// Status of the job tasks
         /// </summary>
         public List<JobTaskStatusDto> JobTasksStatus { get; set; }

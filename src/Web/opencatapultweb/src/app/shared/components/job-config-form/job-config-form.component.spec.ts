@@ -15,6 +15,7 @@ import { BuildTaskConfigFormComponent } from '../build-task-config-form/build-ta
 import { DeployDbTaskConfigFormComponent } from '../deploy-db-task-config-form/deploy-db-task-config-form.component';
 import { DeployTaskConfigFormComponent } from '../deploy-task-config-form/deploy-task-config-form.component';
 import { TestTaskConfigFormComponent } from '../test-task-config-form/test-task-config-form.component';
+import { DeleteRepositoryConfigFormComponent } from '../delete-repository-config-form/delete-repository-config-form.component';
 
 describe('JobConfigFormComponent', () => {
   let component: JobConfigFormComponent;
@@ -35,7 +36,8 @@ describe('JobConfigFormComponent', () => {
         DeployTaskConfigFormComponent,
         TestTaskConfigFormComponent,
         AdditionalConfigFormComponent,
-        AdditionalConfigFieldComponent
+        AdditionalConfigFieldComponent,
+        DeleteRepositoryConfigFormComponent
       ],
       imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule, MatSelectModule ]
     })
@@ -47,7 +49,8 @@ describe('JobConfigFormComponent', () => {
     component = fixture.componentInstance;
     component.job = {
       name: 'test',
-      tasks: []
+      tasks: [],
+      isDeletion: false
     };
     fixture.detectChanges();
   });

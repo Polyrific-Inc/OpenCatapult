@@ -14,6 +14,7 @@ import { AdditionalConfigFormComponent } from '../additional-config-form/additio
 import { AdditionalConfigFieldComponent } from '../additional-config-field/additional-config-field.component';
 import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DeleteRepositoryConfigFormComponent } from '../delete-repository-config-form/delete-repository-config-form.component';
 
 describe('JobListFormComponent', () => {
   let component: JobListFormComponent;
@@ -35,7 +36,8 @@ describe('JobListFormComponent', () => {
         DeployTaskConfigFormComponent,
         TestTaskConfigFormComponent,
         AdditionalConfigFormComponent,
-        AdditionalConfigFieldComponent
+        AdditionalConfigFieldComponent,
+        DeleteRepositoryConfigFormComponent
       ],
       imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule, MatSelectModule ]
     })

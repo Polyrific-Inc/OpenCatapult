@@ -80,68 +80,78 @@ namespace Polyrific.Catapult.Engine.Core
 
                     var taskObj = GetJobTaskInstance(projectId, job.Code, jobTask, workingLocation);
 
-                    // pre-processing
-                    _logger.LogInformation("[Queue {Code}] Running {Type} pre-processing task", job.Code, jobTask.Type);
-                    var preResult = await taskObj.RunPreprocessingTask();
-                    if (!preResult.IsSuccess && preResult.StopTheProcess)
+                    TaskRunnerResult result;
+                    if (job.IsDeletion)
                     {
-                        _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, preResult.ErrorMessage);
-                        jobTaskStatus.Status = JobTaskStatusType.Failed;
-                        jobTaskStatus.Remarks = preResult.ErrorMessage;
-                        break;
+                        // TODO: Call task deletion methods
+                        result = new TaskRunnerResult();
+                        jobTaskStatus.Status = JobTaskStatusType.Success;
                     }
-
-                    // main process
-                    _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
-
-                    System.Console.WriteLine($"Invoking \"{jobTask.Type}\" task.");
-                    var result = await taskObj.RunMainTask(outputValues);
-                    results[jobTask.Id] = result;
-                    if (!result.IsSuccess && result.StopTheProcess)
+                    else
                     {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, result.ErrorMessage);
-                        jobTaskStatus.Status = JobTaskStatusType.Failed;
-                        jobTaskStatus.Remarks = result.ErrorMessage;
-                        break;
-                    }
-
-                    // save output values to be used as the input for the next tasks
-                    if (result.OutputValues != null)
-                    {
-                        foreach (var key in result.OutputValues.Keys)
+                        // pre-processing
+                        _logger.LogInformation("[Queue {Code}] Running {Type} pre-processing task", job.Code, jobTask.Type);
+                        var preResult = await taskObj.RunPreprocessingTask();
+                        if (!preResult.IsSuccess && preResult.StopTheProcess)
                         {
-                            if (outputValues.ContainsKey(key))
-                                outputValues[key] = result.OutputValues[key];
-                            else
-                                outputValues.Add(key, result.OutputValues[key]);
+                            _logger.LogError("[Queue {Code}]  Execution of {Type} pre-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, preResult.ErrorMessage);
+                            jobTaskStatus.Status = JobTaskStatusType.Failed;
+                            jobTaskStatus.Remarks = preResult.ErrorMessage;
+                            break;
+                        }
+
+                        // main process
+                        _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
+
+                        System.Console.WriteLine($"Invoking \"{jobTask.Type}\" task.");
+                        result = await taskObj.RunMainTask(outputValues);
+                        results[jobTask.Id] = result;
+                        if (!result.IsSuccess && result.StopTheProcess)
+                        {
+                            _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, result.ErrorMessage);
+                            jobTaskStatus.Status = JobTaskStatusType.Failed;
+                            jobTaskStatus.Remarks = result.ErrorMessage;
+                            break;
+                        }
+
+                        // save output values to be used as the input for the next tasks
+                        if (result.OutputValues != null)
+                        {
+                            foreach (var key in result.OutputValues.Keys)
+                            {
+                                if (outputValues.ContainsKey(key))
+                                    outputValues[key] = result.OutputValues[key];
+                                else
+                                    outputValues.Add(key, result.OutputValues[key]);
+                            }
+                        }
+
+                        // post-processing
+                        _logger.LogInformation("[Queue {Code}] Running {Type} post-processing task", job.Code, jobTask.Type);
+                        var postResult = await taskObj.RunPostprocessingTask();
+                        if (!postResult.IsSuccess && postResult.StopTheProcess)
+                        {
+                            _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, postResult.ErrorMessage);
+                            jobTaskStatus.Status = JobTaskStatusType.Failed;
+                            jobTaskStatus.Remarks = postResult.ErrorMessage;
+                            break;
+                        }
+
+                        // check if there's a need to postpone the next task
+                        if (result.IsSuccess && result.StopTheProcess)
+                        {
+                            _logger.LogInformation("[Queue {Code}] Execution of {Type} require the job to be halted. Run the restart command in order to restart the job", job.Code, jobTask.Type);
+                            jobTaskStatus.Status = JobTaskStatusType.Success;
+                            jobTaskStatus.Remarks = result.TaskRemarks;
+
+                            int currentTaskStatusIdx = job.JobTasksStatus.IndexOf(jobTaskStatus);
+                            var nextTaskStatus = currentTaskStatusIdx == job.JobTasksStatus.Count - 1 ? null : job.JobTasksStatus[currentTaskStatusIdx + 1];
+                            nextTaskStatus.Status = JobTaskStatusType.Pending;
+                            nextTaskStatus.Remarks = result.StopRemarks;
+                            break;
                         }
                     }
-
-                    // post-processing
-                    _logger.LogInformation("[Queue {Code}] Running {Type} post-processing task", job.Code, jobTask.Type);
-                    var postResult = await taskObj.RunPostprocessingTask();
-                    if (!postResult.IsSuccess && postResult.StopTheProcess)
-                    {
-                        _logger.LogError("[Queue {Code}] Execution of {Type} post-processing task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, postResult.ErrorMessage);
-                        jobTaskStatus.Status = JobTaskStatusType.Failed;
-                        jobTaskStatus.Remarks = postResult.ErrorMessage;
-                        break;
-                    }
-
-                    // check if there's a need to postpone the next task
-                    if (result.IsSuccess && result.StopTheProcess)
-                    {
-                        _logger.LogInformation("[Queue {Code}] Execution of {Type} require the job to be halted. Run the restart command in order to restart the job", job.Code, jobTask.Type);
-                        jobTaskStatus.Status = JobTaskStatusType.Success;
-                        jobTaskStatus.Remarks = result.TaskRemarks;
-
-                        int currentTaskStatusIdx = job.JobTasksStatus.IndexOf(jobTaskStatus);
-                        var nextTaskStatus = currentTaskStatusIdx == job.JobTasksStatus.Count - 1 ? null : job.JobTasksStatus[currentTaskStatusIdx + 1];
-                        nextTaskStatus.Status = JobTaskStatusType.Pending;
-                        nextTaskStatus.Remarks = result.StopRemarks;
-                        break;
-                    }
-
+                    
                     jobTaskStatus.Status = JobTaskStatusType.Success;
                     jobTaskStatus.Remarks = result.TaskRemarks;
                     await _jobQueueService.UpdateJobQueue(job.Id, new UpdateJobDto

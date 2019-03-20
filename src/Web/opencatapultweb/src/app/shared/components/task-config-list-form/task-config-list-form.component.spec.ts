@@ -17,6 +17,7 @@ import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule 
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DeleteRepositoryConfigFormComponent } from '../delete-repository-config-form/delete-repository-config-form.component';
 
 describe('TaskConfigListFormComponent', () => {
   let component: TaskConfigListFormComponent;
@@ -37,7 +38,8 @@ describe('TaskConfigListFormComponent', () => {
         DeployTaskConfigFormComponent,
         TestTaskConfigFormComponent,
         AdditionalConfigFormComponent,
-        AdditionalConfigFieldComponent
+        AdditionalConfigFieldComponent,
+        DeleteRepositoryConfigFormComponent
       ],
       imports: [
         BrowserAnimationsModule,

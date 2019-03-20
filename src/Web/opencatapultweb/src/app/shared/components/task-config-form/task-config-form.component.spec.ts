@@ -16,6 +16,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { DeleteRepositoryConfigFormComponent } from '../delete-repository-config-form/delete-repository-config-form.component';
 
 describe('TaskConfigFormComponent', () => {
   let component: TaskConfigFormComponent;
@@ -35,7 +36,8 @@ describe('TaskConfigFormComponent', () => {
         DeployTaskConfigFormComponent,
         TestTaskConfigFormComponent,
         AdditionalConfigFormComponent,
-        AdditionalConfigFieldComponent
+        AdditionalConfigFieldComponent,
+        DeleteRepositoryConfigFormComponent
       ],
       imports: [
         BrowserAnimationsModule,

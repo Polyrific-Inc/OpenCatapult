@@ -123,7 +123,8 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 // prompt for Repository config
                 if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
-                    task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower()) && !task.Configs.ContainsKey("Repository"))
+                    task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower() ||
+                    task.Type.ToLower() == JobTaskDefinitionType.DeleteRepository.ToLower()) && !task.Configs.ContainsKey("Repository"))
                 {
                     if (string.IsNullOrEmpty(repository))
                         repository = PromptTaskConfig("Repository");

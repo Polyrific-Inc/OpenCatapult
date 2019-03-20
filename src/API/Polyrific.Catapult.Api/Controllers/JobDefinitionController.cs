@@ -439,9 +439,10 @@ namespace Polyrific.Catapult.Api.Controllers
                 {
                     _logger.LogWarning("Task Id doesn't match.");
                     return BadRequest("Task Id doesn't match.");
-                }                    
+                }
 
                 var entity = _mapper.Map<JobTaskDefinition>(jobTaskDefinition);
+                entity.JobDefinitionId = jobId;
                 await _jobDefinitionService.UpdateJobTaskDefinition(entity);
 
                 return Ok();
