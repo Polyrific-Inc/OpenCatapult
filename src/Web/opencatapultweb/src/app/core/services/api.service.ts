@@ -14,6 +14,12 @@ export class ApiService {
     private configService: ConfigService
   ) {
     this.config = configService.getConfig();
+    if (!this.config) {
+      this.config = {
+        apiUrl: "http://localhost",
+        environmentName: "local-dev"
+      }
+    }
   }
 
   private formatErrors(error: HttpErrorResponse) {
