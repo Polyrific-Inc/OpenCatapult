@@ -9,6 +9,8 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('ProjectCloneComponent', () => {
   let component: ProjectCloneComponent;
@@ -27,6 +29,15 @@ describe('ProjectCloneComponent', () => {
         HttpClientTestingModule,
         CoreModule,
         SharedModule.forRoot()
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            params: of({ id: 1}),
+            data: of({project: { id: 1}}),
+            snapshot: {}
+          }
+        },
       ]
     })
     .compileComponents();
