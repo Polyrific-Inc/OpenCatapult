@@ -4,11 +4,11 @@ import { Observable } from 'rxjs';
 
 import { throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { Config, ConfigService } from '../../config/config.service'
+import { Config, ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class ApiService {
-  config: Config
+  config: Config;
   constructor(
     private http: HttpClient,
     private configService: ConfigService
@@ -16,9 +16,9 @@ export class ApiService {
     this.config = configService.getConfig();
     if (!this.config) {
       this.config = {
-        apiUrl: "http://localhost",
-        environmentName: "local-dev"
-      }
+        apiUrl: 'http://localhost',
+        environmentName: 'local-dev'
+      };
     }
   }
 

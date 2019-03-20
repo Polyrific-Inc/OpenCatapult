@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { config, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,11 +12,11 @@ export class ConfigService {
 
   async loadConfig() {
 
-    console.debug("Loading configs...");
+    // console.debug("Loading configs...");
     const data = await this.http.get<Config>('./config.json')
       .toPromise();
     this.config = data;
-    console.debug(`Configs has been loaded for environment "${this.config.environmentName}".`);
+    // console.debug(`Configs has been loaded for environment "${this.config.environmentName}".`);
 
   }
 

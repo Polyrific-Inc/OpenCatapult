@@ -7,7 +7,7 @@ import * as jwt_decode from 'jwt-decode';
 import { AuthorizePolicy } from './authorize-policy';
 import { Role } from './role';
 import { ProjectMemberRole } from './project-member-role';
-import { Config, ConfigService } from '../../config/config.service'
+import { Config, ConfigService } from '../../config/config.service';
 
 @Injectable()
 export class AuthService {
