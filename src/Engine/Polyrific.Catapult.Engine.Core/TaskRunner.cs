@@ -83,9 +83,18 @@ namespace Polyrific.Catapult.Engine.Core
                     TaskRunnerResult result;
                     if (job.IsDeletion)
                     {
-                        // TODO: Call task deletion methods
-                        result = new TaskRunnerResult();
-                        jobTaskStatus.Status = JobTaskStatusType.Success;
+                        _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
+
+                        System.Console.WriteLine($"Invoking \"{jobTask.Type}\" task.");
+                        result = await taskObj.RunMainTask(outputValues);
+                        results[jobTask.Id] = result;
+                        if (!result.IsSuccess && result.StopTheProcess)
+                        {
+                            _logger.LogError("[Queue {Code}] Execution of {Type} task was failed, stopping the next task execution. Error: {ErrorMessage}", job.Code, jobTask.Type, result.ErrorMessage);
+                            jobTaskStatus.Status = JobTaskStatusType.Failed;
+                            jobTaskStatus.Remarks = result.ErrorMessage;
+                            break;
+                        }
                     }
                     else
                     {
@@ -208,6 +217,12 @@ namespace Polyrific.Catapult.Engine.Core
                     break;
                 case JobTaskDefinitionType.Test:
                     task = _jobTaskService.TestTask;
+                    break;
+                case JobTaskDefinitionType.DeleteRepository:
+                    task = _jobTaskService.DeleteRepositoryTask;
+                    break;
+                case JobTaskDefinitionType.DeleteHosting:
+                    task = _jobTaskService.DeleteHostingTask;
                     break;
                 default:
                     throw new InvalidJobTaskTypeException(jobTask.Type);

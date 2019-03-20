@@ -64,6 +64,11 @@ namespace Polyrific.Catapult.Engine.Core
                         jobQueue.Status = JobStatus.Error;
                     else
                         jobQueue.Status = JobStatus.Completed;
+
+                    if (jobQueue.IsDeletion)
+                    {
+                        // Call the API to perform hard delete
+                    }
                 }
                 catch (Exception ex)
                 {

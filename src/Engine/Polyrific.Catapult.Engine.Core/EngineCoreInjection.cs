@@ -22,6 +22,8 @@ namespace Polyrific.Catapult.Engine.Core
             services.AddTransient<IPublishArtifactTask, PublishArtifactTask>();
             services.AddTransient<IPushTask, PushTask>();
             services.AddTransient<ITestTask, TestTask>();
+            services.AddTransient<IDeleteRepositoryTask, DeleteRepositoryTask>();
+            services.AddTransient<IDeleteHostingTask, DeleteHostingTask>();
             services.AddTransient<JobTaskService, JobTaskService>();
         }
     }

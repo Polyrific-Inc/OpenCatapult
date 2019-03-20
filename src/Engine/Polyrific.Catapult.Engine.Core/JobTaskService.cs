@@ -17,7 +17,9 @@ namespace Polyrific.Catapult.Engine.Core
             IMergeTask mergeTask,
             IPublishArtifactTask publishArtifactTask,
             IPushTask pushTask,
-            ITestTask testTask)
+            ITestTask testTask,
+            IDeleteRepositoryTask deleteRepositoryTask,
+            IDeleteHostingTask deleteHostingTask)
         {
             BuildTask = buildTask;
             CloneTask = cloneTask;
@@ -28,6 +30,8 @@ namespace Polyrific.Catapult.Engine.Core
             PublishArtifactTask = publishArtifactTask;
             PushTask = pushTask;
             TestTask = testTask;
+            DeleteRepositoryTask = deleteRepositoryTask;
+            DeleteHostingTask = deleteHostingTask;
         }
 
         /// <summary>
@@ -74,5 +78,15 @@ namespace Polyrific.Catapult.Engine.Core
         /// Instance of <see cref="ITestTask"/>
         /// </summary>
         public ITestTask TestTask { get; }
+
+        /// <summary>
+        /// Instance of <see cref="IDeleteRepositoryTask"/>
+        /// </summary>
+        public IDeleteRepositoryTask DeleteRepositoryTask { get; }
+
+        /// <summary>
+        /// Instance of <see cref="IDeleteHostingTask"/>
+        /// </summary>
+        public IDeleteHostingTask DeleteHostingTask { get; }
     }
 }

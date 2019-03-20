@@ -83,6 +83,34 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
             return (hostLocation, null, "");
         }
 
+        public async override Task<string> DeleteHostingResources()
+        {
+            if (_azure == null)
+                _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), _azureUtils, _deployUtils, Logger);
+
+            var subscriptionId = "";
+            if (AdditionalConfigs.ContainsKey("SubscriptionId") && !string.IsNullOrEmpty(AdditionalConfigs["SubscriptionId"]))
+                subscriptionId = AdditionalConfigs["SubscriptionId"];
+            else
+                return "Subscription Id is not provided";
+
+            var resourceGroupName = "";
+            if (AdditionalConfigs.ContainsKey("ResourceGroupName") && !string.IsNullOrEmpty(AdditionalConfigs["ResourceGroupName"]))
+                resourceGroupName = AdditionalConfigs["ResourceGroupName"];
+            else
+                return "Resource group name is not provided";
+
+            var appServiceName = ProjectName;
+            if (AdditionalConfigs.ContainsKey("AppServiceName") && !string.IsNullOrEmpty(AdditionalConfigs["AppServiceName"]))
+                appServiceName = AdditionalConfigs["AppServiceName"];
+
+            var deploymentSlot = "";
+            if (AdditionalConfigs.ContainsKey("DeploymentSlot") && !string.IsNullOrEmpty(AdditionalConfigs["DeploymentSlot"]))
+                deploymentSlot = AdditionalConfigs["DeploymentSlot"];
+
+            return await _azure.DeleteWebsite(subscriptionId, resourceGroupName, appServiceName, deploymentSlot);
+        }
+
         private static async Task Main(string[] args)
         {
             var app = new Program(args);
@@ -105,36 +133,6 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
                 Config.TenantId = AdditionalConfigs["TenantId"];
 
             return Config;
-        }
-
-        public async override Task<string> DeleteHostingResources()
-        {
-            if (_azure == null)
-                _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), _azureUtils, _deployUtils, Logger);
-
-            var subscriptionId = "";
-            if (AdditionalConfigs.ContainsKey("SubscriptionId") && !string.IsNullOrEmpty(AdditionalConfigs["SubscriptionId"]))
-                subscriptionId = AdditionalConfigs["SubscriptionId"];
-            else
-                return "Subscription Id is not provided";
-
-            var resourceGroupName = "";
-            if (AdditionalConfigs.ContainsKey("ResourceGroupName") && !string.IsNullOrEmpty(AdditionalConfigs["ResourceGroupName"]))
-                resourceGroupName = AdditionalConfigs["ResourceGroupName"];
-            else
-                return "Resource group name is not provided";
-
-            var appServiceName = AdditionalConfigs["AppServiceName"];
-            if (AdditionalConfigs.ContainsKey("AppServiceName") && !string.IsNullOrEmpty(AdditionalConfigs["AppServiceName"]))
-                appServiceName = AdditionalConfigs["AppServiceName"];
-            else
-                return "App service name is not provided";
-
-            var deploymentSlot = "";
-            if (AdditionalConfigs.ContainsKey("DeploymentSlot") && !string.IsNullOrEmpty(AdditionalConfigs["DeploymentSlot"]))
-                deploymentSlot = AdditionalConfigs["DeploymentSlot"];
-
-            return await _azure.DeleteWebsite(subscriptionId, resourceGroupName, appServiceName, deploymentSlot);
         }
     }
 }
