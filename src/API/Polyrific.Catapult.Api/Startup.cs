@@ -133,6 +133,17 @@ namespace Polyrific.Catapult.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                // Enable middleware to serve generated Swagger as a JSON endpoint.
+                app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenCatapult API V1");
+                    c.RoutePrefix = string.Empty;
+                });
             }
             else
             {
@@ -147,17 +158,6 @@ namespace Polyrific.Catapult.Api
             app.UseMiddleware<SerilogRequestLogger>();
 
             app.ConfigureExceptionHandler(_logger, env.IsDevelopment());
-
-            // Enable middleware to serve generated Swagger as a JSON endpoint.
-            app.UseSwagger();
-
-            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), 
-            // specifying the Swagger JSON endpoint.
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "OpenCatapult API V1");
-                c.RoutePrefix = string.Empty;
-            });
 
             app.UseCors(_allowSpecificOriginsPolicy);
 
