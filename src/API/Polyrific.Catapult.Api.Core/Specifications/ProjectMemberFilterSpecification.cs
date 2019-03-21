@@ -8,19 +8,19 @@ namespace Polyrific.Catapult.Api.Core.Specifications
     {
         public int ProjectId { get; set; }
         public int UserId { get; set; }
-        public bool? IsArchived { get; set; }
+        public string Status { get; set; }
         public int RoleId { get; set; }
         public int MemberId { get; set; }
 
-        public ProjectMemberFilterSpecification(int projectId, int userId, bool? isArchived = null, int roleId = 0) 
+        public ProjectMemberFilterSpecification(int projectId, int userId, string status = null, int roleId = 0) 
             : base(m => (projectId == 0 || m.ProjectId == projectId) 
                         && (userId == 0 || m.UserId == userId) 
-                        && (isArchived == null || m.Project.IsArchived == isArchived)
+                        && (status == null || m.Project.Status == status)
                         && (roleId == 0 || m.ProjectMemberRoleId == roleId))
         {
             ProjectId = projectId;
             UserId = userId;
-            IsArchived = isArchived;
+            Status = status;
             RoleId = roleId;
 
             if (projectId == 0)

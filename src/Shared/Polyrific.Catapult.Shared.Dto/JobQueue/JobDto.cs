@@ -18,6 +18,11 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         public int ProjectId { get; set; }
 
         /// <summary>
+        /// Status of the project
+        /// </summary>
+        public string ProjectStatus { get; set; }
+
+        /// <summary>
         /// Status of the job
         /// </summary>
         public string Status { get; set; }

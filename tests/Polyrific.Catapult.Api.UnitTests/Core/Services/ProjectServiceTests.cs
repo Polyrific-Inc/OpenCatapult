@@ -12,6 +12,7 @@ using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Api.UnitTests.Utilities;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Xunit;
 
 namespace Polyrific.Catapult.Api.UnitTests.Core.Services
@@ -34,7 +35,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 {
                     Id = 1,
                     Name = "Project-A",
-                    IsArchived = false
+                    Status = ProjectStatusFilterType.Active
                 }
             };
 
@@ -110,7 +111,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.ArchiveProject(1);
             
-            Assert.True(_data.First(p => p.Id == 1).IsArchived);
+            Assert.Equal(ProjectStatusFilterType.Archived, _data.First(p => p.Id == 1).Status);
         }
 
         [Fact]
@@ -128,7 +129,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object);
             await projectService.RestoreProject(1);
 
-            Assert.False(_data.First(p => p.Id == 1).IsArchived);
+            Assert.Equal(ProjectStatusFilterType.Active, _data.First(p => p.Id == 1).Status);
         }
 
         [Fact]

@@ -44,7 +44,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (project == null)
                 throw new ProjectNotFoundException(id);
             
-            project.IsArchived = true;
+            project.Status = ProjectStatusFilterType.Archived;
             await _projectRepository.Update(project, cancellationToken);
         }
 
@@ -292,25 +292,23 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            bool? isArchived;
             switch (status)
             {
                 case null:
                 case "":
                 case ProjectStatusFilterType.All:
-                    isArchived = null;
+                    status = null;
                     break;
                 case ProjectStatusFilterType.Active:
-                    isArchived = false;
-                    break;
                 case ProjectStatusFilterType.Archived:
-                    isArchived = true;
+                case ProjectStatusFilterType.Deleting:
+                    // Leave status as is
                     break;
                 default:
                     throw new FilterTypeNotFoundException(status);
             }
 
-            var projectMembersByUserSpec = new ProjectMemberFilterSpecification(0, getAll ? 0 : userId, isArchived);
+            var projectMembersByUserSpec = new ProjectMemberFilterSpecification(0, getAll ? 0 : userId, status);
             projectMembersByUserSpec.Includes.Add(p => p.ProjectMemberRole);
             var projectMembers = await _projectMemberRepository.GetBySpec(projectMembersByUserSpec, cancellationToken);
             var projects = projectMembers.GroupBy(m => m.ProjectId).Select(g => g.FirstOrDefault())
@@ -327,8 +325,11 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (project == null)
                 throw new ProjectNotFoundException(projectId);
 
-            project.IsArchived = false;
-            await _projectRepository.Update(project, cancellationToken);
+            if (project.Status == ProjectStatusFilterType.Archived)
+            {
+                project.Status = ProjectStatusFilterType.Active;
+                await _projectRepository.Update(project, cancellationToken);
+            }
         }
 
         public async Task UpdateProject(Project project, CancellationToken cancellationToken = default(CancellationToken))

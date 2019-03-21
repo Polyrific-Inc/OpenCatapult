@@ -11,8 +11,7 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
     {
         public ProjectAutoMapperProfile()
         {
-            CreateMap<Project, ProjectDto>()
-                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IsArchived ? ProjectStatusFilterType.Archived: ProjectStatusFilterType.Active));
+            CreateMap<Project, ProjectDto>();
 
             CreateMap<UpdateProjectDto, Project>();
         }

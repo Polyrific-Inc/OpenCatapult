@@ -7,5 +7,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string All = "all";
         public const string Active = "active";
         public const string Archived = "archived";
+        public const string Deleting = "deleting";
     }
 }

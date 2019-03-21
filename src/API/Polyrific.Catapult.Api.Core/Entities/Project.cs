@@ -22,9 +22,9 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Is project archived?
+        /// Status of the project
         /// </summary>
-        public bool IsArchived { get; set; }
+        public string Status { get; set; }
         
         /// <summary>
         /// Project data models of the project

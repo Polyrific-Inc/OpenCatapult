@@ -38,7 +38,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var project = await _projectRepository.GetById(projectId, cancellationToken);
-            if (project == null || project.IsArchived)
+            if (project == null || project.Status != ProjectStatusFilterType.Active)
             {
                 throw new ProjectNotFoundException(projectId);
             }
@@ -82,7 +82,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             jobQueueSpec.Includes.Add(j => j.Project);
             var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
 
-            if (jobQueue != null && !jobQueue.Project.IsArchived)
+            if (jobQueue != null && jobQueue.Project.Status == ProjectStatusFilterType.Active)
             {
                 if (updatedJobQueue.ProjectId == 0 && !string.IsNullOrEmpty(jobQueue.CatapultEngineId) && jobQueue.CatapultEngineId != updatedJobQueue.CatapultEngineId)
                 {
@@ -109,7 +109,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             jobQueueSpec.Includes.Add(q => q.Project);
             var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
 
-            if (jobQueue != null && !jobQueue.Project.IsArchived)
+            if (jobQueue != null && jobQueue.Project.Status == ProjectStatusFilterType.Active)
             {
                 if (!_inProgressJobStatus.Contains(jobQueue.Status))
                 {
@@ -220,6 +220,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             var queuedJobSpec = new JobQueueFilterSpecification();
             queuedJobSpec.Includes.Add(q => q.JobDefinition);
+            queuedJobSpec.Includes.Add(q => q.Project);
             var jobQueue = await _jobQueueRepository.GetSingleBySpec(queuedJobSpec, cancellationToken);
 
             if (!string.IsNullOrEmpty(engine))
