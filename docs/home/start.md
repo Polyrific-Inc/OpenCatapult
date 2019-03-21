@@ -57,9 +57,8 @@ You will need to build the API, Engine, and UI (either CLI or Web) to run `OpenC
 ``` 
 
 > Note that running this script will run all 4 of the components. If you want to skip CLI or Web, you can add the `-noCli` or `-noWeb` option. For example if you want to go all CLI, use the following command instead: `.\builds\build-all.ps1 -noWeb`
-The script will ask you to input the connection string for the API. It will also automatically open new PowerShell windows for other components.
 
-The script will ask you to input the connection string for the API. After the API build succeed, it will open the other powershell windows for Engine, CLI, and Web.
+The script will ask you to input the connection string for the API. It will also automatically open new PowerShell windows for other components.
 
 > Please don't close the first powershell window since it is being used to run the API, which is being used by Engine, CLI, and Web. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
 
