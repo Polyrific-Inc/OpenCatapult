@@ -23,6 +23,8 @@ Options:
 | -environment | Dotnet host environment | Development / Production | Development |
 | -http | Base URL of HTTP protocol | [http url] | http://localhost:8005 |
 | -https | Base URL of HTTPS protocol | [https url] | https://localhost:44305 |
+| -webHost | The host name of the Web UI | [web host name] | localhost |
+| -webPort | The port number of the Web UI | [web port number] | 44300 |
 | -noConfig | Do not replace the config values of the components | true / false | false |
 | -noCli | Do not build and run CLI component | true / false | false |
 | -noPrompt | Run the script without user interaction (just run everything with its default value) | true / false | false |

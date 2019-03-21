@@ -5,6 +5,8 @@ param(
     [string]$environment = "Development",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
+    [string]$webHost = "localhost",
+    [string]$webPort = "44300",
     [switch]$noConfig = $false,
     [switch]$noCli = $false,
     [switch]$noPrompt = $false,
@@ -135,6 +137,12 @@ if (!$allGood) {
     }
 }
 
+$args = "-configuration " + $configuration
+$args += " -url " + $https
+if ($noConfig) {
+    $args += " -noConfig"
+}
+
 ## Build CLI
 if (!$noCli) {
 	Write-Host "Publishing CLI..."
@@ -142,20 +150,17 @@ if (!$noCli) {
 	Start-Sleep -s 5
 }
 
+## Build Engine
+$done = Invoke-BuildScriptNewWindow "build-engine.ps1" $args
+Write-Host "Publishing Engine..."
+
 ## Build Web
 if (!$noWeb) {
 	Write-Host "Publishing Web UI..."
+	$args = "-host " + $webHost
+	$args += " -port " + $webPort
     $done = Invoke-BuildScriptNewWindow "build-web.ps1" $args
 }
-
-## Build Engine
-$args = "-configuration " + $configuration
-$args += " -url " + $https
-if ($noConfig) {
-    $args += " -noConfig"
-}
-$done = Invoke-BuildScriptNewWindow "build-engine.ps1" $args
-Write-Host "Publishing Engine..."
 
 Write-Host "The Engine and CLI are in the new terminal windows. Please go ahead and try to run the commands available there." -ForegroundColor Green 
 Write-Host "To learn more about OpenCatapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green
