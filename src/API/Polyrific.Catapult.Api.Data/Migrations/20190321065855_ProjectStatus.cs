@@ -13,7 +13,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
             migrationBuilder.AddColumn<string>(
                 name: "Status",
                 table: "Projects",
-                nullable: true);
+                nullable: false,
+                defaultValue: "active");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

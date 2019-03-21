@@ -10,7 +10,7 @@ using Polyrific.Catapult.Api.Data;
 namespace Polyrific.Catapult.Api.Data.Migrations
 {
     [DbContext(typeof(CatapultDbContext))]
-    [Migration("20190321033216_ProjectStatus")]
+    [Migration("20190321065855_ProjectStatus")]
     partial class ProjectStatus
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -363,7 +363,10 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("active");
 
                     b.Property<DateTime?>("Updated");
 

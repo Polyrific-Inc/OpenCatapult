@@ -361,7 +361,10 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Status");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasDefaultValue("active");
 
                     b.Property<DateTime?>("Updated");
 
