@@ -50,129 +50,26 @@ Please check the following [article](https://docs.microsoft.com/en-us/powershell
 
 #### One script to rule them all
 
-You will need to build the API, Engine, and either CLI or Web application to run opencatapult. In production scenario, all four are typically installed in separated machines. However, for this quick start, we will run them all in your local machine. We have prepared the script that will run the build script for API, Engine, CLI, and Web. Run this command in the powershell:
+You will need to build the API, Engine, and UI (either CLI or Web) to run `OpenCatapult`. In production scenario, the components are typically installed in separated machines. However, in the development scenario, we will run them all in your local machine. We have prepared a script to help you run the components easier. Run this command in PowerShell:
+
 ```powershell
 .\builds\build-all.ps1
 ``` 
 
 > Note that running this script will run all 4 of the components. If you want to skip CLI or Web, you can add the `-noCli` or `-noWeb` option. For example if you want to go all CLI, use the following command instead: `.\builds\build-all.ps1 -noWeb`
+The script will ask you to input the connection string for the API. It will also automatically open new PowerShell windows for other components.
 
 The script will ask you to input the connection string for the API. After the API build succeed, it will open the other powershell windows for Engine, CLI, and Web.
 
 > Please don't close the first powershell window since it is being used to run the API, which is being used by Engine, CLI, and Web. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
 
-If you want to build the API, Engine, CLI, or Web one by one, for example if you want to install them in separate machines, you can follow the guide [here](../dev-guides/build-scripts.md).
+If you want to build the API, Engine, CLI, or Web one by one, for example if you want to install them in separate machines, you can run the script for each of the component individually. Please find more details about them in the [Build Scripts](../dev-guides/build-scripts.md) section.
 
 
 ### Option 2: Build from source code manually
 
-If for any reasons you cannot run the PowerShell scripts, you can always build the source code manually by following these steps:
+If for any reasons you cannot run the PowerShell scripts, you can always build the source code manually. Please go to the [Manually Build The Components](../dev-guides/manual-build.md) section, and go back here when finished.
 
-> Note: the location paths use backslash (`\`) here, which is the Windows style. If you work on Mac or Linux environment, you might need to replace it with slash (`/`).
-
-#### Setup database
-
-Please make sure you have access to a SQL Server instance, and put the connection string in `.\src\API\Polyrific.Catapult.Api\appsettings.json`, e.g.
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Database=opencatapult-db;User ID=sa;Password=sapassword;"
-  }
-}
-```
-
-> Note: You don't need to create the concrete database in advance because EF will automatically create it if it doesn't exist. Please make sure though that the user which is defined in connection string has "database create" permission.
-
-Run the migration script to initialize the database:
-
-```sh
-dotnet ef database update --startup-project .\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj --project .\src\API\Polyrific.Catapult.Api.Data\Polyrific.Catapult.Api.Data.csproj
-```
-
-#### Run the API
-
-Let's publish and run the API in localhost:
-
-```sh
-dotnet publish .\src\API\Polyrific.Catapult.Api\Polyrific.Catapult.Api.csproj -c Release -o ..\..\..\publish\api
-cd .\publish\api\
-dotnet .\ocapi.dll --urls "http://localhost:8005;https://localhost:44305"
-```
-
-#### Prepare the Engine
-
-Open new shell, go to the root folder, and publish the Engine:
-
-```sh
-dotnet publish .\src\Engine\Polyrific.Catapult.Engine\Polyrific.Catapult.Engine.csproj -c Release -o ..\..\..\publish\engine
-```
-
-Set API URL in the Engine's config:
-
-```sh
-dotnet .\publish\engine\ocengine.dll config set -n ApiUrl -v https://localhost:44305
-```
-
-While configuring the Engine environment, let's publish the built-in Task Providers as well. They will be required later when executing job tasks.
-
-```sh
-dotnet publish .\src\Plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj -c Release -o ..\..\..\..\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc
-dotnet publish .\src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj -c Release -o ..\..\..\..\publish\engine\plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService
-dotnet publish .\src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj -c Release -o ..\..\..\..\publish\engine\plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore
-dotnet publish .\src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj -c Release -o ..\..\..\..\publish\engine\plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest
-dotnet publish .\src\Plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj -c Release -o ..\..\..\..\publish\engine\plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore
-dotnet publish .\src\Plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\src\Polyrific.Catapult.TaskProviders.GitHub.csproj -c Release -o ..\..\..\..\publish\engine\plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub
-```
-
-> Note: There is one more steps required to start the Engine, which is to enter the authorization token. But we will do it later after registering the Engine via CLI.
-
-#### Prepare the CLI
-
-Open new shell, go to the root folder, and build the CLI project:
-
-```sh
-dotnet publish .\src\CLI\Polyrific.Catapult.Cli\Polyrific.Catapult.Cli.csproj -c Release -o ..\..\..\publish\cli
-```
-
-Set API URL in the CLI's config:
-
-```sh
-dotnet .\publish\cli\occli.dll config set -n ApiUrl -v https://localhost:44305
-```
-
-#### Prepare the Web
-
-Open the new shell, go to the root folder, and go to the following directory:
-```sh
-cd .\src\Web\opencatapultweb
-```
-
-Run the following commands:
-```sh
-npm install
-npm run start -- --ssl --host localhost --port 44300 --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
-```
-
-Lastly, you'd need to trust certificate that is located in `.\src\Web\opencatapultweb\ssl\server.crt`
-
-
-**Note:**
-
-If you have some error related to ssl, you can try to run the following command, and accept the popup prompt:
-
-```sh
-dotnet dev-certs https --trust
-```
-
-If for any reasons you cannot use https, you can just use the http url. But please make sure you are not in `Production` environment, otherwise you will be redirected to the https url.
-Setting up `Development` environment can be done via environment variable:
-
-```sh
-$env:ASPNETCORE_ENVIRONMENT = "Development"
-```
-
-You are now ready to create your first Catapult project.
 
 ## Create your first project
 

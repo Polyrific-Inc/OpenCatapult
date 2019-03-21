@@ -34,7 +34,7 @@ API is the central of `OpenCatapult` logics. It is an HTTP REST API system which
 
 ### User Interface
 
-This is the user-facing interface which is used to interact with `OpenCatapult`. User can choose to work with [Command Line Interface \(CLI\)](../cli/cli.md), Web UI \(coming soon\), or Mobile App \(coming soon\). User Interface doesn't contain any business logics. It just forwards the requests to certain API endpoints and waits for the response. CLI can be hosted in user's machine (either Windows, Mac, or Linux).
+This is the user-facing interface which is used to interact with `OpenCatapult`. User can choose to work with [Command Line Interface \(CLI\)](../cli/cli.md), [Web UI](../web/web.md), or Mobile App \(coming soon\). User Interface doesn't contain any business logics. It just forwards the requests to certain API endpoints and waits for the response. CLI can be hosted in user's machine (either Windows, Mac, or Linux).
 
 ### Engine
 
