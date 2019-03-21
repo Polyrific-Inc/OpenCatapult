@@ -23,6 +23,7 @@
   * [Create your first project using Web UI](user-guides/create-first-project-web.md)
 * [Developer Guide](dev-guides/dev-guides.md)
   * [Build Scripts](dev-guides/build-scripts.md)
+  * [Manual Build](dev-guides/manual-build.md)
   * [Project template](dev-guides/project-template.md)
   * [Coding Style](dev-guides/coding-style.md)
   * [Code of conduct](dev-guides/contribute.md)
