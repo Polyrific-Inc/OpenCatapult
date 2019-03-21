@@ -107,7 +107,7 @@ namespace Polyrific.Catapult.Api
                 c.SwaggerDoc("v1", new Info { Title = "OpenCatapult API", Version = "v1" });
                 c.CustomSchemaIds(x => x.FullName);
                 c.AddSecurityDefinition("Bearer", new ApiKeyScheme { In = "header", Description = "Please enter JWT with Bearer into field", Name = "Authorization", Type = "apiKey" });
-                c.AddSecurityRequirement(new Dictionary<string, IEnumerable<string>> {{ "Bearer", Enumerable.Empty<string>() }});
+                c.OperationFilter<SecurityRequirementsOperationFilter>();
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
