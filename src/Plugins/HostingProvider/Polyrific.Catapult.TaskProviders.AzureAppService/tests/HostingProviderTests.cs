@@ -98,7 +98,7 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests
 
             var provider = new Program(new string[] { GetArgString("delete", "TestProject", taskConfig, additionalConfigs) }, _azureUtils.Object, _deployUtils.Object);
 
-            var errorMessage = await provider.DeleteHostingResources();
+            (string deletedHostLocation, string errorMessage) = await provider.DeleteHostingResources();
 
             if (string.IsNullOrEmpty(slotName))
                 _azureUtils.Verify(s => s.DeleteWebsite("subsid", "webid"), Times.Once);
@@ -106,6 +106,7 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests
                 _azureUtils.Verify(s => s.DeleteSlot(It.IsAny<IWebApp>(), "slotid"), Times.Once);
 
             Assert.Equal("", errorMessage);
+            Assert.Equal("https://test.azurewebsites.net", deletedHostLocation);
         }
 
         private string GetArgString(string process, string projectName, DeployTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)

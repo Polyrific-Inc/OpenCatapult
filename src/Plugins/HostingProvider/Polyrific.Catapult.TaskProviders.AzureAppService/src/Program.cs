@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
             return (hostLocation, null, "");
         }
 
-        public async override Task<string> DeleteHostingResources()
+        public async override Task<(string deletedHostLocation, string errorMessage)> DeleteHostingResources()
         {
             if (_azure == null)
                 _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), _azureUtils, _deployUtils, Logger);
@@ -92,13 +92,13 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
             if (AdditionalConfigs.ContainsKey("SubscriptionId") && !string.IsNullOrEmpty(AdditionalConfigs["SubscriptionId"]))
                 subscriptionId = AdditionalConfigs["SubscriptionId"];
             else
-                return "Subscription Id is not provided";
+                return (null, "Subscription Id is not provided");
 
             var resourceGroupName = "";
             if (AdditionalConfigs.ContainsKey("ResourceGroupName") && !string.IsNullOrEmpty(AdditionalConfigs["ResourceGroupName"]))
                 resourceGroupName = AdditionalConfigs["ResourceGroupName"];
             else
-                return "Resource group name is not provided";
+                return (null, "Resource group name is not provided");
 
             var appServiceName = ProjectName;
             if (AdditionalConfigs.ContainsKey("AppServiceName") && !string.IsNullOrEmpty(AdditionalConfigs["AppServiceName"]))

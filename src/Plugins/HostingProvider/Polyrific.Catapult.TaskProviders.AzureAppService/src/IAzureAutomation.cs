@@ -29,6 +29,6 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
         /// <param name="appServiceName">Name of the App Service</param>
         /// <param name="deploymentSlot">Name of the deployment slot</param>
         /// <returns>Error message if any</returns>
-        Task<string> DeleteWebsite(string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot);
+        Task<(string deletedHostLocation, string errorMessage)> DeleteWebsite(string subscriptionId, string resourceGroupName, string appServiceName, string deploymentSlot);
     }
 }

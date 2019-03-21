@@ -38,7 +38,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Status = JobStatus.Completed,
                     Project = new Project
                     {
-                        Id = 1
+                        Id = 1,
+                        Status = ProjectStatusFilterType.Active
                     }
                 }
             };
@@ -85,7 +86,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectRepository = new Mock<IProjectRepository>();
             _projectRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
-                    id == 1 ? new Project() {Id = id} : null);
+                    id == 1 ? new Project() {Id = id, Status = ProjectStatusFilterType.Active} : null);
 
             _jobCounterService = new Mock<IJobCounterService>();
             _jobCounterService.Setup(r => r.GetNextSequence(It.IsAny<CancellationToken>())).ReturnsAsync(1);
@@ -386,7 +387,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Created = DateTime.UtcNow.AddHours(1),
                 Project = new Project
                 {
-                    Id = 1
+                    Id = 1,
+                    Status = ProjectStatusFilterType.Active
                 }
             });
 
@@ -399,7 +401,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Created = DateTime.UtcNow,
                 Project = new Project
                 {
-                    Id = 2
+                    Id = 2,
+                    Status = ProjectStatusFilterType.Active
                 }
             });
 

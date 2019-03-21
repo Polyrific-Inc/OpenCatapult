@@ -27,6 +27,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly Mock<IPublishArtifactTask> _publishArtifactTask;
         private readonly Mock<IPushTask> _pushTask;
         private readonly Mock<ITestTask> _testTask;
+        private readonly Mock<IDeleteRepositoryTask> _deleteRepositoryTask;
+        private readonly Mock<IDeleteHostingTask> _deleteHostingTask;
         private readonly JobTaskService _jobTaskService;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly List<JobTaskDefinitionDto> _data;
@@ -92,9 +94,13 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _testTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _testTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
+            _deleteRepositoryTask = new Mock<IDeleteRepositoryTask>();
+
+            _deleteHostingTask = new Mock<IDeleteHostingTask>();
+
             _jobTaskService = new JobTaskService(_buildTask.Object, _cloneTask.Object, _deployTask.Object,
                 _deployDbTask.Object, _generateTask.Object, _mergeTask.Object, _publishArtifactTask.Object,
-                _pushTask.Object, _testTask.Object);
+                _pushTask.Object, _testTask.Object, _deleteRepositoryTask.Object, _deleteHostingTask.Object);
 
             _jobQueueService = new Mock<IJobQueueService>();
             _pluginManager = new Mock<IPluginManager>();
@@ -118,6 +124,35 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             Assert.True(results[4].IsSuccess);
 
             _jobQueueService.Verify(j => j.UpdateJobQueue(1, It.Is<UpdateJobDto>(u => u.Status == JobStatus.Processing)), Times.Exactly(8));
+        }
+
+        [Fact]
+        public async void RunDelete_SuccessAll()
+        {
+            _data.Clear();
+            _data.AddRange(new List<JobTaskDefinitionDto>
+            {
+                new JobTaskDefinitionDto
+                {
+                    Id = 1, Name = "Delete Repository", Type = JobTaskDefinitionType.DeleteRepository, JobDefinitionId = 1, Sequence = 1
+                },
+                new JobTaskDefinitionDto
+                {
+                    Id = 2, Name = "Delete Hosting", Type = JobTaskDefinitionType.DeleteHosting, JobDefinitionId = 1, Sequence = 2
+                }
+            });
+
+            _deleteRepositoryTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+            _deleteHostingTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
+
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1", IsDeletion = true }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+
+            Assert.Equal(_data.Count, results.Count);
+            Assert.True(results[1].IsSuccess);
+            Assert.True(results[2].IsSuccess);
+
+            _jobQueueService.Verify(j => j.UpdateJobQueue(1, It.Is<UpdateJobDto>(u => u.Status == JobStatus.Processing)), Times.Exactly(4));
         }
 
         [Fact]

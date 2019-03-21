@@ -39,9 +39,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
             var hostLocation = "";
             var taskRemarks = "";
-            if (result.ContainsKey("hostLocation"))
+            if (result.ContainsKey("deletedHostLocation"))
             {
-                hostLocation = result["hostLocation"].ToString();
+                hostLocation = result["deletedHostLocation"].ToString();
                 taskRemarks = $"The hosting url {hostLocation} has been deleted";
             }
 
@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
                 outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
-            return new TaskRunnerResult(true, "", outputValues)
+            return new TaskRunnerResult(true, hostLocation, outputValues)
             {
                 TaskRemarks = taskRemarks
             };

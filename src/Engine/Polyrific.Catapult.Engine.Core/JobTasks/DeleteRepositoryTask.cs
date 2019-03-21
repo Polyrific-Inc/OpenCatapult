@@ -37,19 +37,13 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            var taskRemarks = "";
-            if (result.ContainsKey("cloneLocation"))
-            {
-                taskRemarks = $"The remote repository \"{TaskConfig.Repository}\" has been deleted";
-            }
-
             var outputValues = new Dictionary<string, string>();
             if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
                 outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
             return new TaskRunnerResult(true, "", outputValues)
             {
-                TaskRemarks = taskRemarks
+                TaskRemarks = $"The remote repository \"{TaskConfig.Repository}\" has been deleted"
             };
         }
 
