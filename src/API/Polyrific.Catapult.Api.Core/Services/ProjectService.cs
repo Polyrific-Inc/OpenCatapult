@@ -25,15 +25,17 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IProjectDataModelPropertyRepository _projectDataModelPropertyRepository;
         private readonly IMapper _mapper;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IJobQueueService _jobQueueService;
 
         public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, 
-            IMapper mapper, IJobDefinitionService jobDefinitionService)
+            IMapper mapper, IJobDefinitionService jobDefinitionService, IJobQueueService jobQueueService)
         {
             _projectRepository = projectRepository;
             _projectMemberRepository = projectMemberRepository;
             _projectDataModelPropertyRepository = projectDataModelPropertyRepository;
             _mapper = mapper;
             _jobDefinitionService = jobDefinitionService;
+            _jobQueueService = jobQueueService;
         }
 
         public async Task ArchiveProject(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -346,7 +348,31 @@ namespace Polyrific.Catapult.Api.Core.Services
                 entity.Client = project.Client;
                 entity.DisplayName = project.DisplayName;
                 await _projectRepository.Update(entity);
-            }            
+            }
+        }
+
+        public async Task MarkProjectDeleting(int id, string currentUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var entity = await _projectRepository.GetById(id);
+            if (entity != null)
+            {
+                entity.Status = ProjectStatusFilterType.Deleting;
+                await _projectRepository.Update(entity);
+
+                var deletionJob = await this._jobDefinitionService.GetDeletionJobDefinition(id);
+
+                if (deletionJob != null)
+                {
+                    await _jobQueueService.AddJobQueue(id, currentUrl, JobType.Delete, deletionJob.Id, cancellationToken);
+                }
+                else
+                {
+                    // Marking project as deleting only make sense if we're trying to delete resources first
+                    throw new DeletionJobDefinitionNotFound(id);
+                }
+            }
         }
 
         private string YamlSerialize(ProjectTemplate template)

@@ -35,6 +35,10 @@ export class ProjectService {
     return this.apiService.delete(`project/${projectId}`);
   }
 
+  markProjectDeleting(projectId: number) {
+    return this.apiService.put(`project/${projectId}/deleting`);
+  }
+
   archiveProject(projectId: number) {
     return this.apiService.post(`project/${projectId}/archive`);
   }

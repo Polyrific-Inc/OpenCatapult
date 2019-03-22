@@ -19,6 +19,10 @@ export class JobDefinitionService {
     return this.api.get<JobTaskDefinitionDto[]>(`project/${projectId}/job/${jobDefinitionId}/task`);
   }
 
+  getDeletionJobDefinition(projectId: number) {
+    return this.api.get<JobTaskDefinitionDto>(`project/${projectId}/job/deletion`);
+  }
+
   createJobDefinition(projectId: number, jobDefinition: CreateJobDefinitionDto) {
     return this.api.post<JobDefinitionDto>(`project/${projectId}/job`, jobDefinition);
   }

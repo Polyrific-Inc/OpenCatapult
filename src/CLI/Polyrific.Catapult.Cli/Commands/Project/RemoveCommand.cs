@@ -12,10 +12,13 @@ namespace Polyrific.Catapult.Cli.Commands.Project
     public class RemoveCommand : BaseCommand
     {
         private readonly IProjectService _projectService;
+        private readonly IJobDefinitionService _jobDefinitionService;
 
-        public RemoveCommand(IConsole console, ILogger<RemoveCommand> logger, IProjectService projectService) : base(console, logger)
+        public RemoveCommand(IConsole console, ILogger<RemoveCommand> logger, 
+            IProjectService projectService, IJobDefinitionService jobDefinitionService) : base(console, logger)
         {
             _projectService = projectService;
+            _jobDefinitionService = jobDefinitionService;
         }
 
         [Required]
@@ -24,6 +27,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
         [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
         public bool AutoConfirm { get; set; }
+
+        [Option("-rs|--remove-resources", "Remove the related resources as well without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool RemoveResources { get; set; }
 
         public override string Execute()
         {
@@ -37,9 +43,19 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             var project = _projectService.GetProjectByName(Name).Result;
             if (project != null)
             {
-                _projectService.DeleteProject(project.Id).Wait();
+                var deletionJobDefinition = _jobDefinitionService.GetDeletionJobDefinition(project.Id).Result;
+                if (deletionJobDefinition != null && 
+                    (RemoveResources || Console.GetYesNo("Do you want to remove the related resources as well?", false)))
+                {
+                    _projectService.MarkProjectDeleting(project.Id).Wait();
+                    message = $"Project {Name} is being removed. You will be notified once the process has been done";
+                }
+                else
+                {
+                    _projectService.DeleteProject(project.Id).Wait();
+                    message = $"Project {Name} has been removed successfully";
+                }
 
-                message = $"Project {Name} has been removed successfully";
                 Logger.LogInformation(message);
             }
             else

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { ProjectService, ProjectDto, AuthorizePolicy, ProjectHistoryService } from '@app/core';
+import { ProjectService, ProjectDto, AuthorizePolicy, ProjectHistoryService, JobDefinitionService } from '@app/core';
 import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
 import { filter } from 'rxjs/operators';
@@ -16,11 +16,13 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   activeLink: string;
   authorizePolicy = AuthorizePolicy;
   routerSubscription: Subscription;
+  loading: boolean;
 
   constructor(
     private route: ActivatedRoute,
     private projectService: ProjectService,
     private projectHistoryService: ProjectHistoryService,
+    private jobDefinitionService: JobDefinitionService,
     private dialog: MatDialog,
     private snackbar: SnackbarService,
     private router: Router
@@ -60,13 +62,45 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
-        this.projectService.deleteProject(this.project.id)
-          .subscribe(data => {
-            this.snackbar.open('Project has been deleted');
+        this.loading = true;
+        this.jobDefinitionService.getDeletionJobDefinition(this.project.id)
+          .subscribe(deletionJob => {
+            let hardDelete = false;
+            if (deletionJob != null) {
+              const deleteResourceDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'Delete project resources',
+                  confirmationText: 'Do you want to remove the related resources as well?'
+                }
+              });
 
-            this.router.navigate(['project', { dummyData: (new Date).getTime()}])
-              .then(() => this.router.navigate(['project']));
-          });
+              deleteResourceDialogRef.afterClosed().subscribe(deleteResourceConfirmed => {
+                if (deleteResourceConfirmed) {
+                  this.projectService.markProjectDeleting(this.project.id)
+                    .subscribe(() => {
+                      this.snackbar.open('Project is being removed. You will be notified once the process has been done');
+
+                      this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                        .then(() => this.router.navigate([`project/deleting/${this.project.id}`]));
+                    }, () => this.loading = false);
+                } else {
+                  hardDelete = true;
+                }
+              });
+            } else {
+              hardDelete = true;
+            }
+
+            if (hardDelete) {
+              this.projectService.deleteProject(this.project.id)
+                .subscribe(data => {
+                  this.snackbar.open('Project has been deleted');
+
+                  this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                    .then(() => this.router.navigate(['project']));
+                }, () => this.loading = false);
+            }
+          }, () => this.loading = false);
       }
     });
   }

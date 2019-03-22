@@ -238,6 +238,30 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             Assert.IsType<NoContentResult>(result);
         }
 
+
+        [Fact]
+        public async void MarkProjectDeleting_ReturnsSuccess()
+        {
+            _projectService.Setup(s => s.MarkProjectDeleting(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Host = new HostString("http://localhost");
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
+            };
+
+            var result = await controller.MarkProjectDeleting(1);
+
+            _projectService.Verify(p => p.MarkProjectDeleting(1, "http://localhost", It.IsAny<CancellationToken>()));
+
+            Assert.IsType<OkResult>(result);
+        }
+
         [Fact]
         public async void ArchiveProject_ReturnsNoContent()
         {

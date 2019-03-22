@@ -24,6 +24,11 @@ export class ProjectResolverService implements Resolve<ProjectDto> {
             return EMPTY;
           }
 
+          if (project.status === 'deleting' && route.component === ProjectDetailComponent) {
+            this.router.navigateByUrl(`/project/deleting/${projectId}`);
+            return EMPTY;
+          }
+
           return of(project);
         } else {
           this.router.navigateByUrl(`/project/${projectId}/error`);

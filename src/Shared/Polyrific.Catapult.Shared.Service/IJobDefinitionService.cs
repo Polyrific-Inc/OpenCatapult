@@ -40,6 +40,13 @@ namespace Polyrific.Catapult.Shared.Service
         Task<JobDefinitionDto> GetJobDefinitionByName(int projectId, string jobName);
 
         /// <summary>
+        /// Get a deletion job definition of a project
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        Task<JobDefinitionDto> GetDeletionJobDefinition(int projectId);
+
+        /// <summary>
         /// Update job definition
         /// </summary>
         /// <param name="projectId">Id of the project</param>

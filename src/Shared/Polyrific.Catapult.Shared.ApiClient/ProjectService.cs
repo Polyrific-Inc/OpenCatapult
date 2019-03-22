@@ -55,6 +55,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             await Api.Delete(path);
         }
 
+        public async Task MarkProjectDeleting(int projectId)
+        {
+            var path = $"project/{projectId}";
+
+            await Api.Put<object>(path, null);
+        }
+
         public async Task<ProjectDto> GetProject(int projectId)
         {
             var path = $"project/{projectId}";

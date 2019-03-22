@@ -61,6 +61,13 @@ namespace Polyrific.Catapult.Shared.Service
         Task DeleteProject(int projectId);
 
         /// <summary>
+        /// Mark a project as deleting, and run the deletion job
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
+        Task MarkProjectDeleting(int projectId);
+
+        /// <summary>
         /// Archive a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>

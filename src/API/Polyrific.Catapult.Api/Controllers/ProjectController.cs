@@ -177,6 +177,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
             }
+            catch (JobTaskDefinitionTypeException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Incorrect task definition type");
+                return BadRequest(taskEx.Message);
+            }
         }
 
         /// <summary>
@@ -258,6 +263,30 @@ namespace Polyrific.Catapult.Api.Controllers
             await _projectService.DeleteProject(projectId);
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Mark a project as deleting, and queue the deletion job definition
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        [HttpPut("{projectId}/deleting")]
+        [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
+        public async Task<IActionResult> MarkProjectDeleting(int projectId)
+        {
+            try
+            {
+                _logger.LogInformation("Mark project {projectId} as \"deleting\"", projectId);
+
+                await _projectService.MarkProjectDeleting(projectId, Request.Host.ToUriComponent());
+
+                return Ok();
+            }
+            catch (DeletionJobDefinitionNotFound ex)
+            {
+                _logger.LogWarning(ex, "Deletion job definition not found");
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

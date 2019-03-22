@@ -163,6 +163,7 @@ jobs:
     configs:
       AzureExternalService: azure-default
 - name: Delete Resources
+  is-deletion: true
   tasks:
   - name: Delete Repository
     type: DeleteRepository

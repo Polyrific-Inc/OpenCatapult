@@ -1,0 +1,14 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+  <h3 class="title">{{project?.displayName || project?.name}}</h3>
+  <mat-chip-list>
+    <mat-chip class="red" matTooltip="The project will be deleted once the deletion job is done">Deleting</mat-chip>
+  </mat-chip-list>
+</div>
+
+<div>
+  <nav mat-tab-nav-bar flex>
+      <a mat-tab-link [active]="true">Job Queues</a>
+  </nav>
+  <router-outlet></router-outlet>
+
+</div>
