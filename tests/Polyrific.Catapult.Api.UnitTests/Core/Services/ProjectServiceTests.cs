@@ -245,7 +245,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object, _jobQueueService.Object);
             await projectService.MarkProjectDeleting(1, "http://localhost");
 
-            _jobQueueService.Verify(s => s.AddJobQueue(1, "http://localhost", JobType.Update, 1, It.IsAny<CancellationToken>()), Times.Once);
+            _jobQueueService.Verify(s => s.AddJobQueue(1, "http://localhost", JobType.Delete, 1, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]

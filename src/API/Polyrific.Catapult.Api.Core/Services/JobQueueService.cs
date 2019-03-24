@@ -44,8 +44,14 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
 
             var inProgressJobSpec = new JobQueueFilterSpecification(projectId, _inProgressJobStatus);
-            if (await _jobQueueRepository.CountBySpec(inProgressJobSpec, cancellationToken) > 0)
+            var inProgressJob = await _jobQueueRepository.GetSingleBySpec(inProgressJobSpec, cancellationToken);
+            if (inProgressJob != null)
             {
+                if (project.Status == ProjectStatusFilterType.Deleting && jobType != JobType.Delete)
+                {
+                    return inProgressJob.Id;
+                }
+
                 throw new JobQueueInProgressException(projectId);
             }
 

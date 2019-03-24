@@ -65,7 +65,6 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.loading = true;
         this.jobDefinitionService.getDeletionJobDefinition(this.project.id)
           .subscribe(deletionJob => {
-            let hardDelete = false;
             if (deletionJob != null) {
               const deleteResourceDialogRef = this.dialog.open(ConfirmationDialogComponent, {
                 data: {
@@ -81,24 +80,14 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                       this.snackbar.open('Project is being removed. You will be notified once the process has been done');
 
                       this.router.navigate(['project', { dummyData: (new Date).getTime()}])
-                        .then(() => this.router.navigate([`project/deleting/${this.project.id}`]));
+                        .then(() => this.router.navigate(['project']));
                     }, () => this.loading = false);
                 } else {
-                  hardDelete = true;
+                  this.hardDeleteProject();
                 }
               });
             } else {
-              hardDelete = true;
-            }
-
-            if (hardDelete) {
-              this.projectService.deleteProject(this.project.id)
-                .subscribe(data => {
-                  this.snackbar.open('Project has been deleted');
-
-                  this.router.navigate(['project', { dummyData: (new Date).getTime()}])
-                    .then(() => this.router.navigate(['project']));
-                }, () => this.loading = false);
+              this.hardDeleteProject();
             }
           }, () => this.loading = false);
       }
@@ -139,5 +128,15 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
         document.body.removeChild(element);
       });
+  }
+
+  hardDeleteProject() {
+    this.projectService.deleteProject(this.project.id)
+      .subscribe(data => {
+        this.snackbar.open('Project has been deleted');
+
+        this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+          .then(() => this.router.navigate(['project']));
+      }, () => this.loading = false);
   }
 }

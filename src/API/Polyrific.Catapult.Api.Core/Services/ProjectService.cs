@@ -327,11 +327,8 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (project == null)
                 throw new ProjectNotFoundException(projectId);
 
-            if (project.Status == ProjectStatusFilterType.Archived)
-            {
-                project.Status = ProjectStatusFilterType.Active;
-                await _projectRepository.Update(project, cancellationToken);
-            }
+            project.Status = ProjectStatusFilterType.Active;
+            await _projectRepository.Update(project, cancellationToken);
         }
 
         public async Task UpdateProject(Project project, CancellationToken cancellationToken = default(CancellationToken))

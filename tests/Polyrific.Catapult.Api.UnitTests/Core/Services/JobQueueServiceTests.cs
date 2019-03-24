@@ -52,7 +52,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _jobQueueRepository.Setup(r =>
                     r.GetSingleBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
-                    _data.OrderBy(spec.OrderBy.Compile()).FirstOrDefault(spec.Criteria.Compile()));
+                {
+                    if (spec.OrderBy != null)
+                        return _data.OrderBy(spec.OrderBy.Compile()).FirstOrDefault(spec.Criteria.Compile());
+                    else
+                        return _data.FirstOrDefault(spec.Criteria.Compile());
+                });
             _jobQueueRepository.Setup(r =>
                     r.CountBySpec(It.IsAny<JobQueueFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
