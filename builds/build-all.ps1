@@ -5,6 +5,8 @@ param(
     [string]$environment = "Development",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
+    [string]$webHost = "localhost",
+    [string]$webPort = "44300",
     [switch]$noConfig = $false,
     [switch]$noCli = $false,
     [switch]$noPrompt = $false,
@@ -135,21 +137,28 @@ if (!$allGood) {
     }
 }
 
-## Build Engine
 $args = "-configuration " + $configuration
 $args += " -url " + $https
 if ($noConfig) {
     $args += " -noConfig"
 }
-$done = Invoke-BuildScriptNewWindow "build-engine.ps1" $args
 
 ## Build CLI
 if (!$noCli) {
+	Write-Host "Publishing CLI..."
     $done = Invoke-BuildScriptNewWindow "build-cli.ps1" $args
+	Start-Sleep -s 5
 }
+
+## Build Engine
+$done = Invoke-BuildScriptNewWindow "build-engine.ps1" $args
+Write-Host "Publishing Engine..."
 
 ## Build Web
 if (!$noWeb) {
+	Write-Host "Publishing Web UI..."
+	$args = "-host " + $webHost
+	$args += " -port " + $webPort
     $done = Invoke-BuildScriptNewWindow "build-web.ps1" $args
 }
 

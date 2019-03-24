@@ -53,7 +53,8 @@ As explained in [introduction](./intro.md#the-circle-of-magic), the automation l
 
 The project that you've just created contains a `Default` job definition with a `Generate` task in it. Let's add the job to the queue so Engine can pick and execute it.
 
-Go to the `Job Queues` tab, and click the play button of the `Default` job definition
+Go to the `Job Definitions` tab, and click the play button of the `Default` job definition
+
 ![Job Definition](../img/queue-job.JPG)
 
 You can monitor the live progress of the job queue, by clicking the log icon
