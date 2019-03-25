@@ -257,7 +257,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 var projectSpec = new ProjectFilterSpecification(id);
                 project = await _projectRepository.GetSingleBySpec(projectSpec, cancellationToken);
 
-                var memberSpec = new ProjectMemberFilterSpecification(id, 0);
+                var memberSpec = new ProjectMemberFilterSpecification(id, 0, null, MemberRole.OwnerId);
                 memberSpec.Includes.Add(m => m.User);
                 members = (await _projectMemberRepository.GetBySpec(memberSpec, cancellationToken)).ToList();
             }
@@ -269,7 +269,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 await _notificationProvider.SendNotification(new SendNotificationRequest
                 {
                     MessageType = NotificationConfig.ProjectDeleted,
-                    Emails = members.Where(p => p.ProjectMemberRoleId == MemberRole.OwnerId).Select(p => p.User.Email).ToList()
+                    Emails = members.Select(p => p.User.Email).ToList()
                 }, new Dictionary<string, string>
                     {
                         {MessageParameter.ProjectName, project.Name}

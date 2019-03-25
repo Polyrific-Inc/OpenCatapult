@@ -38,7 +38,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var project = await _projectRepository.GetById(projectId, cancellationToken);
-            if (project == null || project.Status == ProjectStatusFilterType.Archived || (project.Status == ProjectStatusFilterType.Deleting && jobType != JobType.Delete))
+            bool projectAllowAddingQueue = project?.Status == ProjectStatusFilterType.Active || 
+                (project?.Status == ProjectStatusFilterType.Deleting && jobType == JobType.Delete);
+            if (project == null || !projectAllowAddingQueue)
             {
                 throw new ProjectNotFoundException(projectId);
             }
