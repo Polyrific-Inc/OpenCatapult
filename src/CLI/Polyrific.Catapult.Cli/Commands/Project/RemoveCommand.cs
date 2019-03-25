@@ -28,9 +28,6 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
         public bool AutoConfirm { get; set; }
 
-        [Option("-rs|--remove-resources", "Remove the related resources as well without the need of confirmation prompt", CommandOptionType.NoValue)]
-        public bool RemoveResources { get; set; }
-
         public override string Execute()
         {
             if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to remove project {Name}?", false)))
@@ -45,7 +42,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             {
                 var deletionJobDefinition = _jobDefinitionService.GetDeletionJobDefinition(project.Id).Result;
                 if (deletionJobDefinition != null && 
-                    (RemoveResources || Console.GetYesNo("Do you want to remove the related resources as well?", false)))
+                    (AutoConfirm || Console.GetYesNo("Do you want to remove the related resources as well?", false)))
                 {
                     _projectService.MarkProjectDeleting(project.Id).Wait();
                     message = $"Project {Name} is being removed. You will be notified once the process has been done";
