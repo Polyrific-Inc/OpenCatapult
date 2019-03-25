@@ -19,7 +19,7 @@ export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
   ) {
     this.cloneConfigForm = this.fb.group({
       Repository: [null, Validators.required],
-      IsPrivateRepository: null,
+      IsPrivateRepository: false,
       CloneLocation: null,
       BaseBranch: null
     });

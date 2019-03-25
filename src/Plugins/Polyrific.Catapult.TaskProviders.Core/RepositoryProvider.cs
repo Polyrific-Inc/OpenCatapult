@@ -38,6 +38,9 @@ namespace Polyrific.Catapult.TaskProviders.Core
                     case "mergeconfig":
                         MergeTaskConfig = JsonConvert.DeserializeObject<MergeTaskConfig>(ParsedArguments[key].ToString());
                         break;
+                    case "deleteconfig":
+                        DeleteTaskConfig = JsonConvert.DeserializeObject<DeleteRepositoryTaskConfig>(ParsedArguments[key].ToString());
+                        break;
                     case "prnumber":
                         PrNumber = ParsedArguments[key].ToString();
                         break;
@@ -69,11 +72,6 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         break;
                     case "post":
                         error = await AfterClone();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    case "delete":
-                        error = await DeleteRepository();
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
@@ -109,11 +107,6 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
-                    case "delete":
-                        error = await DeleteRepository();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
                     default:
                         await BeforePush();
                         (remoteUrl, pullRequestUrl, outputValues, errorMessage) = await Push();
@@ -146,11 +139,6 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
-                    case "delete":
-                        error = await DeleteRepository();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
                     default:
                         await BeforeMerge();
                         (remoteUrl, outputValues, errorMessage) = await Merge();
@@ -161,6 +149,12 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         result.Add("errorMessage", errorMessage);
                         break;
                 }
+            }
+            else if (DeleteTaskConfig != null)
+            {
+                var error = await DeleteRepository();
+                if (!string.IsNullOrEmpty(error))
+                    result.Add("errorMessage", error);
             }
 
             return JsonConvert.SerializeObject(result);
@@ -185,6 +179,8 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// Merge task configuration
         /// </summary>
         public MergeTaskConfig MergeTaskConfig { get; set; }
+
+        public DeleteRepositoryTaskConfig DeleteTaskConfig { get; set; }
 
         /// <summary>
         /// Additional configurations for specific provider

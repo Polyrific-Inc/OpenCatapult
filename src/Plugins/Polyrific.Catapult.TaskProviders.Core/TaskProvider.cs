@@ -68,7 +68,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
         public virtual string[] RequiredServices { get; } = { };
 
         /// <summary>
-        /// Process to execute (could be "all", "pre", "main", or "post"). Default value is "all".
+        /// Process to execute (could be "all", "pre", "main", "post", or "delete"). Default value is "all".
         /// </summary>
         public string ProcessToExecute { get; set; } = "all";
 
@@ -77,7 +77,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// </summary>
         public virtual void ParseArguments()
         {
-            var validProcessNames = new[] {"all", "pre", "main", "post"};
+            var validProcessNames = new[] {"all", "pre", "main", "post", "delete"};
             if (ParsedArguments.ContainsKey("process") && validProcessNames.Contains(ParsedArguments["process"]))
                 ProcessToExecute = ParsedArguments["process"].ToString();
         }

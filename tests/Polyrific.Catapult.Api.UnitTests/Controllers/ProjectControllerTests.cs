@@ -238,6 +238,48 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             Assert.IsType<NoContentResult>(result);
         }
 
+        [Fact]
+        public async void DeleteProjectByEngine_ReturnsNoContent()
+        {
+            _projectService.Setup(s => s.GetProjectById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+                    new Project
+                    {
+                        Id = id,
+                        Name = "Project01",
+                        Status = ProjectStatusFilterType.Deleting
+                    });
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteProjectByEngine(1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async void DeleteProjectByEngine_ReturnsUnauthorized()
+        {
+            _projectService.Setup(s => s.GetProjectById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+                    new Project
+                    {
+                        Id = id,
+                        Name = "Project01",
+                        Status = ProjectStatusFilterType.Active
+                    });
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteProjectByEngine(1);
+
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
 
         [Fact]
         public async void MarkProjectDeleting_ReturnsSuccess()

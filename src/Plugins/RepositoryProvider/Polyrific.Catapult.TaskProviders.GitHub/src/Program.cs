@@ -156,8 +156,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
         public async override Task<string> DeleteRepository()
         {
-            var repository = CloneTaskConfig?.Repository ?? PushTaskConfig?.Repository ?? MergeTaskConfig?.Repository;
-            var repoConfig = GetGitAutomationConfig("", repository, AdditionalConfigs);
+            var repoConfig = GetGitAutomationConfig("", DeleteTaskConfig.Repository, AdditionalConfigs);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);

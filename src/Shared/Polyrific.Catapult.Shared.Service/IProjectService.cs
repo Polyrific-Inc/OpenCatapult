@@ -62,6 +62,13 @@ namespace Polyrific.Catapult.Shared.Service
         Task DeleteProject(int projectId, bool sendNotification = false);
 
         /// <summary>
+        /// Delete a project using an engine
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        Task DeleteProjectByEngine(int projectId);
+
+        /// <summary>
         /// Mark a project as deleting, and run the deletion job
         /// </summary>
         /// <param name="projectId"></param>

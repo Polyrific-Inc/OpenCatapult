@@ -95,12 +95,12 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
         {
             var remoteUrl = "https://github.com/polyrific-inc/opencatapult";
             
-            var taskConfig = new MergeTaskConfig
+            var taskConfig = new DeleteRepositoryTaskConfig
             {
                 Repository = remoteUrl
             };
 
-            var provider = new Program(new string[] { GetMergeArgString("delete", "TestProject", taskConfig, new Dictionary<string, string>(), "100") }, _gitHubUtils.Object);
+            var provider = new Program(new string[] { GetDeleteArgString("TestProject", taskConfig, new Dictionary<string, string>(), "100") }, _gitHubUtils.Object);
 
             var errorMessage = await provider.DeleteRepository();
 
@@ -144,6 +144,19 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
                 {"mergeconfig", taskConfig},
                 {"additional", additionalConfigs},
                 {"prnumber", prNumber }
+            };
+
+            return JsonConvert.SerializeObject(dict);
+        }
+
+        private string GetDeleteArgString(string projectName, DeleteRepositoryTaskConfig taskConfig, Dictionary<string, string> additionalConfigs, string prNumber)
+        {
+            var dict = new Dictionary<string, object>
+            {
+                {"process", "delete"},
+                {"project", projectName},
+                {"deleteconfig", taskConfig},
+                {"additional", additionalConfigs}
             };
 
             return JsonConvert.SerializeObject(dict);

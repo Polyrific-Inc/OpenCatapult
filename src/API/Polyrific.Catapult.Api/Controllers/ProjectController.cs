@@ -268,6 +268,28 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Delete a project invoked by engine
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        [HttpDelete("{projectId}/engine")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        public async Task<IActionResult> DeleteProjectByEngine(int projectId)
+        {
+            _logger.LogInformation("Deleting project {projectId}", projectId);
+
+            var project = await _projectService.GetProjectById(projectId);
+
+            // only allow engine delete deleting project
+            if (project.Status != ProjectStatusFilterType.Deleting)
+                return Unauthorized();
+
+            await _projectService.DeleteProject(projectId, true);
+
+            return NoContent();
+        }
+
+        /// <summary>
         /// Mark a project as deleting, and queue the deletion job definition
         /// </summary>
         /// <param name="projectId">Id of the project</param>

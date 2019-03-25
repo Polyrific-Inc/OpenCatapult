@@ -100,7 +100,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             await engine.ExecuteJob(new JobDto { ProjectId = 1, Code = "20180817.1", IsDeletion = true, ProjectStatus = ProjectStatusFilterType.Deleting });
 
-            _projectService.Verify(p => p.DeleteProject(1), Times.Once);
+            _projectService.Verify(p => p.DeleteProjectByEngine(1), Times.Once);
         }
 
         [Fact]

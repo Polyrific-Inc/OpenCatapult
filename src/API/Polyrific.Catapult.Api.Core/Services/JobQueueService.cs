@@ -235,6 +235,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 {
                     var pendingJobSpec = new JobQueueFilterSpecification(0, null, JobStatus.Queued, engine);
                     pendingJobSpec.Includes.Add(q => q.JobDefinition);
+                    queuedJobSpec.Includes.Add(q => q.Project);
                     jobQueue = await _jobQueueRepository.GetSingleBySpec(pendingJobSpec, cancellationToken);
                 }
 
