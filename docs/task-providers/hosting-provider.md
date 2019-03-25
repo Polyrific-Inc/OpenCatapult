@@ -20,7 +20,7 @@ dotnet occli.dll task update -p SampleProject -j Default -n Deploy -prov Polyrif
 
 ### Required services
 
-This provider requires the `Azure` external service to get the connection details. Please refer to the [External Service guideline](../user-guides/external-services.md#AzureAppService) for more info.
+This provider requires the `Azure` external service to get the connection details. Please refer to the [External Service guideline](../user-guides/external-services.md#Azure) for more info.
 
 ### Additional configs
 

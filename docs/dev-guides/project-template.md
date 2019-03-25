@@ -25,7 +25,7 @@ jobs:
         configs:
           [any additional configs which are required by the provider, e.g:]
           GitHubExternalService: [name of the GitHub external service]
-          AzureAppAppServiceExternalService: [name of the AzureAppService external service]
+          AzureExternalService: [name of the Azure external service]
           CreatePullRequest: [true | false]
 ```
 
