@@ -7,15 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Notification\Template\ProjectDeleted.html" />
     <None Remove="Notification\Template\RegistrationCompleted.html" />
     <None Remove="Notification\Template\ResetPassword.html" />
     <None Remove="Notification\Template\ResetPasswordWeb.html" />
+    <None Remove="Notification\Template\SmtpEmail\ProjectDeleted.html" />
     <None Remove="Notification\Template\SmtpEmail\RegistrationCompleted.html" />
     <None Remove="Notification\Template\SmtpEmail\ResetPassword.html" />
     <None Remove="Notification\Template\SmtpEmail\ResetPasswordWeb.html" />
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Notification\Template\ProjectDeleted.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Notification\Template\RegistrationCompleted.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -23,6 +28,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Notification\Template\ResetPasswordWeb.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Notification\Template\SmtpEmail\ProjectDeleted.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Notification\Template\SmtpEmail\RegistrationCompleted.html">

@@ -8,6 +8,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
@@ -253,14 +254,15 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Delete a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="sendNotification">Send notification after project deletion</param>
         /// <returns></returns>
         [HttpDelete("{projectId}")]
         [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
-        public async Task<IActionResult> DeleteProject(int projectId)
+        public async Task<IActionResult> DeleteProject(int projectId, bool sendNotification = false)
         {
             _logger.LogInformation("Deleting project {projectId}", projectId);
 
-            await _projectService.DeleteProject(projectId);
+            await _projectService.DeleteProject(projectId, sendNotification);
 
             return NoContent();
         }

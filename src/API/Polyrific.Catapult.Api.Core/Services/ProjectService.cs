@@ -12,6 +12,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -26,9 +27,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IMapper _mapper;
         private readonly IJobDefinitionService _jobDefinitionService;
         private readonly IJobQueueService _jobQueueService;
+        private readonly INotificationProvider _notificationProvider;
 
         public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, 
-            IMapper mapper, IJobDefinitionService jobDefinitionService, IJobQueueService jobQueueService)
+            IMapper mapper, IJobDefinitionService jobDefinitionService, IJobQueueService jobQueueService, INotificationProvider notificationProvider)
         {
             _projectRepository = projectRepository;
             _projectMemberRepository = projectMemberRepository;
@@ -36,6 +38,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _mapper = mapper;
             _jobDefinitionService = jobDefinitionService;
             _jobQueueService = jobQueueService;
+            _notificationProvider = notificationProvider;
         }
 
         public async Task ArchiveProject(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -243,11 +246,35 @@ namespace Polyrific.Catapult.Api.Core.Services
             return newProject;
         }
 
-        public async Task DeleteProject(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteProject(int id, bool sendNotification, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            Project project = null;
+            List<ProjectMember> members = null;
+            if (sendNotification)
+            {
+                var projectSpec = new ProjectFilterSpecification(id);
+                project = await _projectRepository.GetSingleBySpec(projectSpec, cancellationToken);
+
+                var memberSpec = new ProjectMemberFilterSpecification(id, 0);
+                memberSpec.Includes.Add(m => m.User);
+                members = (await _projectMemberRepository.GetBySpec(memberSpec, cancellationToken)).ToList();
+            }
+
             await _projectRepository.Delete(id, cancellationToken);
+
+            if (sendNotification && project != null && members != null)
+            {
+                await _notificationProvider.SendNotification(new SendNotificationRequest
+                {
+                    MessageType = NotificationConfig.ProjectDeleted,
+                    Emails = members.Where(p => p.ProjectMemberRoleId == MemberRole.OwnerId).Select(p => p.User.Email).ToList()
+                }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ProjectName, project.Name}
+                    });
+            }
         }
 
         public async Task<string> ExportProject(int id, CancellationToken cancellationToken = default(CancellationToken))

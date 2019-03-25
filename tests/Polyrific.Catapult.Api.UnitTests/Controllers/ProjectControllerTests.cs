@@ -228,7 +228,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void DeleteProject_ReturnsNoContent()
         {
-            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
