@@ -54,13 +54,13 @@ dotnet occli.dll service add --name github-default --type GitHub
 
 Then you will be prompted to enter the required details for `GitHub`.
 
-And now, let's create External Service for `Azure App Service`:
+And now, let's create External Service for `Azure`:
 
 ```sh
 dotnet occli.dll service add --name azure-default --type Azure
 ```
 
-Then you will be prompted to enter the required details for `AzureAppService`.
+Then you will be prompted to enter the required details for `Azure`.
 
 ## Create project
 
