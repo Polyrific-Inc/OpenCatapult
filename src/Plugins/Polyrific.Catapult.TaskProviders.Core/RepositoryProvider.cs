@@ -180,6 +180,9 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// </summary>
         public MergeTaskConfig MergeTaskConfig { get; set; }
 
+        /// <summary>
+        /// Delete task configuration
+        /// </summary>
         public DeleteRepositoryTaskConfig DeleteTaskConfig { get; set; }
 
         /// <summary>

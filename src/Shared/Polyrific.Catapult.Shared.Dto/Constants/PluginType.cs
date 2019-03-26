@@ -11,5 +11,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string RepositoryProvider = "RepositoryProvider";
         public const string StorageProvider = "StorageProvider";
         public const string TestProvider = "TestProvider";
+        public const string GenericTaskProvider = "GenericTaskProvider";
     }
 }
