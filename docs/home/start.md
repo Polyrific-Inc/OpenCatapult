@@ -16,7 +16,7 @@ This document will guide you to get started with `OpenCatapult`.
 - SQL Server 2017 (https://www.microsoft.com/en-us/sql-server/sql-server-2017)
   - If you want to use local instance, you can use the free `Express` or `Developer` edition
   - You can alo use remote instance (e.g. Azure SQL)
-- Node JS (https://nodejs.org)
+- Node JS v8.9 or higher (https://nodejs.org)
   - This is required by the Web UI. You can skip this if you go all CLI.
 - [Optional] Code editor, e.g. Visual Studio Code (https://code.visualstudio.com/)
 
