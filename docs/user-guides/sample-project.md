@@ -62,7 +62,7 @@ Then you will be prompted to enter the required details for `Azure`.
 
 ## Create project
 
-After all required components in place, now you can start to create the project by using Sample Devops template. Please open a new publish CLI sheel
+After all required components in place, now you can start to create the project by using Sample Devops template. Please open a new publish CLI shell window
 
 ```sh
 dotnet occli.dll project create --name SampleProject --client Polyrific --template sample-devops
@@ -79,17 +79,7 @@ dotnet occli.dll engine register --name Engine01
 dotnet occli.dll engine token --name Engine01
 ```
 
-Copy the engine access token, then open the Engine shell and go to the catapult directory. Run the following command to set authorization token of the engine:
-
-```sh
-dotnet .\publish\engine\ocengine.dll config set -n AuthorizationToken -v <paste the token here>
-```
-
-Start the engine to make it ready to execute any queued jobs from your projects:
-
-```sh
-dotnet .\publish\engine\ocengine.dll start
-```
+To run the job queue, please make sure you have registered and started your engine. Please follow the link [here](../home/start.md#register-and-start-the-engine) for detail.
 
 At this state, you should be able to direclty send the job from your created project to the queue:
 
