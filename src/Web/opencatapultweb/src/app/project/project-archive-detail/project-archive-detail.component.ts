@@ -44,29 +44,26 @@ export class ProjectArchiveDetailComponent implements OnInit {
   onActivateClick() {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
-        title: 'Confirm Archive Project',
-        confirmationText: `Are you sure you want to archive project '${this.project.name}'?`
+        title: 'Confirm Activate Project',
+        confirmationText: `Are you sure you want to activate project '${this.project.name}'?`
       }
     });
 
     dialogRef.afterClosed().subscribe(confirmed => {
       if (confirmed) {
         this.loading = true;
-        this.projectService.archiveProject(this.project.id)
-          .subscribe(data => {
-            this.projectService.restoreProject(this.project.id)
-              .subscribe(
-                  () => {
-                    this.snackbar.open('The project has been activated');
+        this.projectService.restoreProject(this.project.id)
+          .subscribe(
+              () => {
+                this.snackbar.open('The project has been activated');
 
-                    this.router.navigate(['project', { dummyData: (new Date).getTime()}])
-                      .then(() => this.router.navigate([`project/${this.project.id}`]));
-                  },
-                  err => {
-                    this.snackbar.open(err);
-                    this.loading = false;
-                  });
-          });
+                this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                  .then(() => this.router.navigate([`project/${this.project.id}`]));
+              },
+              err => {
+                this.snackbar.open(err);
+                this.loading = false;
+              });
       }
     });
   }

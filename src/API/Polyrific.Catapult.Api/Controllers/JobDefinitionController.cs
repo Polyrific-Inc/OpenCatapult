@@ -122,6 +122,21 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Get a job definition of a project with IsDeletion = true
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns>Job definition object</returns>
+        [HttpGet("Project/{projectId}/job/deletion")]
+        public async Task<IActionResult> GetDeletionJobDefinition(int projectId)
+        {
+            _logger.LogInformation("Getting deletion job definition in project {projectId}", projectId);
+
+            var jobDefinition = await _jobDefinitionService.GetDeletionJobDefinition(projectId);
+            var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Update a job definition
         /// </summary>
         /// <param name="projectId">Id of the project</param>
@@ -355,6 +370,11 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
+            }
+            catch (JobTaskDefinitionTypeException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Incorrect task definition type");
+                return BadRequest(taskEx.Message);
             }
         }
 

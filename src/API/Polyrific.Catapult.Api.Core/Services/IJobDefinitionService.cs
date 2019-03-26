@@ -71,6 +71,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         Task<JobDefinition> GetJobDefinitionByName(int projectId, string jobDefinitionName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Get a job definition of a project with IsDeletion = true
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns>job definition entity</returns>
+        Task<JobDefinition> GetDeletionJobDefinition(int projectId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// Add a new job task definition
         /// </summary>
         /// <param name="jobTaskDefinition">The job task definition entity</param>

@@ -31,6 +31,8 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
         public const string ResetPasswordWeb = "ResetPasswordWeb";
 
+        public const string ProjectDeleted = "ProjectDeleted";
+
         public string[] GetNotificationProviders(string messageType)
         {
             return GetConfigArrayValue(messageType, new string[0]);
@@ -85,9 +87,11 @@ namespace Polyrific.Catapult.Shared.Common.Notification
                 {RegistrationCompleted, $"{NotificationProvider.SmtpEmail}"},
                 {ResetPassword, $"{NotificationProvider.SmtpEmail}"},
                 {ResetPasswordWeb, $"{NotificationProvider.SmtpEmail}"},
+                {ProjectDeleted, $"{NotificationProvider.SmtpEmail}"},
                 {$"{RegistrationCompleted}Subject", "Catapult - Please confirm your account"},
                 {$"{ResetPassword}Subject", "Catapult - Reset password token"},
-                {$"{ResetPasswordWeb}Subject", "Catapult - Reset password token"}
+                {$"{ResetPasswordWeb}Subject", "Catapult - Reset password token"},
+                {$"{ProjectDeleted}Subject", "Catapult - Your project has been deleted"}
             };
 
             return configs;

@@ -8,6 +8,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.JobDefinition;
 using Polyrific.Catapult.Shared.Dto.Project;
@@ -177,6 +178,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(iestEx, "Incorrect external service type");
                 return BadRequest(iestEx.Message);
             }
+            catch (JobTaskDefinitionTypeException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Incorrect task definition type");
+                return BadRequest(taskEx.Message);
+            }
         }
 
         /// <summary>
@@ -248,16 +254,63 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Delete a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>
+        /// <param name="sendNotification">Send notification after project deletion</param>
         /// <returns></returns>
         [HttpDelete("{projectId}")]
         [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
-        public async Task<IActionResult> DeleteProject(int projectId)
+        public async Task<IActionResult> DeleteProject(int projectId, bool sendNotification = false)
         {
             _logger.LogInformation("Deleting project {projectId}", projectId);
 
-            await _projectService.DeleteProject(projectId);
+            await _projectService.DeleteProject(projectId, sendNotification);
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Delete a project invoked by engine
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        [HttpDelete("{projectId}/engine")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        public async Task<IActionResult> DeleteProjectByEngine(int projectId)
+        {
+            _logger.LogInformation("Deleting project {projectId}", projectId);
+
+            var project = await _projectService.GetProjectById(projectId);
+
+            // only allow engine delete deleting project
+            if (project.Status != ProjectStatusFilterType.Deleting)
+                return Unauthorized();
+
+            await _projectService.DeleteProject(projectId, true);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Mark a project as deleting, and queue the deletion job definition
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        [HttpPut("{projectId}/deleting")]
+        [Authorize(Policy = AuthorizePolicy.ProjectOwnerAccess)]
+        public async Task<IActionResult> MarkProjectDeleting(int projectId)
+        {
+            try
+            {
+                _logger.LogInformation("Mark project {projectId} as \"deleting\"", projectId);
+
+                await _projectService.MarkProjectDeleting(projectId, Request.Host.ToUriComponent());
+
+                return Ok();
+            }
+            catch (DeletionJobDefinitionNotFound ex)
+            {
+                _logger.LogWarning(ex, "Deletion job definition not found");
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

@@ -73,7 +73,7 @@ namespace Polyrific.Catapult.Engine.Core
                         jobQueue.ProjectStatus == ProjectStatusFilterType.Deleting)
                     {
                         _logger.LogInformation($"Deleting project {jobQueue.ProjectId}");
-                        await _projectService.DeleteProject(jobQueue.ProjectId);
+                        await _projectService.DeleteProjectByEngine(jobQueue.ProjectId);
                     }
                 }
                 catch (Exception ex)

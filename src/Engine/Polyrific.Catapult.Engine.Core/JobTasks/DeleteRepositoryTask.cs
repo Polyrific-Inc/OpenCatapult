@@ -53,7 +53,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             {
                 {"process", "delete"},
                 {"project", Project.Name},
-                {"cloneconfig", TaskConfig},
+                {"deleteconfig", TaskConfig},
                 {"additional", AdditionalConfigs}
             };
 

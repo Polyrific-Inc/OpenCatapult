@@ -228,7 +228,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void DeleteProject_ReturnsNoContent()
         {
-            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
@@ -236,6 +236,72 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var result = await controller.DeleteProject(1);
 
             Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async void DeleteProjectByEngine_ReturnsNoContent()
+        {
+            _projectService.Setup(s => s.GetProjectById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+                    new Project
+                    {
+                        Id = id,
+                        Name = "Project01",
+                        Status = ProjectStatusFilterType.Deleting
+                    });
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteProjectByEngine(1);
+
+            Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
+        public async void DeleteProjectByEngine_ReturnsUnauthorized()
+        {
+            _projectService.Setup(s => s.GetProjectById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) =>
+                    new Project
+                    {
+                        Id = id,
+                        Name = "Project01",
+                        Status = ProjectStatusFilterType.Active
+                    });
+            _projectService.Setup(s => s.DeleteProject(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object);
+
+            var result = await controller.DeleteProjectByEngine(1);
+
+            Assert.IsType<UnauthorizedResult>(result);
+        }
+
+
+        [Fact]
+        public async void MarkProjectDeleting_ReturnsSuccess()
+        {
+            _projectService.Setup(s => s.MarkProjectDeleting(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var httpContext = new DefaultHttpContext();
+            httpContext.Request.Host = new HostString("http://localhost");
+
+            var controller = new ProjectController(_projectService.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = httpContext
+                }
+            };
+
+            var result = await controller.MarkProjectDeleting(1);
+
+            _projectService.Verify(p => p.MarkProjectDeleting(1, "http://localhost", It.IsAny<CancellationToken>()));
+
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]

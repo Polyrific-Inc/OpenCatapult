@@ -6,5 +6,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
     {
         public const string Create = "CREATE";
         public const string Update = "UPDATE";
+        public const string Delete = "DELETE";
     }
 }

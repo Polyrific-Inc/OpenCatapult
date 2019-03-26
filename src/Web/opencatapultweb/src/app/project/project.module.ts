@@ -7,7 +7,8 @@ import { ProjectDetailComponent } from './project-detail/project-detail.componen
 import { ProjectInfoComponent } from './project-info/project-info.component';
 import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatGridListModule,
   MatExpansionModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatProgressBarModule,
-  MatInputModule, MatSelectModule, MatDialogModule, MatCheckboxModule, MatCardModule } from '@angular/material';
+  MatInputModule, MatSelectModule, MatDialogModule, MatCheckboxModule, MatCardModule,
+  MatProgressSpinnerModule, MatChipsModule, MatTooltipModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProjectInfoFormComponent } from './components/project-info-form/project-info-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -18,6 +19,7 @@ import { ProjectArchiveDetailComponent } from './project-archive-detail/project-
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 import { ProjectErrorComponent } from './project-error/project-error.component';
 import { ProjectResolverService } from './services/project-resolver.service';
+import { ProjectDeletingComponent } from './project-deleting/project-deleting.component';
 
 @NgModule({
   declarations: [ProjectComponent,
@@ -28,7 +30,8 @@ import { ProjectResolverService } from './services/project-resolver.service';
     ProjectCloneComponent,
     ProjectArchiveDetailComponent,
     ProjectDashboardComponent,
-    ProjectErrorComponent
+    ProjectErrorComponent,
+    ProjectDeletingComponent
   ],
   imports: [
     CommonModule,
@@ -50,7 +53,10 @@ import { ProjectResolverService } from './services/project-resolver.service';
     SharedModule,
     MatDialogModule,
     MatCheckboxModule,
-    MatCardModule
+    MatCardModule,
+    MatProgressSpinnerModule,
+    MatChipsModule,
+    MatTooltipModule
   ],
   providers: [
     ProjectResolverService

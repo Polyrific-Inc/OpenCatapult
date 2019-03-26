@@ -15,7 +15,8 @@ export class JobConfigFormComponent implements OnInit, OnChanges {
   constructor(private fb: FormBuilder) {
     this.jobForm = this.fb.group(
       {
-        name: null
+        name: null,
+        isDeletion: false,
       }
     );
   }
@@ -26,7 +27,8 @@ export class JobConfigFormComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges) {
     this.jobForm.patchValue({
-      name: this.job.name
+      name: this.job.name,
+      isDeletion: this.job.isDeletion
     });
   }
 

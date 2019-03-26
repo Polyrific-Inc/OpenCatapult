@@ -30,7 +30,17 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <mat-nav-list>
-            <a mat-list-item *ngFor="let project of archivedProjects" routerLink="/project/archive/{{project.id}}">{{project.name}}</a>
+            <a mat-list-item *ngFor="let project of archivedProjects" routerLink="/project/archive/{{project.id}}" [routerLinkActive]="['is-active']">{{project.name}}</a>
+          </mat-nav-list>
+        </mat-expansion-panel>
+        <mat-expansion-panel expanded="false" *ngIf="deletingProjects?.length > 0">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <h3>Deleting Project</h3>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <mat-nav-list>
+            <a mat-list-item *ngFor="let project of deletingProjects" routerLink="/project/deleting/{{project.id}}" [routerLinkActive]="['is-active']">{{project.name}}</a>
           </mat-nav-list>
         </mat-expansion-panel>
     </mat-accordion>

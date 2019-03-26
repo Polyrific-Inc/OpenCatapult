@@ -12,6 +12,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -25,15 +26,19 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IProjectDataModelPropertyRepository _projectDataModelPropertyRepository;
         private readonly IMapper _mapper;
         private readonly IJobDefinitionService _jobDefinitionService;
+        private readonly IJobQueueService _jobQueueService;
+        private readonly INotificationProvider _notificationProvider;
 
         public ProjectService(IProjectRepository projectRepository, IProjectMemberRepository projectMemberRepository, IProjectDataModelPropertyRepository projectDataModelPropertyRepository, 
-            IMapper mapper, IJobDefinitionService jobDefinitionService)
+            IMapper mapper, IJobDefinitionService jobDefinitionService, IJobQueueService jobQueueService, INotificationProvider notificationProvider)
         {
             _projectRepository = projectRepository;
             _projectMemberRepository = projectMemberRepository;
             _projectDataModelPropertyRepository = projectDataModelPropertyRepository;
             _mapper = mapper;
             _jobDefinitionService = jobDefinitionService;
+            _jobQueueService = jobQueueService;
+            _notificationProvider = notificationProvider;
         }
 
         public async Task ArchiveProject(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -241,11 +246,35 @@ namespace Polyrific.Catapult.Api.Core.Services
             return newProject;
         }
 
-        public async Task DeleteProject(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteProject(int id, bool sendNotification, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
+            Project project = null;
+            List<ProjectMember> members = null;
+            if (sendNotification)
+            {
+                var projectSpec = new ProjectFilterSpecification(id);
+                project = await _projectRepository.GetSingleBySpec(projectSpec, cancellationToken);
+
+                var memberSpec = new ProjectMemberFilterSpecification(id, 0, null, MemberRole.OwnerId);
+                memberSpec.Includes.Add(m => m.User);
+                members = (await _projectMemberRepository.GetBySpec(memberSpec, cancellationToken)).ToList();
+            }
+
             await _projectRepository.Delete(id, cancellationToken);
+
+            if (sendNotification && project != null && members != null)
+            {
+                await _notificationProvider.SendNotification(new SendNotificationRequest
+                {
+                    MessageType = NotificationConfig.ProjectDeleted,
+                    Emails = members.Select(p => p.User.Email).ToList()
+                }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ProjectName, project.Name}
+                    });
+            }
         }
 
         public async Task<string> ExportProject(int id, CancellationToken cancellationToken = default(CancellationToken))
@@ -325,11 +354,8 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (project == null)
                 throw new ProjectNotFoundException(projectId);
 
-            if (project.Status == ProjectStatusFilterType.Archived)
-            {
-                project.Status = ProjectStatusFilterType.Active;
-                await _projectRepository.Update(project, cancellationToken);
-            }
+            project.Status = ProjectStatusFilterType.Active;
+            await _projectRepository.Update(project, cancellationToken);
         }
 
         public async Task UpdateProject(Project project, CancellationToken cancellationToken = default(CancellationToken))
@@ -346,7 +372,31 @@ namespace Polyrific.Catapult.Api.Core.Services
                 entity.Client = project.Client;
                 entity.DisplayName = project.DisplayName;
                 await _projectRepository.Update(entity);
-            }            
+            }
+        }
+
+        public async Task MarkProjectDeleting(int id, string currentUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var entity = await _projectRepository.GetById(id);
+            if (entity != null)
+            {
+                entity.Status = ProjectStatusFilterType.Deleting;
+                await _projectRepository.Update(entity);
+
+                var deletionJob = await this._jobDefinitionService.GetDeletionJobDefinition(id);
+
+                if (deletionJob != null)
+                {
+                    await _jobQueueService.AddJobQueue(id, currentUrl, JobType.Delete, deletionJob.Id, cancellationToken);
+                }
+                else
+                {
+                    // Marking project as deleting only make sense if we're trying to delete resources first
+                    throw new DeletionJobDefinitionNotFound(id);
+                }
+            }
         }
 
         private string YamlSerialize(ProjectTemplate template)

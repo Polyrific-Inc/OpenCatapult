@@ -26,6 +26,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProviderService> _providerService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
+        private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly Mock<ITemplateWriter> _templateWriter;
 
         public ProjectCommandTests(ITestOutputHelper output)
@@ -125,6 +126,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _externalServiceService = new Mock<IExternalServiceService>();
             _externalServiceService.Setup(s => s.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => services.FirstOrDefault(u => u.Name == name));
+
+            _jobDefinitionService = new Mock<IJobDefinitionService>();
 
             _templateWriter = new Mock<ITemplateWriter>();
             _templateWriter.Setup(t => t.Write(It.IsAny<string>(), It.IsAny<string>())).Returns((string filePath, string content) => filePath);
@@ -362,7 +365,7 @@ jobs:
         public void ProjectRemove_Execute_ReturnsSuccessMessage()
         {
             var console = new TestConsole(_output, "y");
-            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Name = "Project 1"
             };
@@ -376,7 +379,7 @@ jobs:
         public void ProjectRemove_Execute_ReturnsNotFoundMessage()
         {
             var console = new TestConsole(_output, "y");
-            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object)
+            var command = new RemoveCommand(console, LoggerMock.GetLogger<RemoveCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
             {
                 Name = "Project 2"
             };

@@ -89,14 +89,14 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
                 var website = _azureUtils.GetWebsite(subscriptionId, resourceGroupName, appServiceName);
 
                 if (website == null)
-                    return Task.FromResult<(string, string)>((null, ""));
+                    return Task.FromResult<(string, string)>((appServiceName, ""));
 
                 if (!string.IsNullOrEmpty(deploymentSlot))
                 {
                     var slot = _azureUtils.GetSlot(website, deploymentSlot);
 
                     if (slot == null)
-                        return Task.FromResult<(string, string)>((null, ""));
+                        return Task.FromResult<(string, string)>(($"{appServiceName}-{deploymentSlot}", ""));
 
                     _azureUtils.DeleteSlot(website, slot.Id);
                     return Task.FromResult<(string, string)>((slot.DefaultHostName, ""));

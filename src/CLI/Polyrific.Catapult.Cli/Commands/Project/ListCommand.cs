@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         }
 
         [Option("-s|--status <STATUS>", "Filter the projects by their status", CommandOptionType.SingleValue)]
-        [AllowedValues(ProjectStatusFilterType.All, ProjectStatusFilterType.Active, ProjectStatusFilterType.Archived, IgnoreCase = true)]
+        [AllowedValues(ProjectStatusFilterType.All, ProjectStatusFilterType.Active, ProjectStatusFilterType.Archived, ProjectStatusFilterType.Deleting, IgnoreCase = true)]
         public string Status { get; set; } = ProjectStatusFilterType.All;
 
         [Option("-a|--all", "Retrieve all projects", CommandOptionType.NoValue)]

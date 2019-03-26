@@ -11,6 +11,7 @@ import { AuthGuard } from '@app/core/auth/auth.guard';
 import { ProjectDashboardComponent } from './project-dashboard/project-dashboard.component';
 import { ProjectErrorComponent } from './project-error/project-error.component';
 import { ProjectResolverService } from './services/project-resolver.service';
+import { ProjectDeletingComponent } from './project-deleting/project-deleting.component';
 
 const routes: Routes = [
   {
@@ -47,6 +48,22 @@ const routes: Routes = [
         resolve: {
           project: ProjectResolverService
         }
+      },
+      {
+        path: 'deleting/:projectId',
+        component: ProjectDeletingComponent,
+        data: { authPolicy: AuthorizePolicy.ProjectOwnerAccess },
+        resolve: {
+          project: ProjectResolverService
+        },
+        children: [
+          {path: '', redirectTo: 'job-queue', pathMatch: 'full'},
+          {
+            path: 'job-queue',
+            loadChildren: './job-queue/job-queue.module#JobQueueModule',
+            data: { authPolicy: AuthorizePolicy.ProjectMaintainerAccess }
+          }
+        ]
       },
       {
         path: ':projectId',

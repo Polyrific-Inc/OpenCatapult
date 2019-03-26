@@ -1,0 +1,25 @@
+<div fxLayout="row" fxLayoutAlign="start center">
+  <h3 class="title">{{project?.displayName || project?.name}}</h3>
+  <mat-chip-list>
+    <mat-chip class="red" matTooltip="The project will be deleted once the deletion job is done">Deleting</mat-chip>
+  </mat-chip-list>
+</div>
+
+<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
+  <mat-spinner></mat-spinner>
+</div>
+
+<div *ngIf="!loading">
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" (click)="onRestoreClick()"  *appHasAccess="authorizePolicy.ProjectOwnerAccess">Restore</button>
+    <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Force Delete</button>
+  </div>
+
+  <div>
+    <nav mat-tab-nav-bar flex>
+        <a mat-tab-link [active]="true">Job Queues</a>
+    </nav>
+    <router-outlet></router-outlet>
+
+  </div>
+</div>

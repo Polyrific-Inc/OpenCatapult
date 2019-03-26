@@ -57,9 +57,19 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Delete a project
         /// </summary>
         /// <param name="id">Id of the project</param>
+        /// <param name="sendNotification">Send notification after project deletion?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task DeleteProject(int id, CancellationToken cancellationToken = default(CancellationToken));
+        Task DeleteProject(int id, bool sendNotification, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Mark a project as deleting, and queue the deletion job definition
+        /// </summary>
+        /// <param name="id">Id of the project</param>
+        /// <param name="currentUrl">The current url of the API</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task MarkProjectDeleting(int id, string currentUrl, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get project by id

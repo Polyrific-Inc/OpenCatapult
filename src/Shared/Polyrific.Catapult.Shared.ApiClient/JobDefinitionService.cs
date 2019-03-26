@@ -62,6 +62,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<JobDefinitionDto>(path);
         }
 
+        public async Task<JobDefinitionDto> GetDeletionJobDefinition(int projectId)
+        {
+            var path = $"project/{projectId}/job/deletion";
+
+            return await Api.Get<JobDefinitionDto>(path);
+        }
+
         public async Task<List<JobDefinitionDto>> GetJobDefinitions(int projectId)
         {
             var path = $"project/{projectId}/job";

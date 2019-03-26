@@ -8,5 +8,6 @@ namespace Polyrific.Catapult.Shared.Common.Notification
         public const string ResetPasswordToken = "ResetPasswordToken";
         public const string ResetPasswordLink = "ResetPasswordLink";
         public const string TemporaryPassword = "TemporaryPassword";
+        public const string ProjectName = "ProjectName";
     }
 }
