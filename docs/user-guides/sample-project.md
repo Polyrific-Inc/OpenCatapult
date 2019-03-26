@@ -72,13 +72,6 @@ You will be prompted to enter some additional configurations.
 
 After your project is created, you can check what you have in it, e.g. models, jobs, etc.
 
-One important thing to do before doing further action is that you need to register an engine instance to allow it picking up any jobs from your projects. To do it, let's register the Engine and generate an access token:
-
-```sh
-dotnet occli.dll engine register --name Engine01
-dotnet occli.dll engine token --name Engine01
-```
-
 To run the job queue, please make sure you have registered and started your engine. Please follow the link [here](../home/start.md#register-and-start-the-engine) for detail.
 
 At this state, you should be able to direclty send the job from your created project to the queue:
