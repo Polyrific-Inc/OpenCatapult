@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
+using System;
 using System.Linq;
 
 namespace Polyrific.Catapult.TaskProviders.GenericCommand.CommandProviders

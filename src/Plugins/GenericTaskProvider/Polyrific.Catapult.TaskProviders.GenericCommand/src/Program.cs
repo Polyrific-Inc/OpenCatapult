@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;

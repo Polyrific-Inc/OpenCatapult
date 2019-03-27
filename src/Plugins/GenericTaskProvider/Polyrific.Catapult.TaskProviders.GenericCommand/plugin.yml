@@ -1,5 +1,5 @@
 name: 'Polyrific.Catapult.TaskProviders.GenericCommand'
-type: 'GeneratorProvider'
+type: 'GenericTaskProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
 additional-configs:
