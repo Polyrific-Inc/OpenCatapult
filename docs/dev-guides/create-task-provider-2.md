@@ -163,13 +163,13 @@ namespace Polyrific.Catapult.TaskProviders.Angular
 
         private async Task CreateAngularProject(string projectName, string outputLocation)
         {
-            await CommandHelper.ExecuteNodeModule($"ng new {projectName} --routing=true --skipGit=true", outputLocation, _logger);
+            await CommandHelper.ExecuteShellCommand($"ng new {projectName} --routing=true --skipGit=true", outputLocation, _logger);
         }
 
         private async Task InitializeProject(string projectFolder)
         {
             // install angular material to project
-            await CommandHelper.ExecuteNodeModule($"ng add @angular/material", projectFolder, _logger);
+            await CommandHelper.ExecuteShellCommand($"ng add @angular/material", projectFolder, _logger);
         }
 
         private async Task CreateHomeComponent(string projectFolder, string projectTitle, List<ProjectDataModelDto> models)
@@ -236,7 +236,7 @@ namespace Polyrific.Catapult.TaskProviders.Angular
             }
 
             
-            await CommandHelper.ExecuteNodeModule($"ng generate component home", projectFolder, _logger);
+            await CommandHelper.ExecuteShellCommand($"ng generate component home", projectFolder, _logger);
             
             if (File.Exists(Path.Combine(appFolder, "home", "home.component.html")))
             {
@@ -255,7 +255,7 @@ namespace Polyrific.Catapult.TaskProviders.Angular
         private async Task CreateModelComponent(string projectFolder, ProjectDataModelDto model)
         {
             var modelName = model.Name.Kebaberize();
-            await CommandHelper.ExecuteNodeModule($"ng generate component {modelName}", projectFolder, _logger);
+            await CommandHelper.ExecuteShellCommand($"ng generate component {modelName}", projectFolder, _logger);
 
             string componentFolder = Path.Combine(projectFolder, "src/app", modelName);
             if (File.Exists(Path.Combine(componentFolder, $"{modelName}.component.ts")))
