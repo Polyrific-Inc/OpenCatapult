@@ -32,7 +32,7 @@ A Github repository will be created automatically by `OpenCatapult`.
 
 **Azure App Service**
 
-`OpenCatapult` will create Azure App Service automatically, but you still need to make a note of `Application ID`, `Authentication Key`, and `Tenant ID` values as an authentication to your Azure subscription. You can get them by following the steps explained at https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal#get-application-id-and-authentication-key.
+`OpenCatapult` will create Azure App Services automatically, but you still need to create a generic app service and make note of it's `Application ID`, `Authentication Key`, and `Tenant ID` values as an authentication to your Azure subscription. The `Tenant ID` is also referred to as the `Directory ID` on Azure. You can get them by following the steps explained at https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal#get-application-id-and-authentication-key.
 
 **SQL Server Database**
 
