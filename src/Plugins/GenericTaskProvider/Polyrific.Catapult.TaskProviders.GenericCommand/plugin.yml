@@ -1,0 +1,17 @@
+name: 'Polyrific.Catapult.TaskProviders.GenericCommand'
+type: 'GenericTaskProvider'
+author: 'Polyrific'
+version: '1.0.0-beta3'
+additional-configs:
+  - name: CommandTool
+    label: Command Tool
+    hint: The command tool to be used to run the command. Defaults based on OS.
+    type: string
+    is-required: false
+    is-secret: false
+  - name: Commands
+    label: Commands
+    hint: The command sequences separated by line
+    type: string
+    is-required: true
+    is-secret: false
