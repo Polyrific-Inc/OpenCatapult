@@ -6,4 +6,5 @@ export enum ProviderType {
   RepositoryProvider = 'RepositoryProvider',
   StorageProvider = 'StorageProvider',
   TestProvider = 'TestProvider',
+  GenericTaskProvider = 'GenericTaskProvider',
 }

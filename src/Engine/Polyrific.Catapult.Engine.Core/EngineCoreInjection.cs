@@ -24,6 +24,7 @@ namespace Polyrific.Catapult.Engine.Core
             services.AddTransient<ITestTask, TestTask>();
             services.AddTransient<IDeleteRepositoryTask, DeleteRepositoryTask>();
             services.AddTransient<IDeleteHostingTask, DeleteHostingTask>();
+            services.AddTransient<ICustomTask, CustomTask>();
             services.AddTransient<JobTaskService, JobTaskService>();
         }
     }

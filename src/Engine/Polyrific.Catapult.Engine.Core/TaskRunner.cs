@@ -224,6 +224,9 @@ namespace Polyrific.Catapult.Engine.Core
                 case JobTaskDefinitionType.DeleteHosting:
                     task = _jobTaskService.DeleteHostingTask;
                     break;
+                case JobTaskDefinitionType.CustomTask:
+                    task = _jobTaskService.CustomTask;
+                    break;
                 default:
                     throw new InvalidJobTaskTypeException(jobTask.Type);
             }

@@ -26,15 +26,16 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly ISecretVault _secretVault;
 
         private readonly List<(string, string[])> _allowedTaskTypes = new List<(string, string[])>
-            {
-                ( PluginType.GeneratorProvider, new string[] { JobTaskDefinitionType.Generate } ),
-                ( PluginType.RepositoryProvider, new string[] { JobTaskDefinitionType.Clone, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge } ),
-                ( PluginType.BuildProvider, new string[] { JobTaskDefinitionType.Build,  } ),
-                ( PluginType.StorageProvider, new string[] { JobTaskDefinitionType.PublishArtifact } ),
-                ( PluginType.HostingProvider, new string[] { JobTaskDefinitionType.Deploy } ),
-                ( PluginType.DatabaseProvider, new string[] { JobTaskDefinitionType.DeployDb } ),
-                ( PluginType.TestProvider, new string[] { JobTaskDefinitionType.Test } )
-            };
+        {
+            ( PluginType.GeneratorProvider, new string[] { JobTaskDefinitionType.Generate } ),
+            ( PluginType.RepositoryProvider, new string[] { JobTaskDefinitionType.Clone, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.DeleteRepository } ),
+            ( PluginType.BuildProvider, new string[] { JobTaskDefinitionType.Build,  } ),
+            ( PluginType.StorageProvider, new string[] { JobTaskDefinitionType.PublishArtifact } ),
+            ( PluginType.HostingProvider, new string[] { JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeleteHosting } ),
+            ( PluginType.DatabaseProvider, new string[] { JobTaskDefinitionType.DeployDb } ),
+            ( PluginType.TestProvider, new string[] { JobTaskDefinitionType.Test } ),
+            ( PluginType.GenericTaskProvider, new string[] { JobTaskDefinitionType.CustomTask } )
+        };
 
         private readonly List<string> _deleteTaskTypes = new List<string>
         {
@@ -301,8 +302,11 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task ValidateJobTaskDefinition(JobDefinition jobDefintion, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (jobDefintion != null && ((jobDefintion.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
-                (!jobDefintion.IsDeletion) && _deleteTaskTypes.Contains(jobTaskDefinition.Type)))
+            bool isTaskTypeNotFitIntoJob = jobDefintion != null && jobTaskDefinition.Type != JobTaskDefinitionType.CustomTask && 
+                ((jobDefintion.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
+                (!jobDefintion.IsDeletion && _deleteTaskTypes.Contains(jobTaskDefinition.Type)));
+
+            if (isTaskTypeNotFitIntoJob)
             {
                 throw new JobTaskDefinitionTypeException(jobDefintion.IsDeletion, jobTaskDefinition.Type);
             }
@@ -319,17 +323,14 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new ProviderNotInstalledException(jobTaskDefinition.Provider);
             }
 
-            if (!(jobDefintion?.IsDeletion ?? false))
+            var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == plugin.Type.ToLower());
+            if (allowedTaskType.Equals(default((string, string[]))))
             {
-                var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == plugin.Type.ToLower());
-                if (allowedTaskType.Equals(default((string, string[]))))
-                {
-                    throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider);
-                }
-                else if (!allowedTaskType.Item2.Any(taskType => jobTaskDefinition.Type.ToLower() == taskType.ToLower()))
-                {
-                    throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
-                }
+                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider);
+            }
+            else if (!allowedTaskType.Item2.Any(taskType => jobTaskDefinition.Type.ToLower() == taskType.ToLower()))
+            {
+                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
             }
 
             if (!string.IsNullOrEmpty(plugin.RequiredServicesString))

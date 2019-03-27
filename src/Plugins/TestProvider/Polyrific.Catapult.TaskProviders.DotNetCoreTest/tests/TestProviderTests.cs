@@ -41,7 +41,7 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests
         [Fact]
         public async void Test_Failed()
         {
-            var workingLocation = Path.Combine("c:\\opencatapult\\working", "20180817.1");
+            var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.1");
 
             if (Directory.Exists(workingLocation))
                 Directory.Delete(workingLocation, true);

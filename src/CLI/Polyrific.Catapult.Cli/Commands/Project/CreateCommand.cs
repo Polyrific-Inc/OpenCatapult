@@ -16,6 +16,7 @@ using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
 using Polyrific.Catapult.Shared.Service;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
+using System.IO;
 
 namespace Polyrific.Catapult.Cli.Commands.Project
 {
@@ -169,6 +170,22 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                                 {
                                     Console.WriteLine($"Input is not valid. Please enter valid number value.");
                                     validInput = false;
+                                }
+                                else if (additionalConfig.Type == ConfigType.File)
+                                {
+                                    try
+                                    {
+                                        validInput = File.Exists(input);
+
+                                        if (validInput)
+                                            input = File.ReadAllText(input);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Console.WriteLine("The file path is not valid");
+                                        Logger.LogError("Error while reading file", ex);
+                                        validInput = false;
+                                    }
                                 }
                                 else if (additionalConfig.AllowedValues?.Length > 0 && !additionalConfig.AllowedValues.Contains(input))
                                 {

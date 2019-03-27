@@ -10,4 +10,5 @@ export const jobTaskDefinitionTypes: [string, string][] = [
   [JobTaskDefinitionType.Deploy, 'Deploy'],
   [JobTaskDefinitionType.PublishArtifact, 'Publish Artifact'],
   [JobTaskDefinitionType.Test, 'Test'],
+  [JobTaskDefinitionType.CustomTask, 'Custom Task'],
 ];

@@ -311,6 +311,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(ex, "Deletion job definition not found");
                 return BadRequest(ex.Message);
             }
+            catch (JobQueueInProgressException jex)
+            {
+                _logger.LogWarning(jex, "There is already a running job in project");
+                return BadRequest(jex.Message);
+            }
         }
 
         /// <summary>

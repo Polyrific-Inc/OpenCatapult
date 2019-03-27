@@ -222,9 +222,11 @@ namespace Polyrific.Catapult.Api.Core.Services
                             throw new DuplicateJobTaskDefinitionException(string.Join(DataDelimiter.Comma.ToString(), duplicateTasks));
                         }
 
+                        int sequence = 1;
                         foreach (var task in job.Tasks)
                         {
                             task.Created = DateTime.UtcNow;
+                            task.Sequence = sequence++;
                             await _jobDefinitionService.ValidateJobTaskDefinition(job, task);
                         }
                     }

@@ -30,13 +30,16 @@ if ($openShell) {
     $entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
     $gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
     $gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
+    $genericCommandCsprojPath = Join-Path $rootPath "/src/Plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
+    $genericCommandPublishPath = Join-Path $enginePublishPath "/plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
 
     $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
     [System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),
     [System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
     [System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
     [System.Tuple]::Create($entityFrameworkCoreCsprojPath, $entityFrameworkCorePublishPath),
-    [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath)
+    [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath),
+    [System.Tuple]::Create($genericCommandCsprojPath, $genericCommandPublishPath)
 
     # publish engine
     Write-Output "Publishing the Engine..."
