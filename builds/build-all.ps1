@@ -146,13 +146,14 @@ if ($noConfig) {
 ## Build CLI
 if (!$noCli) {
 	Write-Host "Publishing CLI..."
-    $done = Invoke-BuildScriptNewWindow "build-cli.ps1" $args
-	Start-Sleep -s 5
+    $done = Invoke-BuildScript "build-cli.ps1" $args
+    Invoke-BuildScriptNewWindow "build-cli.ps1" "-openShell"
 }
 
 ## Build Engine
-$done = Invoke-BuildScriptNewWindow "build-engine.ps1" $args
 Write-Host "Publishing Engine..."
+$done = Invoke-BuildScript "build-engine.ps1" $args
+Invoke-BuildScriptNewWindow "build-engine.ps1" "-openShell"
 
 ## Build Web
 if (!$noWeb) {
