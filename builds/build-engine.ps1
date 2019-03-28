@@ -4,7 +4,8 @@ param(
     [string]$configuration = "Release",
     [string]$url = "https://localhost:44305",
     [switch]$noConfig = $false,
-    [switch]$openShell = $false
+    [switch]$noOpenShell = $false,
+    [switch]$noBuild = $false
 )
 
 $rootPath = Split-Path $PSScriptRoot
@@ -12,11 +13,11 @@ $engineCsprojPath = Join-Path $rootPath "/src/Engine/Polyrific.Catapult.Engine/P
 $enginePublishPath = Join-Path $rootPath "/publish/engine"
 $engineDll = Join-Path $enginePublishPath "/ocengine.dll"
 
-if ($openShell) {
+if (!$noOpenShell) {
     $host.UI.RawUI.WindowTitle = "OpenCatapult Engine";
-    Write-Host "Engine is ready. You can start exploring available commands by running: dotnet ocengine.dll --help" -ForegroundColor Green
-    Set-Location $enginePublishPath
-} else {
+} 
+
+if (!$noBuild) {
 
     $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
     $aspNetCoreMvcPublishPath = Join-Path $enginePublishPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
@@ -71,3 +72,8 @@ if ($openShell) {
 
     Write-Host "Engine component was published successfully."
 }
+
+if (!$noOpenShell) {
+    Write-Host "Engine is ready. You can start exploring available commands by running: dotnet ocengine.dll --help" -ForegroundColor Green
+    Set-Location $enginePublishPath
+} 

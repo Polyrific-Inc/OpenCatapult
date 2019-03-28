@@ -4,7 +4,8 @@ param(
     [string]$configuration = "Release",
     [string]$url = "https://localhost:44305",
     [switch]$noConfig = $false,
-    [switch]$openShell = $false
+    [switch]$noOpenShell = $false,
+    [switch]$noBuild = $false
 )
 
 $rootPath = Split-Path $PSScriptRoot
@@ -12,11 +13,11 @@ $cliCsprojPath = Join-Path $rootPath "/src/CLI/Polyrific.Catapult.Cli/Polyrific.
 $cliPublishPath = Join-Path $rootPath "/publish/cli"
 $cliDll = Join-Path $cliPublishPath "/occli.dll"
 
-if ($openShell) {
+if (!$noOpenShell) {
     $host.UI.RawUI.WindowTitle = "OpenCatapult CLI";
-    Write-Host "CLI is ready. You can start exploring available commands by running: dotnet occli.dll --help" -ForegroundColor Green
-    Set-Location $cliPublishPath
-} else {
+} 
+
+if (!$noBuild) {
     # build CLI
     Write-Output "Publishing the CLI..."
     Write-Output "dotnet publish $cliCsprojPath -c $configuration -o $cliPublishPath"
@@ -39,3 +40,9 @@ if ($openShell) {
 
     Write-Host "CLI component was published successfully."
 }
+
+
+if (!$noOpenShell) {
+    Write-Host "CLI is ready. You can start exploring available commands by running: dotnet occli.dll --help" -ForegroundColor Green
+    Set-Location $cliPublishPath
+} 

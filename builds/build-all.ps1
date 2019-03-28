@@ -142,18 +142,19 @@ $args += " -url " + $https
 if ($noConfig) {
     $args += " -noConfig"
 }
+$args += " -noOpenShell"
 
 ## Build CLI
 if (!$noCli) {
 	Write-Host "Publishing CLI..."
     $done = Invoke-BuildScript "build-cli.ps1" $args
-    Invoke-BuildScriptNewWindow "build-cli.ps1" "-openShell"
+    Invoke-BuildScriptNewWindow "build-cli.ps1" "-noBuild"
 }
 
 ## Build Engine
 Write-Host "Publishing Engine..."
 $done = Invoke-BuildScript "build-engine.ps1" $args
-Invoke-BuildScriptNewWindow "build-engine.ps1" "-openShell"
+Invoke-BuildScriptNewWindow "build-engine.ps1" "-noBuild"
 
 ## Build Web
 if (!$noWeb) {
