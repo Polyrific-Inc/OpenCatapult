@@ -1,7 +1,7 @@
 name: 'Polyrific.Catapult.TaskProviders.EntityFrameworkCore'
 type: 'DatabaseProvider'
 author: 'Polyrific'
-version: '1.0.0-beta2'
+version: '1.0.0-beta3'
 additional-configs:
   - name: StartupProjectName
     label: Startup Project Name
