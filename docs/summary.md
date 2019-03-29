@@ -31,6 +31,7 @@
   * [Create a task provider - Part 2](dev-guides/create-task-provider-2.md)
   * [Create a task provider - Part 3](dev-guides/create-task-provider-3.md)
   * [Create a task provider - Part 4](dev-guides/create-task-provider-4.md)
+  * [Create a simple task provider](dev-guides/simple-task-provider.md)
 
 ## References
 
