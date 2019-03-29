@@ -15,5 +15,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string Test = "Test";
         public const string DeleteRepository = "DeleteRepository";
         public const string DeleteHosting = "DeleteHosting";
+        public const string CustomTask = "CustomTask";
     }
 }

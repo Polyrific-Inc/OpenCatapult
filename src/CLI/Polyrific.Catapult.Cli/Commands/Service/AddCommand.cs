@@ -85,6 +85,11 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                                 else if (string.IsNullOrEmpty(input) && isRequired)
                                 {
                                     input = property.AllowedValues[0];
+                                    validInput = true;
+                                }
+                                else
+                                {
+                                    validInput = true;
                                 }
                             }
 

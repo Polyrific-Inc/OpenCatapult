@@ -47,7 +47,8 @@ namespace Polyrific.Catapult.TaskProviders.Core
                         result.Add("errorMessage", error);
                     break;
                 case "main":
-                    (var outputValues, string errorMessage) = await GenericExecution();
+                    (string successMessage, var outputValues, string errorMessage) = await GenericExecution();
+                    result.Add("successMessage", successMessage);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -58,8 +59,9 @@ namespace Polyrific.Catapult.TaskProviders.Core
                     break;
                 default:
                     await BeforeGenericExecution();
-                    (outputValues, errorMessage) = await GenericExecution();
+                    (successMessage, outputValues, errorMessage) = await GenericExecution();
                     await AfterGenericExecution();
+                    result.Add("successMessage", successMessage);
                     result.Add("outputValues", outputValues);
                     result.Add("errorMessage", errorMessage);
                     break;
@@ -91,7 +93,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// Execute a generic action
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(Dictionary<string, string> outputValues, string errorMessage)> GenericExecution();
+        public abstract Task<(string successMessage, Dictionary<string, string> outputValues, string errorMessage)> GenericExecution();
 
         /// <summary>
         /// Process to run after executing a generic action

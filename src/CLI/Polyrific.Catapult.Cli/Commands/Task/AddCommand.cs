@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
@@ -55,7 +56,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
         [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build, 
             JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test,
-            JobTaskDefinitionType.DeleteRepository, JobTaskDefinitionType.DeleteHosting)]
+            JobTaskDefinitionType.DeleteRepository, JobTaskDefinitionType.DeleteHosting, JobTaskDefinitionType.CustomTask)]
         public string Type { get; set; } = JobTaskDefinitionType.Generate;
 
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the task", CommandOptionType.MultipleValue)]
@@ -152,6 +153,22 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                                     {
                                         Console.WriteLine($"Input is not valid. Please enter valid number value.");
                                         validInput = false;
+                                    }
+                                    else if (additionalConfig.Type == ConfigType.File)
+                                    {
+                                        try
+                                        {
+                                            validInput = File.Exists(input);
+
+                                            if (validInput)
+                                                input = File.ReadAllText(input);
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Console.WriteLine("The file path is not valid");
+                                            Logger.LogError("Error while reading file", ex);
+                                            validInput = false;
+                                        }
                                     }
                                     else if (additionalConfig.AllowedValues?.Length > 0 && !additionalConfig.AllowedValues.Contains(input))
                                     {
