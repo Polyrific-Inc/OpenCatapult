@@ -51,6 +51,8 @@ export class TaskProviderService {
         return ProviderType.StorageProvider;
       case JobTaskDefinitionType.Test:
         return ProviderType.TestProvider;
+      case JobTaskDefinitionType.CustomTask:
+        return ProviderType.GenericTaskProvider;
       default:
         return '';
     }

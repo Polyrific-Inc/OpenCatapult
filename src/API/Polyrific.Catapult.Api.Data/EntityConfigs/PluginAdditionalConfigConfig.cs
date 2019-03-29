@@ -41,6 +41,13 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                 new PluginAdditionalConfig { Id = 13, PluginId = 6, Name = "Region", Label = "Default Region", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264" },
                 new PluginAdditionalConfig { Id = 14, PluginId = 6, Name = "AppServicePlan", Label = "Default App Service Plan", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265" }
             );
+
+            // Additional configs for EntityFrameworkCore plugin
+            builder.HasData(
+                new PluginAdditionalConfig { Id = 15, PluginId = 7, Name = "CommandTool", Label = "Command Tool", Type = "string", Hint = "The command tool to be used to run the command (e.g. Powershell). Defaults based on OS.", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382267" },
+                new PluginAdditionalConfig { Id = 16, PluginId = 7, Name = "CommandText", Label = "Command Text", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382268" },
+                new PluginAdditionalConfig { Id = 17, PluginId = 7, Name = "CommandScriptPath", Label = "Command Script Path", Hint = "You can provide a script file (it is recommended to use this if the input contains multiple lines of commands)", Type = "file", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382269" }
+            );
         }
     }
 }

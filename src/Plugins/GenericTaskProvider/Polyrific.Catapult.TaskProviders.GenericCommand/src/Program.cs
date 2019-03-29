@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
@@ -16,7 +17,7 @@ namespace Polyrific.Catapult.TaskProviders.GenericCommand
         {
         }
 
-        public async override Task<(Dictionary<string, string> outputValues, string errorMessage)> GenericExecution()
+        public async override Task<(string successMessage, Dictionary<string, string> outputValues, string errorMessage)> GenericExecution()
         {
             string commandTool = null;
             if (AdditionalConfigs.ContainsKey("CommandTool") && !string.IsNullOrEmpty(AdditionalConfigs["CommandTool"]))
@@ -32,16 +33,35 @@ namespace Polyrific.Catapult.TaskProviders.GenericCommand
                 else
                     commandTool = "/bin/bash";
             }
+
+            var commands = new List<string>();
+            if (AdditionalConfigs.ContainsKey("CommandText") && !string.IsNullOrEmpty(AdditionalConfigs["CommandText"]))
+            {
+                commands.Add(AdditionalConfigs["CommandText"]);
+            }
             
-            string commands = null;
-            if (AdditionalConfigs.ContainsKey("Commands") && !string.IsNullOrEmpty(AdditionalConfigs["Commands"]))
-                commands = AdditionalConfigs["Commands"];
-            else
-                return (null, "Commands additional config is required");
+            string commandScript = null;
+            if (AdditionalConfigs.ContainsKey("CommandScriptPath") && !string.IsNullOrEmpty(AdditionalConfigs["CommandScriptPath"]))
+            {
+                commandScript = AdditionalConfigs["CommandScriptPath"];
+                commands.AddRange(commandScript.SplitOnNewLine());
+            }                
 
-            var result = await CommandHelper.Execute(commandTool, commands.SplitOnNewLine(), Config.WorkingLocation, Logger);
+            if (commands.Count == 0)
+            {
+                return (null, null, "Either Command text or Command script path should be provided.");
+            }
 
-            return (null, result.error);
+            if (!Directory.Exists(Config.WorkingLocation))
+                Directory.CreateDirectory(Config.WorkingLocation);
+            
+            var result = await CommandHelper.Execute(commandTool, commands.ToArray(), Config.WorkingLocation, Logger);
+
+            string successMessage = null;
+            if (string.IsNullOrEmpty(result.error))
+                successMessage = "The commands has been run successfully";
+            
+            return (successMessage, null, result.error);
         }
 
         private static async Task Main(string[] args)

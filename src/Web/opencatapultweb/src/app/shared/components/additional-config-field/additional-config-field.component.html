@@ -10,7 +10,23 @@
     <mat-form-field *ngSwitchCase="'number'" class="full-width-input">
         <mat-label>{{additionalConfig.label}}</mat-label>
         <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired ? 'required' : null">
+        <mat-error *ngIf="isFieldInvalid(additionalConfig.name, 'required')">
+          Please inform the {{additionalConfig.label}}
+        </mat-error>
     </mat-form-field>
-    
-  <mat-checkbox *ngSwitchCase="'boolean'" [formControlName]="additionalConfig.name">{{additionalConfig.label}}</mat-checkbox>
+
+    <mat-checkbox *ngSwitchCase="'boolean'" [formControlName]="additionalConfig.name">{{additionalConfig.label}}</mat-checkbox>
+
+    <div class="upload-container" *ngSwitchCase="'file'">
+      <input class="hidden" id="input-file-{{additionalConfig.name}}" type="file"
+        (change)="onFileChanged($event)" />
+      <label for="input-file-{{additionalConfig.name}}" class="mat-raised-button">Choose {{additionalConfig.label}}</label>
+      <span class="custom-file">{{additionalConfigFile}}</span>
+      <div class="margin10">
+        <span>{{additionalConfig.hint}}</span>
+      </div>
+      <mat-error *ngIf="isFieldInvalid(additionalConfig.name, 'required')">
+        Please inform the {{additionalConfig.label}}
+      </mat-error>
+  </div>
 </div>

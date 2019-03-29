@@ -51,7 +51,7 @@ if ($connString -eq "") {
 
     if (!$noPrompt) {
         $enteredConnString = Read-Host -Prompt "Please enter new connection string (or just ENTER if you want to use current value)"    
-        if ($enteredConnString -ne "") {
+        if (![string]::IsNullOrWhiteSpace($enteredConnString)) {
             $connString = $enteredConnString
         }
     }

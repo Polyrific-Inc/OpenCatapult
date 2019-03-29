@@ -9,5 +9,6 @@ export enum JobTaskDefinitionType {
     PublishArtifact = 'PublishArtifact',
     Test = 'Test',
     DeleteRepository = 'DeleteRepository',
-    DeleteHosting = 'DeleteHosting'
+    DeleteHosting = 'DeleteHosting',
+    CustomTask = 'CustomTask'
 }

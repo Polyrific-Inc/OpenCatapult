@@ -9,9 +9,14 @@ additional-configs:
     type: string
     is-required: false
     is-secret: false
-  - name: Commands
-    label: Commands
-    hint: The command sequences separated by line
+  - name: CommandText
+    label: Command Text
     type: string
-    is-required: true
+    is-required: false
+    is-secret: false
+  - name: CommandScriptPath
+    label: Command Script Path
+    hint: You can provide a script file, if the commands include many lines
+    type: file
+    is-required: false
     is-secret: false

@@ -66,6 +66,8 @@ Options:
 | --- | --- | --- | --- |
 | -configuration | Build configuration | Debug / Release | Release |
 | -noConfig | Do not replace the config values | true / false | false |
+| -noOpenShell | Do not go to publish directory and modify shell window title | true / false | false |
+| -noBuild | Do not perform build operation | true / false | false |
 | -url | Base URL of API endpoint | [https url] | https://localhost:44305 |
 
 ## build-engine.ps1
@@ -82,6 +84,8 @@ Options:
 | --- | --- | --- | --- |
 | -configuration | Build configuration | Debug / Release | Release |
 | -noConfig | Do not replace the config values | true / false | false |
+| -noOpenShell | Do not go to publish directory and modify shell window title | true / false | false |
+| -noBuild | Do not perform build operation | true / false | false |
 | -url | Base URL of API endpoint | [https url] | https://localhost:44305 |
 
 ## build-web.ps1

@@ -19,7 +19,8 @@ namespace Polyrific.Catapult.Engine.Core
             IPushTask pushTask,
             ITestTask testTask,
             IDeleteRepositoryTask deleteRepositoryTask,
-            IDeleteHostingTask deleteHostingTask)
+            IDeleteHostingTask deleteHostingTask,
+            ICustomTask customTask)
         {
             BuildTask = buildTask;
             CloneTask = cloneTask;
@@ -32,6 +33,7 @@ namespace Polyrific.Catapult.Engine.Core
             TestTask = testTask;
             DeleteRepositoryTask = deleteRepositoryTask;
             DeleteHostingTask = deleteHostingTask;
+            CustomTask = customTask;
         }
 
         /// <summary>
@@ -88,5 +90,10 @@ namespace Polyrific.Catapult.Engine.Core
         /// Instance of <see cref="IDeleteHostingTask"/>
         /// </summary>
         public IDeleteHostingTask DeleteHostingTask { get; }
+
+        /// <summary>
+        /// Instance of <see cref="ICustomTask"/>
+        /// </summary>
+        public ICustomTask CustomTask { get; }
     }
 }
