@@ -28,7 +28,8 @@ export class JobTaskDefinitionFormComponent implements OnInit, OnChanges {
     this.jobTaskDefinitionForm = this.fb.group({
       name: [{value: null, disabled: this.disableForm}, Validators.required],
       type: [{value: null, disabled: this.disableForm}],
-      provider: [{value: null, disabled: this.disableForm}]
+      provider: [{value: null, disabled: this.disableForm}],
+      sequence: this.jobTaskDefinition ? this.jobTaskDefinition.sequence : null
     });
 
     this.taskProviderService.getTaskProviders('all')

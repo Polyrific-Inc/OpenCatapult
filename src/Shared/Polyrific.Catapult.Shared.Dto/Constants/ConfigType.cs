@@ -7,5 +7,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
         public const string String = "string";
         public const string Boolean = "boolean";
         public const string Number = "number";
+        public const string File = "file";
     }
 }

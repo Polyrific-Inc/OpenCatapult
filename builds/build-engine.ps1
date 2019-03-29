@@ -4,7 +4,8 @@ param(
     [string]$configuration = "Release",
     [string]$url = "https://localhost:44305",
     [switch]$noConfig = $false,
-    [switch]$openShell = $false
+    [switch]$noOpenShell = $false,
+    [switch]$noBuild = $false
 )
 
 $rootPath = Split-Path $PSScriptRoot
@@ -12,11 +13,11 @@ $engineCsprojPath = Join-Path $rootPath "/src/Engine/Polyrific.Catapult.Engine/P
 $enginePublishPath = Join-Path $rootPath "/publish/engine"
 $engineDll = Join-Path $enginePublishPath "/ocengine.dll"
 
-if ($openShell) {
+if (!$noOpenShell) {
     $host.UI.RawUI.WindowTitle = "OpenCatapult Engine";
-    Write-Host "Engine is ready. You can start exploring available commands by running: dotnet ocengine.dll --help" -ForegroundColor Green
-    Set-Location $enginePublishPath
-} else {
+} 
+
+if (!$noBuild) {
 
     $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
     $aspNetCoreMvcPublishPath = Join-Path $enginePublishPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
@@ -30,13 +31,16 @@ if ($openShell) {
     $entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
     $gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
     $gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
+    $genericCommandCsprojPath = Join-Path $rootPath "/src/Plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
+    $genericCommandPublishPath = Join-Path $enginePublishPath "/plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
 
     $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
     [System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),
     [System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
     [System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
     [System.Tuple]::Create($entityFrameworkCoreCsprojPath, $entityFrameworkCorePublishPath),
-    [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath)
+    [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath),
+    [System.Tuple]::Create($genericCommandCsprojPath, $genericCommandPublishPath)
 
     # publish engine
     Write-Output "Publishing the Engine..."
@@ -71,3 +75,8 @@ if ($openShell) {
 
     Write-Host "Engine component was published successfully."
 }
+
+if (!$noOpenShell) {
+    Write-Host "Engine is ready. You can start exploring available commands by running: dotnet ocengine.dll --help" -ForegroundColor Green
+    Set-Location $enginePublishPath
+} 

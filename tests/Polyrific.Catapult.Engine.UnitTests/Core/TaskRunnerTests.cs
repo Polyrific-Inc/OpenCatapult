@@ -29,6 +29,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly Mock<ITestTask> _testTask;
         private readonly Mock<IDeleteRepositoryTask> _deleteRepositoryTask;
         private readonly Mock<IDeleteHostingTask> _deleteHostingTask;
+        private readonly Mock<ICustomTask> _customTask;
         private readonly JobTaskService _jobTaskService;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly List<JobTaskDefinitionDto> _data;
@@ -98,9 +99,11 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             _deleteHostingTask = new Mock<IDeleteHostingTask>();
 
+            _customTask = new Mock<ICustomTask>();
+
             _jobTaskService = new JobTaskService(_buildTask.Object, _cloneTask.Object, _deployTask.Object,
                 _deployDbTask.Object, _generateTask.Object, _mergeTask.Object, _publishArtifactTask.Object,
-                _pushTask.Object, _testTask.Object, _deleteRepositoryTask.Object, _deleteHostingTask.Object);
+                _pushTask.Object, _testTask.Object, _deleteRepositoryTask.Object, _deleteHostingTask.Object, _customTask.Object);
 
             _jobQueueService = new Mock<IJobQueueService>();
             _pluginManager = new Mock<IPluginManager>();

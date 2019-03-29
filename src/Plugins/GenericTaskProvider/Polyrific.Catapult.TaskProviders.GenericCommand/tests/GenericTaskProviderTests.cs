@@ -26,8 +26,6 @@ namespace Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests
             if (Directory.Exists(workingLocation))
                 Directory.Delete(workingLocation, true);
 
-            Directory.CreateDirectory(workingLocation);
-
             var additionalConfig = new Dictionary<string, string>();
 
             bool isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
@@ -43,13 +41,14 @@ namespace Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests
                 sb.AppendLine("cp test.txt test2.txt");
             }
             
-            additionalConfig["Commands"] = sb.ToString();
+            additionalConfig["CommandScriptPath"] = sb.ToString();
 
             var provider = new Program(new string[] { GetArgString("main", config, additionalConfig) });
             var result = await provider.GenericExecution();
 
             Assert.True(File.Exists(Path.Combine(workingLocation, "test.txt")));
             Assert.True(File.Exists(Path.Combine(workingLocation, "test2.txt")));
+            Assert.Equal("The commands has been run successfully", result.successMessage);
         }
 
         private string GetArgString(string process, BaseJobTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)
