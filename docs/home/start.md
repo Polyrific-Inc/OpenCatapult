@@ -61,7 +61,7 @@ You will need to build the API, Engine, and UI (either CLI or Web) to run `OpenC
 The script will ask you to input the connection string for the API in the OpenCatapult API PowerShell window. It will also automatically open new PowerShell windows for other components. The default connection string is:
 
 ```powershell
-"Server=localhost;Database=OpenCatapult;User ID=opencatapult;Password=opencatapult;"
+"Server=localhost;Database=polyrific.catapult.db;User ID=sa;Password=samprod;"
 ```
 Please enter the overriden value without quotation marks.
 
