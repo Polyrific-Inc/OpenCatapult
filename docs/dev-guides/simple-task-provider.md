@@ -31,6 +31,16 @@ Open new command line window, set the path to your working folder, and execute t
 code .
 ```
 
+### Add plugin.yml
+Create a new file inside the project folder named `plugin.yml`. This is the metadata of our task provider. It describe the name of the task provider, the additional configs that can be passed, and any [external services](../user-guides/external-services.md) that it requires.
+
+```yml
+name: 'Polyrific.Catapult.TaskProviders.SimpleGenerator'
+type: 'GeneratorProvider'
+author: 'Polyrific'
+version: '1.0.0'
+```
+
 ### Implement the task provider base class
 Let's head up to `Program.cs`. The first thing to do is to inherit one of the task provider base class. Since we're going to create a code generator provider, we should inherit from `CodeGeneratorProvider`. Then we'd need to implement the base constructor and abstract method `Generate`.
 
