@@ -8,10 +8,9 @@ Here we will guide you into creating your own custom task provider. We will crea
 ## Prerequisites
 - A code editor. We will use [Visual Studio Code](https://code.visualstudio.com/download) in this example. You can use any code editor that you want even notepad :)
 - [dotnet core sdk version 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1)
-- If you are on a non-windows OS, you'd need to install powershell [here](https://docs.microsoft.com/en-us/powershell/scripting/install/installing-powershell?view=powershell-6#powershell-core)
 
 ## 1. Create the provider project
-Create a new dotnet core console project by using the dotnet cli. Open powershell, set the path your working folder, and execute the command below:
+Create a new dotnet core console project by using the dotnet cli. Open new command line window, set the path to your working folder, and execute the command below:
 ```sh
 dotnet new console --name Polyrific.Catapult.TaskProviders.SimpleGenerator
 ``` 
@@ -27,7 +26,7 @@ dotnet add package Polyrific.Catapult.TaskProviders.Core --version 1.0.0-beta2-*
 ```
 
 ## 2. Let's code
-Open powershell, set the path to your working folder, and execute the command below to open Visual Studio Code:
+Open new command line window, set the path to your working folder, and execute the command below to open Visual Studio Code:
 ```sh
 code .
 ```
@@ -103,12 +102,11 @@ Now let's create a private method that will generate a simple .Net Web App proje
 
 ```csharp
     private Task GenerateCode(string projectName, string outputLocation)
-    {
-      // if this code is run in linux/mac, change the "powershell" into "pwsh" and the arguments should be $"-c \"dotnet new web --name {projectName}\""
-      var info = new ProcessStartInfo("powershell")
+    {  
+      var info = new ProcessStartInfo("dotnet")
       {
           UseShellExecute = false,
-          Arguments = $"dotnet new web --name {projectName}",
+          Arguments = $"new web --name {projectName}",
           RedirectStandardInput = true,
           RedirectStandardOutput = true,
           RedirectStandardError = true,
@@ -180,10 +178,10 @@ namespace Polyrific.Catapult.TaskProviders.SimpleGenerator
         private Task GenerateCode(string projectName, string outputLocation)
         {
             // if this code is run in linux/mac, change the "powershell" into "pwsh" and the arguments should be $"-c \"dotnet new mvc --name {projectName}\""
-            var info = new ProcessStartInfo("powershell")
+            var info = new ProcessStartInfo("dotnet")
             {
                 UseShellExecute = false,
-                Arguments = $"dotnet new web --name {projectName}",
+                Arguments = $"new web --name {projectName}",
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
@@ -219,7 +217,7 @@ After downloading the file, Please change the `config -> WorkingLocation` to an 
 
 
 ## 3. Let's Run
-Now we're ready to go. Open new Powershell window and set the path to your project folder. Next run the command below
+Now we're ready to go. Open new command line window and set the path to your project folder. Next, run the command below
 ```sh
 dotnet run -- --file CodeGeneratorProviderTest.json
 ```
@@ -230,7 +228,7 @@ If All goes well, the DEBUG CONSOLE will have the following output:
 
 ```
 
-Now open the folder in the `outputLocation` stated above, and your code is ready there. To run the application, you can open your shell, go to the `outputLocation` directory, and run the command
+Now open the folder in the `outputLocation` stated above, and your code is ready there. To run the application, you can open your command line window, go to the `outputLocation` directory, and run the command
 ```sh
 dotnet run -o
 ```
