@@ -2,6 +2,9 @@
 
 Here we will guide you into creating your own custom task provider. We will create a simple code generator provider that will generate a simple .Net Core Web. We will create the provider using dotnet core framework, though you can also create it using .NET Framework.
 
+> You can find the code in this tutorial in our GitHub repository: https://github.com/Polyrific-Inc/Polyrific.Catapult.TaskProviders.SimpleGenerator
+
+
 ## Prerequisites
 - A code editor. We will use [Visual Studio Code](https://code.visualstudio.com/download) in this example. You can use any code editor that you want even notepad :)
 - [dotnet core sdk version 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1)
