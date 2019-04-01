@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -128,6 +130,93 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             Assert.Equal("User is suspended", badRequestResult.Value);
         }
 
+        [Fact]
+        public async void RefreshToken_ReturnsSuccess()
+        {
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
+                {
+                    Id = 1,
+                    Email = email,
+                    UserName = email,
+                    IsActive = true
+                });
+            _userService.Setup(s => s.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(UserRole.Administrator);
+            _projectService.Setup(s => s.GetProjectsByUser(1, It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<(Project, ProjectMemberRole)>
+                {
+                    (new Project
+                    {
+                        Id = 1,
+                        Name = "Project01"
+                    }, new ProjectMemberRole
+                    {
+                        Id = 1,
+                        Name = MemberRole.Owner
+                    })
+                });
+
+            _configuration.SetupGet(x => x["Security:Tokens:Key"]).Returns("key12345678910abcdefghijklmnopqrstuvwxyz");
+            _configuration.SetupGet(x => x["Security:Tokens:Issuer"]).Returns("issuer");
+            _configuration.SetupGet(x => x["Security:Tokens:Audience"]).Returns("audience");
+
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, "test@example.com")
+                    })
+                })
+            };
+
+            var controller = new TokenController(_userService.Object, _projectService.Object, _catapultEngineService.Object, _configuration.Object, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
+            
+            var result = await controller.RefreshToken();
+
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnValue = Assert.IsType<string>(okResult.Value);
+            Assert.NotEmpty(returnValue);
+        }
+
+        [Fact]
+        public async void RefreshToken_ReturnsUserIsSuspended()
+        {
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
+                {
+                    Id = 1,
+                    Email = email,
+                    UserName = email,
+                    IsActive = false
+                });
+
+            var httpContext = new DefaultHttpContext()
+            {
+                User = new ClaimsPrincipal(new[]
+                {
+                    new ClaimsIdentity(new[]
+                    {
+                        new Claim(ClaimTypes.Name, "test@example.com")
+                    })
+                })
+            };
+
+            var controller = new TokenController(_userService.Object, _projectService.Object, _catapultEngineService.Object, _configuration.Object, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
+
+            var result = await controller.RefreshToken();
+
+            var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
+            Assert.Equal("User is suspended", badRequestResult.Value);
+        }
 
         [Fact]
         public async void RequestEngineToken_ReturnsSuccess()
