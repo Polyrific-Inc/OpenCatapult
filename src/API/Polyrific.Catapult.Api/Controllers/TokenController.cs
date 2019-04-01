@@ -70,6 +70,33 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Refresh a user token
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("refresh")]
+        [Authorize]
+        public async Task<IActionResult> RefreshToken()
+        {
+            var user = await _userService.GetUser(User.Identity.Name);
+            if (!user.IsActive)
+            {
+                _logger.LogWarning("User is suspended");
+                return BadRequest("User is suspended");
+            }
+
+            var userRole = await _userService.GetUserRole(user.Email);
+            var userProjects = await GetUserProjects(user.Email);
+            var tokenKey = _configuration["Security:Tokens:Key"];
+            var tokenIssuer = _configuration["Security:Tokens:Issuer"];
+            var tokenAudience = _configuration["Security:Tokens:Audience"];
+
+            var token = AuthorizationToken.GenerateToken(user.Id, user.Email, user.FirstName, user.LastName,
+                userRole, userProjects, tokenKey, tokenIssuer, tokenAudience);
+
+            return Ok(token);
+        }
+
+        /// <summary>
         /// Request an engine token
         /// </summary>
         /// <param name="engineId">Id of the engine</param>

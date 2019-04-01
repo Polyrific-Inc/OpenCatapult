@@ -28,6 +28,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly Mock<ITemplateWriter> _templateWriter;
+        private readonly Mock<ITokenService> _tokenService;
+        private readonly Mock<ITokenStore> _tokenStore;
 
         public ProjectCommandTests(ITestOutputHelper output)
         {
@@ -131,6 +133,10 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _templateWriter = new Mock<ITemplateWriter>();
             _templateWriter.Setup(t => t.Write(It.IsAny<string>(), It.IsAny<string>())).Returns((string filePath, string content) => filePath);
+
+            _tokenService = new Mock<ITokenService>();
+            _tokenService.Setup(t => t.RefreshToken()).ReturnsAsync("token");
+            _tokenStore = new Mock<ITokenStore>();
         }
 
         [Fact]
@@ -199,7 +205,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProjectCreate_Execute_ReturnsSuccessMessage()
         {
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -208,6 +214,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.StartsWith("Project created:", resultMessage);
+            _tokenService.Verify(t => t.RefreshToken(), Times.Once);
+            _tokenStore.Verify(t => t.SaveToken("token"), Times.Once);
         }
 
         [Fact]
@@ -239,7 +247,7 @@ jobs:
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
             var console = new TestConsole(_output, "test");
-            var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -267,7 +275,7 @@ jobs:
     provider: AspNetCoreMvc2"
             );
 
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -299,7 +307,7 @@ jobs:
       Branch: master"
             );
 
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object)
+            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",

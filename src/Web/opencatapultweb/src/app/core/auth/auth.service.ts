@@ -41,41 +41,14 @@ export class AuthService {
     return this.http.post(`${this.config.apiUrl}/Token`, { Email: user.email, Password: user.password },
     {
       responseType: 'text'
-    })
-        .pipe(
-          map(token => {
-            // login successful if there's a jwt token in the response
-            if (token) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                user.token = token;
-                const decodedToken = this.getDecodedAccessToken(token);
+    }).pipe(map(this.storeToken(user)));
+  }
 
-                if (decodedToken.Projects) {
-                  user.projects = JSON.parse(decodedToken.Projects).map(pm => ({
-                      projectId: pm.ProjectId,
-                      projectName: pm.ProjectName,
-                      memberRole: pm.MemberRole
-                    }));
-                }
-
-                if (decodedToken.hasOwnProperty('http://schemas.microsoft.com/ws/2008/06/identity/claims/role')) {
-                  user.role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-                }
-
-                if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname')) {
-                  user.firstName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
-                }
-
-                if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname')) {
-                  user.lastName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
-                }
-
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                this.currentUserSubject.next(user);
-            }
-
-            return user;
-        }));
+  refreshSession() {
+    return this.http.get(`${this.config.apiUrl}/Token/refresh`,
+    {
+      responseType: 'text'
+    }).pipe(map(this.storeToken(this.currentUserValue)));
   }
 
   logout() {
@@ -112,6 +85,42 @@ export class AuthService {
       default:
       return false;
      }
+  }
+
+  private storeToken(user: User) {
+    return (token: string) => {
+            // login successful if there's a jwt token in the response
+        if (token) {
+          // store user details and jwt token in local storage to keep user logged in between page refreshes
+          user.token = token;
+          const decodedToken = this.getDecodedAccessToken(token);
+
+          if (decodedToken.Projects) {
+            user.projects = JSON.parse(decodedToken.Projects).map(pm => ({
+                projectId: pm.ProjectId,
+                projectName: pm.ProjectName,
+                memberRole: pm.MemberRole
+              }));
+          }
+
+          if (decodedToken.hasOwnProperty('http://schemas.microsoft.com/ws/2008/06/identity/claims/role')) {
+            user.role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
+          }
+
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname')) {
+            user.firstName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname'];
+          }
+
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname')) {
+            user.lastName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
+          }
+
+          localStorage.setItem('currentUser', JSON.stringify(user));
+          this.currentUserSubject.next(user);
+      }
+
+      return user;
+    };
   }
 
   private getDecodedAccessToken(token: string): any {
