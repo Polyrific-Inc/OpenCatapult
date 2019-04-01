@@ -10,12 +10,12 @@ Here we will guide you into creating your own custom task provider. We will crea
 ## 1. Create the provider project
 Create a new dotnet core console project by using the dotnet cli. Open powershell, set the path your working folder, and execute the command below:
 ```sh
-dotnet new console --name Polyrific.Catapult.TaskProviders.GreetingConsole
+dotnet new console --name Polyrific.Catapult.TaskProviders.SimpleGenerator
 ``` 
 
 Go into your project folder:
 ```sh
-cd Polyrific.Catapult.TaskProviders.GreetingConsole
+cd Polyrific.Catapult.TaskProviders.SimpleGenerator
 ```
 
 Next, you'd need to add the plugin core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.TaskProviders.Core/)
@@ -39,7 +39,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.TaskProviders.GreetingConsole
+namespace Polyrific.Catapult.TaskProviders.SimpleGenerator
 {
   class Program : CodeGeneratorProvider
   {
@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.TaskProviders.GreetingConsole
     {
     }
 
-    public override string Name => "Polyrific.Catapult.TaskProviders.GreetingConsole";
+    public override string Name => "Polyrific.Catapult.TaskProviders.SimpleGenerator";
 
     static void Main(string[] args)
     {
@@ -74,15 +74,10 @@ static void Main(string[] args)
 }
 ```
 
-The next thing is to write the logic of our code generator inside the `Generate` method. Here, we will only extract the configuration  and additional configurations that are passed into the task provider. We'd also need to get the `Config` property in the base class, to determine where our source code will be saved. Our user can enter their prefered location in `Config.OutputLocation` but if they have no preferences, we'd take the `Config.WorkingLocation` instead. 
+The next thing is to write the logic of our code generator inside the `Generate` method.
 ```csharp
 public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate()
-{
-  // set the default title to project name
-  string projectTitle = string.Empty(); 
-  if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("Title") && !string.IsNullOrEmpty(AdditionalConfigs["Title"]))
-    projectTitle = AdditionalConfigs["Title"];
-  
+{ 
   // set the output location
   Config.OutputLocation = Config.OutputLocation ?? Config.WorkingLocation;
 
@@ -142,7 +137,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
 
-namespace Polyrific.Catapult.TaskProviders.GreetingConsole
+namespace Polyrific.Catapult.TaskProviders.SimpleGenerator
 {
     class Program : CodeGeneratorProvider
     {
@@ -151,7 +146,7 @@ namespace Polyrific.Catapult.TaskProviders.GreetingConsole
 
         }
 
-        public override string Name => "Polyrific.Catapult.TaskProviders.GreetingConsole";
+        public override string Name => "Polyrific.Catapult.TaskProviders.SimpleGenerator";
 
         static void Main(string[] args)
         {
@@ -161,12 +156,7 @@ namespace Polyrific.Catapult.TaskProviders.GreetingConsole
         }
 
         public override async System.Threading.Tasks.Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate()
-        {
-                        // set the default title to project name
-            string projectTitle = string.Empty; 
-            if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("Title") && !string.IsNullOrEmpty(AdditionalConfigs["Title"]))
-                projectTitle = AdditionalConfigs["Title"];
-
+        {                       
             // set the output location
             Config.OutputLocation = Config.OutputLocation ?? Config.WorkingLocation;
 
@@ -228,7 +218,7 @@ After downloading the file, Please change the `config -> WorkingLocation` to an 
 ## 3. Let's Run
 Now we're ready to go. Open new Powershell window and set the path to your project folder. Next run the command below
 ```sh
-dotnet run -- --file CodeGeneratorProvider.json
+dotnet run -- --file CodeGeneratorProviderTest.json
 ```
 
 If All goes well, the DEBUG CONSOLE will have the following output:
