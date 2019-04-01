@@ -3,7 +3,7 @@
   <div>{{data.confirmationText}}</div>
   <div class="sub-text">{{data.subText}}</div>
   <mat-form-field class="full-width-input">
-    <input matInput [formControl]="inputControl" required>
+    <input matInput [formControl]="inputControl" (keydown)="onKeydown($event)" required>
     <mat-error *ngIf="inputControl.invalid && inputControl.errors.required">
       The confirmation input is required
     </mat-error>

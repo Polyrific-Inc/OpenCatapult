@@ -35,4 +35,12 @@ export class ConfirmationWithInputDialogComponent {
       }
     }
 
+    onKeydown(event) {
+      if(event.key === "Enter"){
+          if (this.inputControl.valid) {
+            this.dialogRef.close(true);
+          }
+      }
+    }
+
 }
