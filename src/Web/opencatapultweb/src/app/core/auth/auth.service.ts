@@ -45,6 +45,10 @@ export class AuthService {
   }
 
   refreshSession() {
+    if (!this.config) {
+      this.config = this.configService.getConfig();
+    }
+
     return this.http.get(`${this.config.apiUrl}/Token/refresh`,
     {
       responseType: 'text'
