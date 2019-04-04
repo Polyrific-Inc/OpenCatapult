@@ -19,6 +19,9 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\" />
+    <Content Update="notificationconfig.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

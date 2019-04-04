@@ -1,0 +1,12 @@
+{
+    "NotificationConfig": {
+        "RegistrationCompleted": "SmtpEmail",
+        "ResetPassword": "SmtpEmail",
+        "ResetPasswordWeb": "SmtpEmail",
+        "ProjectDeleted": "SmtpEmail",
+        "RegistrationCompletedSubject": "Catapult - Please confirm your account",
+        "ResetPasswordSubject": "Catapult - Reset password token",
+        "ResetPasswordWebSubject": "Catapult - Reset password token",
+        "ProjectDeletedSubject": "Catapult - Your project has been deleted"
+    }
+}
