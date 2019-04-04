@@ -71,7 +71,8 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
       }
 
       this.projectInfoForm.patchValue({
-        name: projectName
+        name: projectName,
+        displayName: this.humanize(projectName)
       });
     });
   }
@@ -81,5 +82,13 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
     return control.invalid && control.errors && control.getError(errorCode);
   }
 
-
+  private humanize(str) {
+    return str
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^[\s_]+|[\s_]+$/g, '')
+        .replace(/[_\s]+/g, ' ')
+        .replace(/^[\s-]+|[\s-]+$/g, '')
+        .replace(/[-\s]+/g, ' ')
+        .replace(/^[a-z]/, function(m) { return m.toUpperCase(); });
+  }
 }

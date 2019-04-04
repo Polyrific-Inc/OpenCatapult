@@ -205,11 +205,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void CreateProject_ValidItem()
         {
             var projectService = new ProjectService(_projectRepository.Object, _projectMemberRepository.Object, _projectDataModelPropertyRepository.Object, _mapper, _jobDefinitionService.Object, _jobQueueService.Object, _notificationProvider.Object);
-            var newProject = await projectService.CreateProject("Project  B   test", "Project B", "Client B", null, null, null, 1);
+            var newProject = await projectService.CreateProject("Project  B   test", null, "Client B", null, null, null, 1);
 
             Assert.True(_data.Count > 1);
             Assert.True(newProject.Id > 1);
-            Assert.True(newProject.Name == "Project-B-test"); // check normalization logic
+            Assert.Equal("Project-B-test", newProject.Name); // check normalization logic
+            Assert.Equal("Project B test", newProject.DisplayName); // check humanize logic
         }
 
         [Fact]

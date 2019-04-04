@@ -151,7 +151,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             // set default display name
-            displayName = !string.IsNullOrEmpty(displayName) ? displayName : projectName;
+            displayName = !string.IsNullOrEmpty(displayName) ? displayName : humanizeString(projectName);
 
             projectName = GetNormalizedProjectName(projectName);
 
@@ -417,6 +417,17 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
 
             return projectName;
+        }
+
+        private string humanizeString(string str)
+        {
+            var addSpaceBeforeCapital = Regex.Replace(str, @"([A-Z])", " $1");
+            var replaceUnderscore = Regex.Replace(addSpaceBeforeCapital, @"^[\s_]+|[\s_]+$", "");
+            replaceUnderscore = Regex.Replace(replaceUnderscore, @"[\s_]+", " ");
+            var replaceDash = Regex.Replace(replaceUnderscore, @"^[\s-]+|[\s-]+$", "");
+            replaceDash = Regex.Replace(replaceDash, @"[\s-]+", " ");
+
+            return char.ToUpper(replaceDash[0]) + replaceDash.Substring(1);
         }
     }
 }
