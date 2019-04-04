@@ -43,41 +43,57 @@ if (!(Test-Path $appSettingsEnvPath)) {
 
 $currentConnString = $appSettingsEnvContent.ConnectionStrings.DefaultConnection
 
-# ask for new connection string
-if ($connString -eq "") {
-    $connString = $currentConnString
+$success = $false;
+while (!$success) {
+	# ask for new connection string
+	if ($connString -eq "") {
+		$connString = $currentConnString
 
-    Write-Output "Current connection string is `"$currentConnString`""
+		Write-Output "Current connection string is `"$currentConnString`""
 
-    if (!$noPrompt) {
-        $enteredConnString = Read-Host -Prompt "Please enter new connection string (or just ENTER if you want to use current value)"    
-        if (![string]::IsNullOrWhiteSpace($enteredConnString)) {
-            $connString = $enteredConnString
-        }
-    }
+		if (!$noPrompt) {
+			$enteredConnString = Read-Host -Prompt "Please enter new connection string (or just ENTER if you want to use current value)"    
+			if (![string]::IsNullOrWhiteSpace($enteredConnString)) {
+				$connString = $enteredConnString
+			}
+		}
+	}
+
+	# update connection string
+	if ($connString -ne $currentConnString) {
+		$appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
+
+		try {
+			$appSettingsEnvContent | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsEnvPath -Encoding utf8 -Force    
+		}
+		catch {
+			Write-Error -Message "[ERROR] $_" -ErrorAction Stop
+		}
+
+		Write-Output "Connection string has been updated"
+	}
+
+	# apply migration
+	Write-Output "Applying migration..."
+	Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath"
+	$result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath
+	if ($LASTEXITCODE -ne 0) {
+		Write-Error -Message "[ERROR] $result"
+		Write-Host "Error occured while trying to migrate database. Do you want to retry entering another connection string? (y/n)" -ForegroundColor Yellow
+		$retry = Read-Host
+		if ($retry -ne "y") {
+			break
+		}
+		
+		$connString = ""
+	}
+	else {
+		$success = $true
+	}	
 }
 
-# update connection string
-if ($connString -ne $currentConnString) {
-    $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
-
-    try {
-        $appSettingsEnvContent | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsEnvPath -Encoding utf8 -Force    
-    }
-    catch {
-        Write-Error -Message "[ERROR] $_" -ErrorAction Stop
-    }
-
-    Write-Output "Connection string has been updated"
-}
-
-# apply migration
-Write-Output "Applying migration..."
-Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath"
-$result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath
-if ($LASTEXITCODE -ne 0) {
-    Write-Error -Message "[ERROR] $result"
-    break
+if (!$success) {
+	break;
 }
 
 # check for dev cert
