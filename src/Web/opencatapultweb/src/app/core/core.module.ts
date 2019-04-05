@@ -20,6 +20,7 @@ import { ExternalServiceTypeService } from './services/external-service-type.ser
 import { EngineService } from './services/engine.service';
 import { YamlService } from './services/yaml.service';
 import { ProjectHistoryService } from './services/project-history.service';
+import { TextHelperService } from './services/text-helper.service';
 
 @NgModule({
   declarations: [],
@@ -45,7 +46,8 @@ import { ProjectHistoryService } from './services/project-history.service';
     ExternalServiceTypeService,
     EngineService,
     YamlService,
-    ProjectHistoryService
+    ProjectHistoryService,
+    TextHelperService
   ]
 })
 export class CoreModule {

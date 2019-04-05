@@ -1884,8 +1884,3 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 .mat-standard-chip {
   padding: .5em .85em;
   min-height: 2.5em; }
-
-.is-active[_ngcontent-c10] {
-    background-color: #f5f5f5;
-    border-left: solid 2px #faa438 !important;
-}

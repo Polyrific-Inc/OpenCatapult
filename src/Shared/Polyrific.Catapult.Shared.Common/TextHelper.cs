@@ -15,6 +15,17 @@ namespace Polyrific.Catapult.Shared.Common
             return r.Replace(text, " ");
         }
 
+        public static string HumanizeText(string text)
+        {
+            var addSpaceBeforeCapital = Regex.Replace(text, @"([A-Z])", " $1");
+            var replaceUnderscore = Regex.Replace(addSpaceBeforeCapital, @"^[\s_]+|[\s_]+$", "");
+            replaceUnderscore = Regex.Replace(replaceUnderscore, @"[\s_]+", " ");
+            var replaceDash = Regex.Replace(replaceUnderscore, @"^[\s-]+|[\s-]+$", "");
+            replaceDash = Regex.Replace(replaceDash, @"[\s-]+", " ");
+
+            return char.ToUpper(replaceDash[0]) + replaceDash.Substring(1);
+        }
+
         /// <summary>
         /// Get prefix tags in a text. E.g. "[TAG1][TAG2][TAG3] Message"
         /// </summary>

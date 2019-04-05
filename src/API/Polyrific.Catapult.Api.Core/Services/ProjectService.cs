@@ -12,6 +12,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using YamlDotNet.Serialization;
@@ -151,7 +152,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             // set default display name
-            displayName = !string.IsNullOrEmpty(displayName) ? displayName : humanizeString(projectName);
+            displayName = !string.IsNullOrEmpty(displayName) ? displayName : TextHelper.HumanizeText(projectName);
 
             projectName = GetNormalizedProjectName(projectName);
 
@@ -417,17 +418,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
 
             return projectName;
-        }
-
-        private string humanizeString(string str)
-        {
-            var addSpaceBeforeCapital = Regex.Replace(str, @"([A-Z])", " $1");
-            var replaceUnderscore = Regex.Replace(addSpaceBeforeCapital, @"^[\s_]+|[\s_]+$", "");
-            replaceUnderscore = Regex.Replace(replaceUnderscore, @"[\s_]+", " ");
-            var replaceDash = Regex.Replace(replaceUnderscore, @"^[\s-]+|[\s-]+$", "");
-            replaceDash = Regex.Replace(replaceDash, @"[\s-]+", " ");
-
-            return char.ToUpper(replaceDash[0]) + replaceDash.Substring(1);
         }
     }
 }
