@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
 export interface DialogData {
@@ -15,6 +15,7 @@ export interface DialogData {
   styleUrls: ['./confirmation-with-input-dialog.component.css']
 })
 export class ConfirmationWithInputDialogComponent {
+  confirmationForm: FormGroup;
   inputControl: FormControl;
 
   constructor(
@@ -23,14 +24,18 @@ export class ConfirmationWithInputDialogComponent {
     ) {
       this.inputControl =  new FormControl(data.enteredConfirmation,
         Validators.compose([Validators.required, Validators.pattern(data.confirmationMatch)]));
+
+      this.confirmationForm = new FormGroup({
+        'confirmationInput': this.inputControl
+      });
     }
 
     onCancelClick() {
       this.dialogRef.close();
     }
 
-    onOkClick() {
-      if (this.inputControl.valid) {
+    onSubmit() {
+      if (this.confirmationForm.valid) {
         this.dialogRef.close(true);
       }
     }
