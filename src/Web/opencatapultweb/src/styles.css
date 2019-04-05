@@ -19,3 +19,16 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .hidden {
   display: none;
 }
+
+.title-desc {
+  margin-bottom: 15px;
+}
+
+.title-desc h2 {
+  margin-bottom: 2px;
+}
+
+.title-desc span {
+  font-size: 14px;
+  color: #757575;
+}
