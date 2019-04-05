@@ -1,18 +1,36 @@
 <h3>New Project</h3>
-<div fxLayout="row" fxLayout.xs="column" class="form-container">  
+<div fxLayout="row" fxLayout.xs="column" class="form-container">
   <form fxFlex="50" fxFlex.md="70" [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>      
+      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
       <app-project-info-form (formReady)="formInitialized($event)" [disableForm]="false" [formSubmitAttempt]="formSubmitAttempt"></app-project-info-form>
-      
-      <mat-form-field class="full-width-input">
-        <mat-select #templateSelect placeholder="Project template" [formControl]="template" (selectionChange)="onTemplateChanged($event)">
-          <mat-option>None</mat-option>
-          <mat-option *ngFor="let template of templates" [value]="template[0]">
-            {{template[1]}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
 
+
+
+      <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div fxFlex="95" >
+              <mat-form-field class="full-width-input">
+              <mat-select #templateSelect placeholder="Project template" [formControl]="template" (selectionChange)="onTemplateChanged($event)">
+                  <mat-option>None</mat-option>
+                  <mat-option *ngFor="let template of templates" [value]="template[0]">
+                    {{template[1]}}
+                  </mat-option>
+                </mat-select>
+                <mat-hint>
+                  Select a predefined template to have an initial data models and job definitions ready for you, or upload your own project template.
+                  Leave this to empty if you want to create all from scratch.
+                </mat-hint>
+
+              </mat-form-field>
+            </div>
+          <div>
+            <mat-icon *ngIf="template.value === 'sample.yaml'"
+              matTooltip="Sample template create a sample data models and a job definition that only have a generate task">help_outline</mat-icon>
+            <mat-icon *ngIf="template.value === 'sample-devops.yaml'"
+              matTooltip="Sample devops template create a sample data models and a job definition that contains a full CI/CD pipeline tasks">help_outline</mat-icon>
+          </div>
+      </div>
+
+      <div class="margin30"></div>
       <div *ngIf="uploadTemplate" class="upload-template-container">
           <input [hidden]="true" id="input-file-id" type="file" accept=".yml, .yaml" (change)="onFileProjectTemplateChanged($event)" />
           <label for="input-file-id" class="mat-raised-button">Choose File</label>
@@ -21,7 +39,7 @@
 
       <app-job-list-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs" (formReady)="onJobsFormReady($event)"></app-job-list-form>
 
-      <div class="margin10"></div>
+      <div class="margin30"></div>
       <button mat-raised-button color="primary" [disabled]="loading">Save</button>
       <button mat-raised-button [disabled]="loading" routerLink="/project">Cancel</button>
     </form>
