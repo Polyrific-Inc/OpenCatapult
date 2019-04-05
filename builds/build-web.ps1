@@ -31,7 +31,7 @@ write-host $webLocation + $certFile
 
 function TrustCertificateOnMac([string]$certFile) 
 {
-	&'sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "' + $certFile + '"'
+	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $certFile
 }
 
 #Import-Certificate -Filepath "ssl/server.crt" -CertStoreLocation cert:\CurrentUser\Root
