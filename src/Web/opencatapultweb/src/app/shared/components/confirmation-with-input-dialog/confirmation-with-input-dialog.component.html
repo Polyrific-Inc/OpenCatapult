@@ -1,18 +1,20 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
+<form [formGroup]="confirmationForm" (ngSubmit)="onSubmit()">
 <div mat-dialog-content>
   <div>{{data.confirmationText}}</div>
   <div class="sub-text">{{data.subText}}</div>
-  <mat-form-field class="full-width-input">
-    <input matInput [formControl]="inputControl" required>
-    <mat-error *ngIf="inputControl.invalid && inputControl.errors.required">
-      The confirmation input is required
-    </mat-error>
-    <mat-error *ngIf="inputControl.invalid && inputControl.errors.pattern">
-      The confirmation input is not correct
-    </mat-error>
-  </mat-form-field>
+      <mat-form-field class="full-width-input">
+          <input matInput [formControl]="inputControl" required>
+          <mat-error *ngIf="inputControl.invalid && inputControl.errors.required">
+            The confirmation input is required
+          </mat-error>
+          <mat-error *ngIf="inputControl.invalid && inputControl.errors.pattern">
+            The confirmation input is not correct
+          </mat-error>
+        </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onOkClick()" cdkFocusInitial>Ok</button>
-  <button mat-button (click)="onCancelClick()">Cancel</button>
+  <button mat-button cdkFocusInitial>Ok</button>
+  <button type="button" mat-button (click)="onCancelClick()">Cancel</button>
 </div>
+</form>
