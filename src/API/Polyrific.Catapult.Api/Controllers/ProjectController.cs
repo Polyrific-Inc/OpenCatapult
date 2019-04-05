@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="getAll">Get all projects</param>
         /// <returns>List of the project</returns>
         [HttpGet]
-        [Authorize(Policy = AuthorizePolicy.ProjectMemberAccess)]
+        [Authorize]
         public async Task<IActionResult> GetProjects(string status = null, bool getAll = false)
         {
             _logger.LogInformation("Getting projects. Filtered by status = {status}", status);
