@@ -25,6 +25,5 @@ namespace Polyrific.Catapult.Api.Data.Identity
         public virtual ApplicationUser ApplicationUser { get; set; }
         
         public int? AvatarFileId { get; set; }
-        public virtual ManagedFile AvatarFile { get; set; }
     }
 }

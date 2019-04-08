@@ -127,7 +127,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
                 .HasForeignKey<UserProfile>(profile => profile.ApplicationUserId)
                 .IsRequired(false);
 
-            builder.HasOne(profile => profile.AvatarFile)
+            builder.HasOne<ManagedFile>()
                 .WithOne()
                 .HasForeignKey<UserProfile>(profile => profile.AvatarFileId)
                 .HasPrincipalKey<ManagedFile>(managedFile => managedFile.Id)
