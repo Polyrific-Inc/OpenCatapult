@@ -28,3 +28,13 @@ button {
 .upload-template-container label {
   margin-right: 8px;
 }
+
+.avatar-placeholder {
+  height: 200px;
+  width: 200px;
+  border: solid 1px #222222;
+}
+
+.avatar-placeholder mat-icon {
+  font-size: 200px;
+}

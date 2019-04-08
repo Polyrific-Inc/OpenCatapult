@@ -55,10 +55,5 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// The managed file id for the user's avatar
         /// </summary>
         public int? AvatarFileId { get; set; }
-
-        /// <summary>
-        /// The managed file for the user's avatar
-        /// </summary>
-        public ManagedFile AvatarFile { get; set; }
     }
 }

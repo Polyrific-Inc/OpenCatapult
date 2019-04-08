@@ -32,17 +32,23 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task DeleteManagedFile(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await _managedFileRepository.Delete(id, cancellationToken);
         }
 
         public async Task<ManagedFile> GetManagedFileById(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             return await _managedFileRepository.GetById(id, cancellationToken);
         }
 
         public async Task UpdateManagedFile(ManagedFile managedFile, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var entity = await _managedFileRepository.GetById(managedFile.Id);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var entity = await _managedFileRepository.GetById(managedFile.Id, cancellationToken);
 
             if (entity != null)
             {

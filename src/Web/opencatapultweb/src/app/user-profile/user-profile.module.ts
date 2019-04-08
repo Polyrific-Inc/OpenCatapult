@@ -5,7 +5,7 @@ import { UserProfileRoutingModule } from './user-profile-routing.module';
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { UserProfileInfoComponent } from './components/user-profile-info/user-profile-info.component';
 import { UserProfilePasswordComponent } from './components/user-profile-password/user-profile-password.component';
-import { MatTabsModule, MatInputModule, MatProgressBarModule, MatButtonModule } from '@angular/material';
+import { MatTabsModule, MatInputModule, MatProgressBarModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -19,7 +19,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     ReactiveFormsModule,
     MatProgressBarModule,
     MatButtonModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    MatIconModule
   ]
 })
 export class UserProfileModule { }

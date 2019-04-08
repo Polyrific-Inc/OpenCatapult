@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserProfileInfoComponent } from './user-profile-info.component';
-import { MatInputModule, MatProgressBarModule, MatButtonModule } from '@angular/material';
+import { MatInputModule, MatProgressBarModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
@@ -26,6 +26,7 @@ describe('UserProfileInfoComponent', () => {
         MatButtonModule,
         FlexLayoutModule,
         CoreModule,
+        MatIconModule,
         SharedModule.forRoot()
       ],
       providers: [

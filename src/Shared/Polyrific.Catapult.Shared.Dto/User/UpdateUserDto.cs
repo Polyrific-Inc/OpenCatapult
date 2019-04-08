@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System.ComponentModel.DataAnnotations;
-using Polyrific.Catapult.Shared.Dto.ManagedFile;
 
 namespace Polyrific.Catapult.Shared.Dto.User
 {
@@ -24,8 +23,8 @@ namespace Polyrific.Catapult.Shared.Dto.User
         public string LastName { get; set; }
 
         /// <summary>
-        /// The managed file for the user's avatar
+        /// The managed file id for the user's avatar
         /// </summary>
-        public ManagedFileDto AvatarFile { get; set; }
+        public int? AvatarFileId { get; set; }
     }
 }

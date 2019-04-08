@@ -14,10 +14,12 @@ namespace Polyrific.Catapult.Cli.Commands.Account
     public class UpdateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
+        private readonly IManagedFileService _managedFileService;
 
-        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IAccountService accountService) : base(console, logger)
+        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IAccountService accountService, IManagedFileService managedFileService) : base(console, logger)
         {
             _accountService = accountService;
+            _managedFileService = managedFileService;
         }
 
         [Required]
@@ -44,17 +46,28 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             if (user != null)
             {
                 var userId = int.Parse(user.Id);
+
+                if (!string.IsNullOrEmpty(Avatar))
+                {
+                    var fileName = Path.GetFileName(Avatar);
+                    var file = File.ReadAllBytes(Avatar);
+
+                    if (user.AvatarFileId > 0)
+                    {
+                        _managedFileService.UpdateManagedFile(user.AvatarFileId.Value, fileName, file).Wait();
+                    }
+                    else
+                    {
+                        user.AvatarFileId = _managedFileService.CreateManagedFile(fileName, file).Result.Id;
+                    }
+                }
+
                 _accountService.UpdateUser(userId, new UpdateUserDto
                 {
                     Id = userId,
                     FirstName = FirstName ?? user.FirstName,
                     LastName = LastName ?? user.LastName,
-                    AvatarFile = !string.IsNullOrEmpty(Avatar) ? new ManagedFileDto
-                    {
-                        Id = user.AvatarFile?.Id ?? 0,
-                        FileName = Path.GetFileName(Avatar),
-                        File = File.ReadAllBytes(Avatar)
-                    } : null
+                    AvatarFileId = user.AvatarFileId
                 }).Wait();
 
                 message = $"User {User} has been updated";

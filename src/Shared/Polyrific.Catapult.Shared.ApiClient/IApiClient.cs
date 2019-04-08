@@ -31,7 +31,24 @@ namespace Polyrific.Catapult.Shared.ApiClient
         /// <returns></returns>
         Task<TResult> Post<TContent, TResult>(string path, TContent content);
 
+        /// <summary>
+        /// Send POST request and receive plain text
+        /// </summary>
+        /// <typeparam name="TContent">Type of the object to send</typeparam>
+        /// <param name="path">Uri path</param>
+        /// <param name="content">Object to send</param>
+        /// <returns></returns>
         Task<string> Post<TContent>(string path, TContent content);
+
+        /// <summary>
+        /// Send POST request with file
+        /// </summary>
+        /// <typeparam name="TResult">Type of the object to return</typeparam>
+        /// <param name="path">Uri path</param>
+        /// <param name="fileName">Name of the file</param>
+        /// <param name="file">Content of the file</param>
+        /// <returns></returns>
+        Task<TResult> PostFile<TResult>(string path, string fileName, byte[] file);
 
         /// <summary>
         /// Send PUT request
@@ -41,6 +58,15 @@ namespace Polyrific.Catapult.Shared.ApiClient
         /// <param name="content">Object to send</param>
         /// <returns></returns>
         Task<bool> Put<TContent>(string path, TContent content);
+
+        /// <summary>
+        /// Send PUT request with file
+        /// </summary>
+        /// <param name="path">Uri path</param>
+        /// <param name="fileName">Name of the file</param>
+        /// <param name="file">Content of the file</param>
+        /// <returns></returns>
+        Task<bool> PutFile(string path, string fileName, byte[] file);
 
         /// <summary>
         /// Send DELETE request

@@ -39,8 +39,8 @@ namespace Polyrific.Catapult.Shared.Dto.User
         public string Role { get; set; }
 
         /// <summary>
-        /// The managed file for the user's avatar
+        /// The managed file id for the user's avatar
         /// </summary>
-        public ManagedFileDto AvatarFile { get; set; }
+        public int? AvatarFileId { get; set; }
     }
 }

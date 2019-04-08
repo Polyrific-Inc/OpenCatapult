@@ -28,6 +28,9 @@
     <div fxFlex="50" class="avatar-container">
         <h4>Avatar</h4>
         <img [src]="avatar" *ngIf="avatar" class="avatar"/>
+        <div *ngIf="!avatar" class="avatar-placeholder">
+          <mat-icon>person</mat-icon>
+        </div>
 
         <div *ngIf="editing" class="upload-template-container">
             <input [hidden]="true" id="input-file-id" type="file" accept="image/*" (change)="onAvatarChanged($event)" />

@@ -3,6 +3,7 @@ import { AuthService } from '@app/core/auth/auth.service';
 import { FormBuilder } from '@angular/forms';
 import { AccountService, UserDto, ManagedFileService } from '@app/core';
 import { SnackbarService } from '@app/shared';
+import { reject } from 'q';
 
 @Component({
   selector: 'app-user-profile-info',
@@ -21,7 +22,7 @@ export class UserProfileInfoComponent implements OnInit {
   loading: boolean;
   avatar: any;
   updateAvatarFileName: string;
-  updatedAvatar: any;
+  updatedAvatar: File;
 
   constructor (
     private fb: FormBuilder,
@@ -43,36 +44,56 @@ export class UserProfileInfoComponent implements OnInit {
         this.loading = false;
         this.user = data;
         this.userInfoForm.patchValue(data);
-        this.avatar = this.managedFileService.getImagePath(data.avatarFile);
+
+        if (data.avatarFileId) {
+          this.avatar = this.managedFileService.getImageUrl(data.avatarFileId);
+        }
       });
   }
 
   onSubmit() {
     if (this.userInfoForm.valid) {
       this.loading = true;
-      this.accountService.updateUser(this.user.id,
-        {
-          id: this.user.id,
-          avatarFile: this.updatedAvatar ? {
-            id: this.user.avatarFile ? this.user.avatarFile.id : 0,
-            fileName: this.updateAvatarFileName,
-            file: this.updatedAvatar
-          } : null,
-          ...this.userInfoForm.value
-        })
-        .subscribe(
-            () => {
-              this.authService.refreshSession().subscribe();
-              this.loading = false;
-              this.editing = false;
-              this.userInfoForm.get('firstName').disable();
-              this.userInfoForm.get('lastName').disable();
-              this.snackbar.open('User info has been updated');
-            },
-            err => {
-              this.snackbar.open(err);
-              this.loading = false;
-            });
+      const avatarPromise = new Promise((resolve) => {
+        if (this.updatedAvatar) {
+          if (this.user.avatarFileId) {
+            this.managedFileService.updateManagedFile(this.user.avatarFileId, this.updatedAvatar).subscribe();
+            resolve(this.user.avatarFileId);
+          } else {
+            this.managedFileService.createManagedFile(this.updatedAvatar)
+              .subscribe((data) => resolve(data.id),
+                (err) => {
+                  reject(err);
+                  this.snackbar.open(err);
+                  this.loading = false;
+                });
+          }
+        } else {
+          resolve(null);
+        }
+      });
+
+      avatarPromise.then((avatarFileId) => {
+        this.accountService.updateUser(this.user.id,
+          {
+            id: this.user.id,
+            avatarFileId: avatarFileId,
+            ...this.userInfoForm.value
+          })
+          .subscribe(
+              () => {
+                this.authService.refreshSession().subscribe();
+                this.loading = false;
+                this.editing = false;
+                this.userInfoForm.get('firstName').disable();
+                this.userInfoForm.get('lastName').disable();
+                this.snackbar.open('User info has been updated');
+              },
+              err => {
+                this.snackbar.open(err);
+                this.loading = false;
+              });
+      });
     }
   }
 
@@ -99,11 +120,12 @@ export class UserProfileInfoComponent implements OnInit {
 
       const fileReader = new FileReader();
       fileReader.onload = (e) => {
-        // @ts-ignore
-        this.updatedAvatar = fileReader.result.split(',')[1];
         this.avatar = fileReader.result;
       };
+
       fileReader.readAsDataURL(event.target.files[0]);
+
+      this.updatedAvatar = event.target.files[0];
     }
   }
 }

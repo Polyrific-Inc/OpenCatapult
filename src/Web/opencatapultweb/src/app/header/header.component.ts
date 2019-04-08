@@ -41,8 +41,8 @@ export class HeaderComponent implements OnInit {
 
         this.accountService.getUserByEmail(user.email)
         .subscribe(data => {
-          if (data.avatarFile) {
-            this.avatarImage = this.managedFileService.getImagePath(data.avatarFile);
+          if (data.avatarFileId) {
+            this.avatarImage = this.managedFileService.getImageUrl(data.avatarFileId);
           }
         });
       }

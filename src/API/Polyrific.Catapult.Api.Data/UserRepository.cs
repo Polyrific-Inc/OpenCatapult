@@ -168,7 +168,7 @@ namespace Polyrific.Catapult.Api.Data
             {
                 user.UserProfile.FirstName = entity.FirstName;
                 user.UserProfile.LastName = entity.LastName;
-                user.UserProfile.AvatarFileId = entity.AvatarFile?.Id;
+                user.UserProfile.AvatarFileId = entity.AvatarFileId;
                 await _userProfileRepository.Update(user.UserProfile, cancellationToken);
             }
         }
