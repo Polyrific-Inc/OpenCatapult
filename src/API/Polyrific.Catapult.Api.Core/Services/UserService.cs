@@ -16,14 +16,16 @@ namespace Polyrific.Catapult.Api.Core.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IManagedFileService _managedFileService;
 
         private static char[] punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
         private static char[] startingChars = new char[] { '<', '&' };
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IManagedFileService manageFileService)
         {
             _userRepository = userRepository;
+            _managedFileService = manageFileService;
         }
 
         public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))
@@ -84,17 +86,38 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _userRepository.GetByUserName(userName, cancellationToken);
+            var user = await _userRepository.GetByUserName(userName, cancellationToken);
+
+            if (user?.AvatarFileId != null)
+            {
+                user.AvatarFile = await _managedFileService.GetManagedFileById(user.AvatarFileId.Value);
+            }
+
+            return user;
         }
 
         public async Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userRepository.GetById(userId, cancellationToken);
+
+            if (user?.AvatarFileId != null)
+            {
+                user.AvatarFile = await _managedFileService.GetManagedFileById(user.AvatarFileId.Value);
+            }
+
+            return user;
         }
 
         public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return await _userRepository.GetByEmail(email, cancellationToken);
+            var user = await _userRepository.GetByEmail(email, cancellationToken);
+
+            if (user?.AvatarFileId != null)
+            {
+                user.AvatarFile = await _managedFileService.GetManagedFileById(user.AvatarFileId.Value);
+            }
+
+            return user;
         }
 
         public async Task<int> GetUserId(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))
@@ -204,6 +227,18 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
+            if (user.AvatarFile != null && user.AvatarFile.File != null)
+            {
+                if (user.AvatarFile.Id == 0)
+                {
+                    user.AvatarFile.Id = await _managedFileService.CreateManagedFile(user.AvatarFile.FileName, user.AvatarFile.File);
+                }
+                else
+                {
+                    await _managedFileService.UpdateManagedFile(user.AvatarFile);
+                }
+            }
+
             await _userRepository.Update(user, cancellationToken);
         }
 

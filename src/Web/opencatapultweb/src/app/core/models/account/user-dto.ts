@@ -1,3 +1,5 @@
+import { ManagedFileDto } from '../managed-file/managed-file-dto';
+
 export interface UserDto {
   id: number;
   userName: string;
@@ -6,4 +8,5 @@ export interface UserDto {
   email: string;
   isActive: boolean;
   role: string;
+  avatarFile: ManagedFileDto;
 }

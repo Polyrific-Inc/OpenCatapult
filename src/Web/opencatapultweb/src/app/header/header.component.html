@@ -6,7 +6,7 @@
           </button>
       </div>
       <span>
-        <img src="assets/img/logo.png" class="angular-logo">        
+        <img src="assets/img/logo.png" class="angular-logo">
       </span>
 
       <div fxShow="true" fxHide.lt-md="true" class="menu-buttons">
@@ -20,8 +20,10 @@
   <div class="profile-buttons">
       <span class="greetings">Hi, {{greetingsName}}</span>
       <button class="greetings-button" mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon>person</mat-icon>
+        <mat-icon *ngIf="!avatarImage">person</mat-icon>
+        <img [src]="avatarImage" *ngIf="avatarImage" class="greetings-avatar" />
       </button>
+
       <mat-menu #menu="matMenu">
           <button mat-menu-item routerLink="/user-profile">Edit Profile</button>
           <button mat-menu-item (click)="onLogout()">Logout</button>

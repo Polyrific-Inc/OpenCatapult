@@ -30,6 +30,7 @@ namespace Polyrific.Catapult.Api.Data
         public virtual DbSet<ExternalServiceProperty> ExternalServiceProperties { get; set; }
         public virtual DbSet<Plugin> Plugins { get; set; }
         public virtual DbSet<PluginAdditionalConfig> PluginAdditionalConfigs { get; set; }
+        public virtual DbSet<ManagedFile> ManagedFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -58,6 +59,7 @@ namespace Polyrific.Catapult.Api.Data
             modelBuilder.ApplyConfiguration(new ExternalServicePropertyConfig());
             modelBuilder.ApplyConfiguration(new PluginConfig());
             modelBuilder.ApplyConfiguration(new PluginAdditionalConfigConfig());
+            modelBuilder.ApplyConfiguration(new ManagedFileConfig());
         }
     }
 }

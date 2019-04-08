@@ -4,6 +4,27 @@
   margin-bottom: 5px;
 }
 
+.action-buttons {
+  margin-top: 10px;
+}
+
 button {
-  margin-right: 8px
+  margin-right: 8px;
+}
+
+.avatar {
+  max-width: 200px;
+}
+
+.avatar-container {
+  margin-left: 20px;
+  margin-top: -20px;
+}
+
+.upload-template-container {
+  margin-bottom: 20px;
+}
+
+.upload-template-container label {
+  margin-right: 8px;
 }

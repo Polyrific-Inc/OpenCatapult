@@ -23,5 +23,8 @@ namespace Polyrific.Catapult.Api.Data.Identity
 
         public int? ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }
+        
+        public int? AvatarFileId { get; set; }
+        public virtual ManagedFile AvatarFile { get; set; }
     }
 }
