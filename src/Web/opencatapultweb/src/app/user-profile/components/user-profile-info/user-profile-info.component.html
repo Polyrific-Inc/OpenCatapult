@@ -23,6 +23,11 @@
           <input matInput placeholder="Last name of the user"
             formControlName="lastName">
         </mat-form-field>
+        <div class="action-buttons">
+            <button mat-raised-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
+            <button mat-raised-button color="primary" cdkFocusInitial *ngIf="editing">Save</button>
+            <button mat-raised-button *ngIf="editing" (click)="onCancelClick()">Cancel</button>
+        </div>
     </div>
 
     <div fxFlex="50" class="avatar-container">
@@ -32,17 +37,11 @@
           <mat-icon>person</mat-icon>
         </div>
 
-        <div *ngIf="editing" class="upload-template-container">
-            <input [hidden]="true" id="input-file-id" type="file" accept="image/*" (change)="onAvatarChanged($event)" />
+        <div class="upload-template-container">
+            <input #avatarControl [hidden]="true" id="input-file-id" type="file" accept="image/*" (change)="onAvatarChanged($event)" />
             <label for="input-file-id" class="mat-raised-button">Change Avatar</label>
-            <span class="custom-file">{{updateAvatarFileName}}</span>
         </div>
       </div>
-    </div>
-    <div class="action-buttons">
-        <button mat-raised-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
-        <button mat-raised-button color="primary" cdkFocusInitial *ngIf="editing">Save</button>
-        <button mat-raised-button *ngIf="editing" (click)="onCancelClick()">Cancel</button>
     </div>
 </form>
 </div>

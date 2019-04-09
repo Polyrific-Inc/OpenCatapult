@@ -5,7 +5,7 @@
 }
 
 .action-buttons {
-  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 button {
@@ -23,10 +23,6 @@ button {
 
 .upload-template-container {
   margin-bottom: 20px;
-}
-
-.upload-template-container label {
-  margin-right: 8px;
 }
 
 .avatar-placeholder {

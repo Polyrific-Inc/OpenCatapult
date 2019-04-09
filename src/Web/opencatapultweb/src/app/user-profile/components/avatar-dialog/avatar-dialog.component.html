@@ -1,0 +1,11 @@
+<h1 mat-dialog-title>Change Avatar</h1>
+<div mat-dialog-content>
+
+  <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+  <img [src]="avatar" *ngIf="avatar" class="avatar"/>
+</div>
+<div mat-dialog-actions>
+    <button mat-button cdkFocusInitial (click)="onSave()">Save</button>
+    <button mat-button [mat-dialog-close]="false" *ngIf="!editing">Close</button>
+</div>

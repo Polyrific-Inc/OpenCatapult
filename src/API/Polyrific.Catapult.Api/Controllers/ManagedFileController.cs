@@ -1,10 +1,13 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Services;
@@ -35,13 +38,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateManagedFile(IFormFile file)
         {
+            var fileName = file.FileName;
+
+            _logger.LogInformation("Creating managed file {fileName}...", fileName);
+
             using (var stream = file.OpenReadStream())
             {
                 using (var ms = new MemoryStream())
                 {
                     stream.CopyTo(ms);
-
-                    var fileName = file.FileName;
 
                     var managedFileId = await _managedFileService.CreateManagedFile(fileName, ms.ToArray());
 
@@ -59,15 +64,18 @@ namespace Polyrific.Catapult.Api.Controllers
         /// </summary>
         /// <param name="managedFileId">Id of the managed file</param>
         /// <returns></returns>
-        [HttpGet("image/{managedFileId}")]
+        [HttpGet("{managedFileId}/content")]
         [AllowAnonymous]
-        public async Task<IActionResult> GetImageFile(int managedFileId)
+        public async Task<IActionResult> GetManagedFile(int managedFileId)
         {
+            _logger.LogInformation("Getting managed file {managedFileId}...", managedFileId);
+
             var managedFile = await _managedFileService.GetManagedFileById(managedFileId);
             
             if (managedFile != null)
             {
-                return File(managedFile.File, "image/jpeg");
+                new FileExtensionContentTypeProvider().TryGetContentType(managedFile.FileName, out var contentType);
+                return File(managedFile.File, contentType ?? "application/octet-stream");
             }
             else
             {
@@ -85,6 +93,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> UpdateManagedFile(int managedFileId, IFormFile file)
         {
+            _logger.LogInformation("Updating managed file {managedFileId}...", managedFileId);
+
             using (var stream = file.OpenReadStream())
             {
                 using (var ms = new MemoryStream())
@@ -113,6 +123,8 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("{managedFileId}")]
         public async Task<IActionResult> DeleteManagedFile(int managedFileId)
         {
+            _logger.LogInformation("Deleting managed file {managedFileId}...", managedFileId);
+
             await _managedFileService.DeleteManagedFile(managedFileId);
 
             return NoContent();

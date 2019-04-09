@@ -138,5 +138,14 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task UpdatePassword(int userId, string oldPassword, string newPassword, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Update the user avatar
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="managedFileId">Id of the avatar file</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task UpdateAvatar(int userId, int? managedFileId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

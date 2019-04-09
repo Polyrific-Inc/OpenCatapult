@@ -67,6 +67,14 @@ namespace Polyrific.Catapult.Shared.Service
         Task UpdateUser(int userId, UpdateUserDto dto);
 
         /// <summary>
+        /// Update the avatar of a user
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="managedFileId">Id of the avatar file</param>
+        /// <returns></returns>
+        Task UpdateAvatar(int userId, int? managedFileId);
+
+        /// <summary>
         /// Suspend a user
         /// </summary>
         /// <param name="userId">Id of the user</param>

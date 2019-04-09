@@ -12,7 +12,7 @@ export class ManagedFileService {
 
   getImageUrl(managedFileId: number) {
     const apiUrl = this.configService.getConfig().apiUrl;
-    return `${apiUrl}/file/image/${managedFileId}?${(new Date()).getTime()}`;
+    return `${apiUrl}/file/${managedFileId}/content?${(new Date()).getTime()}`;
   }
 
   createManagedFile(fileToUpload: File) {

@@ -44,6 +44,10 @@ export class AccountService {
     return this.api.put(`account/${userId}`, dto);
   }
 
+  updateAvatar(userId: number, managedFileId: number) {
+    return this.api.put(`account/${userId}/avatar?managedFileId=${managedFileId}`, null);
+  }
+
   updatePassword(dto: UpdatePasswordDto) {
     return this.api.putString('account/password', dto);
   }

@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '@app/core/auth/auth.service';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { AccountService, UserDto, ManagedFileService } from '@app/core';
 import { SnackbarService } from '@app/shared';
-import { reject } from 'q';
+import { MatDialog } from '@angular/material';
+import { AvatarDialogComponent } from '../avatar-dialog/avatar-dialog.component';
 
 @Component({
   selector: 'app-user-profile-info',
@@ -11,6 +12,8 @@ import { reject } from 'q';
   styleUrls: ['./user-profile-info.component.css']
 })
 export class UserProfileInfoComponent implements OnInit {
+  @ViewChild('avatarControl') avatarControlVariable: ElementRef;
+
   userInfoForm = this.fb.group({
     id: [{value: null, disabled: true}],
     userName: [{value: null, disabled: true}],
@@ -21,11 +24,12 @@ export class UserProfileInfoComponent implements OnInit {
   editing: boolean;
   loading: boolean;
   avatar: any;
-  updateAvatarFileName: string;
   updatedAvatar: File;
+  avatarControl = new FormControl();
 
   constructor (
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private accountService: AccountService,
     private authService: AuthService,
     private snackbar: SnackbarService,
@@ -54,46 +58,24 @@ export class UserProfileInfoComponent implements OnInit {
   onSubmit() {
     if (this.userInfoForm.valid) {
       this.loading = true;
-      const avatarPromise = new Promise((resolve) => {
-        if (this.updatedAvatar) {
-          if (this.user.avatarFileId) {
-            this.managedFileService.updateManagedFile(this.user.avatarFileId, this.updatedAvatar).subscribe();
-            resolve(this.user.avatarFileId);
-          } else {
-            this.managedFileService.createManagedFile(this.updatedAvatar)
-              .subscribe((data) => resolve(data.id),
-                (err) => {
-                  reject(err);
-                  this.snackbar.open(err);
-                  this.loading = false;
-                });
-          }
-        } else {
-          resolve(null);
-        }
-      });
-
-      avatarPromise.then((avatarFileId) => {
-        this.accountService.updateUser(this.user.id,
-          {
-            id: this.user.id,
-            avatarFileId: avatarFileId,
-            ...this.userInfoForm.value
-          })
-          .subscribe(
-              () => {
-                this.authService.refreshSession().subscribe();
-                this.loading = false;
-                this.editing = false;
-                this.userInfoForm.get('firstName').disable();
-                this.userInfoForm.get('lastName').disable();
-                this.snackbar.open('User info has been updated');
-              },
-              err => {
-                this.snackbar.open(err);
-                this.loading = false;
-              });
-      });
+      this.accountService.updateUser(this.user.id,
+        {
+          id: this.user.id,
+          ...this.userInfoForm.value
+        })
+        .subscribe(
+            () => {
+              this.authService.refreshSession().subscribe();
+              this.loading = false;
+              this.editing = false;
+              this.userInfoForm.get('firstName').disable();
+              this.userInfoForm.get('lastName').disable();
+              this.snackbar.open('User info has been updated');
+            },
+            err => {
+              this.snackbar.open(err);
+              this.loading = false;
+            });
     }
   }
 
@@ -116,16 +98,20 @@ export class UserProfileInfoComponent implements OnInit {
 
   onAvatarChanged(event) {
     if (event.target.value) {
-      this.updateAvatarFileName = event.target.value.split(/(\\|\/)/g).pop();
+      const dialogRef = this.dialog.open(AvatarDialogComponent, {
+        data: {
+          user: this.user,
+          file: event.target.files[0]
+        }
+      });
 
-      const fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        this.avatar = fileReader.result;
-      };
+      dialogRef.afterClosed().subscribe(avatarFileId => {
+        if (avatarFileId) {
+          this.avatar = this.managedFileService.getImageUrl(avatarFileId);
+        }
 
-      fileReader.readAsDataURL(event.target.files[0]);
-
-      this.updatedAvatar = event.target.files[0];
+        this.avatarControlVariable.nativeElement.value = '';
+      });
     }
   }
 }

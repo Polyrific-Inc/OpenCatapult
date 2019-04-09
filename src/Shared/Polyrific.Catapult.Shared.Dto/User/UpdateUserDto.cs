@@ -21,10 +21,5 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// Last Name of the user
         /// </summary>
         public string LastName { get; set; }
-
-        /// <summary>
-        /// The managed file id for the user's avatar
-        /// </summary>
-        public int? AvatarFileId { get; set; }
     }
 }

@@ -97,6 +97,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             await Api.Put(path, dto);
         }
 
+        public async Task UpdateAvatar(int userId, int? managedFileId)
+        {
+            var path = $"account/{userId}/avatar?managedFileId={managedFileId}";
+
+            await Api.Put<object>(path, null);
+        }
+
         public async Task UpdatePassword(UpdatePasswordDto dto)
         {
             var path = $"account/password";

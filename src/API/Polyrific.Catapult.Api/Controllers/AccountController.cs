@@ -250,6 +250,30 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Update the user avatar
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="managedFileId">Id of the avatar file</param>
+        /// <returns></returns>
+        [HttpPut("{userId}/avatar")]
+        [Authorize]
+        public async Task<IActionResult> UpdateAvatar(int userId, int? managedFileId)
+        {
+            _logger.LogInformation("Updating user {userId} avatar into file {managedFileId}", userId, managedFileId);
+
+            var currentUserId = User.GetUserId();
+            if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
+            {
+                _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
+                return Unauthorized();
+            }
+            
+            await _userService.UpdateAvatar(userId, managedFileId);
+
+            return Ok();
+        }
+
+        /// <summary>
         /// Suspend a user
         /// </summary>
         /// <param name="userId">Id of the user</param>
