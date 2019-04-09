@@ -161,7 +161,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdate_Execute_ReturnsSuccessMessage()
         {
-            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object, _managedFileService.Object)
+            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
                 User = "user1@opencatapult.net"
             };
@@ -174,7 +174,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void AccountUpdate_Execute_ReturnsNotFoundMessage()
         {
-            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object, _managedFileService.Object)
+            var command = new Cli.Commands.Account.UpdateCommand(_console, LoggerMock.GetLogger<Cli.Commands.Account.UpdateCommand>().Object, _accountService.Object)
             {
                 User = "user2@opencatapult.net"
             };

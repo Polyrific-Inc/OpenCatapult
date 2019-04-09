@@ -12,12 +12,10 @@ namespace Polyrific.Catapult.Cli.Commands.Account
     public class UpdateCommand : BaseCommand
     {
         private readonly IAccountService _accountService;
-        private readonly IManagedFileService _managedFileService;
 
-        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IAccountService accountService, IManagedFileService managedFileService) : base(console, logger)
+        public UpdateCommand(IConsole console, ILogger<UpdateCommand> logger, IAccountService accountService) : base(console, logger)
         {
             _accountService = accountService;
-            _managedFileService = managedFileService;
         }
 
         [Required]
