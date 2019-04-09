@@ -18,6 +18,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   currentProjectId: number;
   authorizePolicy = AuthorizePolicy;
   shownProjectNumber = 10;
+  loading: boolean;
   private routerSubscription: Subscription;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -43,6 +44,7 @@ export class ProjectComponent implements OnInit, OnDestroy {
   }
 
   getProjects() {
+    this.loading = true;
     this.projectService.getProjects(ProjectStatusFilterType.all, true)
       .subscribe(data => {
         this.projects = data.filter(p => p.status === ProjectStatusFilterType.active);
@@ -51,6 +53,8 @@ export class ProjectComponent implements OnInit, OnDestroy {
         this.archivedProjects = data.filter(p => p.status === ProjectStatusFilterType.archived);
 
         this.deletingProjects = data.filter(p => p.status === ProjectStatusFilterType.deleting);
+
+        this.loading = false;
       });
   }
 

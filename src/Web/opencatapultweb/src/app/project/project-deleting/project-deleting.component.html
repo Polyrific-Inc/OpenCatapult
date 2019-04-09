@@ -5,9 +5,7 @@
   </mat-chip-list>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-  <mat-spinner></mat-spinner>
-</div>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
 <div *ngIf="!loading">
   <div class="action-buttons">

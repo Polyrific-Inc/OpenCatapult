@@ -8,6 +8,10 @@
       <button mat-raised-button (click)="onNewExternalServiceClick()">New External Service</button>
     </div>
   </div>
+
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+<div *ngIf="!loading">
   <div class="no-records" *ngIf="externalServices?.length <= 0">
     No External services Found
   </div>
@@ -50,4 +54,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
 </div>

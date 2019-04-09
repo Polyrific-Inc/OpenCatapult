@@ -7,9 +7,7 @@
       <button mat-raised-button (click)="onNewDataModelClick()">New Data Model</button>
     </div>
 </div>
-<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-    <mat-spinner></mat-spinner>
-</div>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
 <mat-accordion class="headers-align" *ngIf="!loading">
   <mat-expansion-panel *ngFor="let dataModel of dataModels">
     <mat-expansion-panel-header>

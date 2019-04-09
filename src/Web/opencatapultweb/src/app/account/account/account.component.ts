@@ -22,6 +22,7 @@ export class AccountComponent implements OnInit, AfterViewInit {
     {text: 'Active', value: UserStatus.active},
     {text: 'Suspended', value: UserStatus.suspended}
   ];
+  loading: boolean;
 
   displayedColumns: string[] = ['userName', 'firstName', 'lastName', 'role', 'actions'];
 
@@ -49,8 +50,12 @@ export class AccountComponent implements OnInit, AfterViewInit {
   }
 
   getUsers() {
+    this.loading = true;
     this.accountService.getUsers(this.statusFilter.value, UserRole.All)
-      .subscribe(data => this.users = data);
+      .subscribe(data => {
+        this.users = data;
+        this.loading = false;
+      });
   }
 
   onSetRoleClick(user: UserDto) {

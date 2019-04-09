@@ -21,6 +21,7 @@ export class EngineComponent implements OnInit, AfterViewInit {
     {text: 'Suspended', value: EngineStatus.suspended},
     {text: 'Running', value: EngineStatus.running}
   ];
+  loading: boolean;
 
   displayedColumns: string[] = ['name', 'version', 'lastSeen', 'actions'];
 
@@ -48,8 +49,12 @@ export class EngineComponent implements OnInit, AfterViewInit {
   }
 
   getEngines() {
+    this.loading = true;
     this.engineService.getEngines(this.statusFilter.value)
-      .subscribe(data => this.engines = data);
+      .subscribe(data => {
+        this.engines = data;
+        this.loading = false;
+      });
   }
 
   onTokenClick(engine: EngineDto) {

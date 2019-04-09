@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ExternalServiceRoutingModule } from './external-service-routing.module';
 import { ExternalServiceComponent } from './external-service/external-service.component';
 import { MatTableModule, MatIconModule, MatButtonModule, MatDialogModule,
-  MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule } from '@angular/material';
+  MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule, MatProgressSpinnerModule } from '@angular/material';
 import { ExternalServiceInfoDialogComponent } from './components/external-service-info-dialog/external-service-info-dialog.component';
 import { ExternalServiceNewDialogComponent } from './components/external-service-new-dialog/external-service-new-dialog.component';
 import { ExternalServiceFormComponent } from './components/external-service-form/external-service-form.component';
@@ -13,6 +13,7 @@ import { ExternalServicePropertyFormComponent } from './components/external-serv
 import { FlexModule } from '@angular/flex-layout';
 import { ExternalServiceGenericFormComponent } from './components/external-service-generic-form/external-service-generic-form.component';
 import { GenericService } from './services/generic.service';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,9 @@ import { GenericService } from './services/generic.service';
     MatInputModule,
     MatSelectModule,
     MatProgressBarModule,
-    MatDividerModule
+    MatProgressSpinnerModule,
+    MatDividerModule,
+    SharedModule
   ],
   providers: [
     GenericService

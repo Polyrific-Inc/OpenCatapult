@@ -3,41 +3,45 @@
     <button mat-raised-button (click)="onNewMemberClick()">New Member</button>
   </div>
 </div>
-<div class="no-records" *ngIf="members?.length <= 0">
-  No Project Members Found
+
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<div *ngIf="!loading">
+  <div class="no-records" *ngIf="members?.length <= 0">
+    No Project Members Found
+  </div>
+
+  <table mat-table [dataSource]="members" matSort *ngIf="members?.length > 0" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Username Column -->
+    <ng-container matColumnDef="username">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Username </th>
+      <td mat-cell *matCellDef="let element"> {{element.username}} </td>
+    </ng-container>
+
+    <!-- Role Column -->
+    <ng-container matColumnDef="role">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+      <td mat-cell *matCellDef="let element"> {{element.projectMemberRoleName}} </td>
+    </ng-container>
+    <!-- Action Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let element" class="member-buttons">
+        <div *appHasAccess="authorizePolicy.ProjectMaintainerAccess">
+            <button mat-icon-button (click)="onInfoClick(element)">
+              <mat-icon>info</mat-icon>
+            </button>
+            <button mat-icon-button (click)="onDeleteClick(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 </div>
-
-<table mat-table [dataSource]="members" matSort *ngIf="members?.length > 0" class="mat-elevation-z8">
-
-  <!--- Note that these columns can be defined in any order.
-        The actual rendered columns are set as a property on the row definition" -->
-
-  <!-- Username Column -->
-  <ng-container matColumnDef="username">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Username </th>
-    <td mat-cell *matCellDef="let element"> {{element.username}} </td>
-  </ng-container>
-
-  <!-- Role Column -->
-  <ng-container matColumnDef="role">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
-    <td mat-cell *matCellDef="let element"> {{element.projectMemberRoleName}} </td>
-  </ng-container>
-  <!-- Action Column -->
-  <ng-container matColumnDef="actions">
-    <th mat-header-cell *matHeaderCellDef> </th>
-    <td mat-cell *matCellDef="let element" class="member-buttons">
-      <div *appHasAccess="authorizePolicy.ProjectMaintainerAccess">
-          <button mat-icon-button (click)="onInfoClick(element)">
-            <mat-icon>info</mat-icon>
-          </button>
-          <button mat-icon-button (click)="onDeleteClick(element)">
-            <mat-icon>delete</mat-icon>
-          </button>
-      </div>
-    </td>
-  </ng-container>
-
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>

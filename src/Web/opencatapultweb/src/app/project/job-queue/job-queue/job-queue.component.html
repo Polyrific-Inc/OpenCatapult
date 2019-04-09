@@ -3,9 +3,7 @@
     <ng-template mat-tab-label>
       <span matBadge="{{currentJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="currentJobs.length <= 0">Current Items</span>
     </ng-template>
-    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-        <mat-spinner></mat-spinner>
-    </div>
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
     <app-job-queue-list [jobList]="currentJobs" *ngIf="!loading"></app-job-queue-list>
   </mat-tab>
 
@@ -13,9 +11,7 @@
     <ng-template mat-tab-label>
         <span matBadge="{{pendingJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="pendingJobs.length <= 0">Pending Items</span>
     </ng-template>
-    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-        <mat-spinner></mat-spinner>
-    </div>
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
     <app-job-queue-list [jobList]="pendingJobs" *ngIf="!loading"></app-job-queue-list>
   </mat-tab>
 
@@ -23,9 +19,7 @@
     <ng-template mat-tab-label>
         <span>Past Items</span>
     </ng-template>
-    <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-        <mat-spinner></mat-spinner>
-    </div>
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
     <app-job-queue-list [jobList]="pastJobs" [usePaging]="true" *ngIf="!loading"></app-job-queue-list>
   </mat-tab>
 </mat-tab-group>

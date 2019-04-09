@@ -27,6 +27,7 @@ export class TaskProviderComponent implements OnInit, AfterViewInit {
     {text: 'Storage Provider', value: ProviderType.StorageProvider},
     {text: 'Test Provider', value: ProviderType.TestProvider}
   ];
+  loading: boolean;
 
   displayedColumns: string[] = ['name', 'type', 'author', 'version', 'registrationDate', 'requiredServices', 'actions'];
 
@@ -54,8 +55,12 @@ export class TaskProviderComponent implements OnInit, AfterViewInit {
   }
 
   getTaskProviders() {
+    this.loading = true;
     this.taskProviderService.getTaskProviders(this.taskProviderTypeFilter.value)
-      .subscribe(data => this.taskProviders = data);
+      .subscribe(data => {
+        this.taskProviders = data;
+        this.loading = false;
+      });
   }
 
   onDeleteClick(taskProvider: TaskProviderDto) {

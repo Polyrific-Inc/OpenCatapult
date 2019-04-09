@@ -8,6 +8,8 @@
               <h3>Project List</h3>
             </mat-panel-title>
           </mat-expansion-panel-header>
+
+          <app-loading-spinner *ngIf="loading"></app-loading-spinner>
           <mat-nav-list>
             <a mat-list-item *ngFor="let project of shownProjects" routerLink='/project/{{project.id}}' [routerLinkActive]="['is-active']">{{project.displayName}}</a>
           </mat-nav-list>
@@ -26,6 +28,7 @@
               <h3>Archived Project</h3>
             </mat-panel-title>
           </mat-expansion-panel-header>
+          <app-loading-spinner *ngIf="loading"></app-loading-spinner>
           <mat-nav-list>
             <a mat-list-item *ngFor="let project of archivedProjects" routerLink="/project/archive/{{project.id}}" [routerLinkActive]="['is-active']">{{project.name}}</a>
           </mat-nav-list>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TaskConfigFormComponent } from './components/task-config-form/task-config-form.component';
 import { JobConfigFormComponent } from './components/job-config-form/job-config-form.component';
 import { MatDividerModule, MatSnackBarModule, MatFormFieldModule, MatInputModule,
-  MatCheckboxModule, MatExpansionModule, MatDialogModule, MatButtonModule, MatSelectModule } from '@angular/material';
+  MatCheckboxModule, MatExpansionModule, MatDialogModule, MatButtonModule, MatSelectModule, MatProgressSpinnerModule } from '@angular/material';
 import { TaskConfigListFormComponent } from './components/task-config-list-form/task-config-list-form.component';
 import { BuildTaskConfigFormComponent } from './components/build-task-config-form/build-task-config-form.component';
 import { CloneTaskConfigFormComponent } from './components/clone-task-config-form/clone-task-config-form.component';
@@ -22,6 +22,7 @@ import { ConfirmationWithInputDialogComponent } from './components/confirmation-
 import { ConfirmationDialogComponent } from './components/confirmation-dialog/confirmation-dialog.component';
 import { HasAccessDirective } from './directives/has-access.directive';
 import { DeleteRepositoryConfigFormComponent } from './components/delete-repository-config-form/delete-repository-config-form.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { DeleteRepositoryConfigFormComponent } from './components/delete-reposit
     ConfirmationWithInputDialogComponent,
     ConfirmationDialogComponent,
     HasAccessDirective,
-    DeleteRepositoryConfigFormComponent
+    DeleteRepositoryConfigFormComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     CommonModule,
@@ -55,7 +57,8 @@ import { DeleteRepositoryConfigFormComponent } from './components/delete-reposit
     MatExpansionModule,
     MatDialogModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     TaskConfigFormComponent,
@@ -76,7 +79,8 @@ import { DeleteRepositoryConfigFormComponent } from './components/delete-reposit
     ConfirmationWithInputDialogComponent,
     ConfirmationDialogComponent,
     HasAccessDirective,
-    DeleteRepositoryConfigFormComponent
+    DeleteRepositoryConfigFormComponent,
+    LoadingSpinnerComponent
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,

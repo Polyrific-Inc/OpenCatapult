@@ -3,9 +3,7 @@
       *appHasAccess="authorizePolicy.UserRoleBasicAccess">New Project</button>
 </div>
 
-<div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
-  <mat-spinner></mat-spinner>
-</div>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
 
 <mat-card *ngIf="!loading">
   <mat-card-header fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
