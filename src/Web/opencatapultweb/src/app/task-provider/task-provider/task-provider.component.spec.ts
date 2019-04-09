@@ -11,6 +11,8 @@ import { FlexModule } from '@angular/flex-layout';
 import { TaskProviderInfoDialogComponent } from '../components/task-provider-info-dialog/task-provider-info-dialog.component';
 import { TaskProviderRegisterDialogComponent } from '../components/task-provider-register-dialog/task-provider-register-dialog.component';
 import { CoreModule } from '@app/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('TaskProviderComponent', () => {
   let component: TaskProviderComponent;
@@ -34,6 +36,13 @@ describe('TaskProviderComponent', () => {
         FlexModule,
         MatProgressBarModule,
         MatTooltipModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            queryParams: of({ newProvider: true})
+          }
+        }
       ]
     })
     .compileComponents();

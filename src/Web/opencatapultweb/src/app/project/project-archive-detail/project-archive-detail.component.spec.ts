@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ProjectArchiveDetailComponent } from './project-archive-detail.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatProgressBarModule, MatInputModule, MatSnackBarModule } from '@angular/material';
+import { MatProgressBarModule, MatInputModule, MatSnackBarModule, MatCardModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CoreModule } from '@app/core';
@@ -28,6 +28,7 @@ describe('ProjectArchiveDetailComponent', () => {
         RouterTestingModule,
         HttpClientTestingModule,
         MatSnackBarModule,
+        MatCardModule,
         CoreModule,
         SharedModule.forRoot()
       ],

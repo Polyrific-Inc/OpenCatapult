@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ProviderType } from '@app/core/enums/provider-type';
 import { TaskProviderDto, TaskProviderService } from '@app/core';
 import { FormControl, FormBuilder } from '@angular/forms';
@@ -6,13 +6,14 @@ import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { TaskProviderRegisterDialogComponent } from '../components/task-provider-register-dialog/task-provider-register-dialog.component';
 import { TaskProviderInfoDialogComponent } from '../components/task-provider-info-dialog/task-provider-info-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-task-provider',
   templateUrl: './task-provider.component.html',
   styleUrls: ['./task-provider.component.css']
 })
-export class TaskProviderComponent implements OnInit {
+export class TaskProviderComponent implements OnInit, AfterViewInit {
   taskProviders: TaskProviderDto[];
   roleId = 0;
   taskProviderTypeFilter: FormControl;
@@ -33,12 +34,23 @@ export class TaskProviderComponent implements OnInit {
     private fb: FormBuilder,
     private taskProviderService: TaskProviderService,
     private dialog: MatDialog,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private route: ActivatedRoute
     ) { }
 
   ngOnInit() {
     this.taskProviderTypeFilter = this.fb.control('all');
     this.getTaskProviders();
+  }
+
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(data => {
+      if (data.newProvider) {
+        setTimeout(() => {
+          this.onRegisterTaskProviderClick();
+        }, 0);
+      }
+    });
   }
 
   getTaskProviders() {

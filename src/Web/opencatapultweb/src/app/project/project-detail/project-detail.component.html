@@ -1,28 +1,34 @@
-<h3>{{project?.displayName || project?.name}}</h3>
+<div class="project-header">
+    <button mat-raised-button color="primary" routerLink="/project/new"
+      *appHasAccess="authorizePolicy.UserRoleBasicAccess">New Project</button>
+</div>
 
 <div fxLayout="row" fxLayoutAlign="center center" *ngIf="loading">
   <mat-spinner></mat-spinner>
 </div>
 
-<div *ngIf="!loading">
-
-  <div class="action-buttons">
-    <button mat-raised-button (click)="onExportClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Export</button>
-    <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
-    <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
-    <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
-  </div>
-  <nav mat-tab-nav-bar flex>
-      <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
-      <a mat-tab-link (click)="activeLink = 'data-model'" [active]="activeLink == 'data-model'" routerLink='data-model'>Data Models</a>
-      <a mat-tab-link (click)="activeLink = 'job-definition'"
-        [active]="activeLink == 'job-definition'" routerLink='job-definition'
-        *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
-      <a mat-tab-link (click)="activeLink = 'job-queue'"
-        [active]="activeLink == 'job-queue'" routerLink='job-queue'
-        *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
-      <a mat-tab-link (click)="activeLink = 'member'" [active]="activeLink == 'member'" routerLink='member'>Members</a>
-  </nav>
-  <router-outlet></router-outlet>
-
-</div>
+<mat-card *ngIf="!loading">
+  <mat-card-header fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
+    <mat-card-title>{{project?.displayName || project?.name}}</mat-card-title>
+    <div class="action-buttons">
+        <button mat-raised-button (click)="onExportClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Export</button>
+        <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
+        <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
+        <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+      <nav mat-tab-nav-bar flex>
+          <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
+          <a mat-tab-link (click)="activeLink = 'data-model'" [active]="activeLink == 'data-model'" routerLink='data-model'>Data Models</a>
+          <a mat-tab-link (click)="activeLink = 'job-definition'"
+            [active]="activeLink == 'job-definition'" routerLink='job-definition'
+            *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
+          <a mat-tab-link (click)="activeLink = 'job-queue'"
+            [active]="activeLink == 'job-queue'" routerLink='job-queue'
+            *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
+          <a mat-tab-link (click)="activeLink = 'member'" [active]="activeLink == 'member'" routerLink='member'>Members</a>
+      </nav>
+      <router-outlet></router-outlet>
+  </mat-card-content>
+</mat-card>

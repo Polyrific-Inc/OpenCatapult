@@ -6,6 +6,9 @@ import { MatCardModule, MatDividerModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { SharedModule } from '@app/shared/shared.module';
+import { AuthService } from '@app/core/auth/auth.service';
+import { of } from 'rxjs';
 
 describe('ProjectDashboardComponent', () => {
   let component: ProjectDashboardComponent;
@@ -20,7 +23,23 @@ describe('ProjectDashboardComponent', () => {
         MatCardModule,
         FlexLayoutModule,
         MatDividerModule,
-        RouterTestingModule
+        RouterTestingModule,
+        SharedModule.forRoot()
+      ],
+      providers: [
+        {
+          provide: AuthService, useValue: {
+            currentUserValue: {
+              role: 'Administrator'
+            },
+            checkRoleAuthorization: function(test, test2) {
+
+            },
+            currentUser: of({
+              role: 'Administrator'
+            })
+          }
+        }
       ]
     })
     .compileComponents();

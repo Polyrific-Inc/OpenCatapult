@@ -1,6 +1,11 @@
-<h2>
-  Welcome to Opencatapult!
-</h2>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>
+        Welcome to Opencatapult!
+    </h2>
+    <div class="button new-project" *appHasAccess="authorizePolicy.UserRoleBasicAccess">
+        <button mat-raised-button color="primary" routerLink="/project/new">New Project</button>
+    </div>
+</div>
 <p>
   You can start creating a new project using the button at the left project menu, or navigate to a project in the project list.
 </p>

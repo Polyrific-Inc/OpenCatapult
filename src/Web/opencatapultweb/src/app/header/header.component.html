@@ -10,23 +10,38 @@
       </span>
 
       <div fxShow="true" fxHide.lt-md="true" class="menu-buttons">
-        <button mat-button routerLink="/project">Projects</button>
-        <button mat-button routerLink="/service">External Services</button>
-        <button mat-button routerLink="/engine" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Engines</button>
-        <button mat-button routerLink="/provider" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Providers</button>
-        <button mat-button routerLink="/user" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
+        <button mat-button routerLink="/project" routerLinkActive="is-active">Projects</button>
+        <button mat-button routerLink="/service" routerLinkActive="is-active">External Services</button>
+        <button mat-button routerLink="/engine" routerLinkActive="is-active" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Engines</button>
+        <button mat-button routerLink="/provider" routerLinkActive="is-active" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Providers</button>
+        <button mat-button routerLink="/user" routerLinkActive="is-active" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
       </div>
   </div>
   <div class="profile-buttons">
-      <span class="greetings">Hi, {{greetingsName}}</span>
-      <button class="greetings-button" mat-icon-button [matMenuTriggerFor]="menu">
-        <mat-icon *ngIf="!avatarImage">person</mat-icon>
+      <button mat-button class="greetings-button" [matMenuTriggerFor]="quickAddMenu">
+        <mat-icon>add</mat-icon>
+        <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+
+      <mat-menu #quickAddMenu="matMenu">
+          <button mat-menu-item routerLink="/project/new">New Project</button>
+          <button mat-menu-item routerLink="/engine" [queryParams]="{newEngine:true}">New Engine</button>
+          <button mat-menu-item routerLink="/user" [queryParams]="{newUser:true}">New User</button>
+          <button mat-menu-item routerLink="/provider" [queryParams]="{newProvider:true}">New Task Provider</button>
+      </mat-menu>
+
+      <button class="greetings-button" mat-button [matMenuTriggerFor]="menu">
+        <mat-icon *ngIf="!avatarImage" class="greetings-avatar-icon">person</mat-icon>
         <img [src]="avatarImage" *ngIf="avatarImage" class="greetings-avatar" />
+        <mat-icon>arrow_drop_down</mat-icon>
       </button>
 
       <mat-menu #menu="matMenu">
-          <button mat-menu-item routerLink="/user-profile">Edit Profile</button>
-          <button mat-menu-item (click)="onLogout()">Logout</button>
+          <button mat-menu-item>Signed in as <b>{{greetingsName}}</b></button>
+          <mat-divider></mat-divider>
+          <button mat-menu-item routerLink="/user-profile">Your Profile</button>
+          <a mat-menu-item href="https://docs.opencatapult.net" target="_blank">Help & Documentation</a>
+          <button mat-menu-item (click)="onLogout()">Sign out</button>
       </mat-menu>
   </div>
 </mat-toolbar>

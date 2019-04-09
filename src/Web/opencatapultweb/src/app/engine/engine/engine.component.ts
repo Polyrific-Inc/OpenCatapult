@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { EngineService, EngineStatus, EngineDto } from '@app/core';
 import { ConfirmationDialogComponent, SnackbarService } from '@app/shared';
 import { MatDialog } from '@angular/material';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { EngineTokenDialogComponent } from '../components/engine-token-dialog/engine-token-dialog.component';
 import { EngineRegisterDialogComponent } from '../components/engine-register-dialog/engine-register-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-engine',
   templateUrl: './engine.component.html',
   styleUrls: ['./engine.component.css']
 })
-export class EngineComponent implements OnInit {
+export class EngineComponent implements OnInit, AfterViewInit {
   engines: EngineDto[];
   roleId = 0;
   statusFilter: FormControl;
@@ -27,12 +28,23 @@ export class EngineComponent implements OnInit {
     private fb: FormBuilder,
     private engineService: EngineService,
     private dialog: MatDialog,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private route: ActivatedRoute
     ) { }
 
   ngOnInit() {
     this.statusFilter = this.fb.control(EngineStatus.active);
     this.getEngines();
+  }
+
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(data => {
+      if (data.newEngine) {
+        setTimeout(() => {
+          this.onRegisterEngineClick();
+        }, 0);
+      }
+    });
   }
 
   getEngines() {

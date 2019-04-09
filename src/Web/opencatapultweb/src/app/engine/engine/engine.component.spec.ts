@@ -11,6 +11,8 @@ import { SharedModule } from '@app/shared/shared.module';
 import { FlexModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('EngineComponent', () => {
   let component: EngineComponent;
@@ -36,6 +38,13 @@ describe('EngineComponent', () => {
         MatDatepickerModule,
         MatNativeDateModule,
         CoreModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            queryParams: of({ newEngine: true})
+          }
+        }
       ]
     })
     .compileComponents();

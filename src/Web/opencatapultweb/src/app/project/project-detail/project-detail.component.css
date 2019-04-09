@@ -5,3 +5,12 @@
 .action-buttons button{
     margin-right: 8px
 }
+
+.project-header {
+  text-align: right;
+  margin: 10px 0;
+}
+
+mat-card {
+  min-height: 400px;
+}

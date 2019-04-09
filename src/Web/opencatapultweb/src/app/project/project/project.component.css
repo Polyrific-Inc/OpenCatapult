@@ -2,10 +2,6 @@ mat-expansion-panel-header {
   border-bottom: solid 1px #e3e3e3;
 }
 
-.new-project {
-  margin: 20px auto;
-}
-
 .project-detail {
     padding-left: 20px;
     padding-right: 20px;

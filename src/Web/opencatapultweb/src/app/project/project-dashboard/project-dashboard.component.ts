@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProjectHistoryService } from '@app/core';
+import { ProjectHistoryService, AuthorizePolicy } from '@app/core';
 
 @Component({
   selector: 'app-project-dashboard',
@@ -10,6 +10,7 @@ export class ProjectDashboardComponent implements OnInit {
   history = this.projectHistoryService.history;
   shownHistory = this.projectHistoryService.history;
   shownHistoryNumber = 5;
+  authorizePolicy = AuthorizePolicy;
 
   constructor(
     private projectHistoryService: ProjectHistoryService
