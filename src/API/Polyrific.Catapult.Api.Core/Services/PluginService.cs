@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,14 +17,17 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IPluginRepository _pluginRepository;
         private readonly IExternalServiceTypeRepository _externalServiceTypeRepository;
+        private readonly ITagRepository _tagRepository;
 
-        public PluginService(IPluginRepository pluginRepository, IExternalServiceTypeRepository externalServiceTypeRepository)
+        public PluginService(IPluginRepository pluginRepository, IExternalServiceTypeRepository externalServiceTypeRepository, ITagRepository tagRepository)
         {
             _pluginRepository = pluginRepository;
             _externalServiceTypeRepository = externalServiceTypeRepository;
+            _tagRepository = tagRepository;
         }
 
-        public async Task<Plugin> AddPlugin(string name, string type, string author, string version, string[] requiredServices, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Plugin> AddPlugin(string name, string type, string author, string version, string[] requiredServices, string displayName, string description, string thumbnailUrl,
+            string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -43,13 +47,47 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
 
+            List<Tag> tagList = null;
+
+            if (!string.IsNullOrEmpty(tags))
+            {
+                var tagArray = tags.Split(DataDelimiter.Comma);
+
+                var tagSpec = new TagFilterSpecification(tagArray);
+                tagList = (await _tagRepository.GetBySpec(tagSpec, cancellationToken)).ToList();
+
+                var newTags = tagArray.Where(tag => tagList.Any(t => tag.ToLower() == t.Name.ToLower()));
+                foreach (var newTagName in newTags)
+                {
+                    var newTagId = await _tagRepository.Create(new Tag
+                    {
+                        Name = newTagName
+                    }, cancellationToken);
+
+                    tagList.Add(new Tag
+                    {
+                        Id = newTagId,
+                        Name = newTagName
+                    });
+                }
+            }
+            
             var plugin = new Plugin
             {
                 Name = name,
+                DisplayName = displayName,
+                Description = description,
+                ThumbnailUrl = thumbnailUrl,
                 Type = type,
                 Author = author,
                 Version = version,
-                RequiredServicesString = requiredServicesString
+                RequiredServicesString = requiredServicesString,
+                Created = created > DateTime.MinValue ? created : DateTime.UtcNow,
+                Updated = updated,
+                Tags = tagList?.Select(t => new PluginTag
+                {
+                    TagId = t.Id
+                }).ToList()
             };
 
             var id = await _pluginRepository.Create(plugin, cancellationToken);

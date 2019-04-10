@@ -1,7 +1,11 @@
 name: 'Polyrific.Catapult.TaskProviders.DotNetCore'
+display-name: 'DotNet Core Build'
+description:  'A build task provider for building & publishing dotnet core application'
+thumbnail-url: '/assets/img/task-provider/dotnetcore.png'
 type: 'BuildProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
+tags: 'Build, Microsoft, DotNet Core'
 additional-configs:
   - name: CsprojLocation
     label: Csproj Location

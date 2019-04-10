@@ -1,7 +1,11 @@
 name: 'Polyrific.Catapult.TaskProviders.GenericCommand'
+display-name: 'Generic Command'
+description: 'A generic task provider for running any command in a preferred command line tools such as powershell or bash'
+thumbnail-url: '/assets/img/task-provider/generic.png'
 type: 'GenericTaskProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
+tags: 'Generic, Command, Command Line, CLI, Tool, Custom'
 additional-configs:
   - name: CommandTool
     label: Command Tool

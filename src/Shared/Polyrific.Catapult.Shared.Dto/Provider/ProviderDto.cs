@@ -45,5 +45,35 @@ namespace Polyrific.Catapult.Shared.Dto.Provider
         /// Provider additional configs
         /// </summary>
         public ProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
+
+        /// <summary>
+        /// The Tags of the provider
+        /// </summary>
+        public string Tags { get; set; }
+
+        /// <summary>
+        /// Created date of the provider
+        /// </summary>
+        public DateTime Created { get; set; }
+
+        /// <summary>
+        /// Updated date of the provider
+        /// </summary>
+        public DateTime? Updated { get; set; }
+
+        /// <summary>
+        /// Display name of the provider
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Description of the provider
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Url of the provider thumbnail
+        /// </summary>
+        public string ThumbnailUrl { get; set; }
     }
 }

@@ -1,7 +1,11 @@
 name: 'Polyrific.Catapult.TaskProviders.AspNetCoreMvc'
+display-name: 'AspNet Core Mvc Generator'
+description: 'A generator task provider for generating an application with AspNet Core Mvc and Entity Framework Core backend'
+thumbnail-url: '/assets/img/task-provider/aspnetcore.png'
 type: 'GeneratorProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
+tags: 'Code Generator, DotNet Core, Microsoft, AspNet Core, AspNet Core Mvc, MVC, Web, CRUD, Entity Framework Core'
 additional-configs:
   - name: AdminEmail
     label: Admin Email

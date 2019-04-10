@@ -1,6 +1,10 @@
 name: 'Polyrific.Catapult.TaskProviders.GitHub'
+display-name: 'GitHub Repository'
+description: 'A repository task provider for cloning, pushing code, creating new branch and pull request into a GitHub repository'
+thumbnail-url: '/assets/img/task-provider/github.png'
 type: 'RepositoryProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
+tags: 'Repository, GitHub, Source Control, Git'
 required-services:
   - GitHub

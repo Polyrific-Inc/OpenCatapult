@@ -32,6 +32,10 @@ namespace Polyrific.Catapult.Api.Data
         public virtual DbSet<PluginAdditionalConfig> PluginAdditionalConfigs { get; set; }
         public virtual DbSet<ManagedFile> ManagedFiles { get; set; }
 
+        public virtual DbSet<Tag> Tags { get; set; }
+
+        public virtual DbSet<PluginTag> PluginTags { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -60,6 +64,8 @@ namespace Polyrific.Catapult.Api.Data
             modelBuilder.ApplyConfiguration(new PluginConfig());
             modelBuilder.ApplyConfiguration(new PluginAdditionalConfigConfig());
             modelBuilder.ApplyConfiguration(new ManagedFileConfig());
+            modelBuilder.ApplyConfiguration(new TagConfig());
+            modelBuilder.ApplyConfiguration(new PluginTagConfig());
         }
     }
 }

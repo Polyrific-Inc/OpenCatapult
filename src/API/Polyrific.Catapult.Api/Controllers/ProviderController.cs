@@ -128,7 +128,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
             try
             {
-                var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices);
+                var plugin = await _pluginService.AddPlugin(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices, dto.DisplayName, dto.Description,
+                    dto.ThumbnailUrl, dto.Tags, dto.Created, dto.Updated);
                 var result = _mapper.Map<ProviderDto>(plugin);
 
                 if (dto.AdditionalConfigs != null && dto.AdditionalConfigs.Length > 0)

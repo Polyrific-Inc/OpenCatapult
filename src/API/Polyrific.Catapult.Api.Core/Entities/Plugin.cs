@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 
 namespace Polyrific.Catapult.Api.Core.Entities
@@ -30,5 +31,25 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Required services of the plugin separated by comma
         /// </summary>
         public string RequiredServicesString { get; set; }
+
+        /// <summary>
+        /// The Tags of the plugin
+        /// </summary>
+        public ICollection<PluginTag> Tags { get; set; }
+
+        /// <summary>
+        /// Display name of the plugin
+        /// </summary>
+        public string DisplayName { get; set; }
+
+        /// <summary>
+        /// Description of the plugin
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Url of the plugin thumbnail
+        /// </summary>
+        public string ThumbnailUrl { get; set; }
     }
 }

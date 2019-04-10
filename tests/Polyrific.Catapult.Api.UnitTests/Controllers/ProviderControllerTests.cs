@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -129,7 +130,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RegisterProvider_ReturnsCreatedProvider()
         {
             _pluginService
-                .Setup(s => s.AddPlugin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddPlugin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
+                    It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, string type, string author, string version, string[] requiredServices, CancellationToken cancellationToken) =>
                     new Plugin
                     {

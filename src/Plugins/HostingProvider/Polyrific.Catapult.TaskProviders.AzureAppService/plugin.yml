@@ -1,7 +1,11 @@
 name: 'Polyrific.Catapult.TaskProviders.AzureAppService'
+display-name: 'Deploy To Azure App Service'
+description: 'A deploy task provider for deploying an application to azure app service'
+thumbnail-url: '/assets/img/task-provider/azureappservice.png'
 type: 'HostingProvider'
 author: 'Polyrific'
 version: '1.0.0-beta3'
+tags: 'Deploy, Azure, Azure App Service, Microsoft, Web, Hosting, Cloud, PaaS'
 required-services:
   - Azure
 additional-configs:
