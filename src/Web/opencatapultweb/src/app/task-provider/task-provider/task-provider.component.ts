@@ -2,11 +2,12 @@ import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ProviderType } from '@app/core/enums/provider-type';
 import { TaskProviderDto, TaskProviderService } from '@app/core';
 import { FormControl, FormBuilder } from '@angular/forms';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatIconRegistry } from '@angular/material';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { TaskProviderRegisterDialogComponent } from '../components/task-provider-register-dialog/task-provider-register-dialog.component';
 import { TaskProviderInfoDialogComponent } from '../components/task-provider-info-dialog/task-provider-info-dialog.component';
 import { ActivatedRoute } from '@angular/router';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-task-provider',
@@ -36,8 +37,34 @@ export class TaskProviderComponent implements OnInit, AfterViewInit {
     private taskProviderService: TaskProviderService,
     private dialog: MatDialog,
     private snackbar: SnackbarService,
-    private route: ActivatedRoute
-    ) { }
+    private route: ActivatedRoute,
+    iconRegistry: MatIconRegistry,
+    sanitizer: DomSanitizer
+    ) {
+      iconRegistry.addSvgIcon(ProviderType.GeneratorProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/codegenerator.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.RepositoryProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/repository.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.BuildProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/build.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.TestProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/test.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.DatabaseProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/database.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.HostingProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/deploy.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.GenericTaskProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/generic.svg'));
+
+      iconRegistry.addSvgIcon(ProviderType.StorageProvider,
+        sanitizer.bypassSecurityTrustResourceUrl('assets/img/task-provider-type/storage.svg'));
+    }
 
   ngOnInit() {
     this.taskProviderTypeFilter = this.fb.control('all');

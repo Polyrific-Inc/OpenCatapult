@@ -10,7 +10,7 @@
           <mat-select placeholder="Task Provider Type"
             (selectionChange)="onTypeChanged()" [formControl]="taskProviderTypeFilter">
             <mat-option *ngFor="let providerType of taskProviderTypes" [value]="providerType.value">
-              {{providerType.text}}
+              <mat-icon svgIcon="{{providerType.value}}" *ngIf="providerType.value !== 'all'"></mat-icon> {{providerType.text}}
             </mat-option>
           </mat-select>
       </div>
@@ -39,7 +39,7 @@
         <!-- Type Column -->
         <ng-container matColumnDef="type">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
-          <td mat-cell *matCellDef="let element"> {{element.type}} </td>
+          <td mat-cell *matCellDef="let element"> <mat-icon svgIcon="{{element.type}}" matTooltip="{{element.type}}"></mat-icon> </td>
         </ng-container>
 
         <!-- Author Column -->
