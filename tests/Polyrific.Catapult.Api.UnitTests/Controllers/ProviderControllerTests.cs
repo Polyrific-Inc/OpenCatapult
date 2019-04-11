@@ -132,7 +132,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _pluginService
                 .Setup(s => s.AddPlugin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string name, string type, string author, string version, string[] requiredServices, CancellationToken cancellationToken) =>
+                .ReturnsAsync((string name, string type, string author, string version, string[] requiredServices, 
+                    string displayName, string description, string thumnailUrl, string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken) =>
                     new Plugin
                     {
                         Id = 1,

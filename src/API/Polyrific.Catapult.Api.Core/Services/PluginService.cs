@@ -56,7 +56,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 var tagSpec = new TagFilterSpecification(tagArray);
                 tagList = (await _tagRepository.GetBySpec(tagSpec, cancellationToken)).ToList();
 
-                var newTags = tagArray.Where(tag => tagList.Any(t => tag.ToLower() == t.Name.ToLower()));
+                var newTags = tagArray.Where(tag => !tagList.Any(t => tag.ToLower() == t.Name.ToLower()));
                 foreach (var newTagName in newTags)
                 {
                     var newTagId = await _tagRepository.Create(new Tag
@@ -106,7 +106,9 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _pluginRepository.GetById(id, cancellationToken);
+            var spec = new PluginFilterSpecification(id);
+            spec.IncludeStrings.Add("Tags.Tag");
+            return await _pluginRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
         public async Task<Plugin> GetPluginByName(string name, CancellationToken cancellationToken = default(CancellationToken))
@@ -114,6 +116,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var spec = new PluginFilterSpecification(name, null);
+            spec.IncludeStrings.Add("Tags.Tag");
 
             return await _pluginRepository.GetSingleBySpec(spec, cancellationToken);
         }
@@ -123,6 +126,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var spec = new PluginFilterSpecification(null, type != "all" ? type : null);
+            spec.IncludeStrings.Add("Tags.Tag");
             var plugins = await _pluginRepository.GetBySpec(spec, cancellationToken);
 
             return plugins.ToList();

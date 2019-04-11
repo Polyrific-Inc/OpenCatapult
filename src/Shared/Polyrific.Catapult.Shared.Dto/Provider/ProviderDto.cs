@@ -32,11 +32,6 @@ namespace Polyrific.Catapult.Shared.Dto.Provider
         public string Version { get; set; }
 
         /// <summary>
-        /// Date when the provider was registered
-        /// </summary>
-        public DateTime RegistrationDate { get; set; }
-
-        /// <summary>
         /// Required services of the provider
         /// </summary>
         public string[] RequiredServices { get; set; }
@@ -49,7 +44,7 @@ namespace Polyrific.Catapult.Shared.Dto.Provider
         /// <summary>
         /// The Tags of the provider
         /// </summary>
-        public string Tags { get; set; }
+        public string[] Tags { get; set; }
 
         /// <summary>
         /// Created date of the provider

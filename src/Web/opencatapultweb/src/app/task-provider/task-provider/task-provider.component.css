@@ -25,3 +25,8 @@ table {
 mat-select {
   width: 200px;
 }
+
+.tag-filter {
+  margin-left: 10px;
+  width: 300px;
+}

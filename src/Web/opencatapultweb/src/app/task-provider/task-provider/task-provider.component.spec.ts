@@ -4,7 +4,7 @@ import { TaskProviderComponent } from './task-provider.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSelectModule,
-  MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+  MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule, MatAutocompleteModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { FlexModule } from '@angular/flex-layout';
@@ -23,6 +23,7 @@ describe('TaskProviderComponent', () => {
       declarations: [ TaskProviderComponent, TaskProviderInfoDialogComponent, TaskProviderRegisterDialogComponent ],
       imports: [
         HttpClientTestingModule,
+        BrowserAnimationsModule,
         MatTableModule,
         MatButtonModule,
         MatIconModule,
@@ -35,7 +36,8 @@ describe('TaskProviderComponent', () => {
         CoreModule,
         FlexModule,
         MatProgressBarModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatAutocompleteModule
       ],
       providers: [
         {

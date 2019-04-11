@@ -14,7 +14,7 @@ namespace Polyrific.Catapult.Api.Data
         {
         }
 
-        public override async Task<int> Create(Plugin entity, CancellationToken cancellationToken = default)
+        public override async Task<int> Create(Plugin entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 

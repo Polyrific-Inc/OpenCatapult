@@ -1,7 +1,40 @@
-<h1 mat-dialog-title>Task Provider Additional Config</h1>
-<div mat-dialog-content>
+<h1 mat-dialog-title>Task Provider: {{taskProvider.displayName}}</h1>
+<div mat-dialog-content [formGroup]="providerForm">
 
     <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+    <mat-form-field class="full-width-input">
+      <mat-label>Name</mat-label>
+    <input matInput formControlName="name" readonly>
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Display Name</mat-label>
+    <input matInput
+      formControlName="displayName" readonly>
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description" readonly></textarea>
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Author</mat-label>
+    <input matInput formControlName="author" readonly>
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Version</mat-label>
+    <input matInput formControlName="version" readonly>
+  </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+    <mat-label>Tags</mat-label>
+    <mat-chip-list #chipList>
+      <mat-chip *ngFor="let tag of taskProvider.tags">{{tag}}</mat-chip>
+    </mat-chip-list>
+  </mat-form-field>
 
     <div class="no-records" *ngIf="!loading && additionalConfigs?.length <= 0">
         No Additional Configs Found

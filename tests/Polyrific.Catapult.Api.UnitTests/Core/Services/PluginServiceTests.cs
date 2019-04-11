@@ -10,6 +10,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Xunit;
 
@@ -78,7 +79,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void GetPluginById_ReturnItem()
         {
             _pluginRepository
-                .Setup(r => r.GetById(1, It.IsAny<CancellationToken>()))
+                .Setup(r => r.GetSingleBySpec(It.IsAny<PluginFilterSpecification>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Plugin {Id = 1, Name = "GeneratorProvider1"});
 
             var service = new PluginService(_pluginRepository.Object, _externalServiceTypeRepository.Object, _tagRepository.Object);
