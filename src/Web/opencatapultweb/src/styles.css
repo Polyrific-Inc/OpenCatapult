@@ -36,7 +36,11 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-bottom: 2px;
 }
 
-.title-desc span {
+.title-desc span, .project-module-description span {
   font-size: 14px;
   color: #757575;
+}
+
+.project-module-description {
+  margin-top: 8px;
 }
