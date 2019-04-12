@@ -21,13 +21,13 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
         [Option("-t|--type", "Type of the task provider", CommandOptionType.SingleOrNoValue)]
         [AllowedValues(
             "all",
-            Shared.Dto.Constants.PluginType.BuildProvider,
-            Shared.Dto.Constants.PluginType.HostingProvider,
-            Shared.Dto.Constants.PluginType.GeneratorProvider,
-            Shared.Dto.Constants.PluginType.RepositoryProvider,
-            Shared.Dto.Constants.PluginType.DatabaseProvider,
-            Shared.Dto.Constants.PluginType.StorageProvider,
-            Shared.Dto.Constants.PluginType.TestProvider)]
+            Shared.Dto.Constants.ProviderType.BuildProvider,
+            Shared.Dto.Constants.ProviderType.HostingProvider,
+            Shared.Dto.Constants.ProviderType.GeneratorProvider,
+            Shared.Dto.Constants.ProviderType.RepositoryProvider,
+            Shared.Dto.Constants.ProviderType.DatabaseProvider,
+            Shared.Dto.Constants.ProviderType.StorageProvider,
+            Shared.Dto.Constants.ProviderType.TestProvider)]
         public string ProviderType { get; set; }
 
         public override string Execute()
