@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ProjectDto, ProjectService, AuthorizePolicy } from '@app/core';
+import { ProjectDto, ProjectService, AuthorizePolicy, ProjectHistoryService } from '@app/core';
 import { SnackbarService, ConfirmationDialogComponent, ConfirmationWithInputDialogComponent } from '@app/shared';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material';
@@ -19,6 +19,7 @@ export class ProjectArchiveDetailComponent implements OnInit {
 
   constructor(
     private projectService: ProjectService,
+    private projectHistoryService: ProjectHistoryService,
     private snackbar: SnackbarService,
     private router: Router,
     private route: ActivatedRoute,
@@ -82,6 +83,8 @@ export class ProjectArchiveDetailComponent implements OnInit {
         this.projectService.deleteProject(this.project.id)
           .subscribe(data => {
             this.snackbar.open('Project has been deleted');
+
+            this.projectHistoryService.deleteProjectHistory(this.project.id);
 
             this.router.navigate(['project', { dummyData: (new Date).getTime()}])
               .then(() => this.router.navigate(['project']));

@@ -79,6 +79,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                     .subscribe(() => {
                       this.snackbar.open('Project is being removed. You will be notified once the process has been done');
 
+                      this.projectHistoryService.deleteProjectHistory(this.project.id);
+
                       this.router.navigate(['project', { dummyData: (new Date).getTime()}])
                         .then(() => this.router.navigate(['project']));
                     }, () => this.loading = false);
@@ -134,6 +136,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     this.projectService.deleteProject(this.project.id)
       .subscribe(data => {
         this.snackbar.open('Project has been deleted');
+
+        this.projectHistoryService.deleteProjectHistory(this.project.id);
 
         this.router.navigate(['project', { dummyData: (new Date).getTime()}])
           .then(() => this.router.navigate(['project']));

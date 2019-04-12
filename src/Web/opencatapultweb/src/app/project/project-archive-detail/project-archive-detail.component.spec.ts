@@ -40,6 +40,7 @@ describe('ProjectArchiveDetailComponent', () => {
         },
         {
           provide: AuthService, useValue: {
+            currentUser: of({}),
             currentUserValue: {
               role: 'Administrator'
             },

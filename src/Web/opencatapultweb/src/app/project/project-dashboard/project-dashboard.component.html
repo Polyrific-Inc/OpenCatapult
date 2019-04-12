@@ -19,7 +19,7 @@
     <mat-card-content>
       <div class="margin10"></div>
       <ul class="recent-projects">
-        <li *ngFor="let project of shownHistory"><a routerLink="/project/{{project.id}}">{{project.name}}</a></li>
+        <li *ngFor="let project of shownHistory"><a routerLink="/project/{{project.id}}">{{project.displayName || project.name}}</a></li>
       </ul>
       <div *ngIf="history?.length > shownHistoryNumber">
           <div class="button margin10" (click)="toggleShowAll(true)" *ngIf="history?.length !== shownHistory?.length">
