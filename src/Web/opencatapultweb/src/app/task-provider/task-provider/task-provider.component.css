@@ -30,3 +30,8 @@ mat-select {
   margin-left: 10px;
   width: 300px;
 }
+
+.thumbnail {
+  max-height: 35px;
+  max-width: 35px;
+}

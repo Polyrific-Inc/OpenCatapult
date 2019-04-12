@@ -41,6 +41,7 @@ export class TaskProviderComponent implements OnInit, AfterViewInit {
   tagControl = new FormControl();
 
   displayedColumns: string[] = [
+    'thumbnail',
     'displayName',
     'type',
     'author',
