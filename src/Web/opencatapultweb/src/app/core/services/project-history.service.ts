@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { ProjectDto } from '../models/project/project-dto';
 import { AuthService } from '../auth/auth.service';
 import { User } from '../auth/user';
-import { ProjectService } from './project.service';
 
 const localStorageKey = 'projectHistory';
 
