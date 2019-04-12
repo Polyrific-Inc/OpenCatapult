@@ -7,23 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190410025913_UpdateTaskProviderProperty.cs" />
-    <Compile Remove="Migrations\20190410025913_UpdateTaskProviderProperty.Designer.cs" />
-    <Compile Remove="Migrations\20190410032720_UpdateTaskProviderProperty.cs" />
-    <Compile Remove="Migrations\20190410032720_UpdateTaskProviderProperty.Designer.cs" />
-    <Compile Remove="Migrations\20190410065202_UpdateTaskProviderProperty.cs" />
-    <Compile Remove="Migrations\20190410065202_UpdateTaskProviderProperty.Designer.cs" />
-    <Compile Remove="Migrations\20190410084919_UpdateTaskProviderProperty.cs" />
-    <Compile Remove="Migrations\20190410084919_UpdateTaskProviderProperty.Designer.cs" />
-    <Compile Remove="Migrations\20190410085043_UpdateTaskProviderProperty.cs" />
-    <Compile Remove="Migrations\20190410085043_UpdateTaskProviderProperty.Designer.cs" />
-    <Compile Remove="Migrations\20190410090056_UpdateTaskProviderProperty2.cs" />
-    <Compile Remove="Migrations\20190410090056_UpdateTaskProviderProperty2.Designer.cs" />
-    <Compile Remove="Migrations\20190412023331_RenamePluginToProvider.cs" />
-    <Compile Remove="Migrations\20190412064658_RenamePluginToProvider.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="7.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.3" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.1.3" />
