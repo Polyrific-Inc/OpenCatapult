@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.Shared.Dto.Provider
 {
-    public class ProviderAdditionalConfigDto
+    public class TaskProviderAdditionalConfigDto
     {
         /// <summary>
         /// Name of the configuration

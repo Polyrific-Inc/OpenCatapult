@@ -13,11 +13,11 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
     {
         public ProviderAutoMapperProfile()
         {
-            CreateMap<TaskProvider, ProviderDto>()
+            CreateMap<TaskProvider, TaskProviderDto>()
                 .ForMember(dest => dest.RequiredServices, opt => opt.MapFrom(src => src.RequiredServicesString.Split(DataDelimiter.Comma, StringSplitOptions.None)))
                 .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(t => t.Tag.Name).ToArray()));
 
-            CreateMap<NewProviderDto, TaskProvider>();
+            CreateMap<NewTaskProviderDto, TaskProvider>();
         }
     }
 }

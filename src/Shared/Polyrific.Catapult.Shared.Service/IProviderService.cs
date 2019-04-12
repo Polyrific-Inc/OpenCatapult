@@ -13,7 +13,7 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <param name="dto">DTO of the new provider</param>
         /// <returns>Provider DTO</returns>
-        Task<ProviderDto> AddProvider(NewProviderDto dto);
+        Task<TaskProviderDto> AddProvider(NewTaskProviderDto dto);
 
         /// <summary>
         /// Delete a registered provider
@@ -27,27 +27,27 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <param name="type">Type of the provider</param>
         /// <returns></returns>
-        Task<List<ProviderDto>> GetProviders(string type = "all");
+        Task<List<TaskProviderDto>> GetProviders(string type = "all");
 
         /// <summary>
         /// Get a provider by id
         /// </summary>
         /// <param name="id">Id of the provider</param>
         /// <returns></returns>
-        Task<ProviderDto> GetProviderById(int id);
+        Task<TaskProviderDto> GetProviderById(int id);
 
         /// <summary>
         /// Get a provider by name
         /// </summary>
         /// <param name="name">Name of the provider</param>
         /// <returns></returns>
-        Task<ProviderDto> GetProviderByName(string name);
+        Task<TaskProviderDto> GetProviderByName(string name);
 
         /// <summary>
         /// Get provider additional configs by provider name
         /// </summary>
         /// <param name="providerName">Name of the provider</param>
         /// <returns></returns>
-        Task<List<ProviderAdditionalConfigDto>> GetProviderAdditionalConfigByProviderName(string providerName);
+        Task<List<TaskProviderAdditionalConfigDto>> GetProviderAdditionalConfigByProviderName(string providerName);
     }
 }

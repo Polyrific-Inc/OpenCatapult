@@ -35,10 +35,10 @@ namespace Polyrific.Catapult.Cli.Commands
                     sb.AppendLine($"  - {engine.Name}: {engine.Version ?? "n/a"}");
             }
 
-            if (versionResult.Providers?.Count > 0)
+            if (versionResult.TaskProviders?.Count > 0)
             {
                 sb.AppendLine($"Registered Task Providers:");
-                foreach (var provider in versionResult.Providers)
+                foreach (var provider in versionResult.TaskProviders)
                     sb.AppendLine($"  - {provider.Name}: {provider.Version}");
             }
 

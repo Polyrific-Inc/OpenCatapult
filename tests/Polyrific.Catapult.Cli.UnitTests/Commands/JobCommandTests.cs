@@ -77,7 +77,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _projectService.Setup(p => p.GetProjectByName(It.IsAny<string>())).ReturnsAsync((string name) => projects.FirstOrDefault(p => p.Name == name));
 
             _providerService = new Mock<IProviderService>();
-            _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Provider.ProviderAdditionalConfigDto>());
+            _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Provider.TaskProviderAdditionalConfigDto>());
         }
 
         [Fact]

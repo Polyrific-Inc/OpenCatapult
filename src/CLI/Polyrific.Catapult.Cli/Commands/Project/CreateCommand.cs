@@ -225,9 +225,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             return "";
         }
 
-        private bool ValidateProviders(IEnumerable<string> providerNames, out List<ProviderDto> providers)
+        private bool ValidateProviders(IEnumerable<string> providerNames, out List<TaskProviderDto> providers)
         {
-            providers = new List<ProviderDto>();
+            providers = new List<TaskProviderDto>();
             var notExistProviders = new List<string>();
 
             if (Verbose)

@@ -43,26 +43,26 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            var providers = new List<ProviderDto>
+            var providers = new List<TaskProviderDto>
             {
-                new ProviderDto
+                new TaskProviderDto
                 {
                     Id = 1,
                     Name = "AspNetCoreMvc"
                 },
-                new ProviderDto
+                new TaskProviderDto
                 {
                     Id = 2,
                     Name = "GitHubRepositoryProvider",
                     RequiredServices = new string[] { "GitHub" }
                 },
-                new ProviderDto
+                new TaskProviderDto
                 {
                     Id = 3,
                     Name = "AzureAppService",
-                    AdditionalConfigs = new ProviderAdditionalConfigDto[]
+                    AdditionalConfigs = new TaskProviderAdditionalConfigDto[]
                     {
-                        new ProviderAdditionalConfigDto
+                        new TaskProviderAdditionalConfigDto
                         {
                             Name = "SubscriptionId",
                             Label = "Subscription Id",
@@ -70,7 +70,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                             IsRequired = true,
                             IsSecret = false
                         },
-                        new ProviderAdditionalConfigDto
+                        new TaskProviderAdditionalConfigDto
                         {
                             Name = "AppKey",
                             Label = "AppKey Id",

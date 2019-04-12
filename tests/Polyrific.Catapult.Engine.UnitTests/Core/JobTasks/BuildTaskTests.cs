@@ -57,9 +57,9 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 });
             _providerService = new Mock<IProviderService>();
             _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfigDto>
+                .ReturnsAsync(new List<TaskProviderAdditionalConfigDto>
                 {
-                    new ProviderAdditionalConfigDto
+                    new TaskProviderAdditionalConfigDto
                     {
                         Name = "ConnectionString",
                         IsSecret = true

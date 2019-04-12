@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         private readonly Mock<ITaskProviderService> _providerService;
         private readonly Mock<ITaskProviderAdditionalConfigService> _providerAdditionalConfigService;
         private readonly IMapper _mapper;
-        private readonly Mock<ILogger<ProviderController>> _logger;
+        private readonly Mock<ILogger<TaskProviderController>> _logger;
 
         public ProviderControllerTests()
         {
@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             _mapper = AutoMapperUtils.GetMapper();
 
-            _logger = LoggerMock.GetLogger<ProviderController>();
+            _logger = LoggerMock.GetLogger<TaskProviderController>();
         }
 
         [Fact]
@@ -48,13 +48,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     }
                 });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
-            var result = await controller.GetProviders();
+            var result = await controller.GetTaskProviders();
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<List<ProviderDto>>(okActionResult.Value);
+            var returnValue = Assert.IsType<List<TaskProviderDto>>(okActionResult.Value);
             Assert.NotEmpty(returnValue);
         }
 
@@ -73,13 +73,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     }
                 });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
-            var result = await controller.GetProvidersByType("GeneratorProvider");
+            var result = await controller.GetTaskProvidersByType("GeneratorProvider");
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<List<ProviderDto>>(okActionResult.Value);
+            var returnValue = Assert.IsType<List<TaskProviderDto>>(okActionResult.Value);
             Assert.NotEmpty(returnValue);
             Assert.DoesNotContain(returnValue, p => p.Type != "GeneratorProvider");
         }
@@ -95,13 +95,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = "AspMvcNet"
                     });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
-            var result = await controller.GetProviderById(1);
+            var result = await controller.GetTaskProviderById(1);
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<ProviderDto>(okActionResult.Value);
+            var returnValue = Assert.IsType<TaskProviderDto>(okActionResult.Value);
             Assert.Equal(1, returnValue.Id);
         }
 
@@ -116,13 +116,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = serviceName
                     });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
-            var result = await controller.GetProviderByName("AspMvcNet");
+            var result = await controller.GetTaskProviderByName("AspMvcNet");
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<ProviderDto>(okActionResult.Value);
+            var returnValue = Assert.IsType<TaskProviderDto>(okActionResult.Value);
             Assert.Equal("AspMvcNet", returnValue.Name);
         }
 
@@ -146,9 +146,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _providerAdditionalConfigService.Setup(s => s.AddAdditionalConfigs(It.IsAny<int>(), It.IsAny<List<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<int> { 1 });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
 
-            var dto = new NewProviderDto
+            var dto = new NewTaskProviderDto
             {
                 Name = "AspMvcNet",
                 Type = "GeneratorProvider",
@@ -156,10 +156,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 Version = "1.0.0",
                 RequiredServices = new string[] { "test" }
             };
-            var result = await controller.RegisterProvider(dto);
+            var result = await controller.RegisterTaskProvider(dto);
 
             var createAtRouteActionResult = Assert.IsType<CreatedAtRouteResult>(result);
-            var returnValue = Assert.IsType<ProviderDto>(createAtRouteActionResult.Value);
+            var returnValue = Assert.IsType<TaskProviderDto>(createAtRouteActionResult.Value);
             Assert.Equal(1, returnValue.Id);
             Assert.Equal("AspMvcNet", returnValue.Name);
             Assert.Equal("GeneratorProvider", returnValue.Type);
@@ -174,9 +174,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _providerService.Setup(s => s.DeleteTaskProvider(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
 
-            var result = await controller.DeleteProviderById(1);
+            var result = await controller.DeleteTaskProviderById(1);
 
             Assert.IsType<NoContentResult>(result);
         }
@@ -194,13 +194,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     }
                 });
 
-            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
+            var controller = new TaskProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
-            var result = await controller.GetProviderAdditionalConfigsByProviderName("AspNetCoreMvc");
+            var result = await controller.GetTaskProviderAdditionalConfigsByTaskProviderName("AspNetCoreMvc");
 
             var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<List<ProviderAdditionalConfigDto>>(okActionResult.Value);
+            var returnValue = Assert.IsType<List<TaskProviderAdditionalConfigDto>>(okActionResult.Value);
             Assert.NotEmpty(returnValue);
         }
     }

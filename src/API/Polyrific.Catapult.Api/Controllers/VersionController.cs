@@ -49,7 +49,7 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 ApiVersion = apiVersion,
                 Engines = _mapper.Map<List<CatapultEngineDto>>(engines),
-                Providers = _mapper.Map<List<ProviderDto>>(providers)
+                TaskProviders = _mapper.Map<List<TaskProviderDto>>(providers)
             });
         }
     }

@@ -4,7 +4,7 @@ using System;
 
 namespace Polyrific.Catapult.Shared.Dto.Provider
 {
-    public class NewProviderDto
+    public class NewTaskProviderDto
     {
         /// <summary>
         /// Name of the provider
@@ -34,7 +34,7 @@ namespace Polyrific.Catapult.Shared.Dto.Provider
         /// <summary>
         /// Provider additional configs
         /// </summary>
-        public ProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
+        public TaskProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
 
         /// <summary>
         /// The Tags of the provider

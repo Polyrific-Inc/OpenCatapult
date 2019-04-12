@@ -35,9 +35,9 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                         Version = "1.0"
                     }
                 },
-                Providers = new List<ProviderDto>
+                TaskProviders = new List<TaskProviderDto>
                 {
-                    new ProviderDto
+                    new TaskProviderDto
                     {
                         Name = "AspNetMvc",
                         Version = "1.0"

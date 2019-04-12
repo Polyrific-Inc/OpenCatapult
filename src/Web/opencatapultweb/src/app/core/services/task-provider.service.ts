@@ -12,23 +12,23 @@ export class TaskProviderService {
   constructor(private api: ApiService) { }
 
   getTaskProviderByName(name: string): Observable<TaskProviderDto> {
-    return this.api.get<TaskProviderDto>(`provider/name/${name}`);
+    return this.api.get<TaskProviderDto>(`task-provider/name/${name}`);
   }
 
   getTaskProvider(id: number): Observable<TaskProviderDto> {
-    return this.api.get<TaskProviderDto>(`provider/${id}`);
+    return this.api.get<TaskProviderDto>(`task-provider/${id}`);
   }
 
   getTaskProviders(type: string) {
-    return this.api.get<TaskProviderDto[]>(`provider/type/${type}`);
+    return this.api.get<TaskProviderDto[]>(`task-provider/type/${type}`);
   }
 
   deleteTaskProvider(id: number) {
-    return this.api.delete(`provider/${id}`);
+    return this.api.delete(`task-provider/${id}`);
   }
 
   registerTaskProvider(dto: RegisterTaskProviderDto) {
-    return this.api.post('provider', dto);
+    return this.api.post('task-provider', dto);
   }
 
   getTaskProviderType(taskType: string) {

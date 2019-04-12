@@ -4,70 +4,70 @@ using System;
 
 namespace Polyrific.Catapult.Shared.Dto.Provider
 {
-    public class ProviderDto
+    public class TaskProviderDto
     {
         /// <summary>
-        /// Id of the provider
+        /// Id of the task provider
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Name of the provider
+        /// Name of the task provider
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Type of the provider
+        /// Type of the task provider
         /// </summary>
         public string Type { get; set; }
 
         /// <summary>
-        /// Author of the provider
+        /// Author of the task provider
         /// </summary>
         public string Author { get; set; }
 
         /// <summary>
-        /// Version of the provider
+        /// Version of the task provider
         /// </summary>
         public string Version { get; set; }
 
         /// <summary>
-        /// Required services of the provider
+        /// Required services of the task provider
         /// </summary>
         public string[] RequiredServices { get; set; }
 
         /// <summary>
         /// Provider additional configs
         /// </summary>
-        public ProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
+        public TaskProviderAdditionalConfigDto[] AdditionalConfigs { get; set; }
 
         /// <summary>
-        /// The Tags of the provider
+        /// The Tags of the task provider
         /// </summary>
         public string[] Tags { get; set; }
 
         /// <summary>
-        /// Created date of the provider
+        /// Created date of the task provider
         /// </summary>
         public DateTime Created { get; set; }
 
         /// <summary>
-        /// Updated date of the provider
+        /// Updated date of the task provider
         /// </summary>
         public DateTime? Updated { get; set; }
 
         /// <summary>
-        /// Display name of the provider
+        /// Display name of the task provider
         /// </summary>
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Description of the provider
+        /// Description of the task provider
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Url of the provider thumbnail
+        /// Url of the task provider thumbnail
         /// </summary>
         public string ThumbnailUrl { get; set; }
     }
