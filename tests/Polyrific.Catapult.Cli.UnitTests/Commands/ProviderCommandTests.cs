@@ -113,7 +113,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var testContent = new NewProviderDto
             {
                 Name = "AProvider01",
-                Type = ProviderType.HostingProvider,
+                Type = TaskProviderType.HostingProvider,
                 Author = "Frandi",
                 Version = "1.0"
             };

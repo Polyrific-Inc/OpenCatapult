@@ -10,13 +10,13 @@ using Polyrific.Catapult.Api.Core.Repositories;
 
 namespace Polyrific.Catapult.Api.Data
 {
-    public class ProviderAdditionalConfigRepository : BaseRepository<ProviderAdditionalConfig>, IProviderAdditionalConfigRepository
+    public class TaskProviderAdditionalConfigRepository : BaseRepository<TaskProviderAdditionalConfig>, ITaskProviderAdditionalConfigRepository
     {
-        public ProviderAdditionalConfigRepository(CatapultDbContext dbContext) : base(dbContext)
+        public TaskProviderAdditionalConfigRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
 
-        public async Task<List<int>> AddRange(List<ProviderAdditionalConfig> entities, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<int>> AddRange(List<TaskProviderAdditionalConfig> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -25,7 +25,7 @@ namespace Polyrific.Catapult.Api.Data
                 entity.Created = DateTime.UtcNow;
             }
 
-            Db.Set<ProviderAdditionalConfig>().AddRange(entities);
+            Db.Set<TaskProviderAdditionalConfig>().AddRange(entities);
             await Db.SaveChangesAsync(cancellationToken);
 
             return entities.Select(e => e.Id).ToList();

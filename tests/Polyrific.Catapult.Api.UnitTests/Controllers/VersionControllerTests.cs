@@ -17,14 +17,14 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
     public class VersionControllerTests
     {
         private readonly Mock<ICatapultEngineService> _catapultEngineService;
-        private readonly Mock<IProviderService> _providerService;
+        private readonly Mock<ITaskProviderService> _providerService;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<VersionController>> _logger;
 
         public VersionControllerTests()
         {
             _catapultEngineService = new Mock<ICatapultEngineService>();
-            _providerService = new Mock<IProviderService>();
+            _providerService = new Mock<ITaskProviderService>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -45,10 +45,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = "Engine01"
                     }
                 });
-            _providerService.Setup(s => s.GetProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Provider>
+            _providerService.Setup(s => s.GetTaskProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProvider>
                 {
-                    new Provider
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = "AspMvcNet"

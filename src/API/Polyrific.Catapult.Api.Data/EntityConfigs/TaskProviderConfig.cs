@@ -6,14 +6,14 @@ using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Data.EntityConfigs
 {
-    public class ProviderConfig : BaseEntityConfig<Provider>
+    public class TaskProviderConfig : BaseEntityConfig<TaskProvider>
     {
-        public override void Configure(EntityTypeBuilder<Provider> builder)
+        public override void Configure(EntityTypeBuilder<TaskProvider> builder)
         {
             base.Configure(builder);
 
             builder.HasData(
-                new Provider
+                new TaskProvider
                 {
                     Id = 1,
                     Name = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc",
@@ -27,7 +27,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1"
                 },
 
-                new Provider
+                new TaskProvider
                 {
                     Id = 2,
                     Name = "Polyrific.Catapult.TaskProviders.GitHub",
@@ -41,7 +41,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2" },
                 
-                new Provider
+                new TaskProvider
                 {
                     Id = 3,
                     Name = "Polyrific.Catapult.TaskProviders.DotNetCore",
@@ -55,7 +55,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3"
                 },
 
-                new Provider
+                new TaskProvider
                 {
                     Id = 4,
                     Name = "Polyrific.Catapult.TaskProviders.DotNetCoreTest",
@@ -69,7 +69,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4"
                 },
 
-                new Provider
+                new TaskProvider
                 {
                     Id = 5,
                     Name = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore",
@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5"
                 },
 
-                new Provider
+                new TaskProvider
                 {
                     Id = 6,
                     Name = "Polyrific.Catapult.TaskProviders.AzureAppService",
@@ -98,7 +98,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6"
                 },
 
-                new Provider
+                new TaskProvider
                 {
                     Id = 7,
                     Name = "Polyrific.Catapult.TaskProviders.GenericCommand",

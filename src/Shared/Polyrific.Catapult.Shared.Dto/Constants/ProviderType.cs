@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.Shared.Dto.Constants
 {
-    public class ProviderType
+    public class TaskProviderType
     {
         public const string BuildProvider = "BuildProvider";
         public const string DatabaseProvider = "DatabaseProvider";

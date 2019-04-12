@@ -19,6 +19,8 @@
     <Compile Remove="Migrations\20190410085043_UpdateTaskProviderProperty.Designer.cs" />
     <Compile Remove="Migrations\20190410090056_UpdateTaskProviderProperty2.cs" />
     <Compile Remove="Migrations\20190410090056_UpdateTaskProviderProperty2.Designer.cs" />
+    <Compile Remove="Migrations\20190412023331_RenamePluginToProvider.cs" />
+    <Compile Remove="Migrations\20190412064658_RenamePluginToProvider.cs" />
   </ItemGroup>
 
   <ItemGroup>

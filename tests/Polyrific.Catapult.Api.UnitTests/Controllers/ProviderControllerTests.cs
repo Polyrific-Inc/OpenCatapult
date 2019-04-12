@@ -19,16 +19,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 {
     public class ProviderControllerTests
     {
-        private readonly Mock<IProviderService> _providerService;
-        private readonly Mock<IProviderAdditionalConfigService> _providerAdditionalConfigService;
+        private readonly Mock<ITaskProviderService> _providerService;
+        private readonly Mock<ITaskProviderAdditionalConfigService> _providerAdditionalConfigService;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<ProviderController>> _logger;
 
         public ProviderControllerTests()
         {
-            _providerService = new Mock<IProviderService>();
+            _providerService = new Mock<ITaskProviderService>();
 
-            _providerAdditionalConfigService = new Mock<IProviderAdditionalConfigService>();
+            _providerAdditionalConfigService = new Mock<ITaskProviderAdditionalConfigService>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -38,10 +38,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviders_ReturnsProviderList()
         {
-            _providerService.Setup(s => s.GetProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Provider>
+            _providerService.Setup(s => s.GetTaskProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProvider>
                 {
-                    new Provider
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = "AspMvcNet"
@@ -61,11 +61,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProvidersByType_ReturnsProviderList()
         {
-            _providerService.Setup(s => s.GetProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetTaskProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string type, CancellationToken cancellationToken) =>
-                new List<Provider>
+                new List<TaskProvider>
                 {
-                    new Provider
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = "AspMvcNet",
@@ -87,9 +87,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderById_ReturnsProvider()
         {
-            _providerService.Setup(s => s.GetProviderById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetTaskProviderById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
-                    new Provider
+                    new TaskProvider
                     {
                         Id = id,
                         Name = "AspMvcNet"
@@ -108,9 +108,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderByName_ReturnsProvider()
         {
-            _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetTaskProviderByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string serviceName, CancellationToken cancellationToken) =>
-                    new Provider
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = serviceName
@@ -130,11 +130,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RegisterProvider_ReturnsCreatedProvider()
         {
             _providerService
-                .Setup(s => s.AddProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
+                .Setup(s => s.AddTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, string type, string author, string version, string[] requiredServices, 
                     string displayName, string description, string thumnailUrl, string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken) =>
-                    new Provider
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = name,
@@ -143,7 +143,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Version = version,
                         RequiredServicesString = string.Join(",", requiredServices)
                     });
-            _providerAdditionalConfigService.Setup(s => s.AddAdditionalConfigs(It.IsAny<int>(), It.IsAny<List<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+            _providerAdditionalConfigService.Setup(s => s.AddAdditionalConfigs(It.IsAny<int>(), It.IsAny<List<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<int> { 1 });
 
             var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
@@ -171,7 +171,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void DeleteProvider_ReturnsNoContent()
         {
-            _providerService.Setup(s => s.DeleteProvider(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.DeleteTaskProvider(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
@@ -184,10 +184,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderAdditionalConfigsByProviderName_ReturnsProviderAdditionalConfigList()
         {
-            _providerAdditionalConfigService.Setup(s => s.GetByProviderName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigService.Setup(s => s.GetByTaskProviderName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "ConnectionString"

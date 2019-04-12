@@ -18,12 +18,12 @@ namespace Polyrific.Catapult.Api.Controllers
     [ApiController]
     public class ProviderController : ControllerBase
     {
-        private readonly IProviderService _providerService;
-        private readonly IProviderAdditionalConfigService _providerAdditionalConfigService;
+        private readonly ITaskProviderService _providerService;
+        private readonly ITaskProviderAdditionalConfigService _providerAdditionalConfigService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
 
-        public ProviderController(IProviderService providerService, IProviderAdditionalConfigService providerAdditionalConfigService, 
+        public ProviderController(ITaskProviderService providerService, ITaskProviderAdditionalConfigService providerAdditionalConfigService, 
             IMapper mapper, ILogger<ProviderController> logger)
         {
             _providerService = providerService;
@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting providers");
 
-            var providers = await _providerService.GetProviders();
+            var providers = await _providerService.GetTaskProviders();
 
             var result = _mapper.Map<List<ProviderDto>>(providers);
 
@@ -60,7 +60,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting providers for type {providerType}", providerType);
 
-            var providers = await _providerService.GetProviders(providerType);
+            var providers = await _providerService.GetTaskProviders(providerType);
 
             var result = _mapper.Map<List<ProviderDto>>(providers);
 
@@ -78,11 +78,11 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting provider {providerId}", providerId);
 
-            var provider = await _providerService.GetProviderById(providerId);
+            var provider = await _providerService.GetTaskProviderById(providerId);
             if (provider == null)
                 return NoContent();
 
-            var additionalConfigs = await _providerAdditionalConfigService.GetByProvider(providerId);
+            var additionalConfigs = await _providerAdditionalConfigService.GetByTaskProvider(providerId);
 
             var result = _mapper.Map<ProviderDto>(provider);
             result.AdditionalConfigs = _mapper.Map<ProviderAdditionalConfigDto[]>(additionalConfigs);
@@ -102,11 +102,11 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting provider {providerName}", providerName);
 
-            var provider = await _providerService.GetProviderByName(providerName);
+            var provider = await _providerService.GetTaskProviderByName(providerName);
             if (provider == null)
                 return NoContent();
 
-            var additionalConfigs = await _providerAdditionalConfigService.GetByProvider(provider.Id);
+            var additionalConfigs = await _providerAdditionalConfigService.GetByTaskProvider(provider.Id);
 
             var result = _mapper.Map<ProviderDto>(provider);
             result.AdditionalConfigs = _mapper.Map<ProviderAdditionalConfigDto[]>(additionalConfigs);
@@ -128,13 +128,13 @@ namespace Polyrific.Catapult.Api.Controllers
 
             try
             {
-                var provider = await _providerService.AddProvider(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices, dto.DisplayName, dto.Description,
+                var provider = await _providerService.AddTaskProvider(dto.Name, dto.Type, dto.Author, dto.Version, dto.RequiredServices, dto.DisplayName, dto.Description,
                     dto.ThumbnailUrl, dto.Tags, dto.Created, dto.Updated);
                 var result = _mapper.Map<ProviderDto>(provider);
 
                 if (dto.AdditionalConfigs != null && dto.AdditionalConfigs.Length > 0)
                 {
-                    var additionalConfigs = _mapper.Map<List<ProviderAdditionalConfig>>(dto.AdditionalConfigs);
+                    var additionalConfigs = _mapper.Map<List<TaskProviderAdditionalConfig>>(dto.AdditionalConfigs);
                     var _ = await _providerAdditionalConfigService.AddAdditionalConfigs(provider.Id, additionalConfigs);
                 }
 
@@ -157,7 +157,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Deleting provider {providerId}", providerId);
 
-            await _providerService.DeleteProvider(providerId);
+            await _providerService.DeleteTaskProvider(providerId);
 
             return NoContent();
         }
@@ -173,7 +173,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Getting additional configs for provider {providerName}", providerName);
 
-            var additionalConfigs = await _providerAdditionalConfigService.GetByProviderName(providerName);
+            var additionalConfigs = await _providerAdditionalConfigService.GetByTaskProviderName(providerName);
 
             var result = _mapper.Map<List<ProviderAdditionalConfigDto>>(additionalConfigs);
 

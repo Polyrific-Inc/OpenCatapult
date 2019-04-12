@@ -4,7 +4,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Core.Repositories
 {
-    public interface IProviderRepository : IRepository<Provider>
+    public interface ITaskProviderRepository : IRepository<TaskProvider>
     {
         
     }

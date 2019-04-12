@@ -4,13 +4,13 @@ using System;
 
 namespace Polyrific.Catapult.Api.Core.Exceptions
 {
-    public class ProviderAdditionalConfigRequiredException : Exception
+    public class TaskProviderAdditionalConfigRequiredException : Exception
     {
         public string AdditionalConfigName { get; set; }
         public string ProviderName { get; set; }
 
-        public ProviderAdditionalConfigRequiredException(string additionalConfigName, string providerName)
-            : base($"Provider {providerName} require additional config \"{additionalConfigName}\"")
+        public TaskProviderAdditionalConfigRequiredException(string additionalConfigName, string providerName)
+            : base($"Task Provider {providerName} require additional config \"{additionalConfigName}\"")
         {
             AdditionalConfigName = additionalConfigName;
             ProviderName = providerName;

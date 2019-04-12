@@ -4,12 +4,12 @@ using System;
 
 namespace Polyrific.Catapult.Api.Core.Exceptions
 {
-    public class ProviderNotInstalledException : Exception
+    public class TaskProviderNotInstalledException : Exception
     {
         public string ProviderName { get; set; }
 
-        public ProviderNotInstalledException(string providerName)
-            : base($"Provider \"{providerName}\" is not installed.")
+        public TaskProviderNotInstalledException(string providerName)
+            : base($"Task Provider \"{providerName}\" is not installed.")
         {
             ProviderName = providerName;
         }

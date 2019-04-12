@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Polyrific.Catapult.Api.Core.Entities
 {
-    public class Provider : BaseEntity
+    public class TaskProvider : BaseEntity
     {
         /// <summary>
         /// Name of the task provider
@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// <summary>
         /// The Tags of the task provider
         /// </summary>
-        public ICollection<ProviderTag> Tags { get; set; }
+        public ICollection<TaskProviderTag> Tags { get; set; }
 
         /// <summary>
         /// Display name of the task provider

@@ -12,6 +12,6 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// <summary>
         /// The provider tags mapping
         /// </summary>
-        public virtual ICollection<ProviderTag> ProviderTags { get; set; }
+        public virtual ICollection<TaskProviderTag> ProviderTags { get; set; }
     }
 }

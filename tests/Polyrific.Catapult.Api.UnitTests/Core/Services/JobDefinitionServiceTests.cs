@@ -24,9 +24,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         private readonly Mock<IJobDefinitionRepository> _jobDefinitionRepository;
         private readonly Mock<IJobTaskDefinitionRepository> _jobTaskDefinitionRepository;
         private readonly Mock<IProjectRepository> _projectRepository;
-        private readonly Mock<IProviderRepository> _providerRepository;
+        private readonly Mock<ITaskProviderRepository> _providerRepository;
         private readonly Mock<IExternalServiceRepository> _externalServiceRepository;
-        private readonly Mock<IProviderAdditionalConfigRepository> _providerAdditionalConfigRepository;
+        private readonly Mock<ITaskProviderAdditionalConfigRepository> _providerAdditionalConfigRepository;
         private readonly Mock<ISecretVault> _secretVault;
 
         public JobDefinitionServiceTests()
@@ -146,11 +146,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => id == 1 ? new Project() { Id = id } : null);
 
-            _providerRepository = new Mock<IProviderRepository>();
+            _providerRepository = new Mock<ITaskProviderRepository>();
 
             _externalServiceRepository = new Mock<IExternalServiceRepository>();
 
-            _providerAdditionalConfigRepository = new Mock<IProviderAdditionalConfigRepository>();
+            _providerAdditionalConfigRepository = new Mock<ITaskProviderAdditionalConfigRepository>();
 
             _secretVault = new Mock<ISecretVault>();
         }
@@ -299,8 +299,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinition_ValidItem()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -316,10 +316,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -345,8 +345,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ConfigNull_ExternalServiceRequiredException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -363,8 +363,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ExternalServiceRequiredException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -381,8 +381,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ExternalServiceNotFoundException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
@@ -399,8 +399,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_IncorrectExternalServiceTypeException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -427,8 +427,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinition_GenericService_ValidItem()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -444,10 +444,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -486,13 +486,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_AdditionalConfigNull_AdditionalConfigRequiredException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -509,19 +509,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<ProviderAdditionalConfigRequiredException>(exception?.Result);
+            Assert.IsType<TaskProviderAdditionalConfigRequiredException>(exception?.Result);
         }
 
         [Fact]
         public void AddJobTaskDefinition_AdditionalConfigNotExist_AdditionalConfigRequiredException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -538,7 +538,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<ProviderAdditionalConfigRequiredException>(exception?.Result);
+            Assert.IsType<TaskProviderAdditionalConfigRequiredException>(exception?.Result);
         }
 
         [Fact]
@@ -560,13 +560,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_InvalidProviderTypeException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = "InvalidType" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = "InvalidType" });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -583,19 +583,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<InvalidProviderTypeException>(exception?.Result);
+            Assert.IsType<InvalidTaskProviderTypeException>(exception?.Result);
         }
 
         [Fact]
         public void AddJobTaskDefinition_IncorrectTaskType_InvalidProviderTypeException()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "VstsBuildProvider", Type = ProviderType.BuildProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "VstsBuildProvider", Type = TaskProviderType.BuildProvider });
 
-            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<ProviderAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new ProviderAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -612,9 +612,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "VstsBuildProvider"
             }));
 
-            Assert.IsType<InvalidProviderTypeException>(exception?.Result);
+            Assert.IsType<InvalidTaskProviderTypeException>(exception?.Result);
 
-            var invalidProviderTypeException = exception?.Result as InvalidProviderTypeException;
+            var invalidProviderTypeException = exception?.Result as InvalidTaskProviderTypeException;
             Assert.NotEmpty(invalidProviderTypeException.TaskTypes);
         }
 
@@ -636,8 +636,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinitions_ValidItem()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "GitHubProvider", Type = ProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
             
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -774,8 +774,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskDefinition_ValidItem()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "AspMvcNetCore", Type = ProviderType.GeneratorProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "AspMvcNetCore", Type = TaskProviderType.GeneratorProvider });
 
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.UpdateJobTaskDefinition(new JobTaskDefinition
@@ -795,8 +795,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskConfig_ValidItem()
         {
-            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Provider>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Provider { Id = 3, Name = "AspMvcNetCore", Type = ProviderType.GeneratorProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "AspMvcNetCore", Type = TaskProviderType.GeneratorProvider });
 
             var updatedConfig = new Dictionary<string, string>()
             {

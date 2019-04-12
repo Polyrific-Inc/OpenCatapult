@@ -25,8 +25,8 @@ namespace Polyrific.Catapult.Api.Infrastructure
             services.AddScoped<IExternalServiceTypeRepository, ExternalServiceTypeRepository>();
             services.AddScoped<IRepository<UserProfile>, UserProfileRepository>();
             services.AddScoped<IRepository<CatapultEngineProfile>, CatapultEngineProfileRepository>();
-            services.AddScoped<IProviderRepository, ProviderRepository>();
-            services.AddScoped<IProviderAdditionalConfigRepository, ProviderAdditionalConfigRepository>();
+            services.AddScoped<ITaskProviderRepository, TaskProviderRepository>();
+            services.AddScoped<ITaskProviderAdditionalConfigRepository, TaskProviderAdditionalConfigRepository>();
             services.AddScoped<IManagedFileRepository, ManagedFileRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
         }

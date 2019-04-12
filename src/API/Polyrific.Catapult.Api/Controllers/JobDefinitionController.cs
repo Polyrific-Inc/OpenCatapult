@@ -262,7 +262,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidProviderTypeException providerTypeEx)
+            catch (InvalidTaskProviderTypeException providerTypeEx)
             {
                 _logger.LogWarning(providerTypeEx, "Invalid provider type");
                 return BadRequest(providerTypeEx.Message);
@@ -272,7 +272,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(modEx, "Job definition not found");
                 return BadRequest(modEx.Message);
             }
-            catch (ProviderNotInstalledException provEx)
+            catch (TaskProviderNotInstalledException provEx)
             {
                 _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);
@@ -341,7 +341,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidProviderTypeException providerTypeEx)
+            catch (InvalidTaskProviderTypeException providerTypeEx)
             {
                 _logger.LogWarning(providerTypeEx, "Invalid provider type");
                 return BadRequest(providerTypeEx.Message);
@@ -351,7 +351,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(modEx, "Job definition not found");
                 return BadRequest(modEx.Message);
             }
-            catch (ProviderNotInstalledException provEx)
+            catch (TaskProviderNotInstalledException provEx)
             {
                 _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);
@@ -472,12 +472,12 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidProviderTypeException providerTypeEx)
+            catch (InvalidTaskProviderTypeException providerTypeEx)
             {
                 _logger.LogWarning(providerTypeEx, "Invalid provider type");
                 return BadRequest(providerTypeEx.Message);
             }
-            catch (ProviderNotInstalledException provEx)
+            catch (TaskProviderNotInstalledException provEx)
             {
                 _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);

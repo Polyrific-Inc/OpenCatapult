@@ -13,20 +13,20 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {
-    public class ProviderService : IProviderService
+    public class TaskProviderService : ITaskProviderService
     {
-        private readonly IProviderRepository _providerRepository;
+        private readonly ITaskProviderRepository _taskProviderRepository;
         private readonly IExternalServiceTypeRepository _externalServiceTypeRepository;
         private readonly ITagRepository _tagRepository;
 
-        public ProviderService(IProviderRepository providerRepository, IExternalServiceTypeRepository externalServiceTypeRepository, ITagRepository tagRepository)
+        public TaskProviderService(ITaskProviderRepository taskProviderRepository, IExternalServiceTypeRepository externalServiceTypeRepository, ITagRepository tagRepository)
         {
-            _providerRepository = providerRepository;
+            _taskProviderRepository = taskProviderRepository;
             _externalServiceTypeRepository = externalServiceTypeRepository;
             _tagRepository = tagRepository;
         }
 
-        public async Task<Provider> AddProvider(string name, string type, string author, string version, string[] requiredServices, string displayName, string description, string thumbnailUrl,
+        public async Task<TaskProvider> AddTaskProvider(string name, string type, string author, string version, string[] requiredServices, string displayName, string description, string thumbnailUrl,
             string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
             
-            var provider = new Provider
+            var taskProvider = new TaskProvider
             {
                 Name = name,
                 DisplayName = displayName,
@@ -84,52 +84,52 @@ namespace Polyrific.Catapult.Api.Core.Services
                 RequiredServicesString = requiredServicesString,
                 Created = created > DateTime.MinValue ? created : DateTime.UtcNow,
                 Updated = updated,
-                Tags = tagList?.Select(t => new ProviderTag
+                Tags = tagList?.Select(t => new TaskProviderTag
                 {
                     TagId = t.Id
                 }).ToList()
             };
 
-            var id = await _providerRepository.Create(provider, cancellationToken);
+            var id = await _taskProviderRepository.Create(taskProvider, cancellationToken);
 
-            return await _providerRepository.GetById(id, cancellationToken);
+            return await _taskProviderRepository.GetById(id, cancellationToken);
         }
 
-        public async Task DeleteProvider(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteTaskProvider(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _providerRepository.Delete(id, cancellationToken);
+            await _taskProviderRepository.Delete(id, cancellationToken);
         }
 
-        public async Task<Provider> GetProviderById(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<TaskProvider> GetTaskProviderById(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new ProviderFilterSpecification(id);
+            var spec = new TaskProviderFilterSpecification(id);
             spec.IncludeStrings.Add("Tags.Tag");
-            return await _providerRepository.GetSingleBySpec(spec, cancellationToken);
+            return await _taskProviderRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
-        public async Task<Provider> GetProviderByName(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<TaskProvider> GetTaskProviderByName(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new ProviderFilterSpecification(name, null);
+            var spec = new TaskProviderFilterSpecification(name, null);
             spec.IncludeStrings.Add("Tags.Tag");
 
-            return await _providerRepository.GetSingleBySpec(spec, cancellationToken);
+            return await _taskProviderRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
-        public async Task<List<Provider>> GetProviders(string type = "all", CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<TaskProvider>> GetTaskProviders(string type = "all", CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new ProviderFilterSpecification(null, type != "all" ? type : null);
+            var spec = new TaskProviderFilterSpecification(null, type != "all" ? type : null);
             spec.IncludeStrings.Add("Tags.Tag");
-            var providers = await _providerRepository.GetBySpec(spec, cancellationToken);
+            var taskProviders = await _taskProviderRepository.GetBySpec(spec, cancellationToken);
 
-            return providers.ToList();
+            return taskProviders.ToList();
         }
     }
 }

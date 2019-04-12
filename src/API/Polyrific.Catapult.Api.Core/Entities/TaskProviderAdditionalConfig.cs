@@ -2,17 +2,17 @@
 
 namespace Polyrific.Catapult.Api.Core.Entities
 {
-    public class ProviderAdditionalConfig : BaseEntity
+    public class TaskProviderAdditionalConfig : BaseEntity
     {
         /// <summary>
         /// Related task provider Id
         /// </summary>
-        public int ProviderId { get; set; }
+        public int TaskProviderId { get; set; }
 
         /// <summary>
         /// Related task provider object
         /// </summary>
-        public virtual Provider Provider { get; set; }
+        public virtual TaskProvider TaskProvider { get; set; }
 
         /// <summary>
         /// Name of the configuration
