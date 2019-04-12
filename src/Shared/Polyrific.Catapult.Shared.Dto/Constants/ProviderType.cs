@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.Shared.Dto.Constants
 {
-    public class PluginType
+    public class ProviderType
     {
         public const string BuildProvider = "BuildProvider";
         public const string DatabaseProvider = "DatabaseProvider";

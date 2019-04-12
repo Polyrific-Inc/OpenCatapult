@@ -13,20 +13,20 @@ using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Api.Core.Services
 {
-    public class PluginService : IPluginService
+    public class ProviderService : IProviderService
     {
-        private readonly IPluginRepository _pluginRepository;
+        private readonly IProviderRepository _providerRepository;
         private readonly IExternalServiceTypeRepository _externalServiceTypeRepository;
         private readonly ITagRepository _tagRepository;
 
-        public PluginService(IPluginRepository pluginRepository, IExternalServiceTypeRepository externalServiceTypeRepository, ITagRepository tagRepository)
+        public ProviderService(IProviderRepository providerRepository, IExternalServiceTypeRepository externalServiceTypeRepository, ITagRepository tagRepository)
         {
-            _pluginRepository = pluginRepository;
+            _providerRepository = providerRepository;
             _externalServiceTypeRepository = externalServiceTypeRepository;
             _tagRepository = tagRepository;
         }
 
-        public async Task<Plugin> AddPlugin(string name, string type, string author, string version, string[] requiredServices, string displayName, string description, string thumbnailUrl,
+        public async Task<Provider> AddProvider(string name, string type, string author, string version, string[] requiredServices, string displayName, string description, string thumbnailUrl,
             string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
             
-            var plugin = new Plugin
+            var provider = new Provider
             {
                 Name = name,
                 DisplayName = displayName,
@@ -84,52 +84,52 @@ namespace Polyrific.Catapult.Api.Core.Services
                 RequiredServicesString = requiredServicesString,
                 Created = created > DateTime.MinValue ? created : DateTime.UtcNow,
                 Updated = updated,
-                Tags = tagList?.Select(t => new PluginTag
+                Tags = tagList?.Select(t => new ProviderTag
                 {
                     TagId = t.Id
                 }).ToList()
             };
 
-            var id = await _pluginRepository.Create(plugin, cancellationToken);
+            var id = await _providerRepository.Create(provider, cancellationToken);
 
-            return await _pluginRepository.GetById(id, cancellationToken);
+            return await _providerRepository.GetById(id, cancellationToken);
         }
 
-        public async Task DeletePlugin(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DeleteProvider(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _pluginRepository.Delete(id, cancellationToken);
+            await _providerRepository.Delete(id, cancellationToken);
         }
 
-        public async Task<Plugin> GetPluginById(int id, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Provider> GetProviderById(int id, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new PluginFilterSpecification(id);
+            var spec = new ProviderFilterSpecification(id);
             spec.IncludeStrings.Add("Tags.Tag");
-            return await _pluginRepository.GetSingleBySpec(spec, cancellationToken);
+            return await _providerRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
-        public async Task<Plugin> GetPluginByName(string name, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Provider> GetProviderByName(string name, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new PluginFilterSpecification(name, null);
+            var spec = new ProviderFilterSpecification(name, null);
             spec.IncludeStrings.Add("Tags.Tag");
 
-            return await _pluginRepository.GetSingleBySpec(spec, cancellationToken);
+            return await _providerRepository.GetSingleBySpec(spec, cancellationToken);
         }
 
-        public async Task<List<Plugin>> GetPlugins(string type = "all", CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<Provider>> GetProviders(string type = "all", CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var spec = new PluginFilterSpecification(null, type != "all" ? type : null);
+            var spec = new ProviderFilterSpecification(null, type != "all" ? type : null);
             spec.IncludeStrings.Add("Tags.Tag");
-            var plugins = await _pluginRepository.GetBySpec(spec, cancellationToken);
+            var providers = await _providerRepository.GetBySpec(spec, cancellationToken);
 
-            return plugins.ToList();
+            return providers.ToList();
         }
     }
 }

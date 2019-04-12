@@ -19,16 +19,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 {
     public class ProviderControllerTests
     {
-        private readonly Mock<IPluginService> _pluginService;
-        private readonly Mock<IPluginAdditionalConfigService> _pluginAdditionalConfigService;
+        private readonly Mock<IProviderService> _providerService;
+        private readonly Mock<IProviderAdditionalConfigService> _providerAdditionalConfigService;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<ProviderController>> _logger;
 
         public ProviderControllerTests()
         {
-            _pluginService = new Mock<IPluginService>();
+            _providerService = new Mock<IProviderService>();
 
-            _pluginAdditionalConfigService = new Mock<IPluginAdditionalConfigService>();
+            _providerAdditionalConfigService = new Mock<IProviderAdditionalConfigService>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -38,17 +38,17 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviders_ReturnsProviderList()
         {
-            _pluginService.Setup(s => s.GetPlugins(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Plugin>
+            _providerService.Setup(s => s.GetProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<Provider>
                 {
-                    new Plugin
+                    new Provider
                     {
                         Id = 1,
                         Name = "AspMvcNet"
                     }
                 });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper,
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProviders();
@@ -61,11 +61,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProvidersByType_ReturnsProviderList()
         {
-            _pluginService.Setup(s => s.GetPlugins(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string type, CancellationToken cancellationToken) =>
-                new List<Plugin>
+                new List<Provider>
                 {
-                    new Plugin
+                    new Provider
                     {
                         Id = 1,
                         Name = "AspMvcNet",
@@ -73,7 +73,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     }
                 });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper,
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProvidersByType("GeneratorProvider");
@@ -87,15 +87,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderById_ReturnsProvider()
         {
-            _pluginService.Setup(s => s.GetPluginById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetProviderById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
-                    new Plugin
+                    new Provider
                     {
                         Id = id,
                         Name = "AspMvcNet"
                     });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper,
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProviderById(1);
@@ -108,15 +108,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderByName_ReturnsProvider()
         {
-            _pluginService.Setup(s => s.GetPluginByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string serviceName, CancellationToken cancellationToken) =>
-                    new Plugin
+                    new Provider
                     {
                         Id = 1,
                         Name = serviceName
                     });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper,
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProviderByName("AspMvcNet");
@@ -129,12 +129,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void RegisterProvider_ReturnsCreatedProvider()
         {
-            _pluginService
-                .Setup(s => s.AddPlugin(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
+            _providerService
+                .Setup(s => s.AddProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string[]>(),
                     It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<DateTime>(), It.IsAny<DateTime?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, string type, string author, string version, string[] requiredServices, 
                     string displayName, string description, string thumnailUrl, string tags, DateTime created, DateTime? updated, CancellationToken cancellationToken) =>
-                    new Plugin
+                    new Provider
                     {
                         Id = 1,
                         Name = name,
@@ -143,10 +143,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Version = version,
                         RequiredServicesString = string.Join(",", requiredServices)
                     });
-            _pluginAdditionalConfigService.Setup(s => s.AddAdditionalConfigs(It.IsAny<int>(), It.IsAny<List<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+            _providerAdditionalConfigService.Setup(s => s.AddAdditionalConfigs(It.IsAny<int>(), It.IsAny<List<ProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<int> { 1 });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper, _logger.Object);
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
 
             var dto = new NewProviderDto
             {
@@ -171,10 +171,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void DeleteProvider_ReturnsNoContent()
         {
-            _pluginService.Setup(s => s.DeletePlugin(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _providerService.Setup(s => s.DeleteProvider(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper, _logger.Object);
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper, _logger.Object);
 
             var result = await controller.DeleteProviderById(1);
 
@@ -184,17 +184,17 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProviderAdditionalConfigsByProviderName_ReturnsProviderAdditionalConfigList()
         {
-            _pluginAdditionalConfigService.Setup(s => s.GetByPluginName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigService.Setup(s => s.GetByProviderName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<ProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new ProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "ConnectionString"
                     }
                 });
 
-            var controller = new ProviderController(_pluginService.Object, _pluginAdditionalConfigService.Object, _mapper,
+            var controller = new ProviderController(_providerService.Object, _providerAdditionalConfigService.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProviderAdditionalConfigsByProviderName("AspNetCoreMvc");

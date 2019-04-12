@@ -28,13 +28,13 @@ namespace Polyrific.Catapult.Api.Data
         public virtual DbSet<ExternalService> ExternalServices { get; set; }
         public virtual DbSet<ExternalServiceType> ExternalServiceTypes { get; set; }
         public virtual DbSet<ExternalServiceProperty> ExternalServiceProperties { get; set; }
-        public virtual DbSet<Plugin> Plugins { get; set; }
-        public virtual DbSet<PluginAdditionalConfig> PluginAdditionalConfigs { get; set; }
+        public virtual DbSet<Provider> Providers { get; set; }
+        public virtual DbSet<ProviderAdditionalConfig> ProviderAdditionalConfigs { get; set; }
         public virtual DbSet<ManagedFile> ManagedFiles { get; set; }
 
         public virtual DbSet<Tag> Tags { get; set; }
 
-        public virtual DbSet<PluginTag> PluginTags { get; set; }
+        public virtual DbSet<ProviderTag> ProviderTags { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -61,11 +61,11 @@ namespace Polyrific.Catapult.Api.Data
             modelBuilder.ApplyConfiguration(new ExternalServiceConfig());
             modelBuilder.ApplyConfiguration(new ExternalServiceTypeConfig());
             modelBuilder.ApplyConfiguration(new ExternalServicePropertyConfig());
-            modelBuilder.ApplyConfiguration(new PluginConfig());
-            modelBuilder.ApplyConfiguration(new PluginAdditionalConfigConfig());
+            modelBuilder.ApplyConfiguration(new ProviderConfig());
+            modelBuilder.ApplyConfiguration(new ProviderAdditionalConfigConfig());
             modelBuilder.ApplyConfiguration(new ManagedFileConfig());
             modelBuilder.ApplyConfiguration(new TagConfig());
-            modelBuilder.ApplyConfiguration(new PluginTagConfig());
+            modelBuilder.ApplyConfiguration(new ProviderTagConfig());
         }
     }
 }

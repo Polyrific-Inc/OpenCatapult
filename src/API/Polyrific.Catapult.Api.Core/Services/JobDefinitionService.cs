@@ -20,21 +20,21 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IJobDefinitionRepository _jobDefinitionRepository;
         private readonly IJobTaskDefinitionRepository _jobTaskDefinitionRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IPluginRepository _pluginRepository;
+        private readonly IProviderRepository _providerRepository;
         private readonly IExternalServiceRepository _externalServiceRepository;
-        private readonly IPluginAdditionalConfigRepository _pluginAdditionalConfigRepository;
+        private readonly IProviderAdditionalConfigRepository _providerAdditionalConfigRepository;
         private readonly ISecretVault _secretVault;
 
         private readonly List<(string, string[])> _allowedTaskTypes = new List<(string, string[])>
         {
-            ( PluginType.GeneratorProvider, new string[] { JobTaskDefinitionType.Generate } ),
-            ( PluginType.RepositoryProvider, new string[] { JobTaskDefinitionType.Clone, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.DeleteRepository } ),
-            ( PluginType.BuildProvider, new string[] { JobTaskDefinitionType.Build,  } ),
-            ( PluginType.StorageProvider, new string[] { JobTaskDefinitionType.PublishArtifact } ),
-            ( PluginType.HostingProvider, new string[] { JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeleteHosting } ),
-            ( PluginType.DatabaseProvider, new string[] { JobTaskDefinitionType.DeployDb } ),
-            ( PluginType.TestProvider, new string[] { JobTaskDefinitionType.Test } ),
-            ( PluginType.GenericTaskProvider, new string[] { JobTaskDefinitionType.CustomTask } )
+            ( ProviderType.GeneratorProvider, new string[] { JobTaskDefinitionType.Generate } ),
+            ( ProviderType.RepositoryProvider, new string[] { JobTaskDefinitionType.Clone, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.DeleteRepository } ),
+            ( ProviderType.BuildProvider, new string[] { JobTaskDefinitionType.Build,  } ),
+            ( ProviderType.StorageProvider, new string[] { JobTaskDefinitionType.PublishArtifact } ),
+            ( ProviderType.HostingProvider, new string[] { JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeleteHosting } ),
+            ( ProviderType.DatabaseProvider, new string[] { JobTaskDefinitionType.DeployDb } ),
+            ( ProviderType.TestProvider, new string[] { JobTaskDefinitionType.Test } ),
+            ( ProviderType.GenericTaskProvider, new string[] { JobTaskDefinitionType.CustomTask } )
         };
 
         private readonly List<string> _deleteTaskTypes = new List<string>
@@ -46,17 +46,17 @@ namespace Polyrific.Catapult.Api.Core.Services
         public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
             IProjectRepository projectRepository,
-            IPluginRepository pluginRepository,
+            IProviderRepository providerRepository,
             IExternalServiceRepository externalServiceRepository,
-            IPluginAdditionalConfigRepository pluginAdditionalConfigRepository,
+            IProviderAdditionalConfigRepository providerAdditionalConfigRepository,
             ISecretVault secretVault)
         {
             _jobDefinitionRepository = dataModelRepository;
             _jobTaskDefinitionRepository = jobTaskDefinitionRepository;
             _projectRepository = projectRepository;
-            _pluginRepository = pluginRepository;
+            _providerRepository = providerRepository;
             _externalServiceRepository = externalServiceRepository;
-            _pluginAdditionalConfigRepository = pluginAdditionalConfigRepository;
+            _providerAdditionalConfigRepository = providerAdditionalConfigRepository;
             _secretVault = secretVault;
         }
 
@@ -315,30 +315,30 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (await _jobTaskDefinitionRepository.CountBySpec(taskSpec, cancellationToken) > 0)
                 throw new DuplicateJobTaskDefinitionException(jobTaskDefinition.Name);
 
-            var pluginSpec = new PluginFilterSpecification(jobTaskDefinition.Provider, null);
-            var plugin = await _pluginRepository.GetSingleBySpec(pluginSpec, cancellationToken);
+            var providerSpec = new ProviderFilterSpecification(jobTaskDefinition.Provider, null);
+            var provider = await _providerRepository.GetSingleBySpec(providerSpec, cancellationToken);
 
-            if (plugin == null)
+            if (provider == null)
             {
                 throw new ProviderNotInstalledException(jobTaskDefinition.Provider);
             }
 
-            var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == plugin.Type.ToLower());
+            var allowedTaskType = _allowedTaskTypes.FirstOrDefault(t => t.Item1.ToLower() == provider.Type.ToLower());
             if (allowedTaskType.Equals(default((string, string[]))))
             {
-                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider);
+                throw new InvalidProviderTypeException(provider.Type, jobTaskDefinition.Provider);
             }
             else if (!allowedTaskType.Item2.Any(taskType => jobTaskDefinition.Type.ToLower() == taskType.ToLower()))
             {
-                throw new InvalidPluginTypeException(plugin.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
+                throw new InvalidProviderTypeException(provider.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
             }
 
-            if (!string.IsNullOrEmpty(plugin.RequiredServicesString))
+            if (!string.IsNullOrEmpty(provider.RequiredServicesString))
             {
-                var requiredServices = plugin.RequiredServicesString.Split(DataDelimiter.Comma);
+                var requiredServices = provider.RequiredServicesString.Split(DataDelimiter.Comma);
                 if (string.IsNullOrEmpty(jobTaskDefinition.ConfigString))
                 {
-                    throw new ExternalServiceRequiredException(requiredServices[0], plugin.Name);
+                    throw new ExternalServiceRequiredException(requiredServices[0], provider.Name);
                 }
 
                 var config = JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.ConfigString);
@@ -348,7 +348,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
                     if (string.IsNullOrEmpty(serviceName))
                     {
-                        throw new ExternalServiceRequiredException(requiredService, plugin.Name);
+                        throw new ExternalServiceRequiredException(requiredService, provider.Name);
                     }
 
                     var serviceSpec = new ExternalServiceFilterSpecification(0, serviceName);
@@ -367,8 +367,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
 
-            var additionalConfigsDefinitionSpec = new PluginAdditionalConfigFilterSpecification(plugin.Id);
-            var additionalConfigsDefinition = await _pluginAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
+            var additionalConfigsDefinitionSpec = new ProviderAdditionalConfigFilterSpecification(provider.Id);
+            var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
             var requiredConfigs = additionalConfigsDefinition.Where(c => c.IsRequired).Select(c => c.Name).ToList();
             var taskAdditionalConfigs = !string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString) ?
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString) : null;
@@ -376,7 +376,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 if (taskAdditionalConfigs == null)
                 {
-                    throw new PluginAdditionalConfigRequiredException(requiredConfigs[0], plugin.Name);
+                    throw new ProviderAdditionalConfigRequiredException(requiredConfigs[0], provider.Name);
                 }
 
                 foreach (var requiredConfig in requiredConfigs)
@@ -384,7 +384,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                     taskAdditionalConfigs.TryGetValue(requiredConfig, out var conf);
                     if (conf == null)
                     {
-                        throw new PluginAdditionalConfigRequiredException(requiredConfig, plugin.Name);
+                        throw new ProviderAdditionalConfigRequiredException(requiredConfig, provider.Name);
                     }
                 }
             }
@@ -415,14 +415,14 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (string.IsNullOrEmpty(jobTaskDefinition?.Provider))
                 return;
 
-            var pluginSpec = new PluginFilterSpecification(jobTaskDefinition.Provider, null);
-            var plugin = await _pluginRepository.GetSingleBySpec(pluginSpec, cancellationToken);
+            var providerSpec = new ProviderFilterSpecification(jobTaskDefinition.Provider, null);
+            var provider = await _providerRepository.GetSingleBySpec(providerSpec, cancellationToken);
 
-            if (plugin == null)
+            if (provider == null)
                 return;
 
-            var additionalConfigsDefinitionSpec = new PluginAdditionalConfigFilterSpecification(plugin.Id);
-            var additionalConfigsDefinition = await _pluginAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
+            var additionalConfigsDefinitionSpec = new ProviderAdditionalConfigFilterSpecification(provider.Id);
+            var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
             var secretConfigs = additionalConfigsDefinition.Where(c => c.IsSecret).Select(c => c.Name).ToList();
             var taskAdditionalConfigs = !string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString) ?
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString) : null;

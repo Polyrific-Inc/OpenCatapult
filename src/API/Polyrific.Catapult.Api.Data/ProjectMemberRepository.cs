@@ -8,7 +8,6 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Repositories;
-using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Api.Data.Identity;
 
 namespace Polyrific.Catapult.Api.Data

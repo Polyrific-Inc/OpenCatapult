@@ -2,17 +2,17 @@
 
 namespace Polyrific.Catapult.Api.Core.Entities
 {
-    public class PluginAdditionalConfig : BaseEntity
+    public class ProviderAdditionalConfig : BaseEntity
     {
         /// <summary>
-        /// Related plugin Id
+        /// Related task provider Id
         /// </summary>
-        public int PluginId { get; set; }
+        public int ProviderId { get; set; }
 
         /// <summary>
-        /// Related plugin object
+        /// Related task provider object
         /// </summary>
-        public virtual  Plugin Plugin { get; set; }
+        public virtual Provider Provider { get; set; }
 
         /// <summary>
         /// Name of the configuration

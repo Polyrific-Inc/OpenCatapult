@@ -5,50 +5,50 @@ using System.Collections.Generic;
 
 namespace Polyrific.Catapult.Api.Core.Entities
 {
-    public class Plugin : BaseEntity
+    public class Provider : BaseEntity
     {
         /// <summary>
-        /// Name of the plugin
+        /// Name of the task provider
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Type of the plugin
+        /// Type of the task provider
         /// </summary>
         public string Type { get; set; }
 
         /// <summary>
-        /// Author of the plugin
+        /// Author of the task provider
         /// </summary>
         public string Author { get; set; }
 
         /// <summary>
-        /// Version of the plugin
+        /// Version of the task provider
         /// </summary>
         public string Version { get; set; }
 
         /// <summary>
-        /// Required services of the plugin separated by comma
+        /// Required services of the task provider separated by comma
         /// </summary>
         public string RequiredServicesString { get; set; }
 
         /// <summary>
-        /// The Tags of the plugin
+        /// The Tags of the task provider
         /// </summary>
-        public ICollection<PluginTag> Tags { get; set; }
+        public ICollection<ProviderTag> Tags { get; set; }
 
         /// <summary>
-        /// Display name of the plugin
+        /// Display name of the task provider
         /// </summary>
         public string DisplayName { get; set; }
 
         /// <summary>
-        /// Description of the plugin
+        /// Description of the task provider
         /// </summary>
         public string Description { get; set; }
 
         /// <summary>
-        /// Url of the plugin thumbnail
+        /// Url of the task provider thumbnail
         /// </summary>
         public string ThumbnailUrl { get; set; }
     }

@@ -1,20 +1,19 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using System;
-using System.Collections.ObjectModel;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Data.EntityConfigs
 {
-    public class PluginConfig : BaseEntityConfig<Plugin>
+    public class ProviderConfig : BaseEntityConfig<Provider>
     {
-        public override void Configure(EntityTypeBuilder<Plugin> builder)
+        public override void Configure(EntityTypeBuilder<Provider> builder)
         {
             base.Configure(builder);
 
             builder.HasData(
-                new Plugin
+                new Provider
                 {
                     Id = 1,
                     Name = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc",
@@ -28,7 +27,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1"
                 },
 
-                new Plugin
+                new Provider
                 {
                     Id = 2,
                     Name = "Polyrific.Catapult.TaskProviders.GitHub",
@@ -42,7 +41,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2" },
                 
-                new Plugin
+                new Provider
                 {
                     Id = 3,
                     Name = "Polyrific.Catapult.TaskProviders.DotNetCore",
@@ -56,7 +55,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3"
                 },
 
-                new Plugin
+                new Provider
                 {
                     Id = 4,
                     Name = "Polyrific.Catapult.TaskProviders.DotNetCoreTest",
@@ -70,7 +69,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4"
                 },
 
-                new Plugin
+                new Provider
                 {
                     Id = 5,
                     Name = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore",
@@ -84,7 +83,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5"
                 },
 
-                new Plugin
+                new Provider
                 {
                     Id = 6,
                     Name = "Polyrific.Catapult.TaskProviders.AzureAppService",
@@ -99,7 +98,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6"
                 },
 
-                new Plugin
+                new Provider
                 {
                     Id = 7,
                     Name = "Polyrific.Catapult.TaskProviders.GenericCommand",

@@ -262,10 +262,10 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidPluginTypeException pluginTypeEx)
+            catch (InvalidProviderTypeException providerTypeEx)
             {
-                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
-                return BadRequest(pluginTypeEx.Message);
+                _logger.LogWarning(providerTypeEx, "Invalid provider type");
+                return BadRequest(providerTypeEx.Message);
             }
             catch (JobDefinitionNotFoundException modEx)
             {
@@ -341,10 +341,10 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidPluginTypeException pluginTypeEx)
+            catch (InvalidProviderTypeException providerTypeEx)
             {
-                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
-                return BadRequest(pluginTypeEx.Message);
+                _logger.LogWarning(providerTypeEx, "Invalid provider type");
+                return BadRequest(providerTypeEx.Message);
             }
             catch (JobDefinitionNotFoundException modEx)
             {
@@ -472,10 +472,10 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidPluginTypeException pluginTypeEx)
+            catch (InvalidProviderTypeException providerTypeEx)
             {
-                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
-                return BadRequest(pluginTypeEx.Message);
+                _logger.LogWarning(providerTypeEx, "Invalid provider type");
+                return BadRequest(providerTypeEx.Message);
             }
             catch (ProviderNotInstalledException provEx)
             {

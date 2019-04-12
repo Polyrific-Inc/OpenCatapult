@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Polyrific.Catapult.Api.Core.Entities
 {
@@ -12,8 +10,8 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Name { get; set; }
 
         /// <summary>
-        /// The plugin tags mapping
+        /// The provider tags mapping
         /// </summary>
-        public virtual ICollection<PluginTag> PluginTags { get; set; }
+        public virtual ICollection<ProviderTag> ProviderTags { get; set; }
     }
 }

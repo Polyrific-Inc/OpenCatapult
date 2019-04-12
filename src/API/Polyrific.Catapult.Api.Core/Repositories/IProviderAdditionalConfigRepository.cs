@@ -7,14 +7,14 @@ using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Core.Repositories
 {
-    public interface IPluginAdditionalConfigRepository : IRepository<PluginAdditionalConfig>
+    public interface IProviderAdditionalConfigRepository : IRepository<ProviderAdditionalConfig>
     {
         /// <summary>
-        /// Add range of plugin additional configs
+        /// Add range of provider additional configs
         /// </summary>
         /// <param name="entities">Additional configs</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task<List<int>> AddRange(List<PluginAdditionalConfig> entities, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<int>> AddRange(List<ProviderAdditionalConfig> entities, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

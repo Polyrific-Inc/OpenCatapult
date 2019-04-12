@@ -8,18 +8,18 @@ using Polyrific.Catapult.Api.Core.Repositories;
 
 namespace Polyrific.Catapult.Api.Data
 {
-    public class PluginRepository : BaseRepository<Plugin>, IPluginRepository
+    public class ProviderRepository : BaseRepository<Provider>, IProviderRepository
     {
-        public PluginRepository(CatapultDbContext dbContext) : base(dbContext)
+        public ProviderRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
 
-        public override async Task<int> Create(Plugin entity, CancellationToken cancellationToken = default(CancellationToken))
+        public override async Task<int> Create(Provider entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             entity.Created = entity.Created == DateTime.MinValue ? DateTime.UtcNow : entity.Created;
-            Db.Set<Plugin>().Add(entity);
+            Db.Set<Provider>().Add(entity);
             await Db.SaveChangesAsync(cancellationToken);
 
             return entity.Id;
