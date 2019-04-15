@@ -1,65 +1,65 @@
-# Provider
+# Task Provider
 
 These endpoints provide methods to register, remove, and get info of task providers within the catapult instalation
 
-## Get Provider List
+## Get Task Provider List
 Method: `GET`
 
-Uri: `/Provider`
+Uri: `/task-provider`
 
 Authorization: `UserRoleAdminAccess`
 
 Get list of task providers installed within the catapult.
 
-## Register Provider
+## Register Task Provider
 Method: `POST`
 
-Uri: `/Provider`
+Uri: `/task-provider`
 
 Authorization: `UserRoleAdminAccess`
 
 Register a task provider into the catapult by uploading the .yml file that describe the task provider metadata.
 
-## Get Providers by Provider Type
+## Get Task Providers by type
 Method: `GET`
 
-Uri: `/provider/type/{providerType}`
+Uri: `/task-provider/type/{taskProviderType}`
 
 Authorization: `UserRoleAdminAccess`
 
 Get list of task providers, filtered by type (all | BuildProvider | DatabaseProvider | GeneratorProvider | HostingProvider | RepositoryProvider | StorageProvider | TestProvider)
 
-## Get Provider By Id
+## Get Task Provider By Id
 Method: `GET`
 
-Uri: `/Provider/{providerId}`
+Uri: `/task-provider/{taskProviderId}`
 
 Authorization: `UserRoleBasicAccess`
 
 Get a task provider by its Id
 
-## Remove Provider
+## Remove Task Provider
 Method: `DELETE`
 
-Uri: `/Provider/{providerId}`
+Uri: `/task-provider/{taskProviderId}`
 
 Authorization: `UserRoleAdminAccess`
 
 Remove a task provider from catapult
 
-## Get Provider By Name
+## Get Task Provider By Name
 Method: `GET`
 
-Uri: `/Provider/name/{providerName}`
+Uri: `/task-provider/name/{taskProviderName}`
 
 Authorization: `UserRoleBasicAccess`
 
 Get a provider by its Name
 
-## Get Provider's Configs
+## Get Task Provider's Configs
 Method: `GET`
 
-Uri: `/provider/name/{providerName}/config`
+Uri: `/task-provider/name/{taskProviderName}/config`
 
 Authorization: `UserRoleBasicAccess`
 

@@ -16,7 +16,7 @@ The following sections explain the details for each endpoints:
 - [Project](Project.md)
 - [Project Data Model](project-data-model.md)
 - [Project Member](project-member.md)
-- [Provider](provider.md)
+- [Task Provider](task-provider.md)
 - [Token](token.md)
 - [Version](version.md)
 
