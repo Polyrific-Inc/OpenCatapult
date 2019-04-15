@@ -4,6 +4,10 @@
   width: 100%;
 }
 
+.job-detail mat-divider {
+  position: inherit;
+}
+
 .job-detail > div, .job-detail > mat-divider {
   margin-top: 10px;
 }
