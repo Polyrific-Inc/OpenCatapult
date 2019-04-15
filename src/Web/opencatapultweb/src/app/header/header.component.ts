@@ -54,7 +54,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  isMenuShown(authorizePolicy: AuthorizePolicy) {
-    return this.authService.checkRoleAuthorization(authorizePolicy, null);
+  isQuickAddMenuShown() {
+    return this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleAdminAccess, null) ||
+      this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleBasicAccess, null);
   }
 }

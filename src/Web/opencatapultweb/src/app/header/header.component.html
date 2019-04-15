@@ -18,16 +18,16 @@
       </div>
   </div>
   <div class="profile-buttons">
-      <button mat-button class="greetings-button" [matMenuTriggerFor]="quickAddMenu">
+      <button mat-button class="greetings-button" [matMenuTriggerFor]="quickAddMenu" *ngIf="isQuickAddMenuShown()">
         <mat-icon>add</mat-icon>
         <mat-icon>arrow_drop_down</mat-icon>
       </button>
 
       <mat-menu #quickAddMenu="matMenu">
-          <button mat-menu-item routerLink="/project/new">New Project</button>
-          <button mat-menu-item routerLink="/engine" [queryParams]="{newEngine:true}">New Engine</button>
-          <button mat-menu-item routerLink="/user" [queryParams]="{newUser:true}">New User</button>
-          <button mat-menu-item routerLink="/provider" [queryParams]="{newProvider:true}">New Task Provider</button>
+          <button mat-menu-item routerLink="/project/new" *appHasAccess="authorizePolicyEnum.UserRoleBasicAccess">New Project</button>
+          <button mat-menu-item routerLink="/engine" [queryParams]="{newEngine:true}" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">New Engine</button>
+          <button mat-menu-item routerLink="/user" [queryParams]="{newUser:true}"  *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">New User</button>
+          <button mat-menu-item routerLink="/provider" [queryParams]="{newProvider:true}" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">New Task Provider</button>
       </mat-menu>
 
       <button class="greetings-button" mat-button [matMenuTriggerFor]="menu">
