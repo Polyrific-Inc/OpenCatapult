@@ -13,6 +13,7 @@ using Polyrific.Catapult.Api.Controllers;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.UnitTests.Utilities;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Xunit;
@@ -22,12 +23,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
     public class ProjectMemberControllerTests
     {
         private readonly Mock<IProjectMemberService> _projectMemberService;
+        private readonly Mock<IUserService> _userService;
+        private readonly Mock<INotificationProvider> _notificationProvider;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<ProjectMemberController>> _logger;
 
         public ProjectMemberControllerTests()
         {
             _projectMemberService = new Mock<IProjectMemberService>();
+            _userService = new Mock<IUserService>();
+            _notificationProvider = new Mock<INotificationProvider>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -56,7 +61,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 })
             };
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper,
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper,
                 _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
@@ -84,7 +89,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         ProjectMemberRoleId = 1
                     });
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object);
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object);
 
             var dto = new NewProjectMemberDto
             {
@@ -103,7 +108,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateProjectMemberNewUser_ReturnsCreatedProjectMember()
         {
             _projectMemberService
-                .Setup(s => s.AddProjectMember(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddProjectMember(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((1, 1));
             _projectMemberService.Setup(s => s.GetProjectMemberById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
@@ -114,7 +119,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         ProjectMemberRoleId = 1
                     });
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object);
+            var httpContext = new DefaultHttpContext()
+            {
+                Request = { Scheme = "https", Host = new HostString("localhost") }
+            };
+
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object)
+            {
+                ControllerContext = new ControllerContext { HttpContext = httpContext }
+            };
 
             var dto = new NewProjectMemberDto
             {
@@ -132,7 +145,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateProject_ReturnsBadRequest()
         {
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object);
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object);
 
             var dto = new NewProjectMemberDto
             {
@@ -156,7 +169,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         ProjectMemberRoleId = 1
                     });
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper,
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProjectMember(1, 1);
@@ -179,7 +192,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         ProjectMemberRoleId = 1
                     });
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper,
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper,
                 _logger.Object);
 
             var result = await controller.GetProjectMemberByUserId(1, 1);
@@ -195,7 +208,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _projectMemberService.Setup(s => s.UpdateProjectMemberRole(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object);
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object);
 
             var result = await controller.UpdateProjectMember(1, 1, new UpdateProjectMemberDto
             {
@@ -208,7 +221,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void UpdateProjectMember_ReturnsBadRequest()
         {
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object);
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object);
 
             var result = await controller.UpdateProjectMember(1, 1, new UpdateProjectMemberDto());
 
@@ -242,7 +255,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 })
             };
 
-            var controller = new ProjectMemberController(_projectMemberService.Object, _mapper, _logger.Object)
+            var controller = new ProjectMemberController(_projectMemberService.Object, _userService.Object, _notificationProvider.Object, _mapper, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
