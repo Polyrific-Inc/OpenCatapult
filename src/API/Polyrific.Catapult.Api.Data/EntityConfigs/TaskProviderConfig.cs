@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/aspnetcore.png",
                     Type = "GeneratorProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1"
                 },
@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/github.png",
                     Type = "RepositoryProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     RequiredServicesString = "GitHub",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2" },
@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png",
                     Type = "BuildProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3"
                 },
@@ -64,7 +64,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png",
                     Type = "TestProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4"
                 },
@@ -78,7 +78,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/efcore.png",
                     Type = "DatabaseProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5"
                 },
@@ -93,7 +93,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     Type = "HostingProvider",
                     Author = "Polyrific",
                     RequiredServicesString = "Azure",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6"
                 },
@@ -107,7 +107,7 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                     ThumbnailUrl = "/assets/img/task-provider/generic.png",
                     Type = "GenericTaskProvider",
                     Author = "Polyrific",
-                    Version = "1.0.0-beta3",
+                    Version = "1.0.0-beta4",
                     Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc),
                     ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a7"
                 }

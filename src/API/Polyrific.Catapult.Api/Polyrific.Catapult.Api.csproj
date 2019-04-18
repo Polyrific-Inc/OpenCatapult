@@ -59,7 +59,7 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Catapult, OpenCatapult, tools, devops, api</PackageTags>
     <PackageId>Polyrific.Catapult.Api</PackageId>
-    <Version>1.0.0-beta3</Version>
+    <Version>1.0.0-beta4</Version>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>5260e463-1c3d-462e-b95e-a7ef6ab89e3b</UserSecretsId>
     <AssemblyName>ocapi</AssemblyName>
