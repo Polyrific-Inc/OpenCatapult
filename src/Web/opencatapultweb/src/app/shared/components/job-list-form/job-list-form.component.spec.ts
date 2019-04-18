@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobListFormComponent } from './job-list-form.component';
 import { JobConfigFormComponent, TaskConfigListFormComponent, TaskConfigFormComponent } from '@app/shared';
-import { CloneTaskConfigFormComponent } from '../clone-task-config-form/clone-task-config-form.component';
+import { PullTaskConfigFormComponent } from '../pull-task-config-form/pull-task-config-form.component';
 import { GenerateTaskConfigFormComponent } from '../generate-task-config-form/generate-task-config-form.component';
 import { PushTaskConfigFormComponent } from '../push-task-config-form/push-task-config-form.component';
 import { MergeTaskConfigFormComponent } from '../merge-task-config-form/merge-task-config-form.component';
@@ -27,7 +27,7 @@ describe('JobListFormComponent', () => {
         JobConfigFormComponent,
         TaskConfigListFormComponent,
         TaskConfigFormComponent,
-        CloneTaskConfigFormComponent,
+        PullTaskConfigFormComponent,
         GenerateTaskConfigFormComponent,
         PushTaskConfigFormComponent,
         MergeTaskConfigFormComponent,

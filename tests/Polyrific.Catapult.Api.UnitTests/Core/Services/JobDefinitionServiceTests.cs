@@ -660,7 +660,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 {
                     JobDefinitionId = 1,
                     Name = "Clone",
-                    Type = JobTaskDefinitionType.Clone,
+                    Type = JobTaskDefinitionType.Pull,
                     Provider = "GitHubProvider",
                     ConfigString = @"{""GitHubExternalService"":""github-default""}"
                 },

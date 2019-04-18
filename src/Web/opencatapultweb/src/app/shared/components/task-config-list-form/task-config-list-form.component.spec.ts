@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TaskConfigListFormComponent } from './task-config-list-form.component';
 import { TaskConfigFormComponent } from '@app/shared';
-import { CloneTaskConfigFormComponent } from '../clone-task-config-form/clone-task-config-form.component';
+import { PullTaskConfigFormComponent } from '../pull-task-config-form/pull-task-config-form.component';
 import { GenerateTaskConfigFormComponent } from '../generate-task-config-form/generate-task-config-form.component';
 import { PushTaskConfigFormComponent } from '../push-task-config-form/push-task-config-form.component';
 import { MergeTaskConfigFormComponent } from '../merge-task-config-form/merge-task-config-form.component';
@@ -29,7 +29,7 @@ describe('TaskConfigListFormComponent', () => {
         TaskConfigListFormComponent,
         TaskConfigFormComponent,
         TaskConfigFormComponent,
-        CloneTaskConfigFormComponent,
+        PullTaskConfigFormComponent,
         GenerateTaskConfigFormComponent,
         PushTaskConfigFormComponent,
         MergeTaskConfigFormComponent,

@@ -133,7 +133,7 @@ jobs:
 - name: Default
   tasks:
   - name: Clone
-    type: Clone
+    type: Pull
     provider: Polyrific.Catapult.TaskProviders.GitHub
     configs:
       GitHubExternalService: github-default
@@ -148,6 +148,11 @@ jobs:
       CreatePullRequest: true
   - name: Merge
     type: Merge
+    provider: Polyrific.Catapult.TaskProviders.GitHub
+    configs:
+      GitHubExternalService: github-default
+  - name: Pull
+    type: Pull
     provider: Polyrific.Catapult.TaskProviders.GitHub
     configs:
       GitHubExternalService: github-default

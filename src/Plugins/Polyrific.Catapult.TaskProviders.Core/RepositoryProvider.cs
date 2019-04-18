@@ -29,8 +29,8 @@ namespace Polyrific.Catapult.TaskProviders.Core
                     case "project":
                         ProjectName = ParsedArguments[key].ToString();
                         break;
-                    case "cloneconfig":
-                        CloneTaskConfig = JsonConvert.DeserializeObject<CloneTaskConfig>(ParsedArguments[key].ToString());
+                    case "pullconfig":
+                        PullTaskConfig = JsonConvert.DeserializeObject<PullTaskConfig>(ParsedArguments[key].ToString());
                         break;
                     case "pushconfig":
                         PushTaskConfig = JsonConvert.DeserializeObject<PushTaskConfig>(ParsedArguments[key].ToString());
@@ -55,32 +55,32 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             var result = new Dictionary<string, object>();
 
-            if (CloneTaskConfig != null)
+            if (PullTaskConfig != null)
             {
                 switch (ProcessToExecute)
                 {
                     case "pre":
-                        var error = await BeforeClone();
+                        var error = await BeforePull();
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
                     case "main":
-                        (string cloneLocation, Dictionary<string, string> outputValues, string errorMessage) = await Clone();
-                        result.Add("cloneLocation", cloneLocation);
+                        (string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage) = await Pull();
+                        result.Add("repositoryLocation", repositoryLocation);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
                     case "post":
-                        error = await AfterClone();
+                        error = await AfterPull();
                         if (!string.IsNullOrEmpty(error))
                             result.Add("errorMessage", error);
                         break;
                     default:
-                        await BeforeClone();
-                        (cloneLocation, outputValues, errorMessage) = await Clone();
-                        await AfterClone();
+                        await BeforePull();
+                        (repositoryLocation, outputValues, errorMessage) = await Pull();
+                        await AfterPull();
 
-                        result.Add("cloneLocation", cloneLocation);
+                        result.Add("repositoryLocation", repositoryLocation);
                         result.Add("outputValues", outputValues);
                         result.Add("errorMessage", errorMessage);
                         break;
@@ -166,9 +166,9 @@ namespace Polyrific.Catapult.TaskProviders.Core
         public string ProjectName { get; set; }
 
         /// <summary>
-        /// Clone task configuration
+        /// Pull task configuration
         /// </summary>
-        public CloneTaskConfig CloneTaskConfig { get; set; }
+        public PullTaskConfig PullTaskConfig { get; set; }
 
         /// <summary>
         /// Push task configuration
@@ -196,25 +196,25 @@ namespace Polyrific.Catapult.TaskProviders.Core
         public string PrNumber { get; set; }
 
         /// <summary>
-        /// Process to run before executing the clone
+        /// Process to run before executing the pull
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> BeforeClone()
+        public virtual Task<string> BeforePull()
         {
             return Task.FromResult("");
         }
 
         /// <summary>
-        /// Clone the code from remote repository
+        /// Pull the code from remote repository
         /// </summary>
         /// <returns></returns>
-        public abstract Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone();
+        public abstract Task<(string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage)> Pull();
 
         /// <summary>
-        /// Process to run after executing clone repository
+        /// Process to run after executing pull repository
         /// </summary>
         /// <returns></returns>
-        public virtual Task<string> AfterClone()
+        public virtual Task<string> AfterPull()
         {
             return Task.FromResult("");
         }

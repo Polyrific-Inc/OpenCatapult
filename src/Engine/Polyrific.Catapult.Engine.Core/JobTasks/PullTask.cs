@@ -11,15 +11,15 @@ using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
-    public class CloneTask : BaseJobTask<CloneTaskConfig>, ICloneTask
+    public class PullTask : BaseJobTask<PullTaskConfig>, IPullTask
     {
         /// <inheritdoc />
-        public CloneTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<CloneTask> logger)
+        public PullTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<PullTask> logger)
             : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
         {
         }
 
-        public override string Type => JobTaskDefinitionType.Clone;
+        public override string Type => JobTaskDefinitionType.Pull;
 
         public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(TaskProviderType.RepositoryProvider);
 
@@ -52,19 +52,19 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
-            var cloneLocation = "";
+            var repositoryLocation = "";
             var taskRemarks = "";
-            if (result.ContainsKey("cloneLocation"))
+            if (result.ContainsKey("repositoryLocation"))
             {
-                cloneLocation = result["cloneLocation"].ToString();
-                taskRemarks = $"The repository has been cloned to {cloneLocation}";
-            }                
+                repositoryLocation = result["repositoryLocation"].ToString();
+                taskRemarks = $"The repository in {repositoryLocation} has been pulled to the latest update";
+            }
 
             var outputValues = new Dictionary<string, string>();
             if (result.ContainsKey("outputValues") && !string.IsNullOrEmpty(result["outputValues"]?.ToString()))
                 outputValues = JsonConvert.DeserializeObject<Dictionary<string, string>>(result["outputValues"].ToString());
 
-            return new TaskRunnerResult(true, cloneLocation, outputValues)
+            return new TaskRunnerResult(true, repositoryLocation, outputValues)
             {
                 TaskRemarks = taskRemarks
             };
@@ -92,7 +92,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             {
                 {"process", process},
                 {"project", Project.Name},
-                {"cloneconfig", TaskConfig},
+                {"pullconfig", TaskConfig},
                 {"additional", AdditionalConfigs}
             };
 

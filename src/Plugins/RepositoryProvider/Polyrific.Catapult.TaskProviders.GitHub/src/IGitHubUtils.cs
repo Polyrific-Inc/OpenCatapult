@@ -13,7 +13,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// <param name="localRepository">Location of the local repository</param>
         /// <param name="isPrivateRepository">Is remote repository private?</param>
         /// <returns>Location of the cloned source code (local repository)</returns>
-        Task<string> Clone(string remoteUrl, string localRepository, bool isPrivateRepository);
+        Task<string> CloneIfNotExistLocally(string remoteUrl, string localRepository, bool isPrivateRepository);
 
         /// <summary>
         /// Commit changes into a branch
@@ -43,6 +43,15 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// <param name="branch">Name of the branch</param>
         /// <returns>Success status</returns>
         Task<bool> Push(string remoteUrl, string localRepository, string branch);
+
+        /// <summary>
+        /// Pull source code changes from remote repository
+        /// </summary>
+        /// <param name="localRepository">Location of the local repository</param>
+        /// <param name="author">Author of the commit</param>
+        /// <param name="email">Email of the committer</param>
+        /// <returns></returns>
+        Task<string> Pull(string localRepository, string author, string email);
 
         /// <summary>
         /// Create pull request in remote repository

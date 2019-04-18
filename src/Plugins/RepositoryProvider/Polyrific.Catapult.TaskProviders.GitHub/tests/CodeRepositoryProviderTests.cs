@@ -18,27 +18,27 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
         }
 
         [Fact]
-        public async void Clone_Success()
+        public async void Pull_Success()
         {
-            var cloneLocation = Path.Combine(AppContext.BaseDirectory, "clone");
+            var repositoryFolder = Path.Combine(AppContext.BaseDirectory, "repo");
 
-            _gitHubUtils.Setup(u => u.Clone(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
-                .ReturnsAsync(cloneLocation);
+            _gitHubUtils.Setup(u => u.CloneIfNotExistLocally(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .ReturnsAsync(repositoryFolder);
 
-            var taskConfig = new CloneTaskConfig
+            var taskConfig = new PullTaskConfig
             {
-                CloneLocation = cloneLocation,
+                RepositoryLocation = repositoryFolder,
                 Repository = "https://github.com/polyrific-inc/opencatapult"
             };
             var additionalConfigs = new Dictionary<string, string>();
 
-            var provider = new Program(new string[] { GetCloneArgString("main", "TestProject", taskConfig, additionalConfigs) }, _gitHubUtils.Object);
+            var provider = new Program(new string[] { GetPullArgString("main", "TestProject", taskConfig, additionalConfigs) }, _gitHubUtils.Object);
 
-            var result = await provider.Clone();
+            var result = await provider.Pull();
 
-            Assert.Equal(cloneLocation, result.cloneLocation);
+            Assert.Equal(repositoryFolder, result.repositoryLocation);
             Assert.Equal("", result.errorMessage);
-            Assert.True(Directory.Exists(cloneLocation));
+            Assert.True(Directory.Exists(repositoryFolder));
         }
 
         [Fact]
@@ -109,13 +109,13 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
             Assert.Equal("", errorMessage);
         }
 
-        private string GetCloneArgString(string process, string projectName, CloneTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)
+        private string GetPullArgString(string process, string projectName, PullTaskConfig taskConfig, Dictionary<string, string> additionalConfigs)
         {
             var dict = new Dictionary<string, object>
             {
                 {"process", process},
                 {"project", projectName},
-                {"cloneconfig", taskConfig},
+                {"pullconfig", taskConfig},
                 {"additional", additionalConfigs}
             };
 

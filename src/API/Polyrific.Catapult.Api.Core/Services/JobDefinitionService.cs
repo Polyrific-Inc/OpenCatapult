@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly List<(string, string[])> _allowedTaskTypes = new List<(string, string[])>
         {
             ( TaskProviderType.GeneratorProvider, new string[] { JobTaskDefinitionType.Generate } ),
-            ( TaskProviderType.RepositoryProvider, new string[] { JobTaskDefinitionType.Clone, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.DeleteRepository } ),
+            ( TaskProviderType.RepositoryProvider, new string[] { JobTaskDefinitionType.Pull, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.DeleteRepository } ),
             ( TaskProviderType.BuildProvider, new string[] { JobTaskDefinitionType.Build,  } ),
             ( TaskProviderType.StorageProvider, new string[] { JobTaskDefinitionType.PublishArtifact } ),
             ( TaskProviderType.HostingProvider, new string[] { JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeleteHosting } ),

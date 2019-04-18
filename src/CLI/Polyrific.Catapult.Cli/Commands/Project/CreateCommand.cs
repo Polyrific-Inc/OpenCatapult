@@ -137,7 +137,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 task.Sequence = count++;
 
                 // prompt for Repository config
-                if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
+                if ((task.Type.ToLower() == JobTaskDefinitionType.Pull.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.DeleteRepository.ToLower()) && !task.Configs.ContainsKey("Repository"))
@@ -149,7 +149,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 }
 
                 // prompt for IsPrivateRepository config
-                if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
+                if (task.Type.ToLower() == JobTaskDefinitionType.Pull.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
                 {
                     if (string.IsNullOrEmpty(isPrivateRepository))
                         isPrivateRepository = PromptTaskConfig("IsPrivateRepository", configType: ConfigType.Boolean);
