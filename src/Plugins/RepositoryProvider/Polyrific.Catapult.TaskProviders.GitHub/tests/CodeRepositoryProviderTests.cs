@@ -21,8 +21,11 @@ namespace Polyrific.Catapult.TaskProviders.GitHub.UnitTests
         public async void Pull_Success()
         {
             var repositoryFolder = Path.Combine(AppContext.BaseDirectory, "repo");
+            if (Directory.Exists(repositoryFolder))
+                Directory.Delete(repositoryFolder);
 
             _gitHubUtils.Setup(u => u.CloneIfNotExistLocally(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Callback(() => Directory.CreateDirectory(repositoryFolder))
                 .ReturnsAsync(repositoryFolder);
 
             var taskConfig = new PullTaskConfig

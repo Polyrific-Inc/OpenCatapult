@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>7.1</LangVersion>
     <Version>1.0.0.0</Version>
@@ -13,7 +13,7 @@
     </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LibGit2Sharp" Version="0.26.0-preview-0070" />
+    <PackageReference Include="LibGit2Sharp" Version="0.26.0" />
     <PackageReference Include="Octokit" Version="0.32.0" />
   </ItemGroup>
 

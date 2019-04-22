@@ -35,7 +35,9 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests
             var result = await provider.Test();
 
             Assert.Equal("", result.errorMessage);
-            Assert.True(File.Exists(result.testResultLocation));
+
+            // TODO: re-enable this assert when the issue (https://github.com/Microsoft/vstest/issues/1951) is solved
+            //Assert.True(File.Exists(result.testResultLocation));
         }
 
         [Fact]
