@@ -6150,10 +6150,32 @@
                 <collectionProp name="Arguments.arguments">
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                    <stringProp name="Argument.value">{&#xd;
-  &quot;name&quot;: &quot;Task${__RandomString(7,PolyrificOpenCatapult, randomString)}&quot;,&#xd;
-  &quot;isDeletion&quot;: false&#xd;
-}</stringProp>
+                    <stringProp name="Argument.value">[&#xd;
+{&#xd;
+  &quot;name&quot;: &quot;Task_1&quot;,&#xd;
+  &quot;type&quot;: &quot;Build&quot;,&#xd;
+  &quot;provider&quot;: &quot;Polyrific.Catapult.TaskProviders.DotNetCore&quot;,&#xd;
+  &quot;configs&quot;: {&#xd;
+    &quot;additionalProp1&quot;: &quot;Task${__RandomString(7,PolyrificOpenCatapult, randomString)}&quot;&#xd;
+  },&#xd;
+  &quot;additionalConfigs&quot;: {&#xd;
+    &quot;additionalProp1&quot;: &quot;Task${__RandomString(7,PolyrificOpenCatapult, randomString)}&quot;&#xd;
+  },&#xd;
+  &quot;sequence&quot;: 0&#xd;
+},&#xd;
+{&#xd;
+  &quot;name&quot;: &quot;Task_2&quot;,&#xd;
+  &quot;type&quot;: &quot;Build&quot;,&#xd;
+  &quot;provider&quot;: &quot;Polyrific.Catapult.TaskProviders.DotNetCore&quot;,&#xd;
+  &quot;configs&quot;: {&#xd;
+    &quot;additionalProp1&quot;: &quot;Task${__RandomString(7,PolyrificOpenCatapult, randomString)}&quot;&#xd;
+  },&#xd;
+  &quot;additionalConfigs&quot;: {&#xd;
+    &quot;additionalProp1&quot;: &quot;Task${__RandomString(7,PolyrificOpenCatapult, randomString)}&quot;&#xd;
+  },&#xd;
+  &quot;sequence&quot;: 0&#xd;
+}&#xd;
+]</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
                   </elementProp>
                 </collectionProp>
@@ -6162,7 +6184,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Project/${projectId}/job/${jobId}/tasks?newTasks=${taskId}</stringProp>
+              <stringProp name="HTTPSampler.path">/Project/${projectId}/job/${jobId}/tasks</stringProp>
               <stringProp name="HTTPSampler.method">POST</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6181,6 +6203,16 @@
                   </elementProp>
                 </collectionProp>
               </HeaderManager>
+              <hashTree/>
+              <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                  <stringProp name="49587">201</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.custom_message"></stringProp>
+                <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+                <boolProp name="Assertion.assume_success">true</boolProp>
+                <intProp name="Assertion.test_type">8</intProp>
+              </ResponseAssertion>
               <hashTree/>
             </hashTree>
             <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  job task definition list " enabled="true">
@@ -7167,7 +7199,7 @@
           </hashTree>
         </hashTree>
       </hashTree>
-      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="true">
+      <ResultCollector guiclass="ViewResultsFullVisualizer" testclass="ResultCollector" testname="View Results Tree" enabled="false">
         <boolProp name="ResultCollector.error_logging">false</boolProp>
         <objProp>
           <name>saveConfig</name>
