@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -30,14 +31,13 @@ namespace Polyrific.Catapult.Api.Controllers
         /// </summary>
         /// <param name="section">Section filter</param>
         /// <returns></returns>
-        [HttpGet("help-context/{section}")]
-        [Authorize]
+        [HttpGet("section/{section}")]
         public async Task<IActionResult> GetHelpContextsBySection(int section)
         {
             _logger.LogInformation("Getting help contexts for section {section}", section);
 
-            var externalService = await _helpContextService.GetHelpContextsBySection(section);
-            var result = _mapper.Map<HelpContextDto>(externalService);
+            var helpContexts = await _helpContextService.GetHelpContextsBySection(section);
+            var result = _mapper.Map<List<HelpContextDto>>(helpContexts);
             return Ok(result);
         }
     }

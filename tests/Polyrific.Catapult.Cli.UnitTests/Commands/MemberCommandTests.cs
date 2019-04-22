@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProjectMemberService> _projectMemberService;
         private readonly Mock<IAccountService> _accountService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly ITestOutputHelper _output;
 
         public MemberCommandTests(ITestOutputHelper output)
@@ -82,12 +83,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _accountService = new Mock<IAccountService>();
             _accountService.Setup(s => s.GetUserByUserName(It.IsAny<string>())).ReturnsAsync((string userName) => users.FirstOrDefault(u => u.UserName == userName));
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Member_Execute_ReturnsEmpty()
         {
-            var command = new MemberCommand(_console, LoggerMock.GetLogger<MemberCommand>().Object);
+            var command = new MemberCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<MemberCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

@@ -308,7 +308,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <returns></returns>
         [HttpPost("Project/{projectId}/job/{jobId}/tasks", Name = "CreateJobTaskDefinitions")]
         [ProducesResponseType(201)]
-        public async Task<IActionResult> CreateJobTaskDefinitions(int projectId, int jobId, List<CreateJobTaskDefinitionDto> newTasks)
+        public async Task<IActionResult> CreateJobTaskDefinitions(int projectId, int jobId, [FromBody]List<CreateJobTaskDefinitionDto> newTasks)
         {
             // exclude additional configs since it may contain secret values
             var requestBodyToLog = newTasks.Select(t => new CreateJobTaskDefinitionDto

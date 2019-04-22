@@ -29,6 +29,7 @@ namespace Polyrific.Catapult.Api.Infrastructure
             services.AddScoped<ITaskProviderAdditionalConfigRepository, TaskProviderAdditionalConfigRepository>();
             services.AddScoped<IManagedFileRepository, ManagedFileRepository>();
             services.AddScoped<ITagRepository, TagRepository>();
+            services.AddScoped<IHelpContextRepository, HelpContextRepository>();
         }
     }
 }

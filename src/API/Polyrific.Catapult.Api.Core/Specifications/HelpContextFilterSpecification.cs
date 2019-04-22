@@ -9,7 +9,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public int Section { get; set; }
 
         public HelpContextFilterSpecification(int section)
-            : base(m => m.Section == section)
+            : base(m => m.Section == section, m => m.Sequence)
         {
             Section = section;
         }

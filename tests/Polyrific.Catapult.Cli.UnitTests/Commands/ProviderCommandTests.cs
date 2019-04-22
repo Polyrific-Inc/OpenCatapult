@@ -23,6 +23,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
     {
         private readonly IConsole _console;
         private readonly Mock<IProviderService> _providerService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly ITestOutputHelper _output;
 
         public ProviderCommandTests(ITestOutputHelper output)
@@ -31,12 +32,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _console = new TestConsole(output);
 
             _providerService = new Mock<IProviderService>();
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Provider_Execute_ReturnsEmpty()
         {
-            var command = new ProviderCommand(_console, LoggerMock.GetLogger<ProviderCommand>().Object);
+            var command = new ProviderCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<ProviderCommand>().Object);
 
             var message = command.Execute();
 

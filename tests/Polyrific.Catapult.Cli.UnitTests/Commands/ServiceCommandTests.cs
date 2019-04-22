@@ -21,6 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IConsoleReader> _consoleReader;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
+        private readonly Mock<IHelpContextService> _helpContextService;
 
         public ServiceCommandTests(ITestOutputHelper output)
         {
@@ -118,13 +119,15 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
             _externalServiceTypeService.Setup(s => s.GetExternalServiceTypeByName(It.IsAny<string>())).ReturnsAsync((string name) => serviceTypes.FirstOrDefault(u => u.Name == name));
             _externalServiceTypeService.Setup(s => s.GetExternalServiceType(It.IsAny<int>())).ReturnsAsync((int id) => serviceTypes.FirstOrDefault(u => u.Id == id));
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Service_Execute_ReturnsEmpty()
         {
             var console = new TestConsole(_output, "userPassword");
-            var command = new ServiceCommand(console, LoggerMock.GetLogger<ServiceCommand>().Object);
+            var command = new ServiceCommand(_helpContextService.Object, console, LoggerMock.GetLogger<ServiceCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

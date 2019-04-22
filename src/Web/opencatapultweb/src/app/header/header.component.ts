@@ -2,8 +2,10 @@ import { Component, OnInit, Input } from '@angular/core';
 import { AuthService } from '../core/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthorizePolicy } from '../core/auth/authorize-policy';
-import { MatSidenav } from '@angular/material';
+import { MatSidenav, MatDialog } from '@angular/material';
 import { AccountService, ManagedFileService } from '@app/core';
+import { HelpContextService } from '@app/core/services/help-context.service';
+import { HelpContextDialogComponent } from '@app/help-context-dialog/help-context-dialog.component';
 
 @Component({
   selector: 'app-header',
@@ -15,12 +17,15 @@ export class HeaderComponent implements OnInit {
   authorizePolicyEnum = AuthorizePolicy;
   greetingsName: string;
   avatarImage: any;
+  loading: boolean;
 
   constructor(
       private authService: AuthService,
       private accountService: AccountService,
       private router: Router,
-      private managedFileService: ManagedFileService
+      private dialog: MatDialog,
+      private managedFileService: ManagedFileService,
+      private helpContextService: HelpContextService
     ) { }
 
   ngOnInit() {
@@ -57,5 +62,17 @@ export class HeaderComponent implements OnInit {
   isQuickAddMenuShown() {
     return this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleAdminAccess, null) ||
       this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleBasicAccess, null);
+  }
+
+  onHelpClick() {
+    this.loading = true;
+    const section = this.helpContextService.getSectionByActiveRoute(this.router.url);
+    this.helpContextService.getHelpContextsBySection(section)
+      .subscribe(data => {
+        this.loading = false;
+        this.dialog.open(HelpContextDialogComponent, {
+          data: data
+        });
+      });
   }
 }

@@ -1,3 +1,4 @@
+<mat-progress-bar mode="indeterminate" *ngIf="loading"></mat-progress-bar>
 <mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center">
   <div>
       <div fxShow="true" fxHide.gt-sm="true" class="menu-buttons">
@@ -18,6 +19,8 @@
       </div>
   </div>
   <div class="profile-buttons">
+      <button mat-button class="greetings-button" (click)="onHelpClick()"><mat-icon>help_outline</mat-icon></button>
+
       <button mat-button class="greetings-button" [matMenuTriggerFor]="quickAddMenu" *ngIf="isQuickAddMenuShown()">
         <mat-icon>add</mat-icon>
         <mat-icon>arrow_drop_down</mat-icon>

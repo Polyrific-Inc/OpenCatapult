@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Api
             services.AddTransient<ITaskProviderService, TaskProviderService>();
             services.AddTransient<ITaskProviderAdditionalConfigService, TaskProviderAdditionalConfigService>();
             services.AddTransient<IManagedFileService, ManagedFileService>();
+            services.AddTransient<IHelpContextService, HelpContextService>();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly Mock<IProviderService> _providerService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly ITestOutputHelper _output;
 
         public JobCommandTests(ITestOutputHelper output)
@@ -78,12 +79,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _providerService = new Mock<IProviderService>();
             _providerService.Setup(s => s.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<Shared.Dto.Provider.TaskProviderAdditionalConfigDto>());
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Job_Execute_ReturnsEmpty()
         {
-            var command = new JobCommand(_console, LoggerMock.GetLogger<JobCommand>().Object);
+            var command = new JobCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<JobCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

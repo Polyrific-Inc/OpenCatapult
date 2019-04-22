@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Help Context</h1>
+<div mat-dialog-content>
+    <p *ngIf="helpContexts.length === 0">No help context found in this page</p>
+    <ul>
+      <li *ngFor="let helpContext of helpContexts"><b *ngIf="helpContext.subSection">{{helpContext.subSection}}: </b>{{helpContext.text}}</li>
+    </ul>
+</div>
+<div mat-dialog-actions>
+    <button mat-button [mat-dialog-close]="false">Close</button>
+</div>

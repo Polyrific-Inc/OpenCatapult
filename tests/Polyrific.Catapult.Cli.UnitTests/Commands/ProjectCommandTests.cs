@@ -27,6 +27,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProviderService> _providerService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly Mock<ITemplateWriter> _templateWriter;
         private readonly Mock<ITokenService> _tokenService;
         private readonly Mock<ITokenStore> _tokenStore;
@@ -137,12 +138,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _tokenService = new Mock<ITokenService>();
             _tokenService.Setup(t => t.RefreshToken()).ReturnsAsync("token");
             _tokenStore = new Mock<ITokenStore>();
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Project_Execute_ReturnsEmpty()
         {
-            var command = new ProjectCommand(_console, LoggerMock.GetLogger<ProjectCommand>().Object);
+            var command = new ProjectCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<ProjectCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

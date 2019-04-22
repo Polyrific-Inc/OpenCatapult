@@ -22,6 +22,7 @@ import { YamlService } from './services/yaml.service';
 import { ProjectHistoryService } from './services/project-history.service';
 import { TextHelperService } from './services/text-helper.service';
 import { ManagedFileService } from './services/managed-file.service';
+import { HelpContextService } from './services/help-context.service';
 
 @NgModule({
   declarations: [],
@@ -49,7 +50,8 @@ import { ManagedFileService } from './services/managed-file.service';
     YamlService,
     ProjectHistoryService,
     TextHelperService,
-    ManagedFileService
+    ManagedFileService,
+    HelpContextService
   ]
 })
 export class CoreModule {

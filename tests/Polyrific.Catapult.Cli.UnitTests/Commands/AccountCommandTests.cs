@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly IConsole _console;
         private readonly ITestOutputHelper _output;
         private readonly Mock<IAccountService> _accountService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly Mock<IConsoleReader> _consoleReader;
         private readonly Mock<IManagedFileService> _managedFileService;
 
@@ -52,12 +53,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _consoleReader = new Mock<IConsoleReader>();
             _managedFileService = new Mock<IManagedFileService>();
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Account_Execute_ReturnsEmpty()
         {
-            var command = new AccountCommand(_console, LoggerMock.GetLogger<AccountCommand>().Object);
+            var command = new AccountCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<AccountCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);
