@@ -57,7 +57,7 @@
     <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>Catapult, OpenCatapult, tools, devops, api</PackageTags>
+    <PackageTags>Catapult, OpenCatapult, tools, devops, api, polyrific</PackageTags>
     <PackageId>Polyrific.Catapult.Api</PackageId>
     <Version>1.0.0-beta4</Version>
     <DockerComposeProjectPath>..\..\..\docker-compose.dcproj</DockerComposeProjectPath>
