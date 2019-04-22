@@ -14,6 +14,7 @@ export class ExternalServiceComponent implements OnInit {
   externalServices: ExternalServiceDto[];
   projectId: number;
   roleId = 0;
+  loading: boolean;
 
   displayedColumns: string[] = ['name', 'description', 'externalServiceTypeName', 'actions'];
 
@@ -28,8 +29,12 @@ export class ExternalServiceComponent implements OnInit {
   }
 
   getExternalServices() {
+    this.loading = true;
     this.externalServiceService.getExternalServices()
-      .subscribe(data => this.externalServices = data);
+      .subscribe(data => {
+          this.externalServices = data;
+          this.loading = false;
+        });
   }
 
   onInfoClick(externalService: ExternalServiceDto) {

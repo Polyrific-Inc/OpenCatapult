@@ -94,7 +94,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _userRepository.Setup(s => s.GetByUserName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) =>
                     userData.FirstOrDefault(u => u.UserName.ToLower() == email.ToLower()));
-            _userRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2);
         }
 
@@ -143,7 +143,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddProjectMember_NewUser()
         {
             var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
-            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", 1);
+            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", "password", 1);
 
             Assert.True(_data.Count > 1);
             Assert.True(memberId > 1);
@@ -163,7 +163,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddProjectMember_DuplicateEmail()
         {
             var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
-            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", 1));
+            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", "password", 1));
 
             Assert.IsType<DuplicateUserEmailException>(exception?.Result);
         }

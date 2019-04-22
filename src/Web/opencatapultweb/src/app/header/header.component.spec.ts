@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeaderComponent } from './header.component';
-import { MatToolbarModule, MatMenuModule, MatIconModule, MatSidenavModule } from '@angular/material';
+import { MatToolbarModule, MatMenuModule, MatIconModule, MatSidenavModule, MatDividerModule } from '@angular/material';
 import { AuthService } from '@app/core/auth/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -27,7 +27,8 @@ describe('HeaderComponent', () => {
         MatMenuModule,
         MatSidenavModule,
         FlexLayoutModule,
-        MatIconModule
+        MatIconModule,
+        MatDividerModule
       ],
       providers: [
         {

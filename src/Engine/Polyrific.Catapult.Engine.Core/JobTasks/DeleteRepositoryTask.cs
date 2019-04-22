@@ -24,7 +24,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.DeleteRepository;
 
-        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(PluginType.RepositoryProvider);
+        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(TaskProviderType.RepositoryProvider);
         
         public override async Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues)
         {

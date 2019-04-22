@@ -1,10 +1,17 @@
 <div class="container">
   <div fxLayout="row" fxLayoutAlign="space-between center">
-    <div><h2>External Service</h2></div>
+    <div class="title-desc">
+      <h2>External Service</h2>
+      <span>The saved authentication data for an external service such as GitHub or Azure. (<a href="https://docs.opencatapult.net/home/concept#external-service-connection" target="_blank">more...</a>)</span>
+    </div>
     <div class="action-buttons">
       <button mat-raised-button (click)="onNewExternalServiceClick()">New External Service</button>
     </div>
   </div>
+
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+<div *ngIf="!loading">
   <div class="no-records" *ngIf="externalServices?.length <= 0">
     No External services Found
   </div>
@@ -47,4 +54,5 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
+</div>
 </div>

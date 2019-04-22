@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { UserDto, AccountService } from '@app/core';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { UserStatus } from '@app/core/enums/user-status';
@@ -8,19 +8,21 @@ import { UserRole } from '@app/core/enums/user-role';
 import { UserSetRoleDialogComponent } from '../components/user-set-role-dialog/user-set-role-dialog.component';
 import { UserInfoDialogComponent } from '../components/user-info-dialog/user-info-dialog.component';
 import { UserRegisterDialogComponent } from '../components/user-register-dialog/user-register-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.css']
 })
-export class AccountComponent implements OnInit {
+export class AccountComponent implements OnInit, AfterViewInit {
   users: UserDto[];
   statusFilter: FormControl;
   userStatus = [
     {text: 'Active', value: UserStatus.active},
     {text: 'Suspended', value: UserStatus.suspended}
   ];
+  loading: boolean;
 
   displayedColumns: string[] = ['userName', 'firstName', 'lastName', 'role', 'actions'];
 
@@ -28,7 +30,8 @@ export class AccountComponent implements OnInit {
     private fb: FormBuilder,
     private accountService: AccountService,
     private dialog: MatDialog,
-    private snackbar: SnackbarService
+    private snackbar: SnackbarService,
+    private route: ActivatedRoute
     ) { }
 
   ngOnInit() {
@@ -36,9 +39,23 @@ export class AccountComponent implements OnInit {
     this.getUsers();
   }
 
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(data => {
+      if (data.newUser) {
+        setTimeout(() => {
+          this.onRegisterUserClick();
+        }, 0);
+      }
+    });
+  }
+
   getUsers() {
+    this.loading = true;
     this.accountService.getUsers(this.statusFilter.value, UserRole.All)
-      .subscribe(data => this.users = data);
+      .subscribe(data => {
+        this.users = data;
+        this.loading = false;
+      });
   }
 
   onSetRoleClick(user: UserDto) {

@@ -17,14 +17,14 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
     public class VersionControllerTests
     {
         private readonly Mock<ICatapultEngineService> _catapultEngineService;
-        private readonly Mock<IPluginService> _pluginService;
+        private readonly Mock<ITaskProviderService> _providerService;
         private readonly IMapper _mapper;
         private readonly Mock<ILogger<VersionController>> _logger;
 
         public VersionControllerTests()
         {
             _catapultEngineService = new Mock<ICatapultEngineService>();
-            _pluginService = new Mock<IPluginService>();
+            _providerService = new Mock<ITaskProviderService>();
 
             _mapper = AutoMapperUtils.GetMapper();
 
@@ -45,17 +45,17 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         Name = "Engine01"
                     }
                 });
-            _pluginService.Setup(s => s.GetPlugins(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<Plugin>
+            _providerService.Setup(s => s.GetTaskProviders(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProvider>
                 {
-                    new Plugin
+                    new TaskProvider
                     {
                         Id = 1,
                         Name = "AspMvcNet"
                     }
                 });
 
-            var controller = new VersionController(_catapultEngineService.Object, _pluginService.Object, _mapper, _logger.Object);
+            var controller = new VersionController(_catapultEngineService.Object, _providerService.Object, _mapper, _logger.Object);
 
             var result = await controller.Get();
 

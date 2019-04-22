@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
     {
         private readonly Mock<ILogger<TaskRunner>> _logger;
         private readonly Mock<IBuildTask> _buildTask;
-        private readonly Mock<ICloneTask> _cloneTask;
+        private readonly Mock<IPullTask> _cloneTask;
         private readonly Mock<IDeployTask> _deployTask;
         private readonly Mock<IDeployDbTask> _deployDbTask;
         private readonly Mock<IGenerateTask> _generateTask;
@@ -63,7 +63,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _buildTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 
-            _cloneTask = new Mock<ICloneTask>();
+            _cloneTask = new Mock<IPullTask>();
             _cloneTask.Setup(t => t.RunPreprocessingTask()).ReturnsAsync(new TaskRunnerResult());
             _cloneTask.Setup(t => t.RunPostprocessingTask()).ReturnsAsync(new TaskRunnerResult());
 

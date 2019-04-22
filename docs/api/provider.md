@@ -1,65 +1,65 @@
-# Provider
+# Task Provider
 
-These endpoints provide methods to register, remove, and get info of task providers within the catapult instalation
+These endpoints provide methods to register, remove, and get info of task providers within the OpenCatapult instalation
 
-## Get Provider List
+## Get Task Provider List
 Method: `GET`
 
-Uri: `/Provider`
+Uri: `/task-provider`
 
 Authorization: `UserRoleAdminAccess`
 
-Get list of task providers installed within the catapult.
+Get list of task providers installed within the OpenCatapult.
 
-## Register Provider
+## Register a Task Provider
 Method: `POST`
 
-Uri: `/Provider`
+Uri: `/task-provider`
 
 Authorization: `UserRoleAdminAccess`
 
-Register a task provider into the catapult by uploading the .yml file that describe the task provider metadata.
+Register a task provider into the OpenCatapult by uploading the .yml file that describe the task provider metadata.
 
-## Get Providers by Provider Type
+## Get Task Providers by Provider Type
 Method: `GET`
 
-Uri: `/provider/type/{providerType}`
+Uri: `/task-provider/type/{taskProviderType}`
 
 Authorization: `UserRoleAdminAccess`
 
 Get list of task providers, filtered by type (all | BuildProvider | DatabaseProvider | GeneratorProvider | HostingProvider | RepositoryProvider | StorageProvider | TestProvider)
 
-## Get Provider By Id
+## Get a Task Provider By Id
 Method: `GET`
 
-Uri: `/Provider/{providerId}`
+Uri: `/task-provider/{taskProviderId}`
 
 Authorization: `UserRoleBasicAccess`
 
 Get a task provider by its Id
 
-## Remove Provider
+## Remove a Task Provider
 Method: `DELETE`
 
-Uri: `/Provider/{providerId}`
+Uri: `/task-provider/{taskProviderId}`
 
 Authorization: `UserRoleAdminAccess`
 
-Remove a task provider from catapult
+Remove a task provider from OpenCatapult
 
-## Get Provider By Name
+## Get Task Provider By Name
 Method: `GET`
 
-Uri: `/Provider/name/{providerName}`
+Uri: `/task-provider/name/{taskProviderName}`
 
 Authorization: `UserRoleBasicAccess`
 
 Get a provider by its Name
 
-## Get Provider's Configs
+## Get Task Provider's Configs
 Method: `GET`
 
-Uri: `/provider/name/{providerName}/config`
+Uri: `/task-provider/name/{taskProviderName}/config`
 
 Authorization: `UserRoleBasicAccess`
 

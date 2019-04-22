@@ -20,15 +20,15 @@ namespace Polyrific.Catapult.Api.Controllers
     public class VersionController : ControllerBase
     {
         private readonly ICatapultEngineService _engineService;
-        private readonly IPluginService _pluginService;
+        private readonly ITaskProviderService _providerService;
         private readonly IMapper _mapper;
         private readonly ILogger<VersionController> _logger;
 
-        public VersionController(ICatapultEngineService engineService, IPluginService pluginService,
+        public VersionController(ICatapultEngineService engineService, ITaskProviderService providerService,
             IMapper mapper, ILogger<VersionController> logger)
         {
             _engineService = engineService;
-            _pluginService = pluginService;
+            _providerService = providerService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -43,13 +43,13 @@ namespace Polyrific.Catapult.Api.Controllers
             var apiVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
             var engines = await _engineService.GetCatapultEngines(EngineStatus.All);
-            var providers = await _pluginService.GetPlugins();
+            var providers = await _providerService.GetTaskProviders();
                         
             return Ok(new VersionDto
             {
                 ApiVersion = apiVersion,
                 Engines = _mapper.Map<List<CatapultEngineDto>>(engines),
-                Providers = _mapper.Map<List<ProviderDto>>(providers)
+                TaskProviders = _mapper.Map<List<TaskProviderDto>>(providers)
             });
         }
     }

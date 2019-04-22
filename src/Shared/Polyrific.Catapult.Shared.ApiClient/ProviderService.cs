@@ -13,48 +13,48 @@ namespace Polyrific.Catapult.Shared.ApiClient
         {
         }
 
-        public async Task<ProviderDto> AddProvider(NewProviderDto dto)
+        public async Task<TaskProviderDto> AddProvider(NewTaskProviderDto dto)
         {
-            var path = "provider";
+            var path = "task-provider";
 
-            return await Api.Post<NewProviderDto, ProviderDto>(path, dto);
+            return await Api.Post<NewTaskProviderDto, TaskProviderDto>(path, dto);
         }
 
         public async Task DeleteProvider(int id)
         {
-            var path = $"provider/{id}";
+            var path = $"task-provider/{id}";
 
             await Api.Delete(path);
         }
 
-        public async Task<List<ProviderAdditionalConfigDto>> GetProviderAdditionalConfigByProviderName(string providerName)
+        public async Task<List<TaskProviderAdditionalConfigDto>> GetProviderAdditionalConfigByProviderName(string providerName)
         {
-            var path = $"provider/name/{providerName}/config";
+            var path = $"task-provider/name/{providerName}/config";
 
-            return await Api.Get<List<ProviderAdditionalConfigDto>>(path);
+            return await Api.Get<List<TaskProviderAdditionalConfigDto>>(path);
         }
 
-        public async Task<ProviderDto> GetProviderById(int id)
+        public async Task<TaskProviderDto> GetProviderById(int id)
         {
-            var path = $"provider/{id}";
+            var path = $"task-provider/{id}";
 
-            return await Api.Get<ProviderDto>(path);
+            return await Api.Get<TaskProviderDto>(path);
         }
 
-        public async Task<ProviderDto> GetProviderByName(string name)
+        public async Task<TaskProviderDto> GetProviderByName(string name)
         {
-            var path = $"provider/name/{name}";
+            var path = $"task-provider/name/{name}";
 
-            return await Api.Get<ProviderDto>(path);
+            return await Api.Get<TaskProviderDto>(path);
         }
 
-        public async Task<List<ProviderDto>> GetProviders(string type = "all")
+        public async Task<List<TaskProviderDto>> GetProviders(string type = "all")
         {
-            var path = "provider";
+            var path = "task-provider";
             if (type != "all")
                 path += $"/type/{type}";
 
-            return await Api.Get<List<ProviderDto>>(path);
+            return await Api.Get<List<TaskProviderDto>>(path);
         }
     }
 }

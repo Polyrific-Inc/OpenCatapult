@@ -3,6 +3,7 @@ import { AuthService } from '../core/auth/auth.service';
 import { Router } from '@angular/router';
 import { AuthorizePolicy } from '../core/auth/authorize-policy';
 import { MatSidenav } from '@angular/material';
+import { AccountService, ManagedFileService } from '@app/core';
 
 @Component({
   selector: 'app-header',
@@ -13,10 +14,13 @@ export class HeaderComponent implements OnInit {
   @Input() sidenav: MatSidenav;
   authorizePolicyEnum = AuthorizePolicy;
   greetingsName: string;
+  avatarImage: any;
 
   constructor(
       private authService: AuthService,
-      private router: Router
+      private accountService: AccountService,
+      private router: Router,
+      private managedFileService: ManagedFileService
     ) { }
 
   ngOnInit() {
@@ -34,6 +38,13 @@ export class HeaderComponent implements OnInit {
         if (!this.greetingsName) {
           this.greetingsName = user.email;
         }
+
+        this.accountService.getUserByEmail(user.email)
+        .subscribe(data => {
+          if (data.avatarFileId) {
+            this.avatarImage = this.managedFileService.getImageUrl(data.avatarFileId);
+          }
+        });
       }
     });
   }
@@ -43,7 +54,8 @@ export class HeaderComponent implements OnInit {
     this.router.navigate(['/login']);
   }
 
-  isMenuShown(authorizePolicy: AuthorizePolicy) {
-    return this.authService.checkRoleAuthorization(authorizePolicy, null);
+  isQuickAddMenuShown() {
+    return this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleAdminAccess, null) ||
+      this.authService.checkRoleAuthorization(AuthorizePolicy.UserRoleBasicAccess, null);
   }
 }

@@ -172,6 +172,18 @@ namespace Polyrific.Catapult.Api.Data
             }
         }
 
+        public async Task UpdateAvatar(int userId, int? managedFileId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == userId);
+            if (user != null && user.UserProfile != null)
+            {
+                user.UserProfile.AvatarFileId = managedFileId;
+                await _userProfileRepository.Update(user.UserProfile, cancellationToken);
+            }
+        }
+
         public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

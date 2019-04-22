@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Merge;
 
-        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(PluginType.RepositoryProvider);
+        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(TaskProviderType.RepositoryProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {

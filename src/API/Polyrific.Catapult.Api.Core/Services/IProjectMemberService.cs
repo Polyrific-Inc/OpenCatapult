@@ -26,10 +26,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="email">Email of the new user</param>
         /// <param name="firstName">First Name of the new user</param>
         /// <param name="lastName">Last Name of the new user</param>
+        /// <param name="password">Password of the new user</param>
         /// <param name="roleId">Id of the role</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>New id of the project member and id of the new user</returns>
-        Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, int roleId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get members of a project

@@ -15,7 +15,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
             ParseArguments();
         }
 
-        public override string Type => PluginType.GenericTaskProvider;
+        public override string Type => TaskProviderType.GenericTaskProvider;
 
         public sealed override void ParseArguments()
         {

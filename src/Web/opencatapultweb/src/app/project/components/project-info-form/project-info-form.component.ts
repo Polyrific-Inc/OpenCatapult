@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { ProjectDto } from '@app/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs/operators';
+import { TextHelperService } from '@app/core/services/text-helper.service';
 
 @Component({
   selector: 'app-project-info-form',
@@ -18,7 +19,8 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
   private projectName = new Subject<string>();
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private textHelperService: TextHelperService
     ) { }
 
   ngOnInit() {
@@ -71,7 +73,8 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
       }
 
       this.projectInfoForm.patchValue({
-        name: projectName
+        name: projectName,
+        displayName: this.textHelperService.humanizeText(projectName)
       });
     });
   }
@@ -80,6 +83,4 @@ export class ProjectInfoFormComponent implements OnInit, OnChanges {
     const control = this.projectInfoForm.get(field);
     return control.invalid && control.errors && control.getError(errorCode);
   }
-
-
 }

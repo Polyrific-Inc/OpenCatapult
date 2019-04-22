@@ -50,5 +50,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Role of the user
         /// </summary>
         public string Role { get; set; }
+
+        /// <summary>
+        /// The managed file id for the user's avatar
+        /// </summary>
+        public int? AvatarFileId { get; set; }
     }
 }

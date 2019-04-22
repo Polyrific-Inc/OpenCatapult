@@ -6,4 +6,5 @@ export interface UserDto {
   email: string;
   isActive: boolean;
   role: string;
+  avatarFileId: number;
 }

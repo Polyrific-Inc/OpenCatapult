@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void ProviderGet_Execute_ReturnsSuccessMessage()
         {
             _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>()))
-                .ReturnsAsync((string providerName) => new ProviderDto { Id = 1, Name = providerName});
+                .ReturnsAsync((string providerName) => new TaskProviderDto { Id = 1, Name = providerName});
 
             var command = new GetCommand(_providerService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
             {
@@ -63,7 +63,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         public void ProviderGet_Execute_ReturnsNotFoundMessage()
         {
             _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>()))
-                .ReturnsAsync((ProviderDto)null);
+                .ReturnsAsync((TaskProviderDto)null);
 
             var command = new GetCommand(_providerService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)
             {
@@ -78,9 +78,9 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProviderList_Execute_ReturnsSuccessMessage()
         {
-            _providerService.Setup(s => s.GetProviders(It.IsAny<string>())).ReturnsAsync(new List<ProviderDto>
+            _providerService.Setup(s => s.GetProviders(It.IsAny<string>())).ReturnsAsync(new List<TaskProviderDto>
             {
-                new ProviderDto {Id = 1, Name = "AProvider01"}
+                new TaskProviderDto {Id = 1, Name = "AProvider01"}
             });
 
             var command = new ListCommand(_providerService.Object, _console, LoggerMock.GetLogger<ListCommand>().Object);
@@ -93,7 +93,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void ProviderList_Execute_ReturnsNoProvidersMessage()
         {
-            _providerService.Setup(s => s.GetProviders(It.IsAny<string>())).ReturnsAsync(new List<ProviderDto>());
+            _providerService.Setup(s => s.GetProviders(It.IsAny<string>())).ReturnsAsync(new List<TaskProviderDto>());
 
             var command = new ListCommand(_providerService.Object, _console, LoggerMock.GetLogger<ListCommand>().Object);
 
@@ -110,17 +110,17 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             if (File.Exists(testFile))
                 File.Delete(testFile);
 
-            var testContent = new NewProviderDto
+            var testContent = new NewTaskProviderDto
             {
                 Name = "AProvider01",
-                Type = PluginType.HostingProvider,
+                Type = TaskProviderType.HostingProvider,
                 Author = "Frandi",
                 Version = "1.0"
             };
             var stringContent = YamlSerialize(testContent);
             File.WriteAllText(testFile, stringContent);
 
-            _providerService.Setup(s => s.AddProvider(It.IsAny<NewProviderDto>())).ReturnsAsync((NewProviderDto dto) => new ProviderDto
+            _providerService.Setup(s => s.AddProvider(It.IsAny<NewTaskProviderDto>())).ReturnsAsync((NewTaskProviderDto dto) => new TaskProviderDto
             {
                 Id = 1,
                 Name = dto.Name,
@@ -182,7 +182,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         {
             var console = new TestConsole(_output, "y");
             _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>()))
-                .ReturnsAsync((string providerName) => new ProviderDto {Id = 1, Name = providerName});
+                .ReturnsAsync((string providerName) => new TaskProviderDto {Id = 1, Name = providerName});
             _providerService.Setup(s => s.DeleteProvider(It.IsAny<int>())).Returns(Task.CompletedTask);
 
             var command = new RemoveCommand(_providerService.Object, console,
@@ -202,7 +202,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var console = new TestConsole(_output, "y");
 
             _providerService.Setup(s => s.GetProviderByName(It.IsAny<string>()))
-                .ReturnsAsync((ProviderDto)null);
+                .ReturnsAsync((TaskProviderDto)null);
 
             var command = new RemoveCommand(_providerService.Object, console,
                 LoggerMock.GetLogger<RemoveCommand>().Object)
@@ -215,7 +215,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             Assert.Equal("Task provider AProvider01 was not found.", message);
         }
 
-        private string YamlSerialize(NewProviderDto dto)
+        private string YamlSerialize(NewTaskProviderDto dto)
         {
             var serializer = new SerializerBuilder().WithNamingConvention(new HyphenatedNamingConvention()).Build();
             return serializer.Serialize(dto);

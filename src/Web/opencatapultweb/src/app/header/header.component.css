@@ -8,13 +8,24 @@
   text-align: right;
 }
 
-.greetings {
-  font-size: 14px;
-  margin-right: 12px;
+.greetings-button {
+  height: 50px;
 }
 
-.greetings-button {
-  border: 2px solid white;
+.greetings-avatar, .greetings-avatar-icon {
+  border: 2px solid #222222;
+  border-radius: 50%;
+}
+
+.greetings-avatar-icon  {
+  padding: 4px 6px;
+}
+
+.greetings-avatar {
+  object-fit: cover;
+  width: 36px;
+  height: 36px;
+  margin-top: -4px;
 }
 
 .greetings-button mat-icon {
@@ -23,4 +34,8 @@
 
 .menu-buttons {
   display: inline-block;
+}
+
+.is-active {
+  background-color: #ebeced;
 }

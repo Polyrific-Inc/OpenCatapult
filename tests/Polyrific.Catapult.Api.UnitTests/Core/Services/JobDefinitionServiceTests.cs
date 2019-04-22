@@ -24,9 +24,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         private readonly Mock<IJobDefinitionRepository> _jobDefinitionRepository;
         private readonly Mock<IJobTaskDefinitionRepository> _jobTaskDefinitionRepository;
         private readonly Mock<IProjectRepository> _projectRepository;
-        private readonly Mock<IPluginRepository> _pluginRepository;
+        private readonly Mock<ITaskProviderRepository> _providerRepository;
         private readonly Mock<IExternalServiceRepository> _externalServiceRepository;
-        private readonly Mock<IPluginAdditionalConfigRepository> _pluginAdditionalConfigRepository;
+        private readonly Mock<ITaskProviderAdditionalConfigRepository> _providerAdditionalConfigRepository;
         private readonly Mock<ISecretVault> _secretVault;
 
         public JobDefinitionServiceTests()
@@ -146,11 +146,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => id == 1 ? new Project() { Id = id } : null);
 
-            _pluginRepository = new Mock<IPluginRepository>();
+            _providerRepository = new Mock<ITaskProviderRepository>();
 
             _externalServiceRepository = new Mock<IExternalServiceRepository>();
 
-            _pluginAdditionalConfigRepository = new Mock<IPluginAdditionalConfigRepository>();
+            _providerAdditionalConfigRepository = new Mock<ITaskProviderAdditionalConfigRepository>();
 
             _secretVault = new Mock<ISecretVault>();
         }
@@ -158,7 +158,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobDefinition_ValidItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             int newId = await projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD", false);
 
             Assert.True(newId > 1);
@@ -168,7 +168,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobDefinition_DuplicateItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Default", false));
 
             Assert.IsType<DuplicateJobDefinitionException>(exception?.Result);
@@ -177,7 +177,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobDefinition_InvalidProject()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(2, "Category", false));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -187,7 +187,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobDefinition_MultipleDeletionJob()
         {
             _data[0].IsDeletion = true;
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Category", true));
 
             Assert.IsType<MultipleDeletionJobException>(exception?.Result);
@@ -196,7 +196,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitions_ReturnItems()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var dataModels = await projectJobDefinitionService.GetJobDefinitions(1);
 
             Assert.NotEmpty(dataModels);
@@ -205,7 +205,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitions_ReturnEmpty()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var dataModels = await projectJobDefinitionService.GetJobDefinitions(2);
 
             Assert.Empty(dataModels);
@@ -214,7 +214,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitionById_ReturnItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var projectJobDefinition = await projectJobDefinitionService.GetJobDefinitionById(1);
 
             Assert.NotNull(projectJobDefinition);
@@ -224,7 +224,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitionById_ReturnNull()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobDefinition = await projectJobDefinitionService.GetJobDefinitionById(2);
 
             Assert.Null(jobDefinition);
@@ -233,7 +233,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitionByName_ReturnItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var projectJobDefinition = await projectJobDefinitionService.GetJobDefinitionByName(1, "Default");
 
             Assert.NotNull(projectJobDefinition);
@@ -243,7 +243,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobDefinitionByName_ReturnNull()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobDefinition = await projectJobDefinitionService.GetJobDefinitionByName(1, "Default2");
 
             Assert.Null(jobDefinition);
@@ -252,7 +252,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void DeleteJobDefinition_ValidItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.DeleteJobDefinition(1);
 
             Assert.Empty(_data);
@@ -262,7 +262,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void DeleteJobDefinitions_ValidItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.DeleteJobDefinitions(1, new int[] { 1 });
 
             Assert.Empty(_data);
@@ -272,7 +272,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void RenameJobDefinition_ValidItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.RenameJobDefinition(1, "newName");
 
             var dataModel = _data.First(d => d.Id == 1);
@@ -290,7 +290,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Name = "newName"
             });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.RenameJobDefinition(1, "newName"));
 
             Assert.IsType<DuplicateJobDefinitionException>(exception?.Result);
@@ -299,8 +299,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinition_ValidItem()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -316,10 +316,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -327,7 +327,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             int newId = await projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -345,10 +345,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ConfigNull_ExternalServiceRequiredException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -363,10 +363,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ExternalServiceRequiredException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -381,10 +381,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_ExternalServiceNotFoundException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -399,8 +399,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_IncorrectExternalServiceTypeException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -412,7 +412,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -427,8 +427,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinition_GenericService_ValidItem()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
 
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -444,10 +444,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -455,7 +455,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             int newId = await projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -472,7 +472,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_InvalidJobDefinition()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 2,
@@ -486,13 +486,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinition_AdditionalConfigNull_AdditionalConfigRequiredException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -500,7 +500,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -509,19 +509,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<PluginAdditionalConfigRequiredException>(exception?.Result);
+            Assert.IsType<TaskProviderAdditionalConfigRequiredException>(exception?.Result);
         }
 
         [Fact]
         public void AddJobTaskDefinition_AdditionalConfigNotExist_AdditionalConfigRequiredException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -529,7 +529,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -538,13 +538,13 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<PluginAdditionalConfigRequiredException>(exception?.Result);
+            Assert.IsType<TaskProviderAdditionalConfigRequiredException>(exception?.Result);
         }
 
         [Fact]
         public void AddJobTaskDefinition_DuplicateJobTaskDefinitionException()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -558,15 +558,15 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
-        public void AddJobTaskDefinition_InvalidPluginTypeException()
+        public void AddJobTaskDefinition_InvalidProviderTypeException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = "InvalidType" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = "InvalidType" });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -574,7 +574,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -583,19 +583,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "GitHubProvider"
             }));
 
-            Assert.IsType<InvalidPluginTypeException>(exception?.Result);
+            Assert.IsType<InvalidTaskProviderTypeException>(exception?.Result);
         }
 
         [Fact]
-        public void AddJobTaskDefinition_IncorrectTaskType_InvalidPluginTypeException()
+        public void AddJobTaskDefinition_IncorrectTaskType_InvalidProviderTypeException()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "VstsBuildProvider", Type = PluginType.BuildProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "VstsBuildProvider", Type = TaskProviderType.BuildProvider });
 
-            _pluginAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<PluginAdditionalConfig>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new List<PluginAdditionalConfig>
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
                 {
-                    new PluginAdditionalConfig
+                    new TaskProviderAdditionalConfig
                     {
                         Id = 1,
                         Name = "testconfig",
@@ -603,7 +603,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
                 JobDefinitionId = 1,
@@ -612,16 +612,16 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Provider = "VstsBuildProvider"
             }));
 
-            Assert.IsType<InvalidPluginTypeException>(exception?.Result);
+            Assert.IsType<InvalidTaskProviderTypeException>(exception?.Result);
 
-            var invalidPluginTypeException = exception?.Result as InvalidPluginTypeException;
-            Assert.NotEmpty(invalidPluginTypeException.TaskTypes);
+            var invalidProviderTypeException = exception?.Result as InvalidTaskProviderTypeException;
+            Assert.NotEmpty(invalidProviderTypeException.TaskTypes);
         }
 
         [Fact]
         public void AddJobTaskDefinition_JobTaskDefinitionTypeException()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             _data[0].IsDeletion = true;
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
             {
@@ -636,8 +636,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddJobTaskDefinitions_ValidItem()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "GitHubProvider", Type = PluginType.RepositoryProvider, RequiredServicesString = "GitHub" });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider, RequiredServicesString = "GitHub" });
             
             _externalServiceRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<ExternalService>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(
@@ -653,14 +653,14 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     }
                 });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var newIds = await projectJobDefinitionService.AddJobTaskDefinitions(1, new List<JobTaskDefinition>
             {
                 new JobTaskDefinition
                 {
                     JobDefinitionId = 1,
                     Name = "Clone",
-                    Type = JobTaskDefinitionType.Clone,
+                    Type = JobTaskDefinitionType.Pull,
                     Provider = "GitHubProvider",
                     ConfigString = @"{""GitHubExternalService"":""github-default""}"
                 },
@@ -688,7 +688,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobTaskDefinitions_JobDefinitionNotFound()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinitions(2, new List<JobTaskDefinition>
             {
                 new JobTaskDefinition
@@ -711,7 +711,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void DeleteJobTaskDefinition_ValidItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.DeleteJobTaskDefinition(1);
 
             Assert.Empty(_dataTask);
@@ -720,7 +720,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitions_ReturnItems()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinitions = await projectJobDefinitionService.GetJobTaskDefinitions(1);
 
             Assert.NotEmpty(jobTaskDefinitions);
@@ -729,7 +729,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitions_ReturnEmpty()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinitions = await projectJobDefinitionService.GetJobTaskDefinitions(2);
 
             Assert.Empty(jobTaskDefinitions);
@@ -738,7 +738,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitioById_ReturnItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinition = await projectJobDefinitionService.GetJobTaskDefinitionById(1);
 
             Assert.NotNull(jobTaskDefinition);
@@ -747,7 +747,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitionById_ReturnEmpty()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinition = await projectJobDefinitionService.GetJobTaskDefinitionById(2);
 
             Assert.Null(jobTaskDefinition);
@@ -756,7 +756,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitioByName_ReturnItem()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinition = await projectJobDefinitionService.GetJobTaskDefinitionByName(1, "Generate");
 
             Assert.NotNull(jobTaskDefinition);
@@ -765,7 +765,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskDefinitionByName_ReturnEmpty()
         {
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             var jobTaskDefinition = await projectJobDefinitionService.GetJobTaskDefinitionByName(1, "Push");
 
             Assert.Null(jobTaskDefinition);
@@ -774,10 +774,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskDefinition_ValidItem()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "AspMvcNetCore", Type = PluginType.GeneratorProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "AspMvcNetCore", Type = TaskProviderType.GeneratorProvider });
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.UpdateJobTaskDefinition(new JobTaskDefinition
             {
                 Id = 1,
@@ -795,8 +795,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateJobTaskConfig_ValidItem()
         {
-            _pluginRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<Plugin>>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new Plugin { Id = 3, Name = "AspMvcNetCore", Type = PluginType.GeneratorProvider });
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "AspMvcNetCore", Type = TaskProviderType.GeneratorProvider });
 
             var updatedConfig = new Dictionary<string, string>()
             {
@@ -805,7 +805,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
             var updatedConfigString = JsonConvert.SerializeObject(updatedConfig);
 
-            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _pluginRepository.Object, _externalServiceRepository.Object, _pluginAdditionalConfigRepository.Object, _secretVault.Object);
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
             await projectJobDefinitionService.UpdateJobTaskConfig(1, updatedConfig);
 
             var jobTaskDefinition = _dataTask.First(d => d.Id == 1);

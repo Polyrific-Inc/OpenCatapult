@@ -252,100 +252,26 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.ToTable("JobTaskDefinitions");
                 });
 
-            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Plugin", b =>
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ManagedFile", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Author");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
                     b.Property<DateTime>("Created");
 
-                    b.Property<string>("Name");
+                    b.Property<byte[]>("File");
 
-                    b.Property<string>("RequiredServicesString");
-
-                    b.Property<string>("Type");
-
-                    b.Property<DateTime?>("Updated");
-
-                    b.Property<string>("Version");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Plugins");
-
-                    b.HasData(
-                        new { Id = 1, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc", Type = "GeneratorProvider", Version = "1.0.0-beta3" },
-                        new { Id = 2, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.GitHub", RequiredServicesString = "GitHub", Type = "RepositoryProvider", Version = "1.0.0-beta3" },
-                        new { Id = 3, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.DotNetCore", Type = "BuildProvider", Version = "1.0.0-beta3" },
-                        new { Id = 4, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.DotNetCoreTest", Type = "TestProvider", Version = "1.0.0-beta3" },
-                        new { Id = 5, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore", Type = "DatabaseProvider", Version = "1.0.0-beta3" },
-                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.AzureAppService", RequiredServicesString = "Azure", Type = "HostingProvider", Version = "1.0.0-beta3" },
-                        new { Id = 7, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a7", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Name = "Polyrific.Catapult.TaskProviders.GenericCommand", Type = "GenericTaskProvider", Version = "1.0.0-beta3" }
-                    );
-                });
-
-            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AllowedValues");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
-
-                    b.Property<DateTime>("Created");
-
-                    b.Property<string>("Hint");
-
-                    b.Property<bool?>("IsInputMasked");
-
-                    b.Property<bool>("IsRequired");
-
-                    b.Property<bool>("IsSecret");
-
-                    b.Property<string>("Label");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("PluginId");
-
-                    b.Property<string>("Type");
+                    b.Property<string>("FileName");
 
                     b.Property<DateTime?>("Updated");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PluginId");
-
-                    b.ToTable("PluginAdditionalConfigs");
-
-                    b.HasData(
-                        new { Id = 1, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382258", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Please enter the email address that you wish to be used as an administrator of the project", IsRequired = true, IsSecret = false, Label = "Admin Email", Name = "AdminEmail", PluginId = 1, Type = "string" },
-                        new { Id = 2, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382259", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Csproj Location", Name = "CsprojLocation", PluginId = 3, Type = "string" },
-                        new { Id = 3, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225a", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Configuration", Name = "Configuration", PluginId = 3, Type = "string" },
-                        new { Id = 4, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225b", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Startup Project Name", Name = "StartupProjectName", PluginId = 5, Type = "string" },
-                        new { Id = 5, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225c", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Database Project Name", Name = "DatabaseProjectName", PluginId = 5, Type = "string" },
-                        new { Id = 6, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382262", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsInputMasked = false, IsRequired = true, IsSecret = true, Label = "Connection String", Name = "ConnectionString", PluginId = 5, Type = "string" },
-                        new { Id = 7, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225e", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "Subscription Id", Name = "SubscriptionId", PluginId = 6, Type = "string" },
-                        new { Id = 8, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225f", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "Resource Group", Name = "ResourceGroupName", PluginId = 6, Type = "string" },
-                        new { Id = 9, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382260", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "App Service", Name = "AppServiceName", PluginId = 6, Type = "string" },
-                        new { Id = 10, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382266", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Do you want to automatically reassign app service name when it is not available?", IsRequired = false, IsSecret = false, Label = "Allow Automatic Rename?", Name = "AllowAutomaticRename", PluginId = 6, Type = "boolean" },
-                        new { Id = 11, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382261", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Deployment Slot", Name = "DeploymentSlot", PluginId = 6, Type = "string" },
-                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Please make sure to enter the connection string if the website needs to connect to the database", IsInputMasked = false, IsRequired = false, IsSecret = true, Label = "Connection String", Name = "ConnectionString", PluginId = 6, Type = "string" },
-                        new { Id = 13, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default Region", Name = "Region", PluginId = 6, Type = "string" },
-                        new { Id = 14, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default App Service Plan", Name = "AppServicePlan", PluginId = 6, Type = "string" },
-                        new { Id = 15, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382267", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "The command tool to be used to run the command (e.g. Powershell). Defaults based on OS.", IsRequired = false, IsSecret = false, Label = "Command Tool", Name = "CommandTool", PluginId = 7, Type = "string" },
-                        new { Id = 16, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382268", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Command Text", Name = "CommandText", PluginId = 7, Type = "string" },
-                        new { Id = 17, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382269", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "You can provide a script file (it is recommended to use this if the input contains multiple lines of commands)", IsRequired = false, IsSecret = false, Label = "Command Script Path", Name = "CommandScriptPath", PluginId = 7, Type = "file" }
-                    );
+                    b.ToTable("ManagedFiles");
                 });
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Project", b =>
@@ -503,6 +429,231 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         new { Id = 2, ConcurrencyStamp = "49db1ab1-9f16-4db0-b32d-5a916c2d39cd", Created = new DateTime(2018, 8, 15, 13, 38, 58, 310, DateTimeKind.Utc), Name = "Maintainer" },
                         new { Id = 3, ConcurrencyStamp = "82dcaf01-bc5f-4964-b665-56074560861f", Created = new DateTime(2018, 8, 15, 13, 38, 58, 310, DateTimeKind.Utc), Name = "Contributor" },
                         new { Id = 4, ConcurrencyStamp = "d25d2b9c-b2dc-4a36-99af-0622de434e83", Created = new DateTime(2018, 8, 15, 13, 38, 58, 310, DateTimeKind.Utc), Name = "Member" }
+                    );
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp");
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Tags");
+
+                    b.HasData(
+                        new { Id = 1, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc3e", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Code Generator" },
+                        new { Id = 2, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc3f", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Repository" },
+                        new { Id = 3, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc40", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Build" },
+                        new { Id = 4, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc41", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Test" },
+                        new { Id = 5, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc42", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Database Deploy" },
+                        new { Id = 6, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc43", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Deploy" },
+                        new { Id = 7, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc44", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "DotNet Core" },
+                        new { Id = 8, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc45", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Microsoft" },
+                        new { Id = 9, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc46", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "AspNet Core" },
+                        new { Id = 10, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc47", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "AspNet Core Mvc" },
+                        new { Id = 11, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc48", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "MVC" },
+                        new { Id = 12, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc49", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Web" },
+                        new { Id = 13, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc4a", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "CRUD" },
+                        new { Id = 14, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc4b", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Entity Framework Core" },
+                        new { Id = 15, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc4c", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "GitHub" },
+                        new { Id = 16, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc4e", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Source Control" },
+                        new { Id = 17, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc4f", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Git" },
+                        new { Id = 18, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc50", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Unit Test" },
+                        new { Id = 19, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc51", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "xUnit" },
+                        new { Id = 20, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc52", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Azure" },
+                        new { Id = 21, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc53", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Azure App Service" },
+                        new { Id = 22, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc54", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Hosting" },
+                        new { Id = 23, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc55", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Cloud" },
+                        new { Id = 24, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc56", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "PaaS" },
+                        new { Id = 25, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc357", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Generic" },
+                        new { Id = 26, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc58", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Command" },
+                        new { Id = 27, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc59", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Command Line" },
+                        new { Id = 28, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc5a", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "CLI" },
+                        new { Id = 29, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc5b", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Tool" },
+                        new { Id = 30, ConcurrencyStamp = "7c29af83-c493-4f23-a600-e5f9d1d2bc5c", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), Name = "Custom" }
+                    );
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProvider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Author");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("DisplayName");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("RequiredServicesString");
+
+                    b.Property<string>("ThumbnailUrl");
+
+                    b.Property<string>("Type");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.Property<string>("Version");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TaskProviders");
+
+                    b.HasData(
+                        new { Id = 1, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a1", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A generator task provider for generating an application with AspNet Core Mvc and Entity Framework Core backend", DisplayName = "AspNet Core Mvc Generator", Name = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc", ThumbnailUrl = "/assets/img/task-provider/aspnetcore.png", Type = "GeneratorProvider", Version = "1.0.0-beta4" },
+                        new { Id = 2, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a2", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A repository task provider for cloning, pushing code, creating new branch and pull request into a GitHub repository", DisplayName = "GitHub Repository", Name = "Polyrific.Catapult.TaskProviders.GitHub", RequiredServicesString = "GitHub", ThumbnailUrl = "/assets/img/task-provider/github.png", Type = "RepositoryProvider", Version = "1.0.0-beta4" },
+                        new { Id = 3, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a3", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A build task provider for building & publishing dotnet core application", DisplayName = "DotNet Core Build", Name = "Polyrific.Catapult.TaskProviders.DotNetCore", ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png", Type = "BuildProvider", Version = "1.0.0-beta4" },
+                        new { Id = 4, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a4", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A test task provider for running a unit test project using \"dotnet test\" command", DisplayName = "Dotnet Core Test", Name = "Polyrific.Catapult.TaskProviders.DotNetCoreTest", ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png", Type = "TestProvider", Version = "1.0.0-beta4" },
+                        new { Id = 5, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a5", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A Deploy database task provider for running the migration script with entity framework core to a designated database", DisplayName = "Entity Framework Core Database Migrator", Name = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore", ThumbnailUrl = "/assets/img/task-provider/efcore.png", Type = "DatabaseProvider", Version = "1.0.0-beta4" },
+                        new { Id = 6, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a6", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A deploy task provider for deploying an application to azure app service", DisplayName = "Deploy To Azure App Service", Name = "Polyrific.Catapult.TaskProviders.AzureAppService", RequiredServicesString = "Azure", ThumbnailUrl = "/assets/img/task-provider/azureappservice.png", Type = "HostingProvider", Version = "1.0.0-beta4" },
+                        new { Id = 7, Author = "Polyrific", ConcurrencyStamp = "976e0533-360a-4e46-8220-7c1cfdf0e0a7", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Description = "A generic task provider for running any command in a preferred command line tools such as powershell or bash", DisplayName = "Generic Command", Name = "Polyrific.Catapult.TaskProviders.GenericCommand", ThumbnailUrl = "/assets/img/task-provider/generic.png", Type = "GenericTaskProvider", Version = "1.0.0-beta4" }
+                    );
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderAdditionalConfig", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("AllowedValues");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Hint");
+
+                    b.Property<bool?>("IsInputMasked");
+
+                    b.Property<bool>("IsRequired");
+
+                    b.Property<bool>("IsSecret");
+
+                    b.Property<string>("Label");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("TaskProviderId");
+
+                    b.Property<string>("Type");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TaskProviderId");
+
+                    b.ToTable("TaskProviderAdditionalConfigs");
+
+                    b.HasData(
+                        new { Id = 1, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382258", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Please enter the email address that you wish to be used as an administrator of the project", IsRequired = true, IsSecret = false, Label = "Admin Email", Name = "AdminEmail", TaskProviderId = 1, Type = "string" },
+                        new { Id = 2, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382259", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Csproj Location", Name = "CsprojLocation", TaskProviderId = 3, Type = "string" },
+                        new { Id = 3, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225a", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Configuration", Name = "Configuration", TaskProviderId = 3, Type = "string" },
+                        new { Id = 4, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225b", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Startup Project Name", Name = "StartupProjectName", TaskProviderId = 5, Type = "string" },
+                        new { Id = 5, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225c", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Database Project Name", Name = "DatabaseProjectName", TaskProviderId = 5, Type = "string" },
+                        new { Id = 6, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382262", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsInputMasked = false, IsRequired = true, IsSecret = true, Label = "Connection String", Name = "ConnectionString", TaskProviderId = 5, Type = "string" },
+                        new { Id = 7, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225e", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "Subscription Id", Name = "SubscriptionId", TaskProviderId = 6, Type = "string" },
+                        new { Id = 8, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f3040438225f", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = true, IsSecret = false, Label = "Resource Group", Name = "ResourceGroupName", TaskProviderId = 6, Type = "string" },
+                        new { Id = 9, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382260", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "App Service", Name = "AppServiceName", TaskProviderId = 6, Type = "string" },
+                        new { Id = 10, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382266", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Do you want to automatically reassign app service name when it is not available?", IsRequired = false, IsSecret = false, Label = "Allow Automatic Rename?", Name = "AllowAutomaticRename", TaskProviderId = 6, Type = "boolean" },
+                        new { Id = 11, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382261", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Deployment Slot", Name = "DeploymentSlot", TaskProviderId = 6, Type = "string" },
+                        new { Id = 12, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382263", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "Please make sure to enter the connection string if the website needs to connect to the database", IsInputMasked = false, IsRequired = false, IsSecret = true, Label = "Connection String", Name = "ConnectionString", TaskProviderId = 6, Type = "string" },
+                        new { Id = 13, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382264", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default Region", Name = "Region", TaskProviderId = 6, Type = "string" },
+                        new { Id = 14, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382265", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Default App Service Plan", Name = "AppServicePlan", TaskProviderId = 6, Type = "string" },
+                        new { Id = 15, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382267", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "The command tool to be used to run the command (e.g. Powershell). Defaults based on OS.", IsRequired = false, IsSecret = false, Label = "Command Tool", Name = "CommandTool", TaskProviderId = 7, Type = "string" },
+                        new { Id = 16, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382268", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), IsRequired = false, IsSecret = false, Label = "Command Text", Name = "CommandText", TaskProviderId = 7, Type = "string" },
+                        new { Id = 17, ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382269", Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), Hint = "You can provide a script file (it is recommended to use this if the input contains multiple lines of commands)", IsRequired = false, IsSecret = false, Label = "Command Script Path", Name = "CommandScriptPath", TaskProviderId = 7, Type = "file" }
+                    );
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderTag", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<int>("TagId");
+
+                    b.Property<int>("TaskProviderId");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TagId");
+
+                    b.HasIndex("TaskProviderId");
+
+                    b.ToTable("TaskProviderTags");
+
+                    b.HasData(
+                        new { Id = 1, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d07", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 1, TaskProviderId = 1 },
+                        new { Id = 2, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d08", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 7, TaskProviderId = 1 },
+                        new { Id = 3, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d09", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 8, TaskProviderId = 1 },
+                        new { Id = 4, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0a", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 9, TaskProviderId = 1 },
+                        new { Id = 5, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0b", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 10, TaskProviderId = 1 },
+                        new { Id = 6, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0c", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 11, TaskProviderId = 1 },
+                        new { Id = 7, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0d", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 12, TaskProviderId = 1 },
+                        new { Id = 8, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0e", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 13, TaskProviderId = 1 },
+                        new { Id = 9, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d0f", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 14, TaskProviderId = 1 },
+                        new { Id = 10, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d10", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 2, TaskProviderId = 2 },
+                        new { Id = 11, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d11", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 15, TaskProviderId = 2 },
+                        new { Id = 12, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d12", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 16, TaskProviderId = 2 },
+                        new { Id = 13, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d13", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 17, TaskProviderId = 2 },
+                        new { Id = 14, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d14", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 3, TaskProviderId = 3 },
+                        new { Id = 15, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d15", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 7, TaskProviderId = 3 },
+                        new { Id = 16, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d16", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 8, TaskProviderId = 3 },
+                        new { Id = 17, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d17", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 4, TaskProviderId = 4 },
+                        new { Id = 18, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d18", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 7, TaskProviderId = 4 },
+                        new { Id = 19, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d19", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 18, TaskProviderId = 4 },
+                        new { Id = 20, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d1a", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 19, TaskProviderId = 4 },
+                        new { Id = 21, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d1b", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 5, TaskProviderId = 5 },
+                        new { Id = 22, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d1c", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 7, TaskProviderId = 5 },
+                        new { Id = 23, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d1d", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 8, TaskProviderId = 5 },
+                        new { Id = 24, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d1f", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 14, TaskProviderId = 5 },
+                        new { Id = 25, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d20", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 6, TaskProviderId = 6 },
+                        new { Id = 26, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d21", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 8, TaskProviderId = 6 },
+                        new { Id = 27, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d22", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 12, TaskProviderId = 6 },
+                        new { Id = 28, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d23", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 20, TaskProviderId = 6 },
+                        new { Id = 29, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d24", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 21, TaskProviderId = 6 },
+                        new { Id = 30, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d25", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 22, TaskProviderId = 6 },
+                        new { Id = 31, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d26", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 23, TaskProviderId = 6 },
+                        new { Id = 32, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d27", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 24, TaskProviderId = 6 },
+                        new { Id = 33, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d28", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 25, TaskProviderId = 7 },
+                        new { Id = 34, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d29", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 26, TaskProviderId = 7 },
+                        new { Id = 35, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d2a", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 27, TaskProviderId = 7 },
+                        new { Id = 36, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d2b", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 28, TaskProviderId = 7 },
+                        new { Id = 37, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d2c", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 29, TaskProviderId = 7 },
+                        new { Id = 38, ConcurrencyStamp = "21222bae-5e15-432c-ae4f-e671cb116d2d", Created = new DateTime(2019, 4, 10, 15, 50, 43, 176, DateTimeKind.Utc), TagId = 30, TaskProviderId = 7 }
                     );
                 });
 
@@ -722,6 +873,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<int?>("ApplicationUserId");
 
+                    b.Property<int?>("AvatarFileId");
+
                     b.Property<string>("ConcurrencyStamp");
 
                     b.Property<DateTime>("Created");
@@ -741,6 +894,10 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique()
                         .HasFilter("[ApplicationUserId] IS NOT NULL");
+
+                    b.HasIndex("AvatarFileId")
+                        .IsUnique()
+                        .HasFilter("[AvatarFileId] IS NOT NULL");
 
                     b.ToTable("UserProfile");
 
@@ -791,14 +948,6 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.PluginAdditionalConfig", b =>
-                {
-                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.Plugin", "Plugin")
-                        .WithMany()
-                        .HasForeignKey("PluginId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ProjectDataModel", b =>
                 {
                     b.HasOne("Polyrific.Catapult.Api.Core.Entities.Project", "Project")
@@ -834,6 +983,27 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasOne("Polyrific.Catapult.Api.Data.Identity.ApplicationUser")
                         .WithMany()
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderAdditionalConfig", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.TaskProvider", "TaskProvider")
+                        .WithMany()
+                        .HasForeignKey("TaskProviderId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderTag", b =>
+                {
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.Tag", "Tag")
+                        .WithMany("ProviderTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.TaskProvider", "TaskProvider")
+                        .WithMany("Tags")
+                        .HasForeignKey("TaskProviderId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -894,6 +1064,11 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.HasOne("Polyrific.Catapult.Api.Data.Identity.ApplicationUser", "ApplicationUser")
                         .WithOne("UserProfile")
                         .HasForeignKey("Polyrific.Catapult.Api.Data.Identity.UserProfile", "ApplicationUserId");
+
+                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.ManagedFile")
+                        .WithOne()
+                        .HasForeignKey("Polyrific.Catapult.Api.Data.Identity.UserProfile", "AvatarFileId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

@@ -25,3 +25,13 @@ table {
 mat-select {
   width: 200px;
 }
+
+.tag-filter {
+  margin-left: 10px;
+  width: 300px;
+}
+
+.thumbnail {
+  max-height: 35px;
+  max-width: 35px;
+}

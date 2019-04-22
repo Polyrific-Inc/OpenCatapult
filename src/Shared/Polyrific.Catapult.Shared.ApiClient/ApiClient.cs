@@ -48,7 +48,23 @@ namespace Polyrific.Catapult.Shared.ApiClient
         
         public async Task<TResult> Post<TContent, TResult>(string path, TContent content)
         {
-            var response = await InvokeWithExceptionHandler(() => _httpClient.PostAsync(path, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json")));            if (!response.IsSuccessStatusCode)
+            var response = await InvokeWithExceptionHandler(() => _httpClient.PostAsync(path, new StringContent(JsonConvert.SerializeObject(content), Encoding.UTF8, "application/json")));
+
+            if (!response.IsSuccessStatusCode)
+                await HandleResponseError(response);
+
+            var result = await response.Content.ReadAsStringAsync();
+            return JsonConvert.DeserializeObject<TResult>(result);
+        }
+
+        public async Task<TResult> PostFile<TResult>(string path, string fileName, byte[] file)
+        {
+            var multiContent = new MultipartFormDataContent();
+            multiContent.Add(new ByteArrayContent(file), "file", fileName);
+
+            var response = await InvokeWithExceptionHandler(() => _httpClient.PostAsync(path, multiContent));
+
+            if (!response.IsSuccessStatusCode)
                 await HandleResponseError(response);
 
             var result = await response.Content.ReadAsStringAsync();
@@ -72,7 +88,20 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             return response.IsSuccessStatusCode;
         }
-        
+
+        public async Task<bool> PutFile(string path, string fileName, byte[] file)
+        {
+            var multiContent = new MultipartFormDataContent();
+            multiContent.Add(new ByteArrayContent(file), "file", fileName);
+
+            var response = await InvokeWithExceptionHandler(() => _httpClient.PutAsync(path, multiContent));
+
+            if (!response.IsSuccessStatusCode)
+                await HandleResponseError(response);
+
+            return response.IsSuccessStatusCode;
+        }
+
         public async Task<bool> Delete(string path)
         {
             var response = await InvokeWithExceptionHandler(() => _httpClient.DeleteAsync(path));

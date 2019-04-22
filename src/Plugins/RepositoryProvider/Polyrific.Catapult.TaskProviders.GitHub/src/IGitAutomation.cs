@@ -7,10 +7,10 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
     public interface IGitAutomation
     {
         /// <summary>
-        /// Clone remote repository to local
+        /// Clone remote repository to local if it does not exist locally
         /// </summary>
         /// <returns></returns>
-        Task<string> Clone();
+        Task<string> CloneIfNotExistLocally();
 
         /// <summary>
         /// Checkout a branch
@@ -51,6 +51,14 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// <param name="prNumber">Pull Request number</param>
         /// <returns></returns>
         Task<bool> MergePullRequest(string prNumber);
+
+        /// <summary>
+        /// Pull the current branch from origin
+        /// </summary>
+        /// <param name="author">Author of the commit</param>
+        /// <param name="email">Email of the committer</param>
+        /// <returns></returns>
+        Task<string> Pull(string author, string email);
 
         /// <summary>
         /// Create a repository if it's not yet exists

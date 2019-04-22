@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { TaskProviderRoutingModule } from './task-provider-routing.module';
 import { TaskProviderComponent } from './task-provider/task-provider.component';
 import { MatTableModule, MatButtonModule, MatIconModule, MatDialogModule,
-  MatSelectModule, MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+  MatSelectModule, MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule, MatAutocompleteModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { TaskProviderRegisterDialogComponent } from './components/task-provider-register-dialog/task-provider-register-dialog.component';
@@ -27,7 +27,8 @@ import { TaskProviderInfoDialogComponent } from './components/task-provider-info
     SharedModule,
     FlexModule,
     MatProgressBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatAutocompleteModule
   ],
   entryComponents: [
     TaskProviderRegisterDialogComponent,

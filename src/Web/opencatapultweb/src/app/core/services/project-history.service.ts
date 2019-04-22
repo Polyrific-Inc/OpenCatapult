@@ -7,7 +7,7 @@ const localStorageKey = 'projectHistory';
 
 @Injectable()
 export class ProjectHistoryService {
-  history: {id: number, name: string}[];
+  history: {id: number, name: string, displayName: string}[];
 
   constructor(private authService: AuthService) {
     this.authService.currentUser.subscribe(user => {
@@ -23,7 +23,12 @@ export class ProjectHistoryService {
 
   addProjectHistory(dto: ProjectDto) {
     this.history = this.history.filter(p => p.id !== dto.id);
-    this.history.splice(0, 0, {id: dto.id, name: dto.name});
+    this.history.splice(0, 0, {id: dto.id, name: dto.name, displayName: dto.displayName});
+    this.saveHistoryLocalStorage();
+  }
+
+  deleteProjectHistory(projectId: number) {
+    this.history = this.history.filter(p => p.id !== projectId);
     this.saveHistoryLocalStorage();
   }
 

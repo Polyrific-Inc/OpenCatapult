@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserProfileComponent } from './user-profile.component';
-import { MatTabsModule, MatInputModule, MatProgressBarModule, MatButtonModule } from '@angular/material';
+import { MatTabsModule, MatInputModule, MatProgressBarModule, MatButtonModule, MatIconModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
@@ -29,6 +29,7 @@ describe('UserProfileComponent', () => {
         MatButtonModule,
         FlexLayoutModule,
         CoreModule,
+        MatIconModule,
         SharedModule.forRoot()
       ],
       providers: [

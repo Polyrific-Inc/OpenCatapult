@@ -11,9 +11,9 @@ namespace Polyrific.Catapult.Api.AutoMapperProfiles
     {
         public ProviderAdditionalConfigAutoMapperProfile()
         {
-            CreateMap<ProviderAdditionalConfigDto, PluginAdditionalConfig>()
+            CreateMap<TaskProviderAdditionalConfigDto, TaskProviderAdditionalConfig>()
                 .ForMember(dest => dest.AllowedValues, opt => opt.MapFrom(src => string.Join(DataDelimiter.Comma, src.AllowedValues)));
-            CreateMap<PluginAdditionalConfig, ProviderAdditionalConfigDto>()
+            CreateMap<TaskProviderAdditionalConfig, TaskProviderAdditionalConfigDto>()
                 .ForMember(dest => dest.AllowedValues, opt => opt.MapFrom(src => src.AllowedValues.Split(DataDelimiter.Comma, System.StringSplitOptions.None)));
         }
     }

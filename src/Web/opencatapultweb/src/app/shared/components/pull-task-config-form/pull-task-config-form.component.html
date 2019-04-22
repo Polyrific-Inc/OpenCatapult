@@ -1,0 +1,29 @@
+<div [formGroup]="pullConfigForm" *ngIf="showForm">
+  <mat-form-field class="full-width-input">
+      <mat-label>Repository</mat-label>
+      <input matInput placeholder="The remote repository url" formControlName="Repository" required>
+      <mat-error *ngIf="isFieldInvalid('Repository', 'required')">
+        Please inform the repository
+      </mat-error>
+  </mat-form-field>
+  <mat-checkbox formControlName="IsPrivateRepository">Is private repository?</mat-checkbox>
+
+  <div class="margin10"></div>
+
+  <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Optional Task Configuration
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-form-field class="full-width-input">
+          <mat-label>Repository location</mat-label>
+          <input matInput placeholder="Custom local directory path of the repository" formControlName="RepositoryLocation">
+      </mat-form-field>
+      <mat-form-field class="full-width-input">
+          <mat-label>Base branch</mat-label>
+          <input matInput placeholder="The branch to be checked out. Default to master" formControlName="BaseBranch">
+      </mat-form-field>
+  </mat-expansion-panel>
+</div>

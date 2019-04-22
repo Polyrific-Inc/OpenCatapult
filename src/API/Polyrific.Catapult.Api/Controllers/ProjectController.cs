@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="getAll">Get all projects</param>
         /// <returns>List of the project</returns>
         [HttpGet]
-        [Authorize(Policy = AuthorizePolicy.ProjectMemberAccess)]
+        [Authorize]
         public async Task<IActionResult> GetProjects(string status = null, bool getAll = false)
         {
             _logger.LogInformation("Getting projects. Filtered by status = {status}", status);
@@ -153,12 +153,12 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(dupTaskEx, "Duplicate task name");
                 return BadRequest(dupTaskEx.Message);
             }
-            catch (InvalidPluginTypeException pluginTypeEx)
+            catch (InvalidTaskProviderTypeException providerTypeEx)
             {
-                _logger.LogWarning(pluginTypeEx, "Invalid provider's plugin type");
-                return BadRequest(pluginTypeEx.Message);
+                _logger.LogWarning(providerTypeEx, "Invalid provider type");
+                return BadRequest(providerTypeEx.Message);
             }
-            catch (ProviderNotInstalledException provEx)
+            catch (TaskProviderNotInstalledException provEx)
             {
                 _logger.LogWarning(provEx, "Provider not installed");
                 return BadRequest(provEx.Message);

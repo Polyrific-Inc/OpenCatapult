@@ -38,6 +38,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             if (user != null)
             {
                 var userId = int.Parse(user.Id);
+
                 _accountService.UpdateUser(userId, new UpdateUserDto
                 {
                     Id = userId,

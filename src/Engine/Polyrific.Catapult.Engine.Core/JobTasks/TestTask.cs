@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Test;
 
-        public List<PluginItem> TestProvider => PluginManager.GetPlugins(PluginType.TestProvider);
+        public List<PluginItem> TestProvider => PluginManager.GetPlugins(TaskProviderType.TestProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {

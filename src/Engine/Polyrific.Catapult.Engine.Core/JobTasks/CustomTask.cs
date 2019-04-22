@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.CustomTask;
 
-        public List<PluginItem> GenericTaskProviders => PluginManager.GetPlugins(PluginType.GenericTaskProvider);
+        public List<PluginItem> GenericTaskProviders => PluginManager.GetPlugins(TaskProviderType.GenericTaskProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {

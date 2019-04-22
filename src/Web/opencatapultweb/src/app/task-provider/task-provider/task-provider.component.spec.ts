@@ -4,13 +4,15 @@ import { TaskProviderComponent } from './task-provider.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatTableModule, MatButtonModule, MatIconModule, MatDialogModule, MatSelectModule,
-  MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule } from '@angular/material';
+  MatInputModule, MatChipsModule, MatProgressBarModule, MatTooltipModule, MatAutocompleteModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { FlexModule } from '@angular/flex-layout';
 import { TaskProviderInfoDialogComponent } from '../components/task-provider-info-dialog/task-provider-info-dialog.component';
 import { TaskProviderRegisterDialogComponent } from '../components/task-provider-register-dialog/task-provider-register-dialog.component';
 import { CoreModule } from '@app/core';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('TaskProviderComponent', () => {
   let component: TaskProviderComponent;
@@ -21,6 +23,7 @@ describe('TaskProviderComponent', () => {
       declarations: [ TaskProviderComponent, TaskProviderInfoDialogComponent, TaskProviderRegisterDialogComponent ],
       imports: [
         HttpClientTestingModule,
+        BrowserAnimationsModule,
         MatTableModule,
         MatButtonModule,
         MatIconModule,
@@ -33,7 +36,15 @@ describe('TaskProviderComponent', () => {
         CoreModule,
         FlexModule,
         MatProgressBarModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatAutocompleteModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            queryParams: of({ newProvider: true})
+          }
+        }
       ]
     })
     .compileComponents();

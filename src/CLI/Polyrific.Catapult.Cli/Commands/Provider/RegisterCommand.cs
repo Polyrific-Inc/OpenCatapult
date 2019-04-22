@@ -31,7 +31,7 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
                 return $"Could not find \"{MetadataFile}\".";
 
             var metadataContent = File.ReadAllText(MetadataFile);
-            var provider = DeserializeYaml<NewProviderDto>(metadataContent);
+            var provider = DeserializeYaml<NewTaskProviderDto>(metadataContent);
             if (provider == null)
                 return "Task provider metadata could not be parsed from the file content.";
             

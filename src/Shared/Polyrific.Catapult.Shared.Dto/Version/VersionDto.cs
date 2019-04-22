@@ -10,6 +10,6 @@ namespace Polyrific.Catapult.Shared.Dto.Version
     {
         public string ApiVersion { get; set; }
         public List<CatapultEngineDto> Engines { get; set; }
-        public List<ProviderDto> Providers { get; set; }
+        public List<TaskProviderDto> TaskProviders { get; set; }
     }
 }

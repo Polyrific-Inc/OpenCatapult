@@ -137,6 +137,19 @@ if (!$allGood) {
     }
 }
 
+## Build API
+Write-Host "Publishing API..."
+$args = "-configuration " + $configuration
+$args += " -environment " + $environment
+if ($connString) {
+    $args += "-connString " + $connString
+}
+if ($noPrompt) {
+    $args += " -noPrompt"
+}
+$args += " -noRun"
+Invoke-BuildScript "build-api.ps1" $args
+
 $args = "-configuration " + $configuration
 $args += " -url " + $https
 if ($noConfig) {
@@ -144,17 +157,17 @@ if ($noConfig) {
 }
 $args += " -noOpenShell"
 
+## Build Engine
+Write-Host "Publishing Engine..."
+$done = Invoke-BuildScript "build-engine.ps1" $args
+Invoke-BuildScriptNewWindow "build-engine.ps1" "-noBuild"
+
 ## Build CLI
 if (!$noCli) {
 	Write-Host "Publishing CLI..."
     $done = Invoke-BuildScript "build-cli.ps1" $args
     Invoke-BuildScriptNewWindow "build-cli.ps1" "-noBuild"
 }
-
-## Build Engine
-Write-Host "Publishing Engine..."
-$done = Invoke-BuildScript "build-engine.ps1" $args
-Invoke-BuildScriptNewWindow "build-engine.ps1" "-noBuild"
 
 ## Build Web
 if (!$noWeb) {
@@ -167,18 +180,11 @@ if (!$noWeb) {
 Write-Host "The Engine and CLI are in the new terminal windows. Please go ahead and try to run the commands available there." -ForegroundColor Green 
 Write-Host "To learn more about OpenCatapult components, please follow this link: https://docs.opencatapult.net/home/intro#the-components" -ForegroundColor Green
 
-## Build API
-$args = "-configuration " + $configuration
-$args += " -http " + $http
-$args += " -https " + $https
-$args += " -environment " + $environment
-if ($noRun) {
-    $args += " -noRun" 
+## Run API
+if (!$noRun) {
+    $args = " -http " + $http
+    $args += " -https " + $https
+    $args += " -noBuild"
+    Invoke-BuildScript "build-api.ps1" $args
 }
-if ($noPrompt) {
-    $args += " -noPrompt"
-}
-if ($connString) {
-    $args += "-connString " + $connString
-}
-Invoke-BuildScript "build-api.ps1" $args
+

@@ -4,6 +4,7 @@ import { ProjectInfoFormComponent } from './project-info-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TextHelperService } from '@app/core/services/text-helper.service';
 
 describe('ProjectInfoFormComponent', () => {
   let component: ProjectInfoFormComponent;
@@ -16,6 +17,9 @@ describe('ProjectInfoFormComponent', () => {
         BrowserAnimationsModule,
         ReactiveFormsModule,
         MatInputModule
+      ],
+      providers: [
+        TextHelperService
       ]
     })
     .compileComponents();

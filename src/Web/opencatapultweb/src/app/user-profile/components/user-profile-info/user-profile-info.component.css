@@ -4,6 +4,33 @@
   margin-bottom: 5px;
 }
 
+.action-buttons {
+  margin-bottom: 10px;
+}
+
 button {
-  margin-right: 8px
+  margin-right: 8px;
+}
+
+.avatar {
+  max-width: 200px;
+}
+
+.avatar-container {
+  margin-left: 20px;
+  margin-top: -20px;
+}
+
+.upload-template-container {
+  margin-bottom: 20px;
+}
+
+.avatar-placeholder {
+  height: 200px;
+  width: 200px;
+  border: solid 1px #222222;
+}
+
+.avatar-placeholder mat-icon {
+  font-size: 200px;
 }

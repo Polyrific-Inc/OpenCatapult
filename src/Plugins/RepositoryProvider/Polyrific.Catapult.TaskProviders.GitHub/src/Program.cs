@@ -34,10 +34,10 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             _gitHubUtils = gitHubUtils;
         }
 
-        public override async Task<(string cloneLocation, Dictionary<string, string> outputValues, string errorMessage)> Clone()
+        public override async Task<(string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage)> Pull()
         {
-            var cloneLocation = CloneTaskConfig.CloneLocation ?? CloneTaskConfig.WorkingLocation;
-            var repoConfig = GetGitAutomationConfig(cloneLocation, CloneTaskConfig.Repository, AdditionalConfigs, CloneTaskConfig.IsPrivateRepository);
+            var repositoryLocation = PullTaskConfig.RepositoryLocation ?? PullTaskConfig.WorkingLocation;
+            var repoConfig = GetGitAutomationConfig(repositoryLocation, PullTaskConfig.Repository, AdditionalConfigs, PullTaskConfig.IsPrivateRepository);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
@@ -46,14 +46,20 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
-            error = await _gitAutomation.Clone();
+            error = await _gitAutomation.CloneIfNotExistLocally();
             if (!string.IsNullOrEmpty(error))
                 return ("", null, error);
 
-            if (!string.IsNullOrEmpty(CloneTaskConfig.BaseBranch))
-                await _gitAutomation.CheckoutBranch(CloneTaskConfig.BaseBranch);
+            if (!string.IsNullOrEmpty(PullTaskConfig.BaseBranch))
+                await _gitAutomation.CheckoutBranch(PullTaskConfig.BaseBranch);
+            else
+                await _gitAutomation.CheckoutBranch(DefaultBaseBranch);
 
-            return (cloneLocation, null, "");
+            error = await _gitAutomation.Pull(DefaultAuthor, DefaultEmail);
+            if (!string.IsNullOrEmpty(error))
+                return ("", null, error);
+            
+            return (repositoryLocation, null, "");
         }
 
         public override async Task<(string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage)> Push()

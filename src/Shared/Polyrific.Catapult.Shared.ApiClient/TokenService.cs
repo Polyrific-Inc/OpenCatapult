@@ -26,5 +26,10 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             return await Api.Post(path, dto);
         }
+
+        public async Task<string> RefreshToken()
+        {
+            return await Api.Get<string>("token/refresh");
+        }
     }
 }

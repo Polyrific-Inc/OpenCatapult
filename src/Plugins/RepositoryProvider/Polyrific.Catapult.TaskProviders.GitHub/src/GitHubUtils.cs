@@ -25,8 +25,13 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             _gitHubCredential = GetGitHubCredentials(credentialType, userName, password);
         }
 
-        public async Task<string> Clone(string remoteUrl, string localRepository, bool isPrivateRepository)
+        public async Task<string> CloneIfNotExistLocally(string remoteUrl, string localRepository, bool isPrivateRepository)
         {
+            if (Directory.Exists(localRepository) && Repository.IsValid(localRepository))
+            {
+                return localRepository;
+            }
+
             var cloneOption = new CloneOptions()
             {
                 OnTransferProgress = CloneTransferProgressHandler
@@ -177,10 +182,64 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             }
         }
 
+        public Task<string> Pull(string localRepository, string author, string email)
+        {
+            var options = new PullOptions
+            {
+                FetchOptions = new FetchOptions
+                {
+                    CredentialsProvider = (url, usernameFromUrl, types) => _gitCredential,
+                    OnProgress = (string progress) => { _logger.LogInformation(progress); return true; }
+                },
+                MergeOptions = new MergeOptions
+                {
+                    FileConflictStrategy = CheckoutFileConflictStrategy.Theirs,
+                }
+            };
+
+            var repo = new Repository(localRepository);
+            try
+            {
+                var signature = new LibGit2Sharp.Signature(author, email, DateTimeOffset.UtcNow);
+                Commands.Pull(repo, signature, options);
+
+                return Task.FromResult("");
+            }
+            catch (MergeFetchHeadNotFoundException headEx)
+            {
+                // If the master branch is not found, then it's an empty repository, and we should not mark the task as error
+                if (headEx.Message.Contains("refs/heads/master"))
+                {
+                    _logger.LogWarning(headEx.Message);
+
+                    return Task.FromResult("");
+                }
+                else
+                {
+                    _logger.LogError(headEx, headEx.Message);
+
+                    return Task.FromResult(headEx.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+
+                return Task.FromResult(ex.Message);
+            }
+        }
+
         public Task<bool> CheckoutBranch(string localRepository, string branch)
         {
             var repo = new Repository(localRepository);
             var branchObj = repo.Branches[branch] != null ? repo.Branches[branch] : repo.Branches[$"origin/{branch}"];
+
+            // when there's no master branch, then we're initiating an empty repository, and should skip checkout
+            if (branchObj == null && branch.ToLower() == "master")
+            {
+                return Task.FromResult(true);
+            }
+
             Commands.Checkout(repo, branchObj);
 
             return Task.FromResult(true);

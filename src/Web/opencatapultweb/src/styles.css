@@ -1,4 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'custom-theme.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -11,10 +12,35 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     margin-top: 10px;
 }
 
+.margin20 {
+    margin-top: 20px;
+}
+
+.margin30 {
+    margin-top: 30px;
+}
+
 .mat-dialog-actions {
   justify-content: flex-end;
 }
 
 .hidden {
   display: none;
+}
+
+.title-desc {
+  margin-bottom: 15px;
+}
+
+.title-desc h2 {
+  margin-bottom: 2px;
+}
+
+.title-desc span, .project-module-description span {
+  font-size: 14px;
+  color: #757575;
+}
+
+.project-module-description {
+  margin-top: 8px;
 }

@@ -27,14 +27,16 @@ namespace Polyrific.Catapult.Api.Data.Identity
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.UserProfile.IsActive))
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.UserProfile.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.UserProfile.LastName))
+                .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.UserProfile.AvatarFileId))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Roles.FirstOrDefault().Role.Name));
 
             CreateMap<User, UserProfile>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
-                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName));
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.AvatarFileId));
 
             CreateMap<CatapultEngine, ApplicationUser>()
-                .ForMember(dest => dest.IsCatapultEngine, opt => opt.UseValue(true))
+                .ForMember(dest => dest.IsCatapultEngine, opt => opt.MapFrom(_ => true))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Name));
             CreateMap<ApplicationUser, CatapultEngine>()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.CatapultEngineProfile.IsActive))

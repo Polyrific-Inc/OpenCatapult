@@ -61,7 +61,9 @@ Finally, you can then open the website in your browser using one of these urls:
 - https://localhost:44306
 
 You can also login into the admin pages using the following default admin:
-user: {{AdminEmail}}
+
+user: `The email entered in additional config AdminEmail`
+
 password: opencatapult
 
 We highly recommend you to update the password. You can do that in https://localhost:44306/Identity/Account/Manage/ChangePassword

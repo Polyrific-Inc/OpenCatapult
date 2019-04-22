@@ -11,6 +11,9 @@ import { CoreModule } from '@app/core';
 import { UserInfoDialogComponent } from '../components/user-info-dialog/user-info-dialog.component';
 import { UserRegisterDialogComponent } from '../components/user-register-dialog/user-register-dialog.component';
 import { UserSetRoleDialogComponent } from '../components/user-set-role-dialog/user-set-role-dialog.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('AccountComponent', () => {
   let component: AccountComponent;
@@ -26,6 +29,7 @@ describe('AccountComponent', () => {
       ],
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule,
         MatTableModule,
         MatButtonModule,
         MatIconModule,
@@ -38,6 +42,13 @@ describe('AccountComponent', () => {
         MatInputModule,
         MatProgressBarModule,
         MatDialogModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute, useValue: {
+            queryParams: of({ newUser: true})
+          }
+        }
       ]
     })
     .compileComponents();

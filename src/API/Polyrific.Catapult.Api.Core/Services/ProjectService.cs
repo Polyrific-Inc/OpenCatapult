@@ -12,6 +12,7 @@ using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
+using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using YamlDotNet.Serialization;
@@ -151,7 +152,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             // set default display name
-            displayName = !string.IsNullOrEmpty(displayName) ? displayName : projectName;
+            displayName = !string.IsNullOrEmpty(displayName) ? displayName : TextHelper.HumanizeText(projectName);
 
             projectName = GetNormalizedProjectName(projectName);
 

@@ -1,6 +1,6 @@
 export enum JobTaskDefinitionType {
     Build = 'Build',
-    Clone = 'Clone',
+    Pull = 'Pull',
     Deploy = 'Deploy',
     DeployDb = 'DeployDb',
     Generate = 'Generate',

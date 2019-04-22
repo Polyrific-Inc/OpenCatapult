@@ -16,6 +16,12 @@ namespace Polyrific.Catapult.Shared.Service
         Task<string> RequestToken(RequestTokenDto dto);
 
         /// <summary>
+        /// Get a new authorization token
+        /// </summary>
+        /// <returns></returns>
+        Task<string> RefreshToken();
+
+        /// <summary>
         /// Request authorization token for an engine
         /// </summary>
         /// <param name="engineId">Id of the engine</param>

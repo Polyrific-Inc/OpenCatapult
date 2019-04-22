@@ -7,7 +7,7 @@ import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule 
 import { ReactiveFormsModule } from '@angular/forms';
 import { TaskConfigListFormComponent } from '../task-config-list-form/task-config-list-form.component';
 import { TaskConfigFormComponent } from '../task-config-form/task-config-form.component';
-import { CloneTaskConfigFormComponent } from '../clone-task-config-form/clone-task-config-form.component';
+import { PullTaskConfigFormComponent } from '../pull-task-config-form/pull-task-config-form.component';
 import { GenerateTaskConfigFormComponent } from '../generate-task-config-form/generate-task-config-form.component';
 import { PushTaskConfigFormComponent } from '../push-task-config-form/push-task-config-form.component';
 import { MergeTaskConfigFormComponent } from '../merge-task-config-form/merge-task-config-form.component';
@@ -27,7 +27,7 @@ describe('JobConfigFormComponent', () => {
         JobConfigFormComponent,
         TaskConfigListFormComponent,
         TaskConfigFormComponent,
-        CloneTaskConfigFormComponent,
+        PullTaskConfigFormComponent,
         GenerateTaskConfigFormComponent,
         PushTaskConfigFormComponent,
         MergeTaskConfigFormComponent,

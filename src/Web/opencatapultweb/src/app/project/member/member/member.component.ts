@@ -17,6 +17,7 @@ export class MemberComponent implements OnInit {
   projectId: number;
   roleId = 0;
   authorizePolicy = AuthorizePolicy;
+  loading: boolean;
 
   displayedColumns: string[] = ['username', 'role', 'actions'];
 
@@ -33,8 +34,12 @@ export class MemberComponent implements OnInit {
   }
 
   getMembers() {
+    this.loading = true;
     this.memberService.getMembers(this.projectId, this.roleId)
-      .subscribe(data => this.members = data);
+      .subscribe(data => {
+        this.members = data;
+        this.loading = false;
+      });
   }
 
   onInfoClick(member: ProjectMemberDto) {

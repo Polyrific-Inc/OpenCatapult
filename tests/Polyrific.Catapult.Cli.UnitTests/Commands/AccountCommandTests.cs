@@ -23,6 +23,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly ITestOutputHelper _output;
         private readonly Mock<IAccountService> _accountService;
         private readonly Mock<IConsoleReader> _consoleReader;
+        private readonly Mock<IManagedFileService> _managedFileService;
 
         public AccountCommandTests(ITestOutputHelper output)
         {
@@ -50,6 +51,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             });
 
             _consoleReader = new Mock<IConsoleReader>();
+            _managedFileService = new Mock<IManagedFileService>();
         }
 
         [Fact]

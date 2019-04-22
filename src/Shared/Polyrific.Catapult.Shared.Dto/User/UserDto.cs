@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using Polyrific.Catapult.Shared.Dto.ManagedFile;
+
 namespace Polyrific.Catapult.Shared.Dto.User
 {
     public class UserDto
@@ -35,5 +37,10 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// Role of the user
         /// </summary>
         public string Role { get; set; }
+
+        /// <summary>
+        /// The managed file id for the user's avatar
+        /// </summary>
+        public int? AvatarFileId { get; set; }
     }
 }

@@ -130,7 +130,9 @@ Run test that's available on the project
 | Config Name | Description | Allowed Values | Default Value | Mandatory |
 | ---  | --- | --- | --- | --- |
 | TestLocation | The directory path of test to be run. Leave blank to use default directory from engine | - | - | No |
-| ContinueWhenFailed | Indicates whether to continue the task execution even when the test result is failed | true, false | false | No |
+
+### Custom Task
+Execute a task which doesn't fit to the specific job task type above.
 
 ### Generic task configurations
 For all of the Task types mentioned, you can also specify the following generic configurations that apply to all of them
@@ -144,8 +146,9 @@ For all of the Task types mentioned, you can also specify the following generic 
 ## Built-in Providers
 Following are the built-in providers. You can add other providers later using the [task provider](task-providers.md) command.
 - `Polyrific.Catapult.TaskProviders.AspNetCoreMvc`: Generate an asp net core mvc application
-- `Polyrific.Catapult.TaskProviders.GitHub`: Used to clone or push code to GitHub
+- `Polyrific.Catapult.TaskProviders.AzureAppService`: Deploys the application into Azure App Service instance
 - `Polyrific.Catapult.TaskProviders.DotNetCore`: Build a dotnet core application
 - `Polyrific.Catapult.TaskProviders.DotNetCoreTest`: Run tests available on the project
 - `Polyrific.Catapult.TaskProviders.EntityFrameworkCore`: A database provider for deploying the model changes
-- `Polyrific.Catapult.TaskProviders.AzureAppService`: Deploys the application into Azure App Service instance
+- `Polyrific.Catapult.TaskProviders.GenericCommand`: Used to run some commands on a selected command line tool
+- `Polyrific.Catapult.TaskProviders.GitHub`: Used to clone or push code to GitHub

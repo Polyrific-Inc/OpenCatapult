@@ -28,14 +28,27 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         private readonly IProviderService _providerService;
         private readonly IExternalServiceService _externalServiceService;
         private readonly ITemplateWriter _templateWriter;
+        private readonly ITokenService _tokenService;
+        private readonly ITokenStore _tokenStore;
 
-        public CreateCommand(IConsole console, ILogger<CreateCommand> logger, IConsoleReader consoleReader, IProjectService projectService, IProviderService providerService, IExternalServiceService externalServiceService, ITemplateWriter templateWriter) : base(console, logger)
+        public CreateCommand(
+            IConsole console, 
+            ILogger<CreateCommand> logger, 
+            IConsoleReader consoleReader,
+            IProjectService projectService, 
+            IProviderService providerService, 
+            IExternalServiceService externalServiceService, 
+            ITemplateWriter templateWriter,
+            ITokenService tokenService,
+            ITokenStore tokenStore) : base(console, logger)
         {
             _consoleReader = consoleReader;
             _projectService = projectService;
             _providerService = providerService;
             _externalServiceService = externalServiceService;
             _templateWriter = templateWriter;
+            _tokenService = tokenService;
+            _tokenStore = tokenStore;
         }
 
         [Required]
@@ -87,7 +100,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
 
             message = project.ToCliString("Project created:");
             Logger.LogInformation(message);
-            
+
+            RefreshToken();
+
             return message;
         }
 
@@ -122,7 +137,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 task.Sequence = count++;
 
                 // prompt for Repository config
-                if ((task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() ||
+                if ((task.Type.ToLower() == JobTaskDefinitionType.Pull.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Push.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.Merge.ToLower() ||
                     task.Type.ToLower() == JobTaskDefinitionType.DeleteRepository.ToLower()) && !task.Configs.ContainsKey("Repository"))
@@ -134,7 +149,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 }
 
                 // prompt for IsPrivateRepository config
-                if (task.Type.ToLower() == JobTaskDefinitionType.Clone.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
+                if (task.Type.ToLower() == JobTaskDefinitionType.Pull.ToLower() && !task.Configs.ContainsKey("IsPrivateRepository"))
                 {
                     if (string.IsNullOrEmpty(isPrivateRepository))
                         isPrivateRepository = PromptTaskConfig("IsPrivateRepository", configType: ConfigType.Boolean);
@@ -210,9 +225,9 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             return "";
         }
 
-        private bool ValidateProviders(IEnumerable<string> providerNames, out List<ProviderDto> providers)
+        private bool ValidateProviders(IEnumerable<string> providerNames, out List<TaskProviderDto> providers)
         {
-            providers = new List<ProviderDto>();
+            providers = new List<TaskProviderDto>();
             var notExistProviders = new List<string>();
 
             if (Verbose)
@@ -316,6 +331,16 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             } while (!validInput || string.IsNullOrEmpty(input));
 
             return input;
+        }
+
+        private void RefreshToken()
+        {
+            var newToken = _tokenService.RefreshToken().Result;
+
+            if (!string.IsNullOrEmpty(newToken))
+            {
+                _tokenStore.SaveToken(newToken);
+            }
         }
     }
 }

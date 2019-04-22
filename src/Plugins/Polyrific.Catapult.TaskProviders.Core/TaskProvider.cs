@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
         public abstract string Name { get; }
 
         /// <summary>
-        /// Type of the task. It should be one of <see cref="PluginType"/> constant.
+        /// Type of the task. It should be one of <see cref="TaskProviderType"/> constant.
         /// </summary>
         public abstract string Type { get; }
 

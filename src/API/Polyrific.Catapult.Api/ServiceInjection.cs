@@ -19,8 +19,9 @@ namespace Polyrific.Catapult.Api
             services.AddTransient<ICatapultEngineService, CatapultEngineService>();
             services.AddTransient<IExternalServiceService, ExternalServiceService>();
             services.AddTransient<IExternalServiceTypeService, ExternalServiceTypeService>();
-            services.AddTransient<IPluginService, PluginService>();
-            services.AddTransient<IPluginAdditionalConfigService, PluginAdditionalConfigService>();
+            services.AddTransient<ITaskProviderService, TaskProviderService>();
+            services.AddTransient<ITaskProviderAdditionalConfigService, TaskProviderAdditionalConfigService>();
+            services.AddTransient<IManagedFileService, ManagedFileService>();
         }
     }
 }

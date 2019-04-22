@@ -1,82 +1,135 @@
 <div class="container">
-    <h2>Task Provider</h2>
-    <div fxLayout="row" fxLayoutAlign="space-between center">
-      <div>
+    <div class="title-desc">
+      <h2>Task Provider</h2>
+      <span>Manage the installed task providers that can be used in your projects to run a task for a specific technology stack. (<a href="https://docs.opencatapult.net/home/concept#task-provider-registration" target="_blank">more...</a>)</span>
+      <br>
+      <span>You can also find out more about how to create or install other task providers in <a href="https://docs.opencatapult.net/guides/user-guides/task-providers" targe="_blank">here</a>.</span>
+    </div>
+    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center" >
+      <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start center">
           <mat-select placeholder="Task Provider Type"
             (selectionChange)="onTypeChanged()" [formControl]="taskProviderTypeFilter">
             <mat-option *ngFor="let providerType of taskProviderTypes" [value]="providerType.value">
-              {{providerType.text}}
+              <mat-icon svgIcon="{{providerType.value}}" *ngIf="providerType.value !== 'all'"></mat-icon> {{providerType.text}}
             </mat-option>
           </mat-select>
+
+          <mat-form-field class="tag-filter">
+            <mat-chip-list #chipList>
+              <mat-chip
+                *ngFor="let tag of selectedTags"
+                [selectable]="true"
+                [removable]="true"
+                (removed)="removeFilterTag(tag)">
+                {{tag}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input
+                placeholder="Filter by tags"
+                #tagInput
+                [formControl]="tagControl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="false">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let tag of autocompleteTags | async" [value]="tag">
+                {{tag}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
       </div>
       <div class="action-buttons">
         <button mat-raised-button (click)="onRegisterTaskProviderClick()">Register New TaskProvider</button>
       </div>
     </div>
-    <div class="no-records" *ngIf="taskProviders?.length <= 0">
-      No Task Providers Found
+
+    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
+    <div *ngIf="!loading">
+      <div class="no-records" *ngIf="filteredTaskProviders?.length <= 0">
+        No Task Providers Found
+      </div>
+
+      <table mat-table [dataSource]="filteredTaskProviders" matSort *ngIf="filteredTaskProviders?.length > 0" class="mat-elevation-z8">
+
+        <!--- Note that these columns can be defined in any order.
+              The actual rendered columns are set as a property on the row definition" -->
+
+        <!-- Thumbnail Column -->
+        <ng-container matColumnDef="thumbnail">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let element"> <img class="thumbnail" src="{{element.thumbnailUrl}}" /> </td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+        </ng-container>
+
+        <!-- Display Name Column -->
+        <ng-container matColumnDef="displayName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Display Name </th>
+          <td mat-cell *matCellDef="let element"> {{element.displayName}} </td>
+        </ng-container>
+
+        <!-- Type Column -->
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+          <td mat-cell *matCellDef="let element"> <mat-icon svgIcon="{{element.type}}" matTooltip="{{element.type}}"></mat-icon> </td>
+        </ng-container>
+
+        <!-- Author Column -->
+        <ng-container matColumnDef="author">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
+          <td mat-cell *matCellDef="let element"> {{element.author}} </td>
+        </ng-container>
+
+        <!-- Version Column -->
+        <ng-container matColumnDef="version">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Version </th>
+          <td mat-cell *matCellDef="let element"> {{element.version}} </td>
+        </ng-container>
+
+        <!-- created Column -->
+        <ng-container matColumnDef="created">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Created Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.created | date:'MMM d, y, H:mm' }} </td>
+        </ng-container>
+
+        <!-- created Column -->
+        <ng-container matColumnDef="updated">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Updated Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.updated | date:'MMM d, y, H:mm' }} </td>
+        </ng-container>
+
+        <!-- RequiredServices Column -->
+        <ng-container matColumnDef="requiredServices">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Required Services </th>
+          <td mat-cell *matCellDef="let element">
+            <mat-chip-list>
+                <mat-chip *ngFor="let requiredService of element.requiredServices">{{requiredService}}</mat-chip>
+            </mat-chip-list>
+          </td>
+        </ng-container>
+
+        <!-- Action Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let element" class="item-buttons">
+            <button mat-icon-button  matTooltip="Info" (click)="onInfoClick(element)">
+              <mat-icon>info</mat-icon>
+            </button>
+            <button mat-icon-button  matTooltip="Delete" (click)="onDeleteClick(element)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
-
-    <table mat-table [dataSource]="taskProviders" matSort *ngIf="taskProviders?.length > 0" class="mat-elevation-z8">
-
-      <!--- Note that these columns can be defined in any order.
-            The actual rendered columns are set as a property on the row definition" -->
-
-      <!-- Name Column -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-      </ng-container>
-
-      <!-- Type Column -->
-      <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
-        <td mat-cell *matCellDef="let element"> {{element.type}} </td>
-      </ng-container>
-
-      <!-- Author Column -->
-      <ng-container matColumnDef="author">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Author </th>
-        <td mat-cell *matCellDef="let element"> {{element.author}} </td>
-      </ng-container>
-
-      <!-- Version Column -->
-      <ng-container matColumnDef="version">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Version </th>
-        <td mat-cell *matCellDef="let element"> {{element.version}} </td>
-      </ng-container>
-
-      <!-- RegistrationDate Column -->
-      <ng-container matColumnDef="registrationDate">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Registration Date </th>
-        <td mat-cell *matCellDef="let element"> {{element.registrationDate | date:'MMM d, y, H:mm' }} </td>
-      </ng-container>
-
-      <!-- RequiredServices Column -->
-      <ng-container matColumnDef="requiredServices">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Required Services </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip-list>
-              <mat-chip *ngFor="let requiredService of element.requiredServices">{{requiredService}}</mat-chip>
-          </mat-chip-list>
-        </td>
-      </ng-container>
-
-      <!-- Action Column -->
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef> </th>
-        <td mat-cell *matCellDef="let element" class="item-buttons">
-          <button mat-icon-button  matTooltip="Info" (click)="onInfoClick(element)">
-            <mat-icon>info</mat-icon>
-          </button>
-          <button mat-icon-button  matTooltip="Delete" (click)="onDeleteClick(element)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
 
 </div>

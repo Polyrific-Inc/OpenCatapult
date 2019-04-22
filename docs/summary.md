@@ -74,6 +74,7 @@
   * [Repository Provider](task-providers/repository-provider.md)
   * [Storage Provider](task-providers/storage-provider.md)
   * [Test Provider](task-providers/test-provider.md)
+  * [Generic Task Provider](task-providers/generic-task-provider.md)
 
 ## Management
 

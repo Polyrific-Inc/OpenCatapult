@@ -128,7 +128,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
 
         [Fact]
         public async void GetUser_ReturnItem()
-        {
+        {            
             var UserService = new UserService(_UserRepository.Object);
             var projectUser = await UserService.GetUser("test");
 

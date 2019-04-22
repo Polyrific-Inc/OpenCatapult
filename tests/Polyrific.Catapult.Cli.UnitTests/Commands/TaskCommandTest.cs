@@ -65,22 +65,22 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 }
             };
 
-            var providers = new List<ProviderDto>
+            var providers = new List<TaskProviderDto>
             {
-                new ProviderDto
+                new TaskProviderDto
                 {
                     Id = 1,
                     Name = "GithubPushProvider",
                     RequiredServices = new string[] { "GitHub" }
                 },
-                new ProviderDto
+                new TaskProviderDto
                 {
                     Id = 2,
                     Name = "AzureAppService",
                     RequiredServices = new string[] { "AzureAppService" },
-                    AdditionalConfigs = new ProviderAdditionalConfigDto[]
+                    AdditionalConfigs = new TaskProviderAdditionalConfigDto[]
                     {
-                        new ProviderAdditionalConfigDto
+                        new TaskProviderAdditionalConfigDto
                         {
                             Name = "SubscriptionId",
                             Label = "Subscription Id",
@@ -88,7 +88,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                             IsRequired = true,
                             IsSecret = false
                         },
-                        new ProviderAdditionalConfigDto
+                        new TaskProviderAdditionalConfigDto
                         {
                             Name = "AppKey",
                             Label = "AppKey Id",
@@ -327,7 +327,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskGet_Execute_ReturnsSuccessMessage()
         {
-            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<ProviderAdditionalConfigDto>());
+            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<TaskProviderAdditionalConfigDto>());
             var command = new GetCommand(_console, LoggerMock.GetLogger<GetCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",
@@ -358,7 +358,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         [Fact]
         public void TaskList_Execute_ReturnsSuccessMessage()
         {
-            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<ProviderAdditionalConfigDto>());
+            _providerService.Setup(x => x.GetProviderAdditionalConfigByProviderName(It.IsAny<string>())).ReturnsAsync(new List<TaskProviderAdditionalConfigDto>());
             var command = new ListCommand(_console, LoggerMock.GetLogger<ListCommand>().Object, _projectService.Object, _jobDefinitionService.Object, _providerService.Object)
             {
                 Project = "Project 1",

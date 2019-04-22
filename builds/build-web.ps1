@@ -13,7 +13,8 @@ Set-Location -Path $webLocation
 
 function TrustCertificateOnWindows([string]$certFile) 
 {    
-	$cert = new-object System.Security.Cryptography.X509Certificates.X509Certificate2($webLocation + "/ssl/server.crt")
+write-host $webLocation + $certFile
+	$cert = new-object System.Security.Cryptography.X509Certificates.X509Certificate2($certFile)
 	
 	$certStore = new-object System.Security.Cryptography.X509Certificates.X509Store([System.Security.Cryptography.X509Certificates.StoreName]::Root, [System.Security.Cryptography.X509Certificates.StoreLocation]::CurrentUser)
 	$certStore.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
@@ -29,15 +30,15 @@ function TrustCertificateOnWindows([string]$certFile)
 }
 
 function TrustCertificateOnMac([string]$certFile) 
-{    
-	&'sudo security add-trusted-cert -d -r trustRoot -k "' + $certFile + '"'
+{
+	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $certFile
 }
 
 #Import-Certificate -Filepath "ssl/server.crt" -CertStoreLocation cert:\CurrentUser\Root
 if ($IsLinux) {
     Write-Host "The automated ssl certificate trust is currently only supported on Windows and Mac. For establishing certficate trust on other platforms please refer to the platform specific documentation." -ForegroundColor Yellow 
 }
-elseif ($IsMac) {
+elseif ($IsMacOS) {
 	TrustCertificateOnMac($webLocation + "/ssl/server.crt")
 }
 else {

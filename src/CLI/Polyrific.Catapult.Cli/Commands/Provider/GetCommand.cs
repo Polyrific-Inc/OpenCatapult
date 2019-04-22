@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
@@ -18,6 +19,7 @@ namespace Polyrific.Catapult.Cli.Commands.Provider
         }
 
         [Option("-n|--name", "Name of the task provider", CommandOptionType.SingleValue)]
+        [Required]
         public string ProviderName { get; set; }
 
         public override string Execute()

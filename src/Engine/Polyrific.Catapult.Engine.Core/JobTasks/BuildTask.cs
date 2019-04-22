@@ -22,7 +22,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         public override string Type => JobTaskDefinitionType.Build;
 
-        public List<PluginItem> BuildProviders => PluginManager.GetPlugins(PluginType.BuildProvider);
+        public List<PluginItem> BuildProviders => PluginManager.GetPlugins(TaskProviderType.BuildProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {

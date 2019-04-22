@@ -180,5 +180,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="length">Length of the password</param>
         /// <returns>The password</returns>
         Task<string> GeneratePassword(int length = 10);
+
+        /// <summary>
+        /// Update the user avatar
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="managedFileId">Id of the avatar file</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task UpdateAvatar(int userId, int? managedFileId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

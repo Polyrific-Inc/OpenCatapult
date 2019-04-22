@@ -89,11 +89,15 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             return await _userRepository.GetById(userId, cancellationToken);
         }
 
         public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             return await _userRepository.GetByEmail(email, cancellationToken);
         }
 
@@ -204,7 +208,16 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task UpdateUser(User user, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             await _userRepository.Update(user, cancellationToken);
+        }
+
+        public async Task UpdateAvatar(int userId, int? managedFileId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _userRepository.UpdateAvatar(userId, managedFileId, cancellationToken);
         }
 
         public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))

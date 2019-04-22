@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
 import { NewProjectDto, ProjectService, ProjectTemplateService, ProjectDto, YamlService, ExternalServiceService } from '@app/core';
 import { Router } from '@angular/router';
 import { SnackbarService } from '@app/shared';
+import { AuthService } from '@app/core/auth/auth.service';
 
 @Component({
   selector: 'app-project-new',
@@ -25,6 +26,7 @@ export class ProjectNewComponent implements OnInit {
     private projectService: ProjectService,
     private projectTemplateService: ProjectTemplateService,
     private externalServiceService: ExternalServiceService,
+    private authService: AuthService,
     private yamlService: YamlService,
     private snackBar: SnackbarService,
     private router: Router
@@ -69,9 +71,10 @@ export class ProjectNewComponent implements OnInit {
         .subscribe(
             (data: ProjectDto) => {
               this.snackBar.open('New project has been created');
-
-              this.router.navigate(['project', { dummyData: (new Date).getTime()}])
-                .then(() => this.router.navigate([`project/${data.id}`]));
+              this.authService.refreshSession().subscribe(() => {
+                this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                  .then(() => this.router.navigate([`project/${data.id}`]));
+              });
             },
             err => {
               this.snackBar.open(err);

@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { JobQueueStatusComponent } from '../components/job-queue-status/job-queue-status.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('JobQueueComponent', () => {
   let component: JobQueueComponent;
@@ -35,7 +36,8 @@ describe('JobQueueComponent', () => {
         MatPaginatorModule,
         MatSortModule,
         CoreModule,
-        MatChipsModule
+        MatChipsModule,
+        SharedModule
       ],
       providers: [
         {

@@ -25,7 +25,7 @@
         </div>
 
         <div [ngSwitch]="task.type">
-            <app-clone-task-config-form *ngSwitchCase="'Clone'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-clone-task-config-form>
+            <app-pull-task-config-form *ngSwitchCase="'Pull'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-pull-task-config-form>
             <app-generate-task-config-form *ngSwitchCase="'Generate'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-generate-task-config-form>
             <app-push-task-config-form *ngSwitchCase="'Push'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-push-task-config-form>
             <app-merge-task-config-form *ngSwitchCase="'Merge'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-merge-task-config-form>

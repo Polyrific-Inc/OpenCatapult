@@ -13,6 +13,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(RemoveCommand))]
     [Subcommand(typeof(SuspendCommand))]
     [Subcommand(typeof(UpdateCommand))]
+    [Subcommand(typeof(UpdateAvatarCommand))]
     [Subcommand(typeof(PasswordCommand))]
     [Subcommand(typeof(SetRoleCommand))]
     public class AccountCommand : BaseCommand

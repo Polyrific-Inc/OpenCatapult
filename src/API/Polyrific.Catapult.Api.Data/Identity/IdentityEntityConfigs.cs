@@ -127,6 +127,13 @@ namespace Polyrific.Catapult.Api.Data.Identity
                 .HasForeignKey<UserProfile>(profile => profile.ApplicationUserId)
                 .IsRequired(false);
 
+            builder.HasOne<ManagedFile>()
+                .WithOne()
+                .HasForeignKey<UserProfile>(profile => profile.AvatarFileId)
+                .HasPrincipalKey<ManagedFile>(managedFile => managedFile.Id)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(p => p.IsActive).HasDefaultValue(true);
 
             builder.HasData(new UserProfile

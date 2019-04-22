@@ -1,8 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { AuthService } from '@app/core/auth/auth.service';
-import { FormBuilder } from '@angular/forms';
-import { AccountService, UserDto } from '@app/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { AccountService, UserDto, ManagedFileService } from '@app/core';
 import { SnackbarService } from '@app/shared';
+import { MatDialog } from '@angular/material';
+import { AvatarDialogComponent } from '../avatar-dialog/avatar-dialog.component';
 
 @Component({
   selector: 'app-user-profile-info',
@@ -10,6 +12,8 @@ import { SnackbarService } from '@app/shared';
   styleUrls: ['./user-profile-info.component.css']
 })
 export class UserProfileInfoComponent implements OnInit {
+  @ViewChild('avatarControl') avatarControlVariable: ElementRef;
+
   userInfoForm = this.fb.group({
     id: [{value: null, disabled: true}],
     userName: [{value: null, disabled: true}],
@@ -19,12 +23,17 @@ export class UserProfileInfoComponent implements OnInit {
   user: UserDto;
   editing: boolean;
   loading: boolean;
+  avatar: any;
+  updatedAvatar: File;
+  avatarControl = new FormControl();
 
   constructor (
     private fb: FormBuilder,
+    private dialog: MatDialog,
     private accountService: AccountService,
     private authService: AuthService,
     private snackbar: SnackbarService,
+    private managedFileService: ManagedFileService
     ) {
     }
 
@@ -39,6 +48,10 @@ export class UserProfileInfoComponent implements OnInit {
         this.loading = false;
         this.user = data;
         this.userInfoForm.patchValue(data);
+
+        if (data.avatarFileId) {
+          this.avatar = this.managedFileService.getImageUrl(data.avatarFileId);
+        }
       });
   }
 
@@ -46,9 +59,13 @@ export class UserProfileInfoComponent implements OnInit {
     if (this.userInfoForm.valid) {
       this.loading = true;
       this.accountService.updateUser(this.user.id,
-        { id: this.user.id, ...this.userInfoForm.value })
+        {
+          id: this.user.id,
+          ...this.userInfoForm.value
+        })
         .subscribe(
             () => {
+              this.authService.refreshSession().subscribe();
               this.loading = false;
               this.editing = false;
               this.userInfoForm.get('firstName').disable();
@@ -77,5 +94,24 @@ export class UserProfileInfoComponent implements OnInit {
   isFieldInvalid(controlName: string, errorCode: string) {
     const control = this.userInfoForm.get(controlName);
     return control.invalid && control.errors && control.getError(errorCode);
+  }
+
+  onAvatarChanged(event) {
+    if (event.target.value) {
+      const dialogRef = this.dialog.open(AvatarDialogComponent, {
+        data: {
+          user: this.user,
+          file: event.target.files[0]
+        }
+      });
+
+      dialogRef.afterClosed().subscribe(avatarFileId => {
+        if (avatarFileId) {
+          this.avatar = this.managedFileService.getImageUrl(avatarFileId);
+        }
+
+        this.avatarControlVariable.nativeElement.value = '';
+      });
+    }
   }
 }
