@@ -4,7 +4,7 @@ namespace Polyrific.Catapult.Api.Core.Entities
 {
     public class HelpContext : BaseEntity
     {
-        public int Section { get; set; }
+        public string Section { get; set; }
 
         public string SubSection { get; set; }
 

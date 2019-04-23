@@ -9,11 +9,11 @@ export class HelpContextService {
   constructor(private api: ApiService) {
   }
 
-  getHelpContextsBySection(section: number): Observable<HelpContextDto[]> {
+  getHelpContextsBySection(section: string): Observable<HelpContextDto[]> {
     return this.api.get<HelpContextDto[]>(`help-context/section/${section}`);
   }
 
-  getSectionByActiveRoute(url: string) {
+  getSectionByActiveRoute(url: string): string {
     const urlSegments = url.toLowerCase().split('/');
 
     if (urlSegments.includes('project')) {
@@ -40,6 +40,6 @@ export class HelpContextService {
       return HelpContextSection.UserProfile;
     }
 
-    return 0;
+    return null;
   }
 }

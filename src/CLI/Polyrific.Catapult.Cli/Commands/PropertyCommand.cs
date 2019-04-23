@@ -16,27 +16,14 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(UpdateCommand))]
     public class PropertyCommand : BaseCommand
     {
-        private readonly IHelpContextService _helpContextService;
-
-        [Option("-c|--helpcontext", "Show help context", CommandOptionType.NoValue)]
-        public bool HelpContext { get; set; }
-
-        public PropertyCommand(IHelpContextService helpContextService, IConsole console, ILogger<PropertyCommand> logger) : base(console, logger)
+        public PropertyCommand(IHelpContextService helpContextService, IConsole console, ILogger<PropertyCommand> logger)
+            : base(console, logger, helpContextService, HelpContextSection.ProjectModelProperty)
         {
-            _helpContextService = helpContextService;
         }
 
         public override string Execute()
         {
-            if (!HelpContext)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var helpContexts = _helpContextService.GetHelpContextsBySection(HelpContextSection.ProjectModelProperty).Result;
-                return helpContexts.ToHelpContextString("Help context for the project data model property commands:");
-            }
+            return string.Empty;
         }
 
         protected override int OnExecute(CommandLineApplication app)

@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _helpContextRepository = helpContextRepository;
         }
 
-        public async Task<List<HelpContext>> GetHelpContextsBySection(int section)
+        public async Task<List<HelpContext>> GetHelpContextsBySection(string section)
         {
             var spec = new HelpContextFilterSpecification(section);
             var result = await _helpContextRepository.GetBySpec(spec);

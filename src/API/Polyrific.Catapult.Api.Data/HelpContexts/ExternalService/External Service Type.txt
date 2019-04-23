@@ -1,0 +1,1 @@
+Each external service has a specific type that define what kind of authentication service it connects. Currently opencatapult support the Azure and GitHub authentication out of the box. If you want to enter other authentication type, you can use Generic type

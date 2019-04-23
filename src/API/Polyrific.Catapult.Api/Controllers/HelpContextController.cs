@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="section">Section filter</param>
         /// <returns></returns>
         [HttpGet("section/{section}")]
-        public async Task<IActionResult> GetHelpContextsBySection(int section)
+        public async Task<IActionResult> GetHelpContextsBySection(string section)
         {
             _logger.LogInformation("Getting help contexts for section {section}", section);
 

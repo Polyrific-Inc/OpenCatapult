@@ -8,6 +8,6 @@ namespace Polyrific.Catapult.Api.Core.Services
 {
     public interface IHelpContextService
     {
-        Task<List<HelpContext>> GetHelpContextsBySection(int section);
+        Task<List<HelpContext>> GetHelpContextsBySection(string section);
     }
 }

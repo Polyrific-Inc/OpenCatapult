@@ -1,0 +1,1 @@
+Data models let you define the structure of the project/application. The code generator will take the data models as the input to shape the generated application base on its own logic

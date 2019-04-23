@@ -1,0 +1,1 @@
+You can invite several users to collaborate in a project, and set them as a project member. A member can have a certain roles, that shall define the access level within the scope of a project

@@ -13,6 +13,6 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <param name="section">Section of the help context</param>
         /// <returns></returns>
-        Task<List<HelpContextDto>> GetHelpContextsBySection(int section);
+        Task<List<HelpContextDto>> GetHelpContextsBySection(string section);
     }
 }

@@ -1,0 +1,1 @@
+Task provider is the implementation of a specific task. For example, a "Generate" can have task providers for generating Asp Mvc website, Angular website, or even mobile application

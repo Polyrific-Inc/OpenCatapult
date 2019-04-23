@@ -6,9 +6,9 @@ namespace Polyrific.Catapult.Api.Core.Specifications
 {
     public class HelpContextFilterSpecification : BaseSpecification<HelpContext>
     {
-        public int Section { get; set; }
+        public string Section { get; set; }
 
-        public HelpContextFilterSpecification(int section)
+        public HelpContextFilterSpecification(string section)
             : base(m => m.Section == section, m => m.Sequence)
         {
             Section = section;

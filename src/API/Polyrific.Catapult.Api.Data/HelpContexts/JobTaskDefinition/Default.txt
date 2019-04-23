@@ -1,0 +1,1 @@
+The task shall define what the engine shall do, which task provider to use, and the necessary configuration properties that will be passed into the engine

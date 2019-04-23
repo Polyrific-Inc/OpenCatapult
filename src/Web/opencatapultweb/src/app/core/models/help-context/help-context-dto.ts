@@ -1,5 +1,5 @@
 export interface HelpContextDto {
-  section: number;
+  section: string;
   subSection: string;
   text: string;
   sequence: number;

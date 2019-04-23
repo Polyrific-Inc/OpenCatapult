@@ -1,0 +1,1 @@
+You can view the detail of a job queue to see the status/remarks that is sent by the engine. For example, it can show where the application is deployed, the Pull request that is created, or the location folder of the generated code

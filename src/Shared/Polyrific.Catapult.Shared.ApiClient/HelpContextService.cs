@@ -13,7 +13,7 @@ namespace Polyrific.Catapult.Shared.ApiClient
         {
         }
 
-        public async Task<List<HelpContextDto>> GetHelpContextsBySection(int section)
+        public async Task<List<HelpContextDto>> GetHelpContextsBySection(string section)
         {
             var path = $"help-context/section/{section}";
 

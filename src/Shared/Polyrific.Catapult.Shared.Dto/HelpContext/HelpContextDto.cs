@@ -6,7 +6,7 @@ namespace Polyrific.Catapult.Shared.Dto.HelpContext
 {
     public class HelpContextDto
     {
-        public int Section { get; set; }
+        public string Section { get; set; }
 
         public string SubSection { get; set; }
 

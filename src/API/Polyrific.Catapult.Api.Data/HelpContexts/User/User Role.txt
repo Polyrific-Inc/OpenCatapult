@@ -1,0 +1,1 @@
+There are three user roles available. Administrator would have access to all feature, Basic user would have access to create a project, while Guest user would only have access related to the project they are assigned

@@ -18,27 +18,14 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(CancelCommand))]
     public class QueueCommand : BaseCommand
     {
-        private readonly IHelpContextService _helpContextService;
-
-        [Option("-c|--helpcontext", "Show help context", CommandOptionType.NoValue)]
-        public bool HelpContext { get; set; }
-
-        public QueueCommand(IHelpContextService helpContextService, IConsole console, ILogger<QueueCommand> logger) : base(console, logger)
+        public QueueCommand(IHelpContextService helpContextService, IConsole console, ILogger<QueueCommand> logger)
+            : base(console, logger, helpContextService, HelpContextSection.JobQueue)
         {
-            _helpContextService = helpContextService;
         }
 
         public override string Execute()
         {
-            if (!HelpContext)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var helpContexts = _helpContextService.GetHelpContextsBySection(HelpContextSection.JobQueue).Result;
-                return helpContexts.ToHelpContextString("Help context for the job queue commands:");
-            }
+            return string.Empty;
         }
 
         protected override int OnExecute(CommandLineApplication app)
