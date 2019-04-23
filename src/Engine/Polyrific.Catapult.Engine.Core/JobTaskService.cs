@@ -10,7 +10,7 @@ namespace Polyrific.Catapult.Engine.Core
     public class JobTaskService
     {
         public JobTaskService(IBuildTask buildTask, 
-            ICloneTask cloneTask,
+            IPullTask cloneTask,
             IDeployTask deployTask, 
             IDeployDbTask deployDbTask,
             IGenerateTask generateTask,
@@ -42,9 +42,9 @@ namespace Polyrific.Catapult.Engine.Core
         public IBuildTask BuildTask { get; }
 
         /// <summary>
-        /// Instance of <see cref="ICloneTask"/>
+        /// Instance of <see cref="IPullTask"/>
         /// </summary>
-        public ICloneTask CloneTask { get; }
+        public IPullTask CloneTask { get; }
 
         /// <summary>
         /// Instance of <see cref="IDeployTask"/>

@@ -194,7 +194,7 @@ namespace Polyrific.Catapult.Engine.Core
                 case JobTaskDefinitionType.Build:
                     task = _jobTaskService.BuildTask;
                     break;
-                case JobTaskDefinitionType.Clone:
+                case JobTaskDefinitionType.Pull:
                     task = _jobTaskService.CloneTask;
                     break;
                 case JobTaskDefinitionType.Deploy:

@@ -118,6 +118,8 @@ $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyr
 $dotNetCoreTestPublishPath = Join-Path $publishOuterPath "/plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
 $entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
 $entityFrameworkCorePublishPath = Join-Path $publishOuterPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
+$genericCommandCsprojPath = Join-Path $rootPath "/src/Plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
+$genericCommandPublishPath = Join-Path $publishOuterPath "/plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
 $gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
 $gitHubPublishPath = Join-Path $publishOuterPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
 
@@ -126,6 +128,7 @@ $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublis
 [System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
 [System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
 [System.Tuple]::Create($entityFrameworkCoreCsprojPath, $entityFrameworkCorePublishPath),
+[System.Tuple]::Create($genericCommandCsprojPath, $genericCommandPublishPath),
 [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath)
 
 foreach ($p in $plugins) {

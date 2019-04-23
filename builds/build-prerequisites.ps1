@@ -8,7 +8,7 @@ param(
 ## Checking Dotnet
 Write-Host "Checking installed Dotnet..."
 
-$dotnetSdkVersion = [System.Version]"2.1.500"
+$dotnetSdkVersion = [System.Version]"2.2.202"
 $allGood = $true
 
 $currentSdkVersion = dotnet --version
@@ -28,10 +28,10 @@ if ([System.Version]$parsedSdkVersion.Value -lt $dotnetSdkVersion) {
 	
 	if ($installDotnet) {
 		if (Test-Path ".\builds\dotnet-install.ps1") { 
-			.\builds\dotnet-install.ps1 -Channel 2.1 -InstallDir $env:ProgramFiles\dotnet
+			.\builds\dotnet-install.ps1 -Channel 2.2 -InstallDir $env:ProgramFiles\dotnet
 		}
 		elseif (Test-Path ".\dotnet-install.ps1") { 
-			.\dotnet-install.ps1 -Channel 2.1 -InstallDir $env:ProgramFiles\dotnet
+			.\dotnet-install.ps1 -Channel 2.2 -InstallDir $env:ProgramFiles\dotnet
 		}
 		else { 
 			Write-Error "Cannot find dotnet-install.ps1"

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -16,10 +16,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="mailkit" Version="2.0.6" />
-    <PackageReference Include="microsoft.extensions.configuration.abstractions" Version="2.1.1" />
-    <PackageReference Include="microsoft.extensions.dependencyinjection.abstractions" Version="2.1.1" />
-    <PackageReference Include="microsoft.extensions.options.configurationextensions" Version="2.1.1" />
+    <PackageReference Include="mailkit" Version="2.1.4" />
+    <PackageReference Include="microsoft.extensions.configuration.abstractions" Version="2.2.0" />
+    <PackageReference Include="microsoft.extensions.dependencyinjection.abstractions" Version="2.2.0" />
+    <PackageReference Include="microsoft.extensions.options.configurationextensions" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.TaskProviders.Core.Configs
 {
-    public class CloneTaskConfig : BaseJobTaskConfig
+    public class PullTaskConfig : BaseJobTaskConfig
     {
         /// <summary>
         /// Remote repository
@@ -15,9 +15,9 @@ namespace Polyrific.Catapult.TaskProviders.Core.Configs
         public bool IsPrivateRepository { get; set; }
 
         /// <summary>
-        /// Location where the source code needs to cloned to
+        /// The repository local folder path
         /// </summary>
-        public string CloneLocation { get; set; }
+        public string RepositoryLocation { get; set; }
 
         /// <summary>
         /// Initial branch that will be worked on

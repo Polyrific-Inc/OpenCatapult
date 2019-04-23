@@ -1,4 +1,4 @@
-<div [formGroup]="cloneConfigForm" *ngIf="showForm">
+<div [formGroup]="pullConfigForm" *ngIf="showForm">
   <mat-form-field class="full-width-input">
       <mat-label>Repository</mat-label>
       <input matInput placeholder="The remote repository url" formControlName="Repository" required>
@@ -18,8 +18,8 @@
       </mat-expansion-panel-header>
 
       <mat-form-field class="full-width-input">
-          <mat-label>Clone location</mat-label>
-          <input matInput placeholder="Custom directory path where the cloned app is stored" formControlName="CloneLocation">
+          <mat-label>Repository location</mat-label>
+          <input matInput placeholder="Custom local directory path of the repository" formControlName="RepositoryLocation">
       </mat-form-field>
       <mat-form-field class="full-width-input">
           <mat-label>Base branch</mat-label>

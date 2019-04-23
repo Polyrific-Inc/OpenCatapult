@@ -36,7 +36,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
                 .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.AvatarFileId));
 
             CreateMap<CatapultEngine, ApplicationUser>()
-                .ForMember(dest => dest.IsCatapultEngine, opt => opt.UseValue(true))
+                .ForMember(dest => dest.IsCatapultEngine, opt => opt.MapFrom(_ => true))
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Name));
             CreateMap<ApplicationUser, CatapultEngine>()
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.CatapultEngineProfile.IsActive))

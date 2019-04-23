@@ -22,24 +22,18 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             _logger = logger;
         }
 
-        public async Task<string> Clone()
-        {
-            if (Directory.Exists(_config.LocalRepository))
-                Directory.Delete(_config.LocalRepository, true);
-
-            Directory.CreateDirectory(_config.LocalRepository);
-
-            
+        public async Task<string> CloneIfNotExistLocally()
+        {            
             var attempt = 1;
 
             // start attempt clone
             while (attempt <= MaxAttempt)
             {
-                _logger.LogInformation($"Clone GitHub repository (attempt #{attempt}) from {_config.RemoteUrl}.");
+                _logger.LogInformation($"Clone GitHub repository if not exist locally (attempt #{attempt}) from {_config.RemoteUrl}.");
 
                 attempt++;
 
-                var repoLocation = await _gitHubUtils.Clone(_config.RemoteUrl, _config.LocalRepository, _config.IsPrivateRepository ?? false);
+                var repoLocation = await _gitHubUtils.CloneIfNotExistLocally(_config.RemoteUrl, _config.LocalRepository, _config.IsPrivateRepository ?? false);
                 if (!string.IsNullOrEmpty(repoLocation))
                 {
                     _logger.LogInformation($"GitHub repository has been successfully cloned from {_config.RemoteUrl}.");
@@ -98,6 +92,32 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             }
 
             return $"Failed to push changes to remote repository after {MaxAttempt} attempt";
+        }
+
+        public async Task<string> Pull(string author, string email)
+        {
+            var attempt = 1;
+            string error = null;
+            while (attempt <= MaxAttempt)
+            {
+                _logger.LogInformation($"Pull from {_config.RemoteUrl} (attempt #{attempt})");
+
+                attempt++;
+
+                error = await _gitHubUtils.Pull(_config.LocalRepository, author, email);
+                if (string.IsNullOrEmpty(error))
+                {
+                    return "";
+                }
+                else
+                {
+                    _logger.LogError(error);
+                }
+
+                Thread.Sleep(30000);
+            }
+
+            return $"Failed to pull from remote repository after {MaxAttempt} attempt. Error: {error}";
         }
 
         public async Task<int> SubmitPullRequest(string branch, string targetBranch)

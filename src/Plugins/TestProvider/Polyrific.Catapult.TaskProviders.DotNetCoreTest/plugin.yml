@@ -4,5 +4,5 @@ description: 'A test task provider for running a unit test project using "dotnet
 thumbnail-url: '/assets/img/task-provider/dotnetcore.png'
 type: 'TestProvider'
 author: 'Polyrific'
-version: '1.0.0-beta3'
+version: '1.0.0-beta4'
 tags: 'Test, Unit Test, Dotnet Core, xUnit'

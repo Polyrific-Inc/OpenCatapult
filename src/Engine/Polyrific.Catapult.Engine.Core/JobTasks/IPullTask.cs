@@ -2,7 +2,7 @@
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
-    public interface ICloneTask : IJobTask
+    public interface IPullTask : IJobTask
     {
         
     }

@@ -1,7 +1,7 @@
 import { JobTaskDefinitionType } from '../enums/job-task-definition-type';
 
 export const jobTaskDefinitionTypes: [string, string][] = [
-  [JobTaskDefinitionType.Clone, 'Clone'],
+  [JobTaskDefinitionType.Pull, 'Pull'],
   [JobTaskDefinitionType.Generate, 'Generate'],
   [JobTaskDefinitionType.Push, 'Push'],
   [JobTaskDefinitionType.Merge, 'Merge'],

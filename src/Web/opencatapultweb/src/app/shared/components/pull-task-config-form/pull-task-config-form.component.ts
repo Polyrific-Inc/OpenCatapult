@@ -3,44 +3,44 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
 
 @Component({
-  selector: 'app-clone-task-config-form',
-  templateUrl: './clone-task-config-form.component.html',
-  styleUrls: ['./clone-task-config-form.component.css']
+  selector: 'app-pull-task-config-form',
+  templateUrl: './pull-task-config-form.component.html',
+  styleUrls: ['./pull-task-config-form.component.css']
 })
-export class CloneTaskConfigFormComponent implements OnInit, OnChanges {
+export class PullTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
   @Input() taskConfigs: { [key: string]: string };
   @Output() formReady = new EventEmitter<FormGroup>();
-  cloneConfigForm: FormGroup;
+  pullConfigForm: FormGroup;
   showForm: boolean;
 
   constructor(
     private fb: FormBuilder
   ) {
-    this.cloneConfigForm = this.fb.group({
+    this.pullConfigForm = this.fb.group({
       Repository: [null, Validators.required],
       IsPrivateRepository: false,
-      CloneLocation: null,
+      RepositoryLocation: null,
       BaseBranch: null
     });
   }
 
   ngOnInit() {
-    if (this.taskType === JobTaskDefinitionType.Clone) {
-      this.formReady.emit(this.cloneConfigForm);
+    if (this.taskType === JobTaskDefinitionType.Pull) {
+      this.formReady.emit(this.pullConfigForm);
     }
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.showForm = this.taskType === JobTaskDefinitionType.Clone;
+    this.showForm = this.taskType === JobTaskDefinitionType.Pull;
 
     if (changes.taskConfigs && this.taskConfigs) {
-      this.cloneConfigForm.patchValue(this.taskConfigs);
+      this.pullConfigForm.patchValue(this.taskConfigs);
     }
   }
 
   isFieldInvalid(controlName: string, errorCode: string) {
-    const control = this.cloneConfigForm.get(controlName);
+    const control = this.pullConfigForm.get(controlName);
     return control.invalid && control.errors && control.getError(errorCode);
   }
 

@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="automapper" Version="7.0.1" />
-    <PackageReference Include="newtonsoft.json" Version="11.0.2" />
-    <PackageReference Include="YamlDotNet" Version="5.2.1" />
+    <PackageReference Include="automapper" Version="8.0.0" />
+    <PackageReference Include="newtonsoft.json" Version="12.0.1" />
+    <PackageReference Include="YamlDotNet" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

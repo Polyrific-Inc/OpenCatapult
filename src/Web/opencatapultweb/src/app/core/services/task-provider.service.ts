@@ -33,7 +33,7 @@ export class TaskProviderService {
 
   getTaskProviderType(taskType: string) {
     switch (taskType) {
-      case JobTaskDefinitionType.Clone:
+      case JobTaskDefinitionType.Pull:
       case JobTaskDefinitionType.Push:
       case JobTaskDefinitionType.Merge:
       case JobTaskDefinitionType.DeleteRepository:

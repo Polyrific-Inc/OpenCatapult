@@ -149,6 +149,14 @@ namespace Polyrific.Catapult.Api
             {
                 app.UseHttpsRedirection();
                 app.UseHsts();
+                app.UseDefaultFiles(new DefaultFilesOptions
+                {
+                    DefaultFileNames = new List<string>
+                    {
+                        "Default.html"
+                    }
+                });
+                app.UseStaticFiles();
             }
 
             app.UseCorrelationId();

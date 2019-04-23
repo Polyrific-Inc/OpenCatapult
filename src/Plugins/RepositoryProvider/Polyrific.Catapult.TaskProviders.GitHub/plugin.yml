@@ -4,7 +4,7 @@ description: 'A repository task provider for cloning, pushing code, creating new
 thumbnail-url: '/assets/img/task-provider/github.png'
 type: 'RepositoryProvider'
 author: 'Polyrific'
-version: '1.0.0-beta3'
+version: '1.0.0-beta4'
 tags: 'Repository, GitHub, Source Control, Git'
 required-services:
   - GitHub

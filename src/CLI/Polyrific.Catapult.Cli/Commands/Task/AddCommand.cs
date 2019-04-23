@@ -54,7 +54,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
         [Required]
         [Option("-t|--type <TYPE>", "Type of the task", CommandOptionType.SingleValue)]
-        [AllowedValues(JobTaskDefinitionType.Clone, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build, 
+        [AllowedValues(JobTaskDefinitionType.Pull, JobTaskDefinitionType.Generate, JobTaskDefinitionType.Push, JobTaskDefinitionType.Merge, JobTaskDefinitionType.Build, 
             JobTaskDefinitionType.PublishArtifact, JobTaskDefinitionType.Deploy, JobTaskDefinitionType.DeployDb, JobTaskDefinitionType.Test,
             JobTaskDefinitionType.DeleteRepository, JobTaskDefinitionType.DeleteHosting, JobTaskDefinitionType.CustomTask)]
         public string Type { get; set; } = JobTaskDefinitionType.Generate;
@@ -219,11 +219,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
         {
             var sb = new System.Text.StringBuilder();
             sb.AppendLine("Available task:");
-            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Clone}");
+            sb.AppendLine($"  - Type: {JobTaskDefinitionType.Pull}");
             sb.AppendLine("    Properties:");
             sb.AppendLine("      - Repository");
             sb.AppendLine("      - IsPrivateRepository (\"y\" or \"n\")");
-            sb.AppendLine("      - CloneLocation");
+            sb.AppendLine("      - RepositoryLocation");
             sb.AppendLine("      - BaseBranch");
 
             sb.AppendLine($"  - Type: {JobTaskDefinitionType.Generate}");
@@ -280,11 +280,11 @@ namespace Polyrific.Catapult.Cli.Commands.Task
 
             var typeCapitalized = Type.First().ToString().ToUpper() + Type.Substring(1).ToLower();
 
-            if (Type.ToLower() == JobTaskDefinitionType.Clone.ToLower())
+            if (Type.ToLower() == JobTaskDefinitionType.Pull.ToLower())
             {
                 PromptIfNotSet(taskConfigs, "Repository", true);
                 PromptIfNotSet(taskConfigs, "IsPrivateRepository", true, configType: ConfigType.Boolean);
-                PromptIfNotSet(taskConfigs, "CloneLocation");
+                PromptIfNotSet(taskConfigs, "RepositoryLocation");
                 PromptIfNotSet(taskConfigs, "BaseBranch");
             }
             else if (Type.ToLower() == JobTaskDefinitionType.Generate.ToLower())
