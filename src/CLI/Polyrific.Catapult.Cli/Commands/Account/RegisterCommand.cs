@@ -3,6 +3,7 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Extensions;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
 using System.ComponentModel.DataAnnotations;
@@ -31,14 +32,26 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            Console.WriteLine($"Trying to register new user {Email}...");
+            Console.WriteLine("Please enter the following additional user info if it is available");
 
-            var user = _accountService.RegisterUser(new RegisterUserDto
+            var newUser = new RegisterUserDto
             {
                 Email = Email,
                 FirstName = FirstName,
                 LastName = LastName
-            }).Result;
+            };
+            var githubId = Console.GetString("GitHub Id (Optional):");
+            if (!string.IsNullOrEmpty(githubId))
+            {
+                newUser.ExternalAccountIds = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    {ExternalAccountType.GitHub, githubId}
+                };
+            }
+
+            Console.WriteLine($"Trying to register new user {Email}...");
+
+            var user = _accountService.RegisterUser(newUser).Result;
 
             var message = user.ToCliString($"User {Email} has been registered, but he/she needs to confirm the email first before being able to login.");
             Logger.LogInformation(message);

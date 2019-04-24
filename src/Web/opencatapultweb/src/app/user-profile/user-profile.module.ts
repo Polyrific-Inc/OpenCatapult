@@ -9,6 +9,7 @@ import { MatTabsModule, MatInputModule, MatProgressBarModule, MatButtonModule, M
 import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AvatarDialogComponent } from './components/avatar-dialog/avatar-dialog.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 @NgModule({
   declarations: [UserProfileComponent, UserProfileInfoComponent, UserProfilePasswordComponent, AvatarDialogComponent],
@@ -22,7 +23,8 @@ import { AvatarDialogComponent } from './components/avatar-dialog/avatar-dialog.
     MatButtonModule,
     FlexLayoutModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    SharedModule
   ],
   entryComponents: [AvatarDialogComponent]
 })

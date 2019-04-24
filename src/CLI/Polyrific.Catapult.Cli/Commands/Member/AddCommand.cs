@@ -49,13 +49,31 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
             if (project != null)
             {
-                var projectMember = _projectMemberService.CreateProjectMember(project.Id, new NewProjectMemberDto
+                var newMember = new NewProjectMemberDto
                 {
                     UserId = user != null ? int.Parse(user.Id) : 0,
                     Email = User,
                     ProjectId = project.Id,
                     ProjectMemberRoleId = roleId
-                }).Result;
+                };
+
+                if (user != null)
+                {
+                    Console.WriteLine("You are creating a new user. Please fill in the user info.");
+                    newMember.FirstName = Console.GetString("First Name (Optional):");
+                    newMember.LastName = Console.GetString("Last Name (Optional):");
+
+                    var githubId = Console.GetString("GitHub Id (Optional):");
+                    if (!string.IsNullOrEmpty(githubId))
+                    {
+                        newMember.ExternalAccountIds = new System.Collections.Generic.Dictionary<string, string>
+                        {
+                            {ExternalAccountType.GitHub, githubId}
+                        };
+                    }
+                }
+
+                var projectMember = _projectMemberService.CreateProjectMember(project.Id, newMember).Result;
 
                 var addedMember = new MemberViewModel
                 {

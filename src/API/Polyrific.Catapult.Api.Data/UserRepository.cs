@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
@@ -168,6 +169,7 @@ namespace Polyrific.Catapult.Api.Data
             {
                 user.UserProfile.FirstName = entity.FirstName;
                 user.UserProfile.LastName = entity.LastName;
+                user.UserProfile.ExternalAccountIds = entity.ExternalAccountIds != null ? JsonConvert.SerializeObject(entity.ExternalAccountIds) : null;
                 await _userProfileRepository.Update(user.UserProfile, cancellationToken);
             }
         }

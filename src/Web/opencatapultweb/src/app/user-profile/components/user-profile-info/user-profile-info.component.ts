@@ -68,6 +68,10 @@ export class UserProfileInfoComponent implements OnInit {
               this.authService.refreshSession().subscribe();
               this.loading = false;
               this.editing = false;
+              this.user = {
+                id: this.user.id,
+                ...this.userInfoForm.value
+              };
               this.userInfoForm.get('firstName').disable();
               this.userInfoForm.get('lastName').disable();
               this.snackbar.open('User info has been updated');
