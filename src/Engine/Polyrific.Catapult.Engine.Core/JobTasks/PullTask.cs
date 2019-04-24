@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
 
         protected List<ProjectMemberDto> ProjectMembers
         {
-            get => _projectMembers == null || Project?.Id != ProjectId ? (_projectMembers = _projectMemberService.GetProjectMembers(ProjectId).Result) : _projectMembers;
+            get => _projectMembers == null || Project?.Id != ProjectId ? (_projectMembers = _projectMemberService.GetProjectMembersForEngine(ProjectId).Result) : _projectMembers;
             set => _projectMembers = value;
         }
 
@@ -104,7 +104,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             {
                 {"process", process},
                 {"project", Project.Name},
-                {"projectMembers", ProjectMembers != null ? JsonConvert.SerializeObject(ProjectMembers) : null},
+                {"projectmembers", ProjectMembers},
                 {"pullconfig", TaskConfig},
                 {"additional", AdditionalConfigs}
             };

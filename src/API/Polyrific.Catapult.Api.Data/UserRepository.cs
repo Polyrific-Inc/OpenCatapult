@@ -287,5 +287,14 @@ namespace Polyrific.Catapult.Api.Data
             if (!result.Succeeded)
                 result.ThrowErrorException();
         }
+
+        public async Task<List<User>> GetUsersByIds(int[] ids, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => ids.Contains(u.Id)).ToListAsync(cancellationToken);
+
+            return _mapper.Map<List<User>>(users);
+        }
     }
 }

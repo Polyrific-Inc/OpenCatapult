@@ -234,5 +234,17 @@ namespace Polyrific.Catapult.Api.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("Project/{projectId}/member/engine")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        public async Task<IActionResult> GetProjectMembersForEngine(int projectId)
+        {
+            _logger.LogInformation("Getting members in project {projectId} for engine", projectId);
+
+            var projects = await _projectMemberService.GetProjectMembers(projectId, includeUser: true);
+            var results = _mapper.Map<List<ProjectMemberDto>>(projects);
+
+            return Ok(results);
+        }
     }
 }

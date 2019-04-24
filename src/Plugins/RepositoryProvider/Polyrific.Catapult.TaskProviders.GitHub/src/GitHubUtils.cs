@@ -353,17 +353,11 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 if (members != null)
                 {
                     var currentMembers = await client.Repository.Collaborator.GetAll(repository.Id);
-                    var deletingMembers = currentMembers.Select(u => u.Login).Where(u => !members.Contains(u)).ToList();
                     var newMembers = members.Where(m => !currentMembers.Any(u => u.Login.ToLower() == m.ToLower())).ToList();
 
                     foreach (var member in newMembers)
                     {
                         await client.Repository.Collaborator.Add(repository.Id, member);                       
-                    }
-
-                    foreach (var member in deletingMembers)
-                    {
-                        await client.Repository.Collaborator.Delete(repository.Id, member);
                     }
                 }                
 

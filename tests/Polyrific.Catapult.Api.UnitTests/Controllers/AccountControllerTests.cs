@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _userService.Setup(s => s.GeneratePassword(It.IsAny<int>())).ReturnsAsync("0123456789");
             _userService
                 .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, string firstName, string lastName, string password, CancellationToken cancellationToken) => 
+                .ReturnsAsync((string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken) => 
                     new User
                     {
                         Id = 1,

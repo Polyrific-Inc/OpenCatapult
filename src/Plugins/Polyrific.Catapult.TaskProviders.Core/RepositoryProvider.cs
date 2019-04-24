@@ -30,7 +30,7 @@ namespace Polyrific.Catapult.TaskProviders.Core
                     case "project":
                         ProjectName = ParsedArguments[key].ToString();
                         break;
-                    case "projectMembers":
+                    case "projectmembers":
                         ProjectMembers = JsonConvert.DeserializeObject<List<ProjectMemberDto>>(ParsedArguments[key].ToString());
                         break;
                     case "pullconfig":

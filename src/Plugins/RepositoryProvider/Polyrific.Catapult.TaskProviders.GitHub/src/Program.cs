@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         public override async Task<(string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage)> Pull()
         {
             var repositoryLocation = PullTaskConfig.RepositoryLocation ?? PullTaskConfig.WorkingLocation;
-            var repoConfig = GetGitAutomationConfig(repositoryLocation, PullTaskConfig.Repository, AdditionalConfigs, PullTaskConfig.IsPrivateRepository);
+            var repoConfig = GetGitAutomationConfig(repositoryLocation, PullTaskConfig.Repository, AdditionalConfigs, PullTaskConfig.IsPrivateRepository, ProjectMembers);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);

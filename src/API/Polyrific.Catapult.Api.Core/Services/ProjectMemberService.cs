@@ -81,14 +81,23 @@ namespace Polyrific.Catapult.Api.Core.Services
             return (newProjectMemberId, newUserId);
         }
 
-        public async Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, bool includeUser = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var projectMemberByProjectSpec = new ProjectMemberFilterSpecification(projectId, 0, roleId: roleId);
-            var projectMembers = await _projectMemberRepository.GetBySpec(projectMemberByProjectSpec, cancellationToken);
+            
+            var projectMembers = (await _projectMemberRepository.GetBySpec(projectMemberByProjectSpec, cancellationToken)).ToList();
 
-            return projectMembers.ToList();
+            if (includeUser)
+            {
+                var users = await _userRepository.GetUsersByIds(projectMembers.Select(p => p.UserId).ToArray());
+
+                foreach (var projectMember in projectMembers)
+                    projectMember.User = users.FirstOrDefault(u => u.Id == projectMember.UserId);
+            }
+
+            return projectMembers;
         }
 
         public async Task<ProjectMember> GetProjectMemberById(int id, CancellationToken cancellationToken = default(CancellationToken))

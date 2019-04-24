@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProjectMembers_ReturnsProjectMemberList()
         {
-            _projectMemberService.Setup(s => s.GetProjectMembers(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _projectMemberService.Setup(s => s.GetProjectMembers(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProjectMember>
                 {
                     new ProjectMember

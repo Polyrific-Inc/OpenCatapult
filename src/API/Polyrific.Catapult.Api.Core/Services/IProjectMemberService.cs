@@ -37,10 +37,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Get members of a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>
-        /// /// <param name="roleId">role id of the project</param>
+        /// <param name="roleId">role id of the project</param>
+        /// <param name="includeUser">Include user entity during retrieve?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of project members</returns>
-        Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, bool includeUser = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update role of a project member
