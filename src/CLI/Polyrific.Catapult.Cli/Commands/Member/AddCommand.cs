@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Cli.Commands.Member
                     ProjectMemberRoleId = roleId
                 };
 
-                if (user != null)
+                if (user == null)
                 {
                     Console.WriteLine("You are creating a new user. Please fill in the user info.");
                     newMember.FirstName = Console.GetString("First Name (Optional):");
