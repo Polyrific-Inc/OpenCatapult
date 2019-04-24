@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Polyrific, Inc 2019. All rights reserved.
+
+using System;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Shared.Dto.Constants;
