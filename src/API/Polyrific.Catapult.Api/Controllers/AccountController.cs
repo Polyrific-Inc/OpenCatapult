@@ -56,7 +56,7 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var temporaryPassword = await _userService.GeneratePassword();
-                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, temporaryPassword);
+                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.ExternalAccountIds, temporaryPassword);
                 if (createdUser != null)
                 {
                     userId = createdUser.Id;

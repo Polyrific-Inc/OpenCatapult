@@ -1,0 +1,7 @@
+<div [formGroup]="externalAccountForm">
+  <mat-form-field class="full-width-input" *ngFor="let externalAccountType of externalAccountTypes">
+      <mat-label>{{externalAccountType[1]}}</mat-label>
+      <input matInput [formControlName]="externalAccountType[0]">
+  </mat-form-field>
+</div>
+

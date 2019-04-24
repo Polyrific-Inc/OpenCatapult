@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -44,7 +45,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GeneratePassword(It.IsAny<int>())).ReturnsAsync("0123456789");
             _userService
-                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, string firstName, string lastName, string password, CancellationToken cancellationToken) => 
                     new User
                     {
@@ -82,6 +83,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var returnValue = Assert.IsType<UserDto>(okActionResult.Value);
             Assert.Equal("1", returnValue.Id);
             _notificationProvider.Verify(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
+        }
+
+        private object Dictionary<T1, T2>()
+        {
+            throw new NotImplementedException();
         }
 
         [Fact]

@@ -5,4 +5,5 @@ export interface ProjectMemberDto {
   username: string;
   projectMemberRoleId: number;
   projectMemberRoleName: string;
+  externalAccountIds: { [key: string]: string };
 }

@@ -4,7 +4,7 @@ import { TaskConfigFormComponent } from './components/task-config-form/task-conf
 import { JobConfigFormComponent } from './components/job-config-form/job-config-form.component';
 import { MatDividerModule, MatSnackBarModule, MatFormFieldModule, MatInputModule,
   MatCheckboxModule, MatExpansionModule, MatDialogModule,
-  MatButtonModule, MatSelectModule, MatProgressSpinnerModule } from '@angular/material';
+  MatButtonModule, MatSelectModule, MatProgressSpinnerModule, MatIconModule } from '@angular/material';
 import { TaskConfigListFormComponent } from './components/task-config-list-form/task-config-list-form.component';
 import { BuildTaskConfigFormComponent } from './components/build-task-config-form/build-task-config-form.component';
 import { PullTaskConfigFormComponent } from './components/pull-task-config-form/pull-task-config-form.component';
@@ -24,6 +24,7 @@ import { ConfirmationDialogComponent } from './components/confirmation-dialog/co
 import { HasAccessDirective } from './directives/has-access.directive';
 import { DeleteRepositoryConfigFormComponent } from './components/delete-repository-config-form/delete-repository-config-form.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
+import { ExternalAccountFormComponent } from './components/external-account-form/external-account-form.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
     ConfirmationDialogComponent,
     HasAccessDirective,
     DeleteRepositoryConfigFormComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ExternalAccountFormComponent
   ],
   imports: [
     CommonModule,
@@ -59,7 +61,8 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatIconModule
   ],
   exports: [
     TaskConfigFormComponent,
@@ -81,7 +84,8 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
     ConfirmationDialogComponent,
     HasAccessDirective,
     DeleteRepositoryConfigFormComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    ExternalAccountFormComponent
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,

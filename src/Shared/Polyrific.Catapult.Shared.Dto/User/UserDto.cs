@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using Polyrific.Catapult.Shared.Dto.ManagedFile;
 
 namespace Polyrific.Catapult.Shared.Dto.User
@@ -42,5 +43,10 @@ namespace Polyrific.Catapult.Shared.Dto.User
         /// The managed file id for the user's avatar
         /// </summary>
         public int? AvatarFileId { get; set; }
+
+        /// <summary>
+        /// The collection of external account id of the user
+        /// </summary>
+        public Dictionary<string, string> ExternalAccountIds { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _projectMemberRepository.Create(newProjectMember, cancellationToken);
         }
 
-        public async Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
             (int newProjectMemberId, int newUserId) = (0, 0);
@@ -72,7 +72,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new DuplicateUserEmailException(email);
             }
 
-            var newUser = new User { Email = email, UserName = email, FirstName = firstName, LastName = lastName };
+            var newUser = new User { Email = email, UserName = email, FirstName = firstName, LastName = lastName, ExternalAccountIds = externalAccountIds };
             newUserId = await _userRepository.Create(newUser, password, cancellationToken);
 
             var newProjectMember = new ProjectMember { ProjectId = projectId, ProjectMemberRoleId = roleId, UserId = newUserId };

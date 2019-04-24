@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Shared.Dto.User
@@ -22,5 +23,10 @@ namespace Polyrific.Catapult.Shared.Dto.User
         [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
+
+        /// <summary>
+        /// The collection of external account id of the user
+        /// </summary>
+        public Dictionary<string, string> ExternalAccountIds { get; set; }
     }
 }

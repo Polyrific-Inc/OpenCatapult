@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _userRepository.ConfirmEmail(userId, token, cancellationToken);
         }
 
-        public async Task<User> CreateUser(string email, string firstName, string lastName, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> CreateUser(string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -42,7 +42,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                 UserName = email,
                 Email = email,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                ExternalAccountIds = externalAccountIds
             };
 
             try

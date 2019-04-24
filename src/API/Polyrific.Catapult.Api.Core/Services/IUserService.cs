@@ -16,10 +16,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="email">Email of the user</param>
         /// <param name="firstName">First name of the user</param>
         /// <param name="lastName">Last name of the user</param>
+        /// <param name="externalAccountIds">External accound ids of the new user</param>
         /// <param name="password">Password for the user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>New user object</returns>
-        Task<User> CreateUser(string email, string firstName, string lastName, string password, CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> CreateUser(string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a user

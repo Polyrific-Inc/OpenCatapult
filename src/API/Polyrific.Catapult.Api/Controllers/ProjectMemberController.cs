@@ -93,6 +93,7 @@ namespace Polyrific.Catapult.Api.Controllers
                         newProjectMember.Email, 
                         newProjectMember.FirstName, 
                         newProjectMember.LastName, 
+                        newProjectMember.ExternalAccountIds,
                         temporaryPassword,
                         newProjectMember.ProjectMemberRoleId);
 
