@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { ExternalAccountTypes } from '@app/core/constants/external-account-types';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { ExternalAccountTypeDto } from '@app/core/models/account/external-account-type-dto';
+import { AccountService } from '@app/core';
 
 @Component({
   selector: 'app-external-account-form',
@@ -11,21 +12,26 @@ export class ExternalAccountFormComponent implements OnInit, OnChanges {
   @Input() form: FormGroup;
   @Input() disableForm: boolean;
   @Input() externalAccountIds: { [key: string]: string };
-  externalAccountTypes = ExternalAccountTypes;
+  externalAccountTypes: ExternalAccountTypeDto[];
 
   externalAccountForm: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private accountService: AccountService) { }
 
   ngOnInit() {
     this.externalAccountIds = this.externalAccountIds || {};
     this.externalAccountForm = this.fb.group({});
-    for (const externalAccountType of this.externalAccountTypes) {
-      this.externalAccountForm.setControl(externalAccountType[0],
-        this.fb.control({value: this.externalAccountIds[externalAccountType[0]], disabled: this.disableForm}));
-    }
 
-    this.form.setControl('externalAccountIds', this.externalAccountForm);
+    this.accountService.getExternalAccountTypes()
+      .subscribe(data => {
+        for (const externalAccountType of data) {
+          this.externalAccountForm.setControl(externalAccountType.key,
+            this.fb.control({value: this.externalAccountIds[externalAccountType.key], disabled: this.disableForm}));
+        }
+
+        this.form.setControl('externalAccountIds', this.externalAccountForm);
+        this.externalAccountTypes = data;
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {

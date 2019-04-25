@@ -50,6 +50,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 if (user != null)
                     users.Remove(user);
             });
+            _accountService.Setup(s => s.GetExternalAccountTypes())
+                .ReturnsAsync(new List<ExternalAccountTypeDto>());
 
             _consoleReader = new Mock<IConsoleReader>();
             _managedFileService = new Mock<IManagedFileService>();

@@ -4,6 +4,8 @@ import { ExternalAccountFormComponent } from './external-account-form.component'
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
 import { MatInputModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule } from '@app/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ExternalAccountFormComponent', () => {
   let component: ExternalAccountFormComponent;
@@ -12,7 +14,7 @@ describe('ExternalAccountFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ ExternalAccountFormComponent ],
-      imports: [ BrowserAnimationsModule, ReactiveFormsModule, MatInputModule ],
+      imports: [ BrowserAnimationsModule, ReactiveFormsModule, MatInputModule, CoreModule, HttpClientTestingModule ],
     })
     .compileComponents();
   }));

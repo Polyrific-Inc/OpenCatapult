@@ -6,6 +6,7 @@ import { RegisterUserDto } from '../models/account/register-user-dto';
 import { UpdateUserDto } from '../models/account/update-user-dto';
 import { UpdatePasswordDto } from '../models/account/update-password-dto';
 import { ResetPasswordDto } from '../models/account/reset-password-dto';
+import { ExternalAccountTypeDto } from '../models/account/external-account-type-dto';
 
 @Injectable()
 export class AccountService {
@@ -14,6 +15,10 @@ export class AccountService {
 
   getUserByEmail(email: string) {
     return this.api.get<UserDto>(`account/email/${email}`);
+  }
+
+  getExternalAccountTypes() {
+    return this.api.get<ExternalAccountTypeDto[]>('account/external-type');
   }
 
   getUsers(status: string, role: string) {

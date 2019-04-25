@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
@@ -59,18 +60,25 @@ namespace Polyrific.Catapult.Cli.Commands.Member
 
                 if (user == null)
                 {
+                    var externalAccountTypes = _accountService.GetExternalAccountTypes().Result;
+
                     Console.WriteLine("You are creating a new user. Please fill in the user info.");
+
                     newMember.FirstName = Console.GetString("First Name (Optional):");
                     newMember.LastName = Console.GetString("Last Name (Optional):");
 
-                    var githubId = Console.GetString("GitHub Id (Optional):");
-                    if (!string.IsNullOrEmpty(githubId))
+                    var externalAccountIds = new Dictionary<string, string>();
+                    foreach (var externalAccountType in externalAccountTypes)
                     {
-                        newMember.ExternalAccountIds = new System.Collections.Generic.Dictionary<string, string>
+                        var input = Console.GetString($"{externalAccountType.Label} (Optional):");
+                        if (!string.IsNullOrEmpty(input))
                         {
-                            {ExternalAccountType.GitHub, githubId}
-                        };
+                            externalAccountIds.Add(externalAccountType.Key, input);
+                        }
                     }
+
+                    if (externalAccountIds.Count > 0)
+                        newMember.ExternalAccountIds = externalAccountIds;
                 }
 
                 var projectMember = _projectMemberService.CreateProjectMember(project.Id, newMember).Result;

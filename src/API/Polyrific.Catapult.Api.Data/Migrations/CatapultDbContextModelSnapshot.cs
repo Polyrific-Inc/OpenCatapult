@@ -19,6 +19,38 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalAccountType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<DateTime>("Created");
+
+                    b.Property<string>("Key");
+
+                    b.Property<string>("Label");
+
+                    b.Property<DateTime?>("Updated");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ExternalAccountType");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "504200ee-f48a-4efa-be48-e09d16ee8d65",
+                            Created = new DateTime(2018, 9, 19, 8, 14, 52, 52, DateTimeKind.Utc),
+                            Key = "GitHub",
+                            Label = "GitHub Id"
+                        });
+                });
+
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalService", b =>
                 {
                     b.Property<int>("Id")

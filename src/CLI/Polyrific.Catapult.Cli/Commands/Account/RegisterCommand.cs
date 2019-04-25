@@ -6,6 +6,7 @@ using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
 using Polyrific.Catapult.Shared.Service;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
@@ -32,25 +33,32 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         public override string Execute()
         {
-            Console.WriteLine("Please enter the following additional user info if it is available");
+            Console.WriteLine($"Trying to register new user {Email}...");
 
+            var externalAccountTypes = _accountService.GetExternalAccountTypes().Result;
+
+            Console.WriteLine("Please enter the following additional user info if it is available");
+            
             var newUser = new RegisterUserDto
             {
                 Email = Email,
                 FirstName = FirstName,
                 LastName = LastName
             };
-            var githubId = Console.GetString("GitHub Id (Optional):");
-            if (!string.IsNullOrEmpty(githubId))
+
+            var externalAccountIds = new Dictionary<string, string>();
+            foreach (var externalAccountType in externalAccountTypes)
             {
-                newUser.ExternalAccountIds = new System.Collections.Generic.Dictionary<string, string>
+                var input = Console.GetString($"{externalAccountType.Label} (Optional):");
+                if (!string.IsNullOrEmpty(input))
                 {
-                    {ExternalAccountType.GitHub, githubId}
-                };
+                    externalAccountIds.Add(externalAccountType.Key, input);
+                }
             }
 
-            Console.WriteLine($"Trying to register new user {Email}...");
-
+            if (externalAccountIds.Count > 0)
+                newUser.ExternalAccountIds = externalAccountIds;
+            
             var user = _accountService.RegisterUser(newUser).Result;
 
             var message = user.ToCliString($"User {Email} has been registered, but he/she needs to confirm the email first before being able to login.");

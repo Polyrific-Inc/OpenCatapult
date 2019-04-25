@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
@@ -49,20 +50,17 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                     ExternalAccountIds = user.ExternalAccountIds
                 };
 
+                var externalAccountTypes = _accountService.GetExternalAccountTypes().Result;
+
                 Console.WriteLine("Please enter the following additional user info if it is available");
-                var githubId = Console.GetString("GitHub Id (Leave blank to use previous value):");
-                if (!string.IsNullOrEmpty(githubId))
+
+                updatedUser.ExternalAccountIds = updatedUser.ExternalAccountIds ?? new Dictionary<string, string>();
+                foreach (var externalAccountType in externalAccountTypes)
                 {
-                    if (updatedUser.ExternalAccountIds != null)
+                    var input = Console.GetString($"{externalAccountType.Label} (Leave blank to use previous value):");
+                    if (!string.IsNullOrEmpty(input))
                     {
-                        updatedUser.ExternalAccountIds[ExternalAccountType.GitHub] = githubId;
-                    }
-                    else
-                    {
-                        updatedUser.ExternalAccountIds = new System.Collections.Generic.Dictionary<string, string>
-                        {
-                            {ExternalAccountType.GitHub, githubId}
-                        };
+                        updatedUser.ExternalAccountIds[externalAccountType.Key] = input;
                     }
                 }
 

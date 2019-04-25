@@ -124,5 +124,11 @@ namespace Polyrific.Catapult.Shared.Service
         /// <param name="dto">DTO containing required details</param>
         /// <returns></returns>
         Task ResetPassword(string email, ResetPasswordDto dto);
+
+        /// <summary>
+        /// Get the list of external account types
+        /// </summary>
+        /// <returns></returns>
+        Task<List<ExternalAccountTypeDto>> GetExternalAccountTypes();
     }
 }

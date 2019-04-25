@@ -24,17 +24,20 @@ namespace Polyrific.Catapult.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IExternalAccountTypeService _externalAccountTypeService;
         private readonly IMapper _mapper;
         private readonly INotificationProvider _notificationProvider;
         private readonly ILogger _logger;
 
         public AccountController(
-            IUserService service, 
+            IUserService service,
+            IExternalAccountTypeService externalAccountTypeService,
             IMapper mapper, 
             INotificationProvider notificationProvider,
             ILogger<AccountController> logger)
         {
             _userService = service;
+            _externalAccountTypeService = externalAccountTypeService;
             _mapper = mapper;
             _notificationProvider = notificationProvider;
             _logger = logger;
@@ -470,6 +473,23 @@ namespace Polyrific.Catapult.Api.Controllers
             }
 
             return Ok(dto);
+        }
+
+        /// <summary>
+        /// Get the list of external account types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("external-type")]
+        [Authorize]
+        public async Task<IActionResult> GetExternalAccountTypes()
+        {
+            _logger.LogInformation("Getting the list of external account types");
+
+            var entities = await _externalAccountTypeService.GetExternalAccountTypes();
+
+            var results = _mapper.Map<List<ExternalAccountTypeDto>>(entities);
+
+            return Ok(results);
         }
     }
 }
