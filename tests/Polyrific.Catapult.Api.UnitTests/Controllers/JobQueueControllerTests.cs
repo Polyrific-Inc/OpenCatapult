@@ -385,7 +385,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
                 _logger.Object, _configuration.Object);
 
-            var result = await controller.SendNotification(1);
+            var result = await controller.SendNotification(1, 1);
 
             var okActionResult = Assert.IsType<OkResult>(result);
         }
