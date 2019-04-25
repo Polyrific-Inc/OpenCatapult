@@ -1,7 +1,7 @@
 <div [formGroup]="dataModelPropertyForm">
   <mat-form-field class="full-width-input">
     <mat-label>Name</mat-label>
-    <input #propertyNameInput matInput placeholder="Name of the proerty"
+    <input #propertyNameInput matInput placeholder="Name of the property"
       formControlName="name" required (input)="onNameChanged(propertyNameInput.value)">
     <mat-error *ngIf="isFieldInvalid('name', 'required')">
       Please inform the property name
@@ -12,7 +12,7 @@
     <input matInput placeholder="The display label of the property" formControlName="label">
   </mat-form-field>
   <mat-form-field class="full-width-input">
-    <mat-select placeholder="Data Type" formControlName="dataType">
+    <mat-select placeholder="Data Type" formControlName="dataType" (selectionChange)="onDataTypeChanged($event)">
       <mat-option *ngFor="let dataType of propertyDataTypes" [value]="dataType[0]">
         {{dataType[1]}}
       </mat-option>
@@ -34,7 +34,7 @@
   <mat-divider class="margin10"></mat-divider>
 
   <mat-form-field class="full-width-input">
-    <mat-select #relatedDataModelControl placeholder="Related Data Model" formControlName="relatedProjectDataModelId">
+    <mat-select #relatedDataModelControl placeholder="Related Data Model" formControlName="relatedProjectDataModelId" (selectionChange)="onRelatedDataModelChanged($event)">
       <mat-option *ngFor="let relatedDataModel of relatedDataModels" [value]="relatedDataModel.id">
         {{relatedDataModel.name}}
       </mat-option>
@@ -42,16 +42,16 @@
   </mat-form-field>
 
   <mat-form-field class="full-width-input">
-    <mat-select #relationalTypeControl placeholder="Relational Type" formControlName="relationalType">
+    <mat-select #relationalTypeControl placeholder="Relational Type" formControlName="relationalType" (selectionChange)="onRelationalTypeChanged($event)">
       <mat-option *ngFor="let relationalType of propertyRelationalTypes" [value]="relationalType[0]">
         {{relationalType[1]}}
       </mat-option>
     </mat-select>
     <mat-hint *ngIf="relationalTypeControl.selected != null">
       <div [ngSwitch]="relationalTypeControl.value">
-        <div *ngSwitchCase="'one-to-one'">One {{dataModelName}} related to one {{relatedDataModelControl.selected.viewValue}}</div>
-        <div *ngSwitchCase="'one-to-many'">One {{dataModelName}} related to many {{relatedDataModelControl.selected.viewValue}}</div>
-        <div *ngSwitchCase="'many-to-many'">many {{dataModelName}} related to many {{relatedDataModelControl.selected.viewValue}}</div>
+        <div *ngSwitchCase="'one-to-one'">One {{dataModelName}} related to one {{relatedDataModelControl.selected ? relatedDataModelControl.selected.viewValue : ''}}</div>
+        <div *ngSwitchCase="'one-to-many'">One {{dataModelName}} related to many {{relatedDataModelControl.selected ? relatedDataModelControl.selected.viewValue : ''}}</div>
+        <div *ngSwitchCase="'many-to-many'">many {{dataModelName}} related to many {{relatedDataModelControl.selected ? relatedDataModelControl.selected.viewValue : ''}}</div>
       </div>
     </mat-hint>
   </mat-form-field>
