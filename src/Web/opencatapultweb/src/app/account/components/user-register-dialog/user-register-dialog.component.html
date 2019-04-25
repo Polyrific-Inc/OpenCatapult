@@ -23,6 +23,7 @@
           <input matInput placeholder="Last name of the user"
             formControlName="lastName">
         </mat-form-field>
+        <app-external-account-form [form]="userForm"></app-external-account-form>
       </div>
       <div mat-dialog-actions>
           <button mat-button cdkFocusInitial>Save</button>

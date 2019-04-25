@@ -16,6 +16,13 @@ namespace Polyrific.Catapult.Shared.Service
         Task<List<ProjectMemberDto>> GetProjectMembers(int projectId, int roleId = 0);
 
         /// <summary>
+        /// Get list of project members to be used in engine processing
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <returns></returns>
+        Task<List<ProjectMemberDto>> GetProjectMembersForEngine(int projectId);
+
+        /// <summary>
         /// Create new project member
         /// </summary>
         /// <param name="projectId">Id of the project</param>

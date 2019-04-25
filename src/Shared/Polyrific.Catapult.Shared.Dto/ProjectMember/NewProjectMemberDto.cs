@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Polyrific.Catapult.Shared.Dto.ProjectMember
@@ -40,6 +41,11 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectMember
         /// Last Name of the new user
         /// </summary>
         public string LastName { get; set; }
+
+        /// <summary>
+        /// The collection of external account id of the user
+        /// </summary>
+        public Dictionary<string, string> ExternalAccountIds { get; set; }
 
     }
 }

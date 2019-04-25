@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
@@ -168,6 +169,7 @@ namespace Polyrific.Catapult.Api.Data
             {
                 user.UserProfile.FirstName = entity.FirstName;
                 user.UserProfile.LastName = entity.LastName;
+                user.UserProfile.ExternalAccountIds = entity.ExternalAccountIds != null ? JsonConvert.SerializeObject(entity.ExternalAccountIds) : null;
                 await _userProfileRepository.Update(user.UserProfile, cancellationToken);
             }
         }
@@ -286,6 +288,15 @@ namespace Polyrific.Catapult.Api.Data
             var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
             if (!result.Succeeded)
                 result.ThrowErrorException();
+        }
+
+        public async Task<List<User>> GetUsersByIds(int[] ids, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => ids.Contains(u.Id)).ToListAsync(cancellationToken);
+
+            return _mapper.Map<List<User>>(users);
         }
     }
 }

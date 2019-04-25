@@ -124,5 +124,12 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             await Api.Post<object>(path, dto);
         }
+
+        public async Task<List<ExternalAccountTypeDto>> GetExternalAccountTypes()
+        {
+            var path = "account/external-type";
+
+            return await Api.Get<List<ExternalAccountTypeDto>>(path);
+        }
     }
 }

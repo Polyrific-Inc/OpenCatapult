@@ -91,7 +91,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddUser_ValidItem()
         {
             var UserService = new UserService(_UserRepository.Object);
-            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", "test*1");
+            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", null, "test*1");
 
             Assert.NotNull(newUser);
             Assert.True(_data.Count > 1);

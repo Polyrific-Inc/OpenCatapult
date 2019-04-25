@@ -93,6 +93,7 @@ namespace Polyrific.Catapult.Api.Controllers
                         newProjectMember.Email, 
                         newProjectMember.FirstName, 
                         newProjectMember.LastName, 
+                        newProjectMember.ExternalAccountIds,
                         temporaryPassword,
                         newProjectMember.ProjectMemberRoleId);
 
@@ -232,6 +233,18 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(ex, "Cannot remove project owner");
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("Project/{projectId}/member/engine")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        public async Task<IActionResult> GetProjectMembersForEngine(int projectId)
+        {
+            _logger.LogInformation("Getting members in project {projectId} for engine", projectId);
+
+            var projects = await _projectMemberService.GetProjectMembers(projectId, includeUser: true);
+            var results = _mapper.Map<List<ProjectMemberDto>>(projects);
+
+            return Ok(results);
         }
     }
 }

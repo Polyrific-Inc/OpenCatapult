@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+
 namespace Polyrific.Catapult.TaskProviders.GitHub
 {
     public class GitAutomationConfig
@@ -49,5 +51,10 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// Location of the local repository
         /// </summary>
         public string LocalRepository { get; set; }
+
+        /// <summary>
+        /// List of the github usernames that are given access to the repository
+        /// </summary>
+        public List<string> Members { get; set; }
     }
 }

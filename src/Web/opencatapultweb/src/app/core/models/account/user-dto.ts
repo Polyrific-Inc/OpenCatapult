@@ -7,4 +7,5 @@ export interface UserDto {
   isActive: boolean;
   role: string;
   avatarFileId: number;
+  externalAccountIds: { [key: string]: string };
 }

@@ -46,6 +46,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<List<ProjectMemberDto>>(path);
         }
 
+        public async Task<List<ProjectMemberDto>> GetProjectMembersForEngine(int projectId)
+        {
+            var path = $"project/{projectId}/member/engine";
+
+            return await Api.Get<List<ProjectMemberDto>>(path);
+        }
+
         public async Task RemoveProjectMember(int projectId, int memberId)
         {
             var path = $"project/{projectId}/member/{memberId}";

@@ -83,6 +83,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _accountService = new Mock<IAccountService>();
             _accountService.Setup(s => s.GetUserByUserName(It.IsAny<string>())).ReturnsAsync((string userName) => users.FirstOrDefault(u => u.UserName == userName));
+            _accountService.Setup(s => s.GetExternalAccountTypes())
+                .ReturnsAsync(new List<ExternalAccountTypeDto>());
 
             _helpContextService = new Mock<IHelpContextService>();
         }

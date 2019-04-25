@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
     public class AccountControllerTests
     {
         private readonly Mock<IUserService> _userService;
+        private readonly Mock<IExternalAccountTypeService> _externalAccountTypeService;
         private readonly IMapper _mapper;
         private readonly Mock<INotificationProvider> _notificationProvider;
         private readonly Mock<ILogger<AccountController>> _logger;
@@ -31,7 +33,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public AccountControllerTests()
         {
             _userService = new Mock<IUserService>();
-            
+
+            _externalAccountTypeService = new Mock<IExternalAccountTypeService>();
+
             _mapper = AutoMapperUtils.GetMapper();
             
             _notificationProvider = new Mock<INotificationProvider>();
@@ -44,8 +48,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GeneratePassword(It.IsAny<int>())).ReturnsAsync("0123456789");
             _userService
-                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, string firstName, string lastName, string password, CancellationToken cancellationToken) => 
+                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken) => 
                     new User
                     {
                         Id = 1,
@@ -67,7 +71,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 Request = {Scheme = "https", Host = new HostString("localhost")}
             };
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -84,13 +88,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _notificationProvider.Verify(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
         }
 
+        private object Dictionary<T1, T2>()
+        {
+            throw new NotImplementedException();
+        }
+
         [Fact]
         public async void ConfirmEmail_ReturnSuccessMessage()
         {
             _userService.Setup(s => s.ConfirmEmail(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.ConfirmEmail(1, "xxx");
@@ -108,7 +117,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     new User("test@example.com")
                 });
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.GetUsers(null, null);
@@ -140,7 +149,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -170,7 +179,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -201,7 +210,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -232,7 +241,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -263,7 +272,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -291,7 +300,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -317,7 +326,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -333,7 +342,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _userService.Setup(s => s.Suspend(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.SuspendUser(1);
@@ -348,7 +357,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _userService.Setup(s => s.Reactivate(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.ReactivateUser(1);
@@ -373,7 +382,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             };
 
             var controller =
-                new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = new ControllerContext {HttpContext = httpContext}
                 };
@@ -401,7 +410,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 HttpContext = httpContext,
             };
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object)
             {
                 ControllerContext = controllerContext
@@ -432,7 +441,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 HttpContext = httpContext,
             };
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object, _logger.Object)
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
                 {
                     ControllerContext = controllerContext
                 };
@@ -454,7 +463,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 .Setup(s => s.ResetPassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.ResetPassword("test@test.com", new ResetPasswordDto());
@@ -469,7 +478,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             _userService.Setup(s => s.DeleteUser(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.RemoveUser(1);
@@ -484,7 +493,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 .Setup(s => s.SetUserRole(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.SetUserRole(1, new SetUserRoleDto() {UserId = 1});
@@ -500,7 +509,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 .Setup(s => s.SetUserRole(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var controller = new AccountController(_userService.Object, _mapper, _notificationProvider.Object,
+            var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
                 _logger.Object);
 
             var result = await controller.SetUserRole(1, new SetUserRoleDto() {UserId = 2});

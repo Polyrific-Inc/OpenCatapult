@@ -21,6 +21,8 @@
           <mat-label>Last Name</mat-label>
           <input matInput formControlName="lastName">
         </mat-form-field>
+        <app-external-account-form [form]="newMemberForm"
+          [externalAccountIds]="currentUser ? currentUser.externalAccountIds : null" [disableForm]="!newUser"></app-external-account-form>
         <mat-form-field class="full-width-input">
           <mat-select placeholder="Role" formControlName="projectMemberRoleId" required>
             <mat-option *ngFor="let role of projectMemberRoles" [value]="role[0]">

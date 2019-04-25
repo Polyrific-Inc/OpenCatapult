@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 
 namespace Polyrific.Catapult.Api.Data.Identity
@@ -28,12 +30,14 @@ namespace Polyrific.Catapult.Api.Data.Identity
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.UserProfile.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.UserProfile.LastName))
                 .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.UserProfile.AvatarFileId))
+                .ForMember(dest => dest.ExternalAccountIds, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.UserProfile.ExternalAccountIds)))
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => src.Roles.FirstOrDefault().Role.Name));
 
             CreateMap<User, UserProfile>()
                 .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
                 .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
-                .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.AvatarFileId));
+                .ForMember(dest => dest.AvatarFileId, opt => opt.MapFrom(src => src.AvatarFileId))
+                .ForMember(dest => dest.ExternalAccountIds, opt => opt.MapFrom(src => JsonConvert.SerializeObject(src.ExternalAccountIds)));
 
             CreateMap<CatapultEngine, ApplicationUser>()
                 .ForMember(dest => dest.IsCatapultEngine, opt => opt.MapFrom(_ => true))
