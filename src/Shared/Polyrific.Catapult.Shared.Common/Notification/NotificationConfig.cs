@@ -27,6 +27,8 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
         public const string RegistrationCompleted = "RegistrationCompleted";
 
+        public const string JobQueueCompleted = "JobQueueCompleted";
+
         public const string ResetPassword = "ResetPassword";
 
         public const string ResetPasswordWeb = "ResetPasswordWeb";

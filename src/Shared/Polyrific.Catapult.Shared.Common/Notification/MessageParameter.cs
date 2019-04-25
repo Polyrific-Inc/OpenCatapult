@@ -9,5 +9,12 @@ namespace Polyrific.Catapult.Shared.Common.Notification
         public const string ResetPasswordLink = "ResetPasswordLink";
         public const string TemporaryPassword = "TemporaryPassword";
         public const string ProjectName = "ProjectName";
+
+        public const string JobCode = "JobCode";
+        public const string JobDefinitionName = "JobDefinitionName";
+        public const string JobStatus = "JobStatus";
+        public const string Remarks = "Remarks";
+        public const string JobTaskStatus = "JobTaskStatus";
+        public const string WebUrl = "WebUrl";
     }
 }
