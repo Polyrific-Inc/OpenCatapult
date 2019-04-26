@@ -67,14 +67,6 @@ namespace Polyrific.Catapult.Engine.Core
                         jobQueue.Status = JobStatus.Error;
                     else
                         jobQueue.Status = JobStatus.Completed;
-
-                    if (jobQueue.Status == JobStatus.Completed && 
-                        jobQueue.IsDeletion && 
-                        jobQueue.ProjectStatus == ProjectStatusFilterType.Deleting)
-                    {
-                        _logger.LogInformation($"Deleting project {jobQueue.ProjectId}");
-                        await _projectService.DeleteProjectByEngine(jobQueue.ProjectId);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -98,6 +90,14 @@ namespace Polyrific.Catapult.Engine.Core
                 await _jobLogWriter.EndJobLog(jobQueue.Id);
 
                 await _jobQueueService.SendNotification(jobQueue.ProjectId, jobQueue.Id);
+
+                if (jobQueue.Status == JobStatus.Completed &&
+                    jobQueue.IsDeletion &&
+                    jobQueue.ProjectStatus == ProjectStatusFilterType.Deleting)
+                {
+                    _logger.LogInformation($"Deleting project {jobQueue.ProjectId}");
+                    await _projectService.DeleteProjectByEngine(jobQueue.ProjectId);
+                }
             }
         }
 
