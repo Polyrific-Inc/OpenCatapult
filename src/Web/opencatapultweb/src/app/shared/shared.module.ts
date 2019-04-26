@@ -25,6 +25,7 @@ import { HasAccessDirective } from './directives/has-access.directive';
 import { DeleteRepositoryConfigFormComponent } from './components/delete-repository-config-form/delete-repository-config-form.component';
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { ExternalAccountFormComponent } from './components/external-account-form/external-account-form.component';
+import { UtilityService } from './services/utility.service';
 
 @NgModule({
   declarations: [
@@ -97,7 +98,8 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
-        SnackbarService
+        SnackbarService,
+        UtilityService
       ]
     };
   }

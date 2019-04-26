@@ -17,6 +17,7 @@ import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DeleteRepositoryConfigFormComponent } from '../delete-repository-config-form/delete-repository-config-form.component';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 describe('TaskConfigFormComponent', () => {
   let component: TaskConfigFormComponent;
@@ -48,6 +49,9 @@ describe('TaskConfigFormComponent', () => {
         CoreModule,
         HttpClientTestingModule,
         MatSelectModule
+      ],
+      providers: [
+        UtilityService
       ]
     })
     .compileComponents();

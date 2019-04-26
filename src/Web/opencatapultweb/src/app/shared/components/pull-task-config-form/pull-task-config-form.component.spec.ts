@@ -5,6 +5,7 @@ import { AdditionalConfigFormComponent } from '../additional-config-form/additio
 import { AdditionalConfigFieldComponent } from '../additional-config-field/additional-config-field.component';
 import { MatExpansionModule, MatInputModule, MatCheckboxModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 describe('CloneTaskConfigFormComponent', () => {
   let component: PullTaskConfigFormComponent;
@@ -13,7 +14,8 @@ describe('CloneTaskConfigFormComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ PullTaskConfigFormComponent, AdditionalConfigFormComponent, AdditionalConfigFieldComponent ],
-      imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule ]
+      imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule ],
+      providers: [ UtilityService ]
     })
     .compileComponents();
   }));
