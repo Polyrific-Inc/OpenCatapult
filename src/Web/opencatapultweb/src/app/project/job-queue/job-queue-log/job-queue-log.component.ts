@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
 import { JobStatus } from '@app/core/enums/job-status';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-job-queue-log',
@@ -53,7 +54,9 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
   listenQueueLog() {
     this.log$ = this.jobQueueService.listenJobQueueLog(this.projectId, this.jobQueueId);
     let previousTask = '';
-    this.log$.subscribe((log) => {
+    this.log$
+      .pipe(finalize(() => this.getJobQueue()))
+      .subscribe((log) => {
       if (previousTask !== log.taskName) {
         previousTask = log.taskName;
         this.getJobQueue();
