@@ -16,17 +16,19 @@ export class YamlService {
   }
 
   private modifyObjectProps(obj) {
-    for (const key of Object.keys(obj)) {
-      const currentObj = obj[key];
-      if (typeof currentObj === 'object') {
-        this.modifyObjectProps(obj[key]);
-      } else if (Array.isArray(currentObj)) {
-        for (const item of currentObj) {
-          this.modifyObjectProps(item);
+    if (obj) {
+      for (const key of Object.keys(obj)) {
+        const currentObj = obj[key];
+        if (typeof currentObj === 'object') {
+          this.modifyObjectProps(obj[key]);
+        } else if (Array.isArray(currentObj)) {
+          for (const item of currentObj) {
+            this.modifyObjectProps(item);
+          }
         }
-      }
 
-      this.renameKey(obj, key);
+        this.renameKey(obj, key);
+      }
     }
   }
 

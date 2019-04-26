@@ -299,6 +299,19 @@ namespace Polyrific.Catapult.Api.Core.Services
                     }
                 }
 
+                if (project.Jobs != null)
+                {
+                    foreach (var job in project.Jobs)
+                    {
+                        job.Tasks = job.Tasks.OrderBy(t => t.Sequence).ToList();
+
+                        foreach (var task in job.Tasks)
+                        {
+                            await _jobDefinitionService.DecryptSecretAdditionalConfigs(task, cancellationToken);
+                        }
+                    }
+                }
+
                 var projectTemplate = _mapper.Map<ProjectTemplate>(project);
                 return YamlSerialize(projectTemplate);
             }

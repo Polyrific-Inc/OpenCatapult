@@ -410,7 +410,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return $"{serviceTypeName}ExternalService";
         }
 
-        private async Task DecryptSecretAdditionalConfigs(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task DecryptSecretAdditionalConfigs(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(jobTaskDefinition?.Provider))
                 return;

@@ -16,7 +16,8 @@ namespace Polyrific.Catapult.Api.Core.AutoMapperProfiles
             CreateMap<ProjectDataModelProperty, ProjectDataModelPropertyTemplate>();
             CreateMap<JobDefinition, JobDefinitionTemplate>();
             CreateMap<JobTaskDefinition, JobTaskDefinitionTemplate>()
-                .ForMember(dest => dest.Config, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString)));
+                .ForMember(dest => dest.Configs, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.ConfigString)))
+                .ForMember(dest => dest.AdditionalConfigs, opt => opt.MapFrom(src => JsonConvert.DeserializeObject<Dictionary<string, string>>(src.AdditionalConfigString)));
         }
     }
 }
