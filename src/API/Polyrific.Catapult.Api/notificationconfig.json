@@ -1,14 +1,18 @@
 {
   "NotificationConfig": {
-    "RegistrationCompleted": "SmtpEmail",
-    "JobQueueCompleted": "SmtpEmail",
-    "ResetPassword": "SmtpEmail",
-    "ResetPasswordWeb": "SmtpEmail",
-    "ProjectDeleted": "SmtpEmail",
-    "RegistrationCompletedSubject": "Catapult - Please confirm your account",
-    "ResetPasswordSubject": "Catapult - Reset password token",
-    "ResetPasswordWebSubject": "Catapult - Reset password token",
-    "ProjectDeletedSubject": "Catapult - Your project has been deleted",
-    "JobQueueCompletedSubject": "Catapult - Your queued job has been completed"
+    "NotificationProviders": {
+      "RegistrationCompleted": "SmtpEmail",
+      "JobQueueCompleted": "SmtpEmail",
+      "ResetPassword": "SmtpEmail",
+      "ResetPasswordWeb": "SmtpEmail",
+      "ProjectDeleted": "SmtpEmail"
+    },
+    "NotificationSubject": {
+      "RegistrationCompleted": "Catapult - Please confirm your account",
+      "ResetPassword": "Catapult - Reset password token",
+      "ResetPasswordWebSub": "Catapult - Reset password token",
+      "ProjectDeletedSubject": "Catapult - Your project has been deleted",
+      "JobQueueCompletedSubject": "Catapult - Your queued job has been completed"
+    }
   }
 }

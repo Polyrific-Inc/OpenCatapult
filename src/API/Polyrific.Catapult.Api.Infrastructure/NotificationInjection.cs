@@ -21,8 +21,8 @@ namespace Polyrific.Catapult.Api.Infrastructure
                 services.AddSmtpEmailSender(configuration);
             }
 
-            NotificationConfig.InitConfigFile().Wait();
-            services.AddTransient<NotificationConfig>();
+            var notificationConfig = configuration.GetSection("NotificationConfig").Get<NotificationConfig>();
+            services.AddSingleton(notificationConfig);
             services.AddTransient<INotificationProvider, NotificationProvider>();
         }
     }
