@@ -38,17 +38,6 @@ describe('JobQueueComponent', () => {
         CoreModule,
         MatChipsModule,
         SharedModule
-      ],
-      providers: [
-        {
-          provide: ActivatedRoute, useValue: {
-            parent: {
-              parent: {
-                snapshot: { params: of({ id: 1}) }
-              }
-            }
-          }
-        }
       ]
     })
     .compileComponents();
