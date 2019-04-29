@@ -33,7 +33,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 new UserDto
                 {
                     Id = "1",
-                    Email = "user1@opencatapult.net"
+                    Email = "user1@opencatapult.net",
+                    UserName = "user1@opencatapult.net"
                 }
             };
 

@@ -25,6 +25,10 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
+        [Required]
+        [Option("-nu|--newusername <USER>", "The updated Username", CommandOptionType.SingleValue)]
+        public string NewUserName { get; set; }
+
         [Option("-fn|--firstname <FIRSTNAME>", "First name  of the user", CommandOptionType.SingleValue)]
         public string FirstName { get; set; }
 
@@ -37,7 +41,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
             string message;
 
-            var user = _accountService.GetUserByEmail(User).Result;
+            var user = _accountService.GetUserByUserName(User).Result;
             if (user != null)
             {
                 var userId = int.Parse(user.Id);
@@ -45,6 +49,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
                 var updatedUser = new UpdateUserDto
                 {
                     Id = userId,
+                    UserName = NewUserName ?? user.UserName,
                     FirstName = FirstName ?? user.FirstName,
                     LastName = LastName ?? user.LastName,
                     ExternalAccountIds = user.ExternalAccountIds

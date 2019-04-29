@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
             string message;
 
-            var user = _accountService.GetUserByEmail(User).Result;
+            var user = _accountService.GetUserByUserName(User).Result;
             if (user != null)
             {
                 var userId = int.Parse(user.Id);
