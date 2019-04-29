@@ -1,18 +1,20 @@
-import { Component, OnInit, Input, ViewChild, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
-import { JobQueueDto } from '@app/core';
+import { Component, OnInit, Input, ViewChild, OnDestroy } from '@angular/core';
+import { JobQueueDto, JobQueueService, JobStatus } from '@app/core';
 import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-job-queue-list',
   templateUrl: './job-queue-list.component.html',
   styleUrls: ['./job-queue-list.component.css']
 })
-export class JobQueueListComponent implements OnInit {
-  @Input() jobList: JobQueueDto[];
-  @Input() usePaging: boolean;
+export class JobQueueListComponent implements OnInit, OnDestroy {
+  usePaging: boolean;
   paginator: MatPaginator;
   sort: MatSort;
   dataSource: MatTableDataSource<JobQueueDto>;
+  routerSubscription: Subscription;
 
   displayedColumns: string[] = ['jobDefinitionName', 'status', 'created', 'actions'];
 
@@ -26,18 +28,36 @@ export class JobQueueListComponent implements OnInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  constructor() {
+  constructor(
+    private jobQueueService: JobQueueService,
+    private route: ActivatedRoute) {
    }
 
   ngOnInit() {
-    this.dataSource = new MatTableDataSource<JobQueueDto>(this.jobList);
+    this.routerSubscription = this.route.url.subscribe(currentUrl => {
+      const currentRoute = currentUrl.length > 0 ? currentUrl[currentUrl.length - 1].path : '';
+      let filteredJobs;
+
+      switch (currentRoute.toLowerCase()) {
+        case 'pending':
+          filteredJobs = this.jobQueueService.jobs.filter(job => job.status === JobStatus.Pending);
+          break;
+        case 'past':
+          filteredJobs = this.jobQueueService.jobs;
+          this.usePaging = true;
+          break;
+        default:
+          filteredJobs = this.jobQueueService.jobs.filter(job => job.status === JobStatus.Queued || job.status === JobStatus.Processing);
+        break;
+      }
+
+      this.dataSource = new MatTableDataSource<JobQueueDto>(filteredJobs);
+    });
   }
 
-  onInfoClick(job: JobQueueDto) {
-
-  }
-
-  onLogClick(job: JobQueueDto) {
-
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
   }
 }

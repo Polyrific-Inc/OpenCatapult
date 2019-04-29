@@ -6,6 +6,8 @@ import { MatTabsModule, MatIconModule, MatBadgeModule, MatTableModule, MatButton
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { JobQueueStatusComponent } from '../components/job-queue-status/job-queue-status.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CoreModule } from '@app/core';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('JobQueueListComponent', () => {
   let component: JobQueueListComponent;
@@ -26,7 +28,9 @@ describe('JobQueueListComponent', () => {
         FlexLayoutModule,
         MatPaginatorModule,
         MatSortModule,
-        MatChipsModule
+        MatChipsModule,
+        CoreModule,
+        HttpClientTestingModule
       ]
     })
     .compileComponents();

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { JobQueueService, JobQueueDto, JobQueueFilterType, ProjectService } from '@app/core';
 import { JobStatus } from '@app/core/enums/job-status';
-import { MatTabChangeEvent } from '@angular/material';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-job-queue',
@@ -17,12 +17,18 @@ export class JobQueueComponent implements OnInit {
 
   constructor(
     private jobQueueService: JobQueueService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.projectId = this.projectService.currentProjectId;
-    this.getCurrentJobQueues();
+
+    if (this.router.url.toLowerCase().endsWith('past')) {
+      this.getPastJobQueues();
+    } else {
+      this.getCurrentJobQueues();
+    }
   }
 
   getCurrentJobQueues(): void {
@@ -42,14 +48,6 @@ export class JobQueueComponent implements OnInit {
         this.pastJobs = jobs;
         this.loading = false;
       });
-  }
-
-  onTabChanged(evt: MatTabChangeEvent) {
-    if (evt.index === 2) {
-      this.getPastJobQueues();
-    } else {
-      this.getCurrentJobQueues();
-    }
   }
 
 }

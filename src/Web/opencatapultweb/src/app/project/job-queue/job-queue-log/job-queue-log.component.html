@@ -5,6 +5,10 @@
       </a>
       <h4>Job Queue Log</h4>
   </div>
+  <div class="action-buttons">
+    <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
+  </div>
 </div>
 
 <div fxLayout="column" fxLayoutAlign="center center" *ngIf="jobQueue?.status === 'QUEUED'">

@@ -1,28 +1,15 @@
 <div class="project-module-description">
   <span>Monitor the status of your queued job. (<a href="https://docs.opencatapult.net/home/concept#job-queue" target="_blank">more...</a>)</span>
 </div>
-<mat-tab-group (selectedTabChange)="onTabChanged($event)">
-  <mat-tab>
-    <ng-template mat-tab-label>
-      <span matBadge="{{currentJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="currentJobs.length <= 0">Current Items</span>
-    </ng-template>
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-    <app-job-queue-list [jobList]="currentJobs" *ngIf="!loading"></app-job-queue-list>
-  </mat-tab>
 
-  <mat-tab>
-    <ng-template mat-tab-label>
-        <span matBadge="{{pendingJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="pendingJobs.length <= 0">Pending Items</span>
-    </ng-template>
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-    <app-job-queue-list [jobList]="pendingJobs" *ngIf="!loading"></app-job-queue-list>
-  </mat-tab>
-
-  <mat-tab>
-    <ng-template mat-tab-label>
-        <span>Past Items</span>
-    </ng-template>
-    <app-loading-spinner *ngIf="loading"></app-loading-spinner>
-    <app-job-queue-list [jobList]="pastJobs" [usePaging]="true" *ngIf="!loading"></app-job-queue-list>
-  </mat-tab>
-</mat-tab-group>
+<nav mat-tab-nav-bar flex>
+  <a mat-tab-link (click)="getCurrentJobQueues()" [routerLink]="['current']" routerLinkActive #rlaCurrent="routerLinkActive" [active]="rlaCurrent.isActive">
+    <span matBadge="{{currentJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="currentJobs.length <= 0">Current Items</span>
+  </a>
+  <a mat-tab-link (click)="getCurrentJobQueues()" [routerLink]="['pending']" routerLinkActive #rlaPending="routerLinkActive" [active]="rlaPending.isActive">
+      <span matBadge="{{pendingJobs.length}}" matBadgeOverlap="false" [matBadgeHidden]="pendingJobs.length <= 0">Pending Items</span>
+  </a>
+  <a mat-tab-link (click)="getPastJobQueues()" [routerLink]="['past']" routerLinkActive #rlaPast="routerLinkActive" [active]="rlaPast.isActive">Past Items</a>
+</nav>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<router-outlet *ngIf="!loading"></router-outlet>

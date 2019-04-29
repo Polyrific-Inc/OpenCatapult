@@ -1,8 +1,8 @@
 <div class="margin10"></div>
-<div class="no-records" *ngIf="jobList?.length <= 0">
+<div class="no-records" *ngIf="dataSource.data.length <= 0">
   No Jobs Found
 </div>
-<table mat-table [dataSource]="dataSource" matSort matSortActive="created" matSortDirection="desc" *ngIf="jobList?.length > 0" class="mat-elevation-z8">
+<table mat-table [dataSource]="dataSource" matSort matSortActive="created" matSortDirection="desc" *ngIf="dataSource.data?.length > 0" class="mat-elevation-z8">
 
   <!--- Note that these columns can be defined in any order.
         The actual rendered columns are set as a property on the row definition" -->
@@ -29,11 +29,11 @@
   <ng-container matColumnDef="actions">
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let element" class="action-buttons">
-        <button mat-icon-button routerLink="{{element.id}}"
+        <button mat-icon-button routerLink="../../{{element.id}}"
           matTooltip="Info">
           <mat-icon>info</mat-icon>
         </button>
-        <button mat-icon-button routerLink="{{element.id}}/logs"
+        <button mat-icon-button routerLink="../../{{element.id}}/logs"
           matTooltip="View Logs">
           <mat-icon>description</mat-icon>
         </button>
@@ -43,4 +43,4 @@
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>
-<mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons *ngIf="jobList?.length > 0 && usePaging"></mat-paginator>
+<mat-paginator [pageSizeOptions]="[10, 20, 30]" showFirstLastButtons *ngIf="dataSource.data?.length > 0 && usePaging"></mat-paginator>

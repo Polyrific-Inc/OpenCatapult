@@ -5,6 +5,9 @@ import { Observable } from 'rxjs';
 import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
 import { JobStatus } from '@app/core/enums/job-status';
 import { finalize } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { JobQueueCancelDialogComponent } from '../components/job-queue-cancel-dialog/job-queue-cancel-dialog.component';
+import { ConfirmationDialogComponent, SnackbarService } from '@app/shared';
 
 @Component({
   selector: 'app-job-queue-log',
@@ -18,9 +21,13 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
   log$: Observable<JobLogDto>;
   listened: boolean;
   logReceived: boolean;
+  allowRestart: boolean;
+  allowCancel: boolean;
   constructor(
     private route: ActivatedRoute,
-    private jobQueueService: JobQueueService
+    private jobQueueService: JobQueueService,
+    private dialog: MatDialog,
+    private snackbar: SnackbarService
   ) { }
 
   ngOnInit() {
@@ -41,6 +48,10 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
     this.jobQueue = jobQueue;
     this.jobQueueId = this.jobQueue.id;
     this.projectId = this.jobQueue.projectId;
+
+    this.allowRestart = jobQueue.status === JobStatus.Cancelled || jobQueue.status === JobStatus.Pending ||
+      jobQueue.status === JobStatus.Error;
+    this.allowCancel = jobQueue.status === JobStatus.Processing || jobQueue.status === JobStatus.Pending;
 
     if (!this.listened && (jobQueue.status === JobStatus.Queued || jobQueue.status === JobStatus.Processing)) {
       this.listenQueueLog();
@@ -63,6 +74,44 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
       }
     });
     this.listened = true;
+  }
+
+  onCancelClick() {
+    const dialogRef = this.dialog.open(JobQueueCancelDialogComponent, {
+      data: this.jobQueue
+    });
+
+    dialogRef.afterClosed().subscribe((success) => {
+      if (success) {
+        this.getJobQueue();
+      }
+    });
+  }
+
+  onRestartClick() {
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Confirm Restart Queue',
+        confirmationText: `Are you sure you want to restart the queue '${this.jobQueue.code}'?`
+      }
+    });
+
+    const self = this;
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.jobQueueService.updateJobQueue(self.projectId, self.jobQueueId, {
+          ...self.jobQueue,
+          status: JobStatus.Queued,
+          remarks: null,
+        }).subscribe(() => {
+          this.getJobQueue();
+          this.snackbar.open('Job has been restarted');
+        },
+        err => {
+          this.snackbar.open(err);
+        });
+      }
+    });
   }
 
 }
