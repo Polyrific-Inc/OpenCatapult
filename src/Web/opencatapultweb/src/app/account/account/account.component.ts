@@ -24,7 +24,7 @@ export class AccountComponent implements OnInit, AfterViewInit {
   ];
   loading: boolean;
 
-  displayedColumns: string[] = ['userName', 'firstName', 'lastName', 'role', 'actions'];
+  displayedColumns: string[] = ['userName', 'email', 'firstName', 'lastName', 'role', 'actions'];
 
   constructor(
     private fb: FormBuilder,

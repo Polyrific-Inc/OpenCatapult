@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.Id == id));
             _UserRepository.Setup(r => r.GetByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.Email == email));
-            _UserRepository.Setup(r => r.GetByUserName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _UserRepository.Setup(r => r.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.UserName == name));
             _UserRepository.Setup(r => r.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(UserRole.Administrator);

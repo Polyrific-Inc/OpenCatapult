@@ -41,7 +41,7 @@ export class HeaderComponent implements OnInit {
         }
 
         if (!this.greetingsName) {
-          this.greetingsName = user.email;
+          this.greetingsName = user.userName;
         }
 
         this.accountService.getUserByEmail(user.email)

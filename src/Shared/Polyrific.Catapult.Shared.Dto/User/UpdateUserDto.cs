@@ -14,6 +14,11 @@ namespace Polyrific.Catapult.Shared.Dto.User
         public int Id { get; set; }
 
         /// <summary>
+        /// UserName of the user
+        /// </summary>
+        public string UserName { get; set; }
+
+        /// <summary>
         /// First Name of the user
         /// </summary>
         public string FirstName { get; set; }

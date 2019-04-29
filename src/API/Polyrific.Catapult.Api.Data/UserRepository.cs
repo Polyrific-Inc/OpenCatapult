@@ -9,6 +9,7 @@ using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Data.Identity;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
@@ -151,11 +152,11 @@ namespace Polyrific.Catapult.Api.Data
             throw new System.NotImplementedException();
         }
 
-        public async Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var appUser = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.UserName == userName);
+            var appUser = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.UserName == userName || u.Email == userName);
 
             return _mapper.Map<User>(appUser);
         }
@@ -164,13 +165,32 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);
-            if (user != null && user.UserProfile != null)
+            try
             {
-                user.UserProfile.FirstName = entity.FirstName;
-                user.UserProfile.LastName = entity.LastName;
-                user.UserProfile.ExternalAccountIds = entity.ExternalAccountIds != null ? JsonConvert.SerializeObject(entity.ExternalAccountIds) : null;
-                await _userProfileRepository.Update(user.UserProfile, cancellationToken);
+                var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);
+                if (user != null)
+                {
+                    user.UserName = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : user.UserName;
+                    await _userManager.UpdateNormalizedUserNameAsync(user);
+                    await _userManager.UpdateAsync(user);
+
+                    if (user.UserProfile != null)
+                    {
+                        user.UserProfile.FirstName = entity.FirstName;
+                        user.UserProfile.LastName = entity.LastName;
+                        user.UserProfile.ExternalAccountIds = entity.ExternalAccountIds != null ? JsonConvert.SerializeObject(entity.ExternalAccountIds) : null;
+                        await _userProfileRepository.Update(user.UserProfile, cancellationToken);
+                    }
+                }
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException is SqlException && ex.InnerException.Message.StartsWith("Cannot insert duplicate key row"))
+                {
+                    throw new DuplicateUserNameException(entity.UserName);
+                }
+
+                throw;
             }
         }
 
@@ -190,7 +210,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName) ?? await _userManager.FindByEmailAsync(userName);
             if (user != null && user.EmailConfirmed)
                 return await _userManager.CheckPasswordAsync(user, password);
 
@@ -226,7 +246,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.FindByNameAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName) ?? await _userManager.FindByEmailAsync(userName);
             if (user == null) 
                 return "";
 

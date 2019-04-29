@@ -66,7 +66,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new ProjectNotFoundException(projectId);
             }
 
-            var user = await _userRepository.GetByUserName(email, cancellationToken);
+            var user = await _userRepository.GetUser(email, cancellationToken);
             if (user != null)
             {
                 throw new DuplicateUserEmailException(email);

@@ -10,6 +10,7 @@ using Polyrific.Catapult.Shared.Dto.CatapultEngine;
 using Polyrific.Catapult.Shared.Dto.User;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Api.Controllers
@@ -63,7 +64,7 @@ namespace Polyrific.Catapult.Api.Controllers
             var tokenIssuer = _configuration["Security:Tokens:Issuer"];
             var tokenAudience = _configuration["Security:Tokens:Audience"];
 
-            var token = AuthorizationToken.GenerateToken(user.Id, dto.Email, user.FirstName, user.LastName, 
+            var token = AuthorizationToken.GenerateToken(user.Id, user.UserName, user.Email, user.FirstName, user.LastName, 
                 userRole, userProjects, tokenKey, tokenIssuer, tokenAudience);
 
             return Ok(token);
@@ -77,7 +78,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> RefreshToken()
         {
-            var user = await _userService.GetUser(User.Identity.Name);
+            var user = await _userService.GetUser(User.Claims.First(c => c.Type == ClaimTypes.Email).Value);
             if (!user.IsActive)
             {
                 _logger.LogWarning("User is suspended");
@@ -90,7 +91,7 @@ namespace Polyrific.Catapult.Api.Controllers
             var tokenIssuer = _configuration["Security:Tokens:Issuer"];
             var tokenAudience = _configuration["Security:Tokens:Audience"];
 
-            var token = AuthorizationToken.GenerateToken(user.Id, user.Email, user.FirstName, user.LastName,
+            var token = AuthorizationToken.GenerateToken(user.Id, user.UserName, user.Email, user.FirstName, user.LastName,
                 userRole, userProjects, tokenKey, tokenIssuer, tokenAudience);
 
             return Ok(token);

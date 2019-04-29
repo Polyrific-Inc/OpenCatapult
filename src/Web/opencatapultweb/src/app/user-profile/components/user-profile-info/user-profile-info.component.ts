@@ -72,6 +72,7 @@ export class UserProfileInfoComponent implements OnInit {
                 id: this.user.id,
                 ...this.userInfoForm.value
               };
+              this.userInfoForm.get('userName').disable();
               this.userInfoForm.get('firstName').disable();
               this.userInfoForm.get('lastName').disable();
               this.snackbar.open('User info has been updated');
@@ -84,12 +85,14 @@ export class UserProfileInfoComponent implements OnInit {
   }
 
   onEditClick() {
+    this.userInfoForm.get('userName').enable();
     this.userInfoForm.get('firstName').enable();
     this.userInfoForm.get('lastName').enable();
     this.editing = true;
   }
 
   onCancelClick() {
+    this.userInfoForm.get('userName').disable();
     this.userInfoForm.get('firstName').disable();
     this.userInfoForm.get('lastName').disable();
     this.editing = false;

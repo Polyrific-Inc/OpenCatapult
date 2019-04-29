@@ -167,7 +167,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 {
                     new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, "test@example.com")
+                        new Claim(ClaimTypes.Name, "test@example.com"),
+                        new Claim(ClaimTypes.Email, "test@example.com")
                     })
                 })
             };
@@ -202,7 +203,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 {
                     new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, "test@example.com")
+                        new Claim(ClaimTypes.Name, "test@example.com"),
+                        new Claim(ClaimTypes.Email, "test@example.com")
                     })
                 })
             };

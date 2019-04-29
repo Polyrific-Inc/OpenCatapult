@@ -230,26 +230,33 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser(int userId, UpdateUserDto updatedUser)
         {
-            _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
-
-            var currentUserId = User.GetUserId();
-            if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
+            try
             {
-                _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
-                return Unauthorized();
+                _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
+
+                var currentUserId = User.GetUserId();
+                if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
+                {
+                    _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
+                    return Unauthorized();
+                }
+
+                if (userId != updatedUser.Id)
+                {
+                    _logger.LogWarning("User Id doesn't match.");
+                    return BadRequest("User Id doesn't match.");
+                }
+
+                var user = _mapper.Map<User>(updatedUser);
+
+                await _userService.UpdateUser(user);
+
+                return Ok();
             }
-
-            if (userId != updatedUser.Id)
+            catch (DuplicateUserNameException ex)
             {
-                _logger.LogWarning("User Id doesn't match.");
-                return BadRequest("User Id doesn't match.");
-            }                
-
-            var user = _mapper.Map<User>(updatedUser);
-
-            await _userService.UpdateUser(user);
-
-            return Ok();
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>

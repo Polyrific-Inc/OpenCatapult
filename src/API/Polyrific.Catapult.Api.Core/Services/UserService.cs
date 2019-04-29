@@ -85,7 +85,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _userRepository.GetByUserName(userName, cancellationToken);
+            return await _userRepository.GetUser(userName, cancellationToken);
         }
 
         public async Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken))
