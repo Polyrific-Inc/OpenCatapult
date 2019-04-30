@@ -159,10 +159,20 @@ namespace Polyrific.Catapult.Api.Data
                 var user = await _userManager.Users.Include(u => u.UserProfile).FirstOrDefaultAsync(u => u.Id == entity.Id);
                 if (user != null)
                 {
-                    user.UserName = !string.IsNullOrEmpty(entity.UserName) ? entity.UserName : user.UserName;
-                    await _userManager.UpdateNormalizedUserNameAsync(user);
-                    await _userManager.UpdateAsync(user);
+                    // update username
+                    if (user.UserName.ToLower() != entity.UserName?.ToLower())
+                    {
+                        var userWithExistingEmail = await _userManager.FindByEmailAsync(entity.UserName);
+                        if (userWithExistingEmail != null && userWithExistingEmail.Id != user.Id)
+                            throw new DuplicateUserNameException(entity.UserName);
 
+                        user.UserName = entity.UserName;
+
+                        await _userManager.UpdateNormalizedUserNameAsync(user);
+                        await _userManager.UpdateAsync(user);
+                    }
+
+                    // update userprofile
                     if (user.UserProfile != null)
                     {
                         user.UserProfile.FirstName = entity.FirstName;
