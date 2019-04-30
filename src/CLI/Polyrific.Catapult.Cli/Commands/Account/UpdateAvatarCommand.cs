@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         }
 
         [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        [Option("-u|--user <USER>", "Username of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
         [Option("-a|--avatar <AVATAR>", "The avatar image file path of the user", CommandOptionType.SingleValue)]

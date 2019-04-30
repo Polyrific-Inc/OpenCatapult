@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Cli.Commands
 
             var token = _tokenService.RequestToken(new RequestTokenDto
             {
-                Email = Username,
+                UserName = Username,
                 Password = _consoleReader.GetPassword("Enter password:")
             }).Result;
 

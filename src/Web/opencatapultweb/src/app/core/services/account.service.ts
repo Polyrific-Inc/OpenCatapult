@@ -13,8 +13,8 @@ export class AccountService {
 
   constructor(private api: ApiService) { }
 
-  getUserByEmail(email: string) {
-    return this.api.get<UserDto>(`account/email/${email}`);
+  getUserByUserName(userName: string) {
+    return this.api.get<UserDto>(`account/name/${userName}`);
   }
 
   getExternalAccountTypes() {
@@ -57,12 +57,12 @@ export class AccountService {
     return this.api.putString('account/password', dto);
   }
 
-  requestResetPassword(email: string) {
-    return this.api.getString(`account/email/${email}/resetpassword`);
+  requestResetPassword(username: string) {
+    return this.api.getString(`account/name/${username}/resetpassword`);
   }
 
-  resetPassword(email: string, dto: ResetPasswordDto) {
-    return this.api.postString(`account/email/${email}/resetpassword`, dto);
+  resetPassword(username: string, dto: ResetPasswordDto) {
+    return this.api.postString(`account/name/${username}/resetpassword`, dto);
   }
 
 }

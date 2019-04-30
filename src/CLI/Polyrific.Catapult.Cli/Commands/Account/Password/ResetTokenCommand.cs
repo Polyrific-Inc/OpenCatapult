@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account.Password
         }
 
         [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        [Option("-u|--user <USER>", "Username of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
         public override string Execute()

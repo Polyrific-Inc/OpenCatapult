@@ -52,13 +52,6 @@ namespace Polyrific.Catapult.Shared.Service
         Task<UserDto> GetUserByUserName(string userName);
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        Task<UserDto> GetUserByEmail(string email);
-
-        /// <summary>
         /// Update a user
         /// </summary>
         /// <param name="userId">Id of the user</param>
@@ -113,17 +106,17 @@ namespace Polyrific.Catapult.Shared.Service
         /// <summary>
         /// Request reset password token to be sent to user
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="userName">UserName of the user</param>
         /// <returns></returns>
-        Task RequestResetPassword(string email);
+        Task RequestResetPassword(string userName);
 
         /// <summary>
         /// Reset the user password
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="userName">UserName of the user</param>
         /// <param name="dto">DTO containing required details</param>
         /// <returns></returns>
-        Task ResetPassword(string email, ResetPasswordDto dto);
+        Task ResetPassword(string userName, ResetPasswordDto dto);
 
         /// <summary>
         /// Get the list of external account types

@@ -34,13 +34,13 @@ export class ProjectHistoryService {
 
   private getHistoryLocalStorage(user: User) {
     if (user) {
-      return localStorage.getItem(`${localStorageKey}_${user.email}`);
+      return localStorage.getItem(`${localStorageKey}_${user.id}`);
     }
   }
 
   private saveHistoryLocalStorage() {
     if (this.authService.currentUserValue) {
-      return localStorage.setItem(`${localStorageKey}_${this.authService.currentUserValue.email}`, JSON.stringify(this.history));
+      return localStorage.setItem(`${localStorageKey}_${this.authService.currentUserValue.id}`, JSON.stringify(this.history));
     }
   }
 }

@@ -3,14 +3,14 @@
     <div mat-dialog-content>
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <mat-form-field class="full-width-input">
-          <mat-label>Email</mat-label>
-          <input matInput #emailControl formControlName="email" (input)="onEmailChanged(emailControl.value)" required>
+          <mat-label>User Name</mat-label>
+          <input matInput #userNameControl formControlName="userName" (input)="onUserNameChanged(userNameControl.value)" required>
           <mat-hint *ngIf="newUser" class="new-user-hint">Creating new user</mat-hint>
-          <mat-error *ngIf="isFieldInvalid('email', 'required')">
-            Please inform the email
+          <mat-error *ngIf="isFieldInvalid('userName', 'required')">
+            Please inform the UserName
           </mat-error>
-          <mat-error *ngIf="isFieldInvalid('email', 'email')">
-            Please input valid email
+          <mat-error *ngIf="isFieldInvalid('userName', 'newEmail')">
+            Please input valid email when creating new user
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input">

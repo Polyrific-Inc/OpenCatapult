@@ -43,7 +43,7 @@ export class UserProfileInfoComponent implements OnInit {
 
   getUser() {
     this.loading = true;
-    this.accountService.getUserByEmail(this.authService.currentUserValue.email)
+    this.accountService.getUserByUserName(this.authService.currentUserValue.userName)
       .subscribe(data => {
         this.loading = false;
         this.user = data;

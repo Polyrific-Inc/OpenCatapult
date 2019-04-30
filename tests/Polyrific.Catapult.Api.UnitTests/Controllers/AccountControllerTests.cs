@@ -252,39 +252,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
-        public async void GetUserByEmail_ReturnUser()
-        {
-            _userService.Setup(s => s.GetUserEmail(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((ClaimsPrincipal principal, CancellationToken cancellationToken) => principal.Identity.Name);
-            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
-
-            var httpContext = new DefaultHttpContext()
-            {
-                User = new ClaimsPrincipal(new[]
-                {
-                    new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, "admin@example.com"),
-                        new Claim(ClaimTypes.Role, UserRole.Administrator), 
-                    })
-                })
-            };
-
-            var controller =
-                new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object, _logger.Object)
-                {
-                    ControllerContext = new ControllerContext {HttpContext = httpContext}
-                };
-
-            var result = await controller.GetUserByEmail("test@example.com");
-
-            var okActionResult = Assert.IsType<OkObjectResult>(result);
-            var returnValue = Assert.IsType<UserDto>(okActionResult.Value);
-            Assert.Equal("test@example.com", returnValue.UserName);
-        }
-
-        [Fact]
         public async void UpdateUser_ReturnSuccess()
         {
             var httpContext = new DefaultHttpContext()
@@ -398,8 +365,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("xxx");
-            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string username, CancellationToken cancellationToken) => new User(username));
             _notificationProvider.Setup(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()))
                 .Returns(Task.CompletedTask);
 
@@ -429,8 +396,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("xxx");
-            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string username, CancellationToken cancellationToken) => new User(username));
             _notificationProvider.Setup(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()))
                 .Returns(Task.CompletedTask);
             
@@ -457,8 +424,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void ResetPassword_POST_ReturnSuccess()
         {
-            _userService.Setup(s => s.GetUserByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User(email));
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string username, CancellationToken cancellationToken) => new User(username));
             _userService
                 .Setup(s => s.ResetPassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(),
                     It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

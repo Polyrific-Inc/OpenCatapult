@@ -196,31 +196,6 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
-        /// Get user by email
-        /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <returns>the user object</returns>
-        [HttpGet("email/{email}")]
-        [Authorize]
-        public async Task<IActionResult> GetUserByEmail(string email)
-        {
-            _logger.LogInformation("Getting user {email}", email);
-
-            var currentUserEmail = await _userService.GetUserEmail(User);
-            if (currentUserEmail.ToLower() != email.ToLower() && !User.IsInRole(UserRole.Administrator))
-            {
-                _logger.LogWarning("User {currentUserEmail} is not authorized to access the endpoint", currentUserEmail);
-                return Unauthorized();
-            }
-
-            var user = await _userService.GetUserByEmail(email);
-
-            var result = _mapper.Map<UserDto>(user);
-
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Update the user profile
         /// </summary>
         /// <param name="userId">Id of the user</param>
@@ -344,18 +319,18 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Request reset password token
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="username">Username of the user</param>
         /// <returns>The reset password token</returns>
-        [HttpGet("email/{email}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(string email)
+        [HttpGet("name/{username}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string username)
         {
-            _logger.LogInformation("Requesting reset password token for user {email}", email);
+            _logger.LogInformation("Requesting reset password token for user {username}", username);
 
-            var user = await _userService.GetUserByEmail(email);
+            var user = await _userService.GetUser(username);
 
             if (user == null)
             {
-                _logger.LogWarning("User {email} was not found.", email);
+                _logger.LogWarning("User {username} was not found.", username);
                 return Ok();
             }                
 
@@ -375,7 +350,7 @@ namespace Polyrific.Catapult.Api.Controllers
                         }
                 }, new Dictionary<string, string>
                     {
-                        {MessageParameter.ResetPasswordLink, $"{originUrl}/reset-password?email={email}&token={HttpUtility.UrlEncode(token)}"}
+                        {MessageParameter.ResetPasswordLink, $"{originUrl}/reset-password?username={username}&token={HttpUtility.UrlEncode(token)}"}
                     });
             }
             else
@@ -399,20 +374,20 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Reset the password to a new one
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="username">Username of the user</param>
         /// <param name="dto">The request body for reset password</param>
         /// <returns></returns>
-        [HttpPost("email/{email}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(string email, ResetPasswordDto dto)
+        [HttpPost("name/{username}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string username, ResetPasswordDto dto)
         {
-            _logger.LogInformation("Resetting password for user {email}", email);
+            _logger.LogInformation("Resetting password for user {username}", username);
 
             try
             {
-                var user = await _userService.GetUserByEmail(email);
+                var user = await _userService.GetUser(username);
                 if (user == null)
                 {
-                    _logger.LogWarning("User {email} was not found.", email);
+                    _logger.LogWarning("User {username} was not found.", username);
                     return BadRequest("Reset password failed");
                 }
 

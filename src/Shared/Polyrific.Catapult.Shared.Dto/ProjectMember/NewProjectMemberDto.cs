@@ -28,7 +28,6 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectMember
         /// <summary>
         /// Email of the new user
         /// </summary>
-        [Required]
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 

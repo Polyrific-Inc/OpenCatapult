@@ -95,13 +95,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _userRepository.GetById(userId, cancellationToken);
         }
 
-        public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return await _userRepository.GetByEmail(email, cancellationToken);
-        }
-
         public async Task<int> GetUserId(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

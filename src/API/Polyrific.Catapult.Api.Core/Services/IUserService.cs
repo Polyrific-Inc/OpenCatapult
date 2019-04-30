@@ -55,14 +55,6 @@ namespace Polyrific.Catapult.Api.Core.Services
         Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Get a user by email
-        /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
-        /// <returns>the user entity</returns>
-        Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// Confirm registered email
         /// </summary>
         /// <param name="userId">Id of the user</param>

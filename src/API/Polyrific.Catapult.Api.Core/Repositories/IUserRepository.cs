@@ -19,14 +19,6 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
-        /// Get user by email
-        /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
-        /// <returns>the user object</returns>
-        Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
         /// Create a new user with password
         /// </summary>
         /// <param name="entity">New user</param>

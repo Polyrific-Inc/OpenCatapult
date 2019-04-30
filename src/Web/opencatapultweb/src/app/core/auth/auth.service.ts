@@ -38,7 +38,7 @@ export class AuthService {
       this.config = this.configService.getConfig();
     }
 
-    return this.http.post(`${this.config.apiUrl}/Token`, { Email: user.email, Password: user.password },
+    return this.http.post(`${this.config.apiUrl}/Token`, { UserName: user.userName, Password: user.password },
     {
       responseType: 'text'
     }).pipe(map(this.storeToken(user)));
@@ -107,12 +107,12 @@ export class AuthService {
               }));
           }
 
-          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name')) {
-            user.userName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')) {
+            user.id = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
           }
 
-          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')) {
-            user.email = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'];
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name')) {
+            user.userName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
           }
 
           if (decodedToken.hasOwnProperty('http://schemas.microsoft.com/ws/2008/06/identity/claims/role')) {

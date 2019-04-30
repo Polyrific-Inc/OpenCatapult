@@ -122,17 +122,6 @@ namespace Polyrific.Catapult.Api.Data
             return await Task.FromResult((User) null);
         }
 
-        public async Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var user = await _userManager.Users.Include(u => u.UserProfile).Include("Roles.Role").FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
-            if (user != null)
-                return _mapper.Map<User>(user);
-
-            return await Task.FromResult((User)null);
-        }
-
         public async Task<User> GetByPrincipal(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -210,7 +199,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.FindByNameAsync(userName) ?? await _userManager.FindByEmailAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user != null && user.EmailConfirmed)
                 return await _userManager.CheckPasswordAsync(user, password);
 
@@ -246,7 +235,7 @@ namespace Polyrific.Catapult.Api.Data
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.FindByNameAsync(userName) ?? await _userManager.FindByEmailAsync(userName);
+            var user = await _userManager.FindByNameAsync(userName);
             if (user == null) 
                 return "";
 
