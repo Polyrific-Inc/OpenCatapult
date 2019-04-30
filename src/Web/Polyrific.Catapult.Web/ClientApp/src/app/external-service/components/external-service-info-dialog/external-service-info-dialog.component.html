@@ -1,0 +1,20 @@
+<h1 mat-dialog-title>External Service</h1>
+<form [formGroup]="externalServiceForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+        <mat-form-field class="full-width-input">
+            <mat-label>Id</mat-label>
+          <input matInput formControlName="id">
+        </mat-form-field>
+
+        <app-external-service-form [externalService]="externalService" [disableForm]="!editing" (formReady)="onFormReady($event)"></app-external-service-form>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
+          <button mat-button cdkFocusInitial *ngIf="editing">Save</button>
+          <button mat-button [mat-dialog-close]="false" *ngIf="!editing">Close</button>
+          <button mat-button *ngIf="editing" (click)="onCancelClick()">Cancel</button>
+      </div>
+</form>

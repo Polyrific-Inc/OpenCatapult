@@ -1,0 +1,15 @@
+<div [formGroup]="generateConfigForm" *ngIf="showForm">
+  
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Task Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+  
+        <mat-form-field class="full-width-input">
+            <mat-label>Output Location</mat-label>
+            <input matInput placeholder="Custom directory folder where the code is generated" formControlName="OutputLocation">
+        </mat-form-field>
+    </mat-expansion-panel>
+</div>

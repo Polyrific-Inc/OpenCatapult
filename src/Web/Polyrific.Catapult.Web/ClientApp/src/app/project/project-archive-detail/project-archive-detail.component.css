@@ -1,0 +1,17 @@
+.action-buttons {
+  text-align: right;
+}
+
+.action-buttons button{
+  margin-right: 8px
+}
+
+.project-header {
+  text-align: right;
+  margin: 10px 0;
+}
+
+.form-container {
+  margin-left: 17px;
+}
+

@@ -1,0 +1,15 @@
+.sub-text {
+  max-height: 100px;
+  overflow-y: scroll;
+  white-space: pre-wrap;
+}
+
+
+.sub-text::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.sub-text::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.26);
+}

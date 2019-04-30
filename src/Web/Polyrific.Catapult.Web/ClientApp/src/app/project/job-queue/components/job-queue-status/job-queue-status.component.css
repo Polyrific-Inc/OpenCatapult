@@ -1,0 +1,14 @@
+.error {
+  background-color: red;
+  color: white;
+}
+
+.success {
+  background-color: green;
+  color: white;
+}
+
+.pending {
+  background-color: orange;
+  color: white;
+}

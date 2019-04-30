@@ -1,0 +1,30 @@
+<div class="margin10" fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxLayout="row"  fxLayoutAlign="flex-start center">
+      <a mat-button routerLink="../">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h4>Job Queue Log</h4>
+  </div>
+  <div class="action-buttons">
+    <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
+    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
+  </div>
+</div>
+
+<div fxLayout="column" fxLayoutAlign="center center" *ngIf="jobQueue?.status === 'QUEUED'">
+  <mat-spinner></mat-spinner>
+  <div>Waiting for engine to pick up the queue...</div>
+</div>
+<mat-accordion class="headers-align" [multi]="true" *ngIf="jobQueue?.jobTasksStatus && jobQueue.jobTasksStatus.length > 0">
+  <mat-expansion-panel *ngFor="let taskStatus of jobQueue?.jobTasksStatus">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <h5>{{taskStatus.taskName}}</h5>
+      </mat-panel-title>
+      <mat-panel-description>
+        <app-job-queue-task-status [taskStatus]="taskStatus.status"></app-job-queue-task-status>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <app-job-queue-task-log [taskStatus]="taskStatus" [jobQueue]="jobQueue"></app-job-queue-task-log>
+  </mat-expansion-panel>
+</mat-accordion>

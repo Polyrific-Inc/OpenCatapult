@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>Register Task Provider</h1>
+<form [formGroup]="taskProviderForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+        <div class="upload-template-container">
+            <input class="hidden" formControlName="metadataFile" id="input-file-id" type="file" accept=".yml, .yaml" (change)="onFileChanged($event)" />
+            <label for="input-file-id" class="mat-raised-button">Choose Metadata File</label>
+            <span class="custom-file">{{metadataFile}}</span>
+            <mat-error *ngIf="isFieldInvalid('metadataFile', 'required')">
+              Please select a metadata file
+            </mat-error>
+        </div>
+        <div *ngIf="newTaskProvider">
+            <mat-form-field class="full-width-input">
+              <mat-label>Name</mat-label>
+              <input matInput formControlName="name">
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+              <mat-label>Type</mat-label>
+              <input matInput formControlName="type">
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+              <mat-label>Author</mat-label>
+              <input matInput formControlName="author">
+            </mat-form-field>
+            <mat-form-field class="full-width-input">
+              <mat-label>Version</mat-label>
+              <input matInput formControlName="version">
+            </mat-form-field>
+            <div *ngIf="newTaskProvider.requiredServices && newTaskProvider.requiredServices.length > 0" fxLayout="row" fxLayoutAlign="start center">
+              <div fxFlex="20">Required Services</div>
+              <div fxFlex="80">
+                <mat-chip-list>
+                    <mat-chip *ngFor="let requiredService of newTaskProvider.requiredServices">{{requiredService}}</mat-chip>
+                </mat-chip-list>
+              </div>
+            </div>
+        </div>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+

@@ -1,0 +1,18 @@
+<div [formGroup]="buildConfigForm" *ngIf="showForm">  
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Task Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+  
+        <mat-form-field class="full-width-input">
+            <mat-label>Source Location</mat-label>
+            <input matInput placeholder="Custom directory of the source code to be built" formControlName="SourceLocation">
+        </mat-form-field>
+        <mat-form-field class="full-width-input">
+            <mat-label>Output Artifact Location</mat-label>
+            <input matInput placeholder="Custom directory of the output artifact result" formControlName="OutputArtifactLocation">
+        </mat-form-field>
+    </mat-expansion-panel>
+</div>

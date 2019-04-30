@@ -1,0 +1,16 @@
+.red {
+  background-color: red;
+  color: white;
+}
+
+.title {
+  margin-right: 8px;
+}
+
+.action-buttons {
+  text-align: right;
+}
+
+.action-buttons button{
+  margin-right: 8px
+}

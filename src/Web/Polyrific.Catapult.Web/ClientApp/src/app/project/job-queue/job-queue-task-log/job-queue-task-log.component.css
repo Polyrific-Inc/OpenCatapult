@@ -1,0 +1,16 @@
+.log-detail {
+  max-height: 250px;
+  overflow-y: scroll;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.log-detail::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.log-detail::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,.26);
+}

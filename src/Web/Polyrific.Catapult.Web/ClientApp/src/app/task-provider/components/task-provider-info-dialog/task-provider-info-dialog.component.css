@@ -1,0 +1,16 @@
+table {
+  min-width: 960px;
+}
+
+.hint-col {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media(max-width: 640px){
+  .hint-col {
+    max-width: 50px;
+  }
+}

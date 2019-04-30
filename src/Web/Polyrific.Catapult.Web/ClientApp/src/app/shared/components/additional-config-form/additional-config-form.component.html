@@ -1,0 +1,15 @@
+<div *ngIf="showForm">  
+  <app-additional-config-field *ngFor="let config of requiredAdditionalConfigs" [additionalConfig]="config" [form]="additionalConfigForm">
+  </app-additional-config-field>
+
+    <mat-expansion-panel *ngIf="optionalAdditionalConfigs.length > 0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Optional Additional Configuration
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        
+        <app-additional-config-field *ngFor="let config of optionalAdditionalConfigs" [additionalConfig]="config" [form]="additionalConfigForm">
+          </app-additional-config-field>
+    </mat-expansion-panel>
+</div>

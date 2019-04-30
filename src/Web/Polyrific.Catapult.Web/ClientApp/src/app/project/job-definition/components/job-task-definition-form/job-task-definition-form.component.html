@@ -1,0 +1,32 @@
+<div [formGroup]="jobTaskDefinitionForm">
+    <mat-form-field class="full-width-input">
+      <mat-label>Name</mat-label>
+      <input matInput placeholder="Name of the job task definition"
+        formControlName="name" required>
+      <mat-error *ngIf="isFieldInvalid('name', 'required')">
+        Please inform the job task definition name
+      </mat-error>
+    </mat-form-field>
+
+  <mat-form-field class="full-width-input">
+      <mat-select #taskTypeControl placeholder="Type" formControlName="type" required (selectionChange)="onTypeChange($event.value)">
+        <mat-option *ngFor="let taskType of jobTaskDefinitionTypes" [value]="taskType[0]">
+          {{taskType[1]}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width-input">
+        <mat-select #providerControl placeholder="Provider" formControlName="provider" required (selectionChange)="onProviderChanged()">
+          <mat-option *ngFor="let provider of taskProviders" [value]="provider.name">
+            {{provider.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+    <div *ngIf="taskTypeControl.selected != null && providerControl.selected != null">
+      <mat-divider></mat-divider>
+      <h5 class="margin10">Configs</h5>
+      <app-task-config-form [task]="jobTaskDefinition" [hideTaskInfo]="true" [disableForm]="disableForm" (formReady)="onConfigFormReady($event)"></app-task-config-form>
+    </div>
+</div>

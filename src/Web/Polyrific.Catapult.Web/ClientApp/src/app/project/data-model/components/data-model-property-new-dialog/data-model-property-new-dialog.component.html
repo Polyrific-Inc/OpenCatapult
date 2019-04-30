@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Data Model Property</h1>
+<form [formGroup]="dataModelPropertyForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+        <app-data-model-property-form (formReady)="onFormReady($event)" [dataModelName]="data.modelName" [relatedDataModels]="data.relatedDataModels"></app-data-model-property-form>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+

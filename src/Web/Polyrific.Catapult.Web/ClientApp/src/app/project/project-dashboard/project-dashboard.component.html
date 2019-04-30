@@ -1,0 +1,37 @@
+<div fxLayout="row" fxLayoutAlign="space-between center">
+    <h2>
+        Welcome to Opencatapult!
+    </h2>
+    <div class="button new-project" *appHasAccess="authorizePolicy.UserRoleBasicAccess">
+        <button mat-raised-button color="primary" routerLink="/project/new">New Project</button>
+    </div>
+</div>
+<p>
+  You can start creating a new project using the button at the left project menu, or navigate to a project in the project list.
+</p>
+<p>For more information on the concept of project in opencatapult, please go to our <a href="https://docs.opencatapult.net/home/concept#project" target="_blank">documentation page</a></p>
+<div fxLayout="row">
+  <mat-card fxFlex="50" fxFlex.sm="100">
+    <mat-card-header>
+      <mat-card-title>Recent Projects</mat-card-title>
+    </mat-card-header>
+    <mat-divider [inset]="true"></mat-divider>
+    <mat-card-content>
+      <div class="margin10"></div>
+      <ul class="recent-projects">
+        <li *ngFor="let project of shownHistory"><a routerLink="/project/{{project.id}}">{{project.displayName || project.name}}</a></li>
+      </ul>
+      <div *ngIf="history?.length > shownHistoryNumber">
+          <div class="button margin10" (click)="toggleShowAll(true)" *ngIf="history?.length !== shownHistory?.length">
+            <button mat-button>Show more...</button>
+          </div>
+          <div class="button margin10" (click)="toggleShowAll(false)" *ngIf="history?.length === shownHistory?.length">
+            <button mat-button>Show less</button>
+          </div>
+        </div>
+      <div *ngIf="history.length === 0">
+        No recent projects
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Register Engine</h1>
+<form [formGroup]="engineForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+        <mat-form-field class="full-width-input">
+          <mat-label>Name</mat-label>
+          <input matInput placeholder="Name of engine"
+            formControlName="name" required>
+          <mat-error *ngIf="isFieldInvalid('name', 'required')">
+            Please inform the engine name
+          </mat-error>
+        </mat-form-field>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+

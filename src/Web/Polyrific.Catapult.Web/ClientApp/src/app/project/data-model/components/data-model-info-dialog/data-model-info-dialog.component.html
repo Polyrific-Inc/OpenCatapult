@@ -1,0 +1,19 @@
+<h1 mat-dialog-title>Data Model</h1>
+<form [formGroup]="dataModelForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-form-field class="full-width-input">
+            <mat-label>Id</mat-label>
+          <input matInput formControlName="id">
+        </mat-form-field>
+
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+        <app-data-model-form [dataModel]="dataModel" [disableForm]="!editing" (formReady)="onFormReady($event)"></app-data-model-form>
+      </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
+          <button mat-button cdkFocusInitial *ngIf="editing">Save</button>
+          <button mat-button [mat-dialog-close]="false" *ngIf="!editing">Close</button>
+          <button mat-button *ngIf="editing" (click)="onCancelClick()">Cancel</button>
+      </div>
+</form>

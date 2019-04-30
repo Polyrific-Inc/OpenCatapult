@@ -1,0 +1,14 @@
+.copy-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+}
+
+.token-container > div {
+  position: relative;
+  background-color: #f7f7f7;
+}
+
+.token-container span {
+  word-wrap: break-word;
+}

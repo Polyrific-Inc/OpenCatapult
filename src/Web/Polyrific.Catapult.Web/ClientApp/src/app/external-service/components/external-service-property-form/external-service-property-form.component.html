@@ -1,0 +1,23 @@
+<div [formGroup]="form">
+<mat-form-field *ngIf="externalServiceProperty.allowedValues?.length <= 0" class="full-width-input">
+  <mat-label>{{externalServiceProperty.name}}</mat-label>
+  <input matInput placeholder="{{externalServiceProperty.description}}" [formControl]="formControl"
+    [required]="isRequired || externalServiceProperty.isRequired"
+    [type]="externalServiceProperty.isSecret ? 'password' : 'input'"
+    >
+  <mat-error *ngIf="isFieldInvalid('required')">
+      Please inform the {{externalServiceProperty.name}}
+  </mat-error>
+</mat-form-field>
+
+<mat-form-field *ngIf="externalServiceProperty.allowedValues?.length > 0">
+  <mat-select placeholder="External Service Type" [formControl]="formControl">
+    <mat-option *ngFor="let allowedValue of externalServiceProperty.allowedValues" [value]="allowedValue">
+      {{allowedValue}}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="isFieldInvalid('required')">
+      Please inform the {{externalServiceProperty.name}}
+  </mat-error>
+</mat-form-field>
+</div>

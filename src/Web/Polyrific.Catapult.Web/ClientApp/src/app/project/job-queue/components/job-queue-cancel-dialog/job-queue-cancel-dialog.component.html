@@ -1,0 +1,16 @@
+<h1 mat-dialog-title>Cancel Job Queue {{data.code}}</h1>
+<form [formGroup]="jobQueueCancelForm" (submit)="onSubmit()">
+    <div mat-dialog-content>
+        <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+
+      <mat-form-field class="full-width-input">
+          <mat-label>Reason</mat-label>
+          <textarea matInput placeholder="The cancelation reason" formControlName="remarks"></textarea>
+      </mat-form-field>
+    </div>
+      <div mat-dialog-actions>
+          <button mat-button cdkFocusInitial>Save</button>
+          <button mat-button [mat-dialog-close]="false">Cancel</button>
+      </div>
+</form>
+
