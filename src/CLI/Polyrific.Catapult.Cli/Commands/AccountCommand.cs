@@ -3,6 +3,8 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Commands.Account;
+using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
@@ -18,7 +20,8 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(SetRoleCommand))]
     public class AccountCommand : BaseCommand
     {
-        public AccountCommand(IConsole console, ILogger<AccountCommand> logger) : base(console, logger)
+        public AccountCommand(IHelpContextService helpContextService, IConsole console, ILogger<AccountCommand> logger) 
+            : base(console, logger, helpContextService, HelpContextSection.User)
         {
         }
         
@@ -30,7 +33,12 @@ namespace Polyrific.Catapult.Cli.Commands
         protected override int OnExecute(CommandLineApplication app)
         {
             base.OnExecute(app);
-            app.ShowHelp();
+
+            if (!HelpContext)
+            {
+                app.ShowHelp();
+            }
+
             return 0;
         }
     }

@@ -33,6 +33,7 @@ namespace Polyrific.Catapult.Cli.Infrastructure
             services.AddTransient<IProviderService, ProviderService>();
             services.AddTransient<IVersionService, VersionService>();
             services.AddTransient<IManagedFileService, ManagedFileService>();
+            services.AddTransient<IHelpContextService, HelpContextService>();
         }
     }
 }

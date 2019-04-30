@@ -11,20 +11,12 @@ namespace Polyrific.Catapult.Api.Core.Repositories
     public interface IUserRepository : IRepository<User>
     {
         /// <summary>
-        /// Get user by username
+        /// Get user by username or email
         /// </summary>
-        /// <param name="userName">Username of the user</param>
+        /// <param name="userName">Username (or email) of the user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The user object</returns>
-        Task<User> GetByUserName(string userName, CancellationToken cancellationToken = default(CancellationToken));
-
-        /// <summary>
-        /// Get user by email
-        /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
-        /// <returns>the user object</returns>
-        Task<User> GetByEmail(string email, CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> GetUser(string userName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Create a new user with password
@@ -94,6 +86,14 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The list of user</returns>
         Task<List<User>> GetUsers(bool? isActive, string role, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get the list of users by ids
+        /// </summary>
+        /// <param name="ids">Array of user ids</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<List<User>> GetUsersByIds(int[] ids, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Suspend the user

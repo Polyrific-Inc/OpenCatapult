@@ -1,0 +1,1 @@
+There are 4 available project roles: "Owner" have all access to the project, "Maintainer" have the access to queue and monitor the job, "Contributor" have the access to modify the data model and job definition, while "Guest" only have read-only acess to the project.

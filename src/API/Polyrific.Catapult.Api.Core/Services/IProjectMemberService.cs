@@ -26,20 +26,22 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="email">Email of the new user</param>
         /// <param name="firstName">First Name of the new user</param>
         /// <param name="lastName">Last Name of the new user</param>
+        /// <param name="externalAccountIds">External accound ids of the new user</param>
         /// <param name="password">Password of the new user</param>
         /// <param name="roleId">Id of the role</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>New id of the project member and id of the new user</returns>
-        Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get members of a project
         /// </summary>
         /// <param name="projectId">Id of the project</param>
-        /// /// <param name="roleId">role id of the project</param>
+        /// <param name="roleId">role id of the project</param>
+        /// <param name="includeUser">Include user entity during retrieve?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of project members</returns>
-        Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, bool includeUser = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update role of a project member

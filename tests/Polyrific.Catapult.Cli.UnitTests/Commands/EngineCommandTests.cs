@@ -21,6 +21,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<ICatapultEngineService> _engineService;
         private readonly Mock<ITokenService> _tokenService;
         private readonly ITestOutputHelper _output;
+        private readonly Mock<IHelpContextService> _helpContextService;
 
         public EngineCommandTests(ITestOutputHelper output)
         {
@@ -48,12 +49,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 if (engine != null)
                     engines.Remove(engine);
             });
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Engine_Execute_ReturnsEmpty()
         {
-            var command = new EngineCommand(_console, LoggerMock.GetLogger<EngineCommand>().Object);
+            var command = new EngineCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<EngineCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

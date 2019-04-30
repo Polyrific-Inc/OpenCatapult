@@ -652,9 +652,9 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                     else if (trimmedLine == "</ul>")
                     {
                         isNavBlock = false;
-                        updatedContent.AppendLine("                    <li><a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a></li>");
+                        updatedContent.AppendLine("                    <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">Home</a></li>");
                         foreach (var model in _models)
-                            updatedContent.AppendLine($"                    <li><a asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
+                            updatedContent.AppendLine($"                    <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
 
                         updatedContent.AppendLine(line);
 
@@ -672,9 +672,19 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                     else if (trimmedLine == "</footer>")
                     {
                         isFooterBlock = false;
-                        updatedContent.AppendLine($"<p class=\"pull-left\">&copy; {DateTime.Today.Year} - {_projectName}</p>");
-                        updatedContent.AppendLine($"<p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+                        updatedContent.AppendLine("<div class=\"container\">");
+                        updatedContent.AppendLine($"<p class=\"float-left\">&copy; {DateTime.Today.Year} - {_projectName}</p>");
+                        updatedContent.AppendLine("<p class=\"float-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+                        updatedContent.AppendLine($"</div>");
                         updatedContent.AppendLine(line);
+                    }
+                    else if (trimmedLine.StartsWith("<nav"))
+                    {
+                        updatedContent.AppendLine("<nav class=\"navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3\">");
+                    }
+                    else if (trimmedLine.StartsWith("<div class=\"navbar-collapse collapse"))
+                    {
+                        updatedContent.AppendLine("<div class=\"navbar-collapse collapse\">");
                     }
                     else
                     {
@@ -696,24 +706,24 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("@if (User.Identity.Name != null)");
             sb.AppendLine("{");
             sb.AppendLine("    <form asp-area=\"Identity\" asp-page=\"/Account/Logout\" asp-route-returnUrl=\"@Url.Page(\"/Index\", new { area = \"\" })\" method=\"post\" id=\"logoutForm\" class=\"navbar-right\">");
-            sb.AppendLine("        <ul class=\"nav navbar-nav navbar-right\">");
-            sb.AppendLine("            <li>");
-            sb.AppendLine("                <a asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
+            sb.AppendLine("        <ul class=\"navbar-nav ml-auto\">");
+            sb.AppendLine("            <li class=\"nav-item\">");
+            sb.AppendLine("                <a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
             sb.AppendLine("            </li>");
-            sb.AppendLine("            <li>");
-            sb.AppendLine("                <a asp-area=\"Admin\" asp-controller=\"Home\" title=\"Admin\">Admin</a>");
+            sb.AppendLine("            <li class=\"nav-item\">");
+            sb.AppendLine("                <a class=\"nav-link\" asp-area=\"Admin\" asp-controller=\"Home\" title=\"Admin\">Admin</a>");
             sb.AppendLine("            </li>");
-            sb.AppendLine("            <li>");
-            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link\">Logout</button>");
+            sb.AppendLine("            <li class=\"nav-item\">");
+            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link nav-link\">Logout</button>");
             sb.AppendLine("            </li>");
             sb.AppendLine("        </ul>");
             sb.AppendLine("    </form>");
             sb.AppendLine("}");
             sb.AppendLine("else");
             sb.AppendLine("{");
-            sb.AppendLine("    <ul class=\"nav navbar-nav navbar-right\">");
-            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
-            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
+            sb.AppendLine("    <ul class=\"navbar-nav ml-auto\">");
+            sb.AppendLine("        <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
+            sb.AppendLine("        <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
             sb.AppendLine("    </ul>");
             sb.AppendLine("}");
             _projectHelper.AddFileToProject(Name, $"Views/Shared/_LoginPartial.cshtml", sb.ToString());
@@ -731,75 +741,76 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("");
             sb.AppendLine("    <environment include=\"Development\">");
             sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/lib/bootstrap/dist/css/bootstrap.css\" />");
-            sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/css/site.css\" />");
             sb.AppendLine("    </environment>");
             sb.AppendLine("    <environment exclude=\"Development\">");
-            sb.AppendLine("        <link rel=\"stylesheet\" href=\"https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css\"");
+            sb.AppendLine("        <link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css\"");
             sb.AppendLine("              asp-fallback-href=\"~/lib/bootstrap/dist/css/bootstrap.min.css\"");
-            sb.AppendLine("              asp-fallback-test-class=\"sr-only\" asp-fallback-test-property=\"position\" asp-fallback-test-value=\"absolute\" />");
-            sb.AppendLine("        <link rel=\"stylesheet\" href=\"~/css/site.min.css\" asp-append-version=\"true\" />");
+            sb.AppendLine("              asp-fallback-test-class=\"sr-only\" asp-fallback-test-property=\"position\" asp-fallback-test-value=\"absolute\"");
+            sb.AppendLine("              crossorigin=\"anonymous\"");
+            sb.AppendLine("              integrity=\"sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T\"/>");
             sb.AppendLine("    </environment>");
+            sb.AppendLine("    <link rel=\"stylesheet\" href=\"~/css/site.css\" />");
             sb.AppendLine("</head>");
             sb.AppendLine("<body>");
-            sb.AppendLine("    <nav class=\"navbar navbar-inverse navbar-fixed-top\">");
-            sb.AppendLine("        <div class=\"container\">");
-            sb.AppendLine("            <div class=\"navbar-header\">");
-            sb.AppendLine("                <button type=\"button\" class=\"navbar-toggle\" data-toggle=\"collapse\" data-target=\".navbar-collapse\">");
-            sb.AppendLine("                    <span class=\"sr-only\">Toggle navigation</span>");
-            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
-            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
-            sb.AppendLine("                    <span class=\"icon-bar\"></span>");
+            sb.AppendLine("    <header>");
+            sb.AppendLine("<nav class=\"navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark border-bottom box-shadow mb-3\">");
+            sb.AppendLine("            <div class=\"container\">");
+            sb.AppendLine($"                <a class=\"navbar-brand\" asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\">{Name}</a>");
+            sb.AppendLine("                <button class=\"navbar-toggler\" type=\"button\" data-toggle=\"collapse\" data-target=\".navbar-collapse\" aria-controls=\"navbarSupportedContent\"");
+            sb.AppendLine("                        aria-expanded=\"false\" aria-label=\"Toggle navigation\">");
+            sb.AppendLine("                    <span class=\"navbar-toggler-icon\"></span>");
             sb.AppendLine("                </button>");
-            sb.AppendLine($"                <a asp-area=\"\" asp-controller=\"Home\" asp-action=\"Index\" class=\"navbar-brand\">{Name}</a>");
-            sb.AppendLine("            </div>");
-            sb.AppendLine("            <div class=\"navbar-collapse collapse\">");
-            sb.AppendLine("                <ul class=\"nav navbar-nav\">");
-            sb.AppendLine("                    <li><a asp-area=\"Admin\" asp-controller=\"Home\" asp-action=\"Index\">Dashboard</a></li>");
+            sb.AppendLine("<div class=\"navbar-collapse collapse\">");
+            sb.AppendLine("                    <ul class=\"navbar-nav flex-grow-1\">");
+            sb.AppendLine("                    <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Admin\" asp-controller=\"Home\" asp-action=\"Index\">Dashboard</a></li>");
 
             foreach (var model in _models)
-                sb.AppendLine($"                    <li><a asp-area=\"Admin\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
+                sb.AppendLine($"                    <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Admin\" asp-controller=\"{model.Name}\" asp-action=\"Index\">{model.Label}</a></li>");
 
-            sb.AppendLine("                </ul>");
-            sb.AppendLine("                <partial name=\"_LoginPartial\" />");
+            sb.AppendLine("                    </ul>");
+            sb.AppendLine("<partial name=\"_LoginPartial\" />");
+            sb.AppendLine("                </div>");
             sb.AppendLine("            </div>");
-            sb.AppendLine("        </div>");
-            sb.AppendLine("    </nav>");
-            sb.AppendLine("");
-            sb.AppendLine("    <partial name=\"_CookieConsentPartial\" />");
-            sb.AppendLine("");
-            sb.AppendLine("    <div class=\"container body-content\">");
-            sb.AppendLine("        @RenderBody()");
-            sb.AppendLine("        <hr />");
-            sb.AppendLine("        <footer>");
-            sb.AppendLine($"            <p class=\"pull-left\">&copy; {DateTime.Today.Year} - {Name}</p>");
-            sb.AppendLine("            <p class=\"pull-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
-            sb.AppendLine("        </footer>");
+            sb.AppendLine("        </nav>");
+            sb.AppendLine("    </header>");
+            sb.AppendLine("    <div class=\"container\">");
+            sb.AppendLine("        <partial name=\"_CookieConsentPartial\" />");
+            sb.AppendLine("        <main role=\"main\" class=\"pb-3\">");
+            sb.AppendLine("            @RenderBody()");
+            sb.AppendLine("        </main>");
             sb.AppendLine("    </div>");
+            sb.AppendLine("");
+            sb.AppendLine("    <footer class=\"border-top footer text-muted\">");
+            sb.AppendLine("<div class=\"container\">");
+            sb.AppendLine($"            <p class=\"pull-left\">&copy; {DateTime.Today.Year} - {Name}</p>");
+            sb.AppendLine("<p class=\"float-right\">Generated with ❤ by <a href=\"https://opencatapult.net/\" target=\"_blank\">OpenCatapult</a></p>");
+            sb.AppendLine("</div>");
+            sb.AppendLine("    </footer>");
             sb.AppendLine("");
             sb.AppendLine("    <environment include=\"Development\">");
             sb.AppendLine("        <script src=\"~/lib/jquery/dist/jquery.js\"></script>");
-            sb.AppendLine("        <script src=\"~/lib/bootstrap/dist/js/bootstrap.js\"></script>");
-            sb.AppendLine("        <script src=\"~/js/site.js\" asp-append-version=\"true\"></script>");
+            sb.AppendLine("        <script src=\"~/lib/bootstrap/dist/js/bootstrap.bundle.js\"></script>");
             sb.AppendLine("    </environment>");
             sb.AppendLine("    <environment exclude=\"Development\">");
-            sb.AppendLine("        <script src=\"https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js\"");
+            sb.AppendLine("        <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js\"");
             sb.AppendLine("                asp-fallback-src=\"~/lib/jquery/dist/jquery.min.js\"");
             sb.AppendLine("                asp-fallback-test=\"window.jQuery\"");
             sb.AppendLine("                crossorigin=\"anonymous\"");
-            sb.AppendLine("                integrity=\"sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT\">");
+            sb.AppendLine("                integrity=\"sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=\">");
             sb.AppendLine("        </script>");
-            sb.AppendLine("        <script src=\"https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js\"");
-            sb.AppendLine("                asp-fallback-src=\"~/lib/bootstrap/dist/js/bootstrap.min.js\"");
+            sb.AppendLine("        <script src=\"https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js\"");
+            sb.AppendLine("                asp-fallback-src=\"~/lib/bootstrap/dist/js/bootstrap.bundle.min.js\"");
             sb.AppendLine("                asp-fallback-test=\"window.jQuery && window.jQuery.fn && window.jQuery.fn.modal\"");
             sb.AppendLine("                crossorigin=\"anonymous\"");
-            sb.AppendLine("                integrity=\"sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa\">");
+            sb.AppendLine("                integrity=\"sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o\">");
             sb.AppendLine("        </script>");
-            sb.AppendLine("        <script src=\"~/js/site.min.js\" asp-append-version=\"true\"></script>");
             sb.AppendLine("    </environment>");
+            sb.AppendLine("    <script src=\"~/js/site.js\" asp-append-version=\"true\"></script>");
             sb.AppendLine("");
             sb.AppendLine("    @RenderSection(\"Scripts\", required: false)");
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
+            sb.AppendLine("");
 
             _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_Layout.cshtml", sb.ToString(), true);
         }
@@ -827,21 +838,21 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("@if (User.Identity.Name != null)");
             sb.AppendLine("{");
             sb.AppendLine("    <form asp-area=\"Identity\" asp-page=\"/Account/Logout\" asp-route-returnUrl=\"@Url.Page(\"/Index\", new { area = \"\" })\" method=\"post\" id=\"logoutForm\" class=\"navbar-right\">");
-            sb.AppendLine("        <ul class=\"nav navbar-nav navbar-right\">");
-            sb.AppendLine("            <li>");
-            sb.AppendLine("                <a asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
+            sb.AppendLine("        <ul class=\"navbar-nav ml-auto\">");
+            sb.AppendLine("            <li class=\"nav-item\">");
+            sb.AppendLine("                <a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Manage/Index\" title=\"Manage\">Hello @User.Identity.Name!</a>");
             sb.AppendLine("            </li>");
-            sb.AppendLine("            <li>");
-            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link\">Logout</button>");
+            sb.AppendLine("            <li class=\"nav-item\">");
+            sb.AppendLine("                <button type=\"submit\" class=\"btn btn-link navbar-btn navbar-link nav-link\">Logout</button>");
             sb.AppendLine("            </li>");
             sb.AppendLine("        </ul>");
             sb.AppendLine("    </form>");
             sb.AppendLine("}");
             sb.AppendLine("else");
             sb.AppendLine("{");
-            sb.AppendLine("    <ul class=\"nav navbar-nav navbar-right\">");
-            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
-            sb.AppendLine("        <li><a asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
+            sb.AppendLine("    <ul class=\"navbar-nav ml-auto\">");
+            sb.AppendLine("        <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Register\">Register</a></li>");
+            sb.AppendLine("        <li class=\"nav-item\"><a class=\"nav-link\" asp-area=\"Identity\" asp-page=\"/Account/Login\">Login</a></li>");
             sb.AppendLine("    </ul>");
             sb.AppendLine("}");
             _projectHelper.AddFileToProject(Name, $"Areas/Admin/Views/Shared/_LoginPartial.cshtml", sb.ToString());

@@ -20,6 +20,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly IConsole _console;
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IProjectDataModelService> _projectModelService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly ITestOutputHelper _output;
 
         public ModelCommandTests(ITestOutputHelper output)
@@ -67,12 +68,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             _projectModelService.Setup(p => p.GetProjectDataModels(It.IsAny<int>(), It.IsAny<bool>())).ReturnsAsync(projectModels);
             _projectModelService.Setup(p => p.GetProjectDataModelByName(It.IsAny<int>(), It.IsAny<string>())).ReturnsAsync((int projectId, string name) =>
                 projectModels.FirstOrDefault(p => p.ProjectId == projectId && p.Name == name));
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Model_Execute_ReturnsEmpty()
         {
-            var command = new ModelCommand(_console, LoggerMock.GetLogger<ModelCommand>().Object);
+            var command = new ModelCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<ModelCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

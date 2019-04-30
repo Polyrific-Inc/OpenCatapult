@@ -1,6 +1,6 @@
 <div class="margin10" fxLayout="row" fxLayoutAlign="space-between center">
   <div fxLayout="row"  fxLayoutAlign="flex-start center">
-      <a mat-button routerLink="../">
+      <a mat-button routerLink="../list/{{currentJobQueueTab}}">
         <mat-icon>arrow_back</mat-icon>
       </a>
       <h4>Job Queue</h4>
@@ -49,11 +49,6 @@
   <div fxLayout="row">
     <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Origin Url</div>
     <div>{{jobQueue?.originUrl}}</div>
-  </div>
-  <mat-divider></mat-divider>
-  <div fxLayout="row">
-    <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Output Values</div>
-    <div *ngIf="jobQueue?.outputValues">{{jobQueue?.outputValues | json}}</div>
   </div>
   <mat-divider></mat-divider>
   <div fxLayout="row">

@@ -37,5 +37,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectMember
         /// Name of the project member role
         /// </summary>
         public string ProjectMemberRoleName { get; set; }
+
+        /// <summary>
+        /// The collection of external account id of the user
+        /// </summary>
+        public Dictionary<string, string> ExternalAccountIds { get; set; }
     }
 }

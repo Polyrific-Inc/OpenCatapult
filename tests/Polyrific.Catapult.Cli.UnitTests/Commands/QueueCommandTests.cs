@@ -27,6 +27,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProjectService> _projectService;
         private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly Mock<IJobQueueLogListener> _jobQueueLogListener;
+        private readonly Mock<IHelpContextService> _helpContextService;
 
         public QueueCommandTests(ITestOutputHelper output)
         {
@@ -81,12 +82,13 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 });
 
             _jobQueueLogListener = new Mock<IJobQueueLogListener>();
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Queue_Execute_ReturnsEmpty()
         {
-            var command = new QueueCommand(_console, LoggerMock.GetLogger<QueueCommand>().Object);
+            var command = new QueueCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<QueueCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

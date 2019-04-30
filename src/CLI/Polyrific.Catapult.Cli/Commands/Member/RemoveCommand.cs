@@ -28,7 +28,7 @@ namespace Polyrific.Catapult.Cli.Commands.Member
         public string Project { get; set; }
 
         [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        [Option("-u|--user <USER>", "Username of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
         [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]

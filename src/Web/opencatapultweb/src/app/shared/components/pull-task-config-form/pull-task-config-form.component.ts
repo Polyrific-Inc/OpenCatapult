@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 @Component({
   selector: 'app-pull-task-config-form',
@@ -15,7 +16,8 @@ export class PullTaskConfigFormComponent implements OnInit, OnChanges {
   showForm: boolean;
 
   constructor(
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private utilityService: UtilityService
   ) {
     this.pullConfigForm = this.fb.group({
       Repository: [null, Validators.required],
@@ -35,7 +37,7 @@ export class PullTaskConfigFormComponent implements OnInit, OnChanges {
     this.showForm = this.taskType === JobTaskDefinitionType.Pull;
 
     if (changes.taskConfigs && this.taskConfigs) {
-      this.pullConfigForm.patchValue(this.taskConfigs);
+      this.pullConfigForm.patchValue(this.utilityService.convertStringToBoolean(this.taskConfigs));
     }
   }
 

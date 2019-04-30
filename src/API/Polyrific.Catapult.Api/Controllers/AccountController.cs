@@ -24,17 +24,20 @@ namespace Polyrific.Catapult.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IExternalAccountTypeService _externalAccountTypeService;
         private readonly IMapper _mapper;
         private readonly INotificationProvider _notificationProvider;
         private readonly ILogger _logger;
 
         public AccountController(
-            IUserService service, 
+            IUserService service,
+            IExternalAccountTypeService externalAccountTypeService,
             IMapper mapper, 
             INotificationProvider notificationProvider,
             ILogger<AccountController> logger)
         {
             _userService = service;
+            _externalAccountTypeService = externalAccountTypeService;
             _mapper = mapper;
             _notificationProvider = notificationProvider;
             _logger = logger;
@@ -56,7 +59,7 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var temporaryPassword = await _userService.GeneratePassword();
-                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, temporaryPassword);
+                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.ExternalAccountIds, temporaryPassword);
                 if (createdUser != null)
                 {
                     userId = createdUser.Id;
@@ -76,6 +79,7 @@ namespace Polyrific.Catapult.Api.Controllers
                     }, new Dictionary<string, string>
                     {
                         {MessageParameter.ConfirmUrl, confirmUrl},
+                        {MessageParameter.UserName, dto.Email },
                         {MessageParameter.TemporaryPassword, temporaryPassword}
                     });
                 }
@@ -193,31 +197,6 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
-        /// Get user by email
-        /// </summary>
-        /// <param name="email">email of the user</param>
-        /// <returns>the user object</returns>
-        [HttpGet("email/{email}")]
-        [Authorize]
-        public async Task<IActionResult> GetUserByEmail(string email)
-        {
-            _logger.LogInformation("Getting user {email}", email);
-
-            var currentUserEmail = await _userService.GetUserEmail(User);
-            if (currentUserEmail.ToLower() != email.ToLower() && !User.IsInRole(UserRole.Administrator))
-            {
-                _logger.LogWarning("User {currentUserEmail} is not authorized to access the endpoint", currentUserEmail);
-                return Unauthorized();
-            }
-
-            var user = await _userService.GetUserByEmail(email);
-
-            var result = _mapper.Map<UserDto>(user);
-
-            return Ok(result);
-        }
-
-        /// <summary>
         /// Update the user profile
         /// </summary>
         /// <param name="userId">Id of the user</param>
@@ -227,26 +206,33 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateUser(int userId, UpdateUserDto updatedUser)
         {
-            _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
-
-            var currentUserId = User.GetUserId();
-            if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
+            try
             {
-                _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
-                return Unauthorized();
+                _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
+
+                var currentUserId = User.GetUserId();
+                if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
+                {
+                    _logger.LogWarning("User {currentUserId} is not authorized to access the endpoint", currentUserId);
+                    return Unauthorized();
+                }
+
+                if (userId != updatedUser.Id)
+                {
+                    _logger.LogWarning("User Id doesn't match.");
+                    return BadRequest("User Id doesn't match.");
+                }
+
+                var user = _mapper.Map<User>(updatedUser);
+
+                await _userService.UpdateUser(user);
+
+                return Ok();
             }
-
-            if (userId != updatedUser.Id)
+            catch (DuplicateUserNameException ex)
             {
-                _logger.LogWarning("User Id doesn't match.");
-                return BadRequest("User Id doesn't match.");
-            }                
-
-            var user = _mapper.Map<User>(updatedUser);
-
-            await _userService.UpdateUser(user);
-
-            return Ok();
+                return BadRequest(ex.Message);
+            }
         }
 
         /// <summary>
@@ -334,18 +320,18 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Request reset password token
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="username">Username of the user</param>
         /// <returns>The reset password token</returns>
-        [HttpGet("email/{email}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(string email)
+        [HttpGet("name/{username}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string username)
         {
-            _logger.LogInformation("Requesting reset password token for user {email}", email);
+            _logger.LogInformation("Requesting reset password token for user {username}", username);
 
-            var user = await _userService.GetUserByEmail(email);
+            var user = await _userService.GetUser(username);
 
             if (user == null)
             {
-                _logger.LogWarning("User {email} was not found.", email);
+                _logger.LogWarning("User {username} was not found.", username);
                 return Ok();
             }                
 
@@ -365,7 +351,7 @@ namespace Polyrific.Catapult.Api.Controllers
                         }
                 }, new Dictionary<string, string>
                     {
-                        {MessageParameter.ResetPasswordLink, $"{originUrl}/reset-password?email={email}&token={HttpUtility.UrlEncode(token)}"}
+                        {MessageParameter.ResetPasswordLink, $"{originUrl}/reset-password?username={username}&token={HttpUtility.UrlEncode(token)}"}
                     });
             }
             else
@@ -389,20 +375,20 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Reset the password to a new one
         /// </summary>
-        /// <param name="email">Email of the user</param>
+        /// <param name="username">Username of the user</param>
         /// <param name="dto">The request body for reset password</param>
         /// <returns></returns>
-        [HttpPost("email/{email}/resetpassword")]
-        public async Task<IActionResult> ResetPassword(string email, ResetPasswordDto dto)
+        [HttpPost("name/{username}/resetpassword")]
+        public async Task<IActionResult> ResetPassword(string username, ResetPasswordDto dto)
         {
-            _logger.LogInformation("Resetting password for user {email}", email);
+            _logger.LogInformation("Resetting password for user {username}", username);
 
             try
             {
-                var user = await _userService.GetUserByEmail(email);
+                var user = await _userService.GetUser(username);
                 if (user == null)
                 {
-                    _logger.LogWarning("User {email} was not found.", email);
+                    _logger.LogWarning("User {username} was not found.", username);
                     return BadRequest("Reset password failed");
                 }
 
@@ -470,6 +456,23 @@ namespace Polyrific.Catapult.Api.Controllers
             }
 
             return Ok(dto);
+        }
+
+        /// <summary>
+        /// Get the list of external account types
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("external-type")]
+        [Authorize]
+        public async Task<IActionResult> GetExternalAccountTypes()
+        {
+            _logger.LogInformation("Getting the list of external account types");
+
+            var entities = await _externalAccountTypeService.GetExternalAccountTypes();
+
+            var results = _mapper.Map<List<ExternalAccountTypeDto>>(entities);
+
+            return Ok(results);
         }
     }
 }

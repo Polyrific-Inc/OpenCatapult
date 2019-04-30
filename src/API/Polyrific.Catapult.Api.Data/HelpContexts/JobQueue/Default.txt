@@ -1,0 +1,1 @@
+Here you can manage and monitor the queued jobs. You view the status and logs of the task that is run by the engine, and decide whether to restart or cancel them

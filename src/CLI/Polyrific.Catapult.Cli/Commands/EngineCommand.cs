@@ -3,6 +3,8 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Commands.Engine;
+using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands
 {
@@ -16,7 +18,8 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(RemoveCommand))]
     public class EngineCommand : BaseCommand
     {
-        public EngineCommand(IConsole console, ILogger<EngineCommand> logger) : base(console, logger)
+        public EngineCommand(IHelpContextService helpContextService, IConsole console, ILogger<EngineCommand> logger) 
+            : base(console, logger, helpContextService, HelpContextSection.Engine)
         {
         }
 
@@ -28,7 +31,12 @@ namespace Polyrific.Catapult.Cli.Commands
         protected override int OnExecute(CommandLineApplication app)
         {
             base.OnExecute(app);
-            app.ShowHelp();
+
+            if (!HelpContext)
+            {
+                app.ShowHelp();
+            }
+
             return 0;
         }
     }

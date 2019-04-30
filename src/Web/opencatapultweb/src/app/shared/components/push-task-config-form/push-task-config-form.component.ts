@@ -1,6 +1,7 @@
 import { Component, OnInit, OnChanges, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { JobTaskDefinitionType } from '@app/core';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 @Component({
   selector: 'app-push-task-config-form',
@@ -14,7 +15,10 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
   pushConfigForm: FormGroup;
   showForm: boolean;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private utilityService: UtilityService
+    ) {
     this.pushConfigForm = this.fb.group({
       Repository: [null, Validators.required],
       SourceLocation: null,
@@ -37,7 +41,7 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
     this.showForm = this.taskType === JobTaskDefinitionType.Push;
 
     if (changes.taskConfigs && this.taskConfigs) {
-      this.pushConfigForm.patchValue(this.taskConfigs);
+      this.pushConfigForm.patchValue(this.utilityService.convertStringToBoolean(this.taskConfigs));
     }
   }
 

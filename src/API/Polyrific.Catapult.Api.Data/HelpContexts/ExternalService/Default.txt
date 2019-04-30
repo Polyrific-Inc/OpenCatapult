@@ -1,0 +1,1 @@
+The external service is where we store authentication that can be use throughout several project, so we don't need to re-enter them each time we create a new project

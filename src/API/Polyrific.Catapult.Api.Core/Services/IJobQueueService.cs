@@ -106,5 +106,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The job queue entity</returns>
         Task<JobQueue> GetFirstUnassignedQueuedJob(string engine, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Send the notification to project member related to the job queue
+        /// </summary>
+        /// <param name="jobQueueId">Id of the job queue</param>
+        /// <param name="webUrl">Url of the web UI</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task SendNotification(int jobQueueId, string webUrl, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

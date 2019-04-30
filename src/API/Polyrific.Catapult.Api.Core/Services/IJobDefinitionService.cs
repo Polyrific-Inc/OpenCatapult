@@ -153,5 +153,13 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Decrypt the secret additional configs to plain text
+        /// </summary>
+        /// <param name="jobTaskDefinition">The job task definition object</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task DecryptSecretAdditionalConfigs(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

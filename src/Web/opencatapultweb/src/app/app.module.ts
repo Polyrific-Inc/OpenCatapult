@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatIconModule, MatListModule,
-          MatCardModule, MatInputModule, MatProgressBarModule, MatMenuModule, MatSidenavModule } from '@angular/material';
+          MatCardModule, MatInputModule, MatProgressBarModule, MatMenuModule, MatSidenavModule, MatDialogModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HeaderComponent } from './header/header.component';
 import { HomeLayoutComponent } from './layouts/home-layout/home-layout.component';
@@ -21,6 +21,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 import { ConfigServiceProvider } from './config/config.service.provider';
+import { HelpContextDialogComponent } from './help-context-dialog/help-context-dialog.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ConfigServiceProvider } from './config/config.service.provider';
     LoginComponent,
     UnauthorizedComponent,
     ForgotPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    HelpContextDialogComponent
   ],
   imports: [
     CoreModule,
@@ -51,11 +53,15 @@ import { ConfigServiceProvider } from './config/config.service.provider';
     MatSidenavModule,
     ReactiveFormsModule,
     FlexLayoutModule,
+    MatDialogModule,
     SharedModule.forRoot()
   ],
   providers: [
     ConfigServiceProvider
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    HelpContextDialogComponent
+  ]
 })
 export class AppModule { }

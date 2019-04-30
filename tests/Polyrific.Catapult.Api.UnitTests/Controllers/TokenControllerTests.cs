@@ -74,7 +74,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             var dto = new RequestTokenDto
             {
-                Email = "test@test.com"
+                UserName = "test@test.com"
             };
 
             var result = await controller.RequestToken(dto);
@@ -94,7 +94,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             var dto = new RequestTokenDto
             {
-                Email = "test@test.com"
+                UserName = "test@test.com"
             };
 
             var result = await controller.RequestToken(dto);
@@ -121,7 +121,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             var dto = new RequestTokenDto
             {
-                Email = "test@test.com"
+                UserName = "test@test.com"
             };
 
             var result = await controller.RequestToken(dto);
@@ -134,11 +134,19 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RefreshToken_ReturnsSuccess()
         {
             _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
+                .ReturnsAsync((string username, CancellationToken cancellationToken) => new User
                 {
                     Id = 1,
-                    Email = email,
-                    UserName = email,
+                    Email = username,
+                    UserName = username,
+                    IsActive = true
+                });
+            _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) => new User
+                {
+                    Id = id,
+                    Email = "test@example.com",
+                    UserName = "test@example.com",
                     IsActive = true
                 });
             _userService.Setup(s => s.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
@@ -167,7 +175,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 {
                     new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, "test@example.com")
+                        new Claim(ClaimTypes.NameIdentifier, "1")
                     })
                 })
             };
@@ -187,12 +195,12 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void RefreshToken_ReturnsUserIsSuspended()
         {
-            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
+            _userService.Setup(s => s.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken cancellationToken) => new User
                 {
-                    Id = 1,
-                    Email = email,
-                    UserName = email,
+                    Id = id,
+                    Email = "test@example.com",
+                    UserName = "test@example.com",
                     IsActive = false
                 });
 
@@ -202,7 +210,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 {
                     new ClaimsIdentity(new[]
                     {
-                        new Claim(ClaimTypes.Name, "test@example.com")
+                        new Claim(ClaimTypes.NameIdentifier, "1")
                     })
                 })
             };

@@ -7,6 +7,104 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="HelpContexts\TaskProvider\Default.txt" />
+    <None Remove="HelpContexts\ExternalService\Default.txt" />
+    <None Remove="HelpContexts\ExternalService\External Service Type.txt" />
+    <None Remove="HelpContexts\UserProfile\Default.txt" />
+    <None Remove="HelpContexts\Project\Create Project.txt" />
+    <None Remove="HelpContexts\Project\Default.txt" />
+    <None Remove="HelpContexts\Project\Project List.txt" />
+    <None Remove="HelpContexts\ProjectModel\Default.txt" />
+    <None Remove="HelpContexts\ProjectModel\Properties.txt" />
+    <None Remove="HelpContexts\ProjectModelProperty\Default.txt" />
+    <None Remove="HelpContexts\JobDefinition\Default.txt" />
+    <None Remove="HelpContexts\JobDefinition\Job Queue.txt" />
+    <None Remove="HelpContexts\JobDefinition\Job Task.txt" />
+    <None Remove="HelpContexts\JobTaskDefinition\Default.txt" />
+    <None Remove="HelpContexts\JobQueue\Default.txt" />
+    <None Remove="HelpContexts\JobQueue\Detail.txt" />
+    <None Remove="HelpContexts\JobQueue\Logs.txt" />
+    <None Remove="HelpContexts\ProjectMember\Default.txt" />
+    <None Remove="HelpContexts\ProjectMember\Project Role.txt" />
+    <None Remove="HelpContexts\User\Default.txt" />
+    <None Remove="HelpContexts\Engine\Default.txt" />
+    <None Remove="HelpContexts\Engine\Engine Token.txt" />
+    <None Remove="HelpContexts\User\User Role.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="HelpContexts\TaskProvider\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ExternalService\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ExternalService\External Service Type.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\UserProfile\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\Project\Create Project.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\Project\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\Project\Project List.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ProjectModel\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ProjectModel\Properties.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ProjectModelProperty\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobDefinition\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobDefinition\Job Queue.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobDefinition\Job Task.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobTaskDefinition\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobQueue\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobQueue\Detail.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\JobQueue\Logs.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ProjectMember\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\ProjectMember\Project Role.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\User\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\User\User Role.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\Engine\Default.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="HelpContexts\Engine\Engine Token.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="8.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />

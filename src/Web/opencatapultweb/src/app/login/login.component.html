@@ -8,12 +8,9 @@
         <mat-icon>vpn_key</mat-icon>
         <p>Please login to continue</p>
         <mat-form-field class="full-width-input">
-          <input matInput placeholder="Email" formControlName="email" required>
-          <mat-error *ngIf="isFieldInvalid('email', 'required')">
-            Please inform your email
-          </mat-error>
-          <mat-error *ngIf="isFieldInvalid('email', 'email')">
-            Please enter valid email address
+          <input matInput placeholder="UserName" formControlName="userName" required>
+          <mat-error *ngIf="isFieldInvalid('userName', 'required')">
+            Please inform your username
           </mat-error>
         </mat-form-field>
         <mat-form-field class="full-width-input">

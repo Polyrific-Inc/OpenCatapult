@@ -1,0 +1,1 @@
+Set the model property to define the internal characteristics of the model, or the relationship of it to other models. You can also define the data type and input type of the property.

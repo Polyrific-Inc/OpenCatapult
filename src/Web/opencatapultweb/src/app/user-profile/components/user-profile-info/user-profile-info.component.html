@@ -23,6 +23,7 @@
           <input matInput placeholder="Last name of the user"
             formControlName="lastName">
         </mat-form-field>
+        <app-external-account-form [form]="userInfoForm" [externalAccountIds]="user ? user.externalAccountIds : {}" [disableForm]="!editing"></app-external-account-form>
         <div class="action-buttons">
             <button mat-raised-button cdkFocusInitial *ngIf="!editing" (click)="onEditClick()">Edit</button>
             <button mat-raised-button color="primary" cdkFocusInitial *ngIf="editing">Save</button>

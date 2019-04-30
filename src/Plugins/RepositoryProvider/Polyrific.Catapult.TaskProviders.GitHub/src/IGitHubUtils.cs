@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.TaskProviders.GitHub
@@ -79,8 +80,9 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// <param name="projectName">Name of the remote repository</param>
         /// <param name="repositoryOwner">Owner of the repository. It could be username or organization.</param>
         /// <param name="isPrivateRepository">Is remote repository private?</param>
+        /// <param name="members">List of github member</param>
         /// <returns></returns>
-        Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository);
+        Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository, List<string> members);
 
         /// <summary>
         /// Delete a repository if it's exists

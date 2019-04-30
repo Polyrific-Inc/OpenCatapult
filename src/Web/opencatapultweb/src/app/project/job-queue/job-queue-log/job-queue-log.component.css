@@ -13,3 +13,7 @@
   justify-content: flex-end;
   align-items: center;
 }
+
+.action-buttons button {
+  margin-left: 10px;
+}

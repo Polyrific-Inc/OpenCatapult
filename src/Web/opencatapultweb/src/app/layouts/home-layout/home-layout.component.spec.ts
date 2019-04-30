@@ -3,7 +3,8 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HomeLayoutComponent } from './home-layout.component';
 import { HeaderComponent } from '@app/header/header.component';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatToolbarModule, MatMenuModule, MatIconModule, MatSidenavModule, MatDividerModule } from '@angular/material';
+import { MatToolbarModule, MatMenuModule, MatIconModule,
+  MatSidenavModule, MatDividerModule, MatProgressBarModule } from '@angular/material';
 import { AuthService } from '@app/core/auth/auth.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SharedModule } from '@app/shared/shared.module';
@@ -29,7 +30,8 @@ describe('HomeLayoutComponent', () => {
         MatSidenavModule,
         FlexLayoutModule,
         CoreModule,
-        MatDividerModule
+        MatDividerModule,
+        MatProgressBarModule
       ],
       declarations: [ HomeLayoutComponent, HeaderComponent ],
       providers: [

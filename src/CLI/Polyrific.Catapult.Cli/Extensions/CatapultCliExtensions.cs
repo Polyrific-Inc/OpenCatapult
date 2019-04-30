@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
+using Polyrific.Catapult.Shared.Dto.HelpContext;
 
 namespace Polyrific.Catapult.Cli.Extensions
 {
@@ -76,6 +77,29 @@ namespace Polyrific.Catapult.Cli.Extensions
             {
                 string indentationString = String.Concat(Enumerable.Repeat("  ", indentation));
                 sb.Append($"{indentationString}No item found");
+            }
+
+            return sb.ToString();
+        }
+
+        public static string ToHelpContextString(this IEnumerable<HelpContextDto> list, string openingLine = "")
+        {
+            var sb = new StringBuilder(openingLine);
+            sb.AppendLine();
+
+            string indentationString = String.Concat(Enumerable.Repeat("  ", 1));
+
+            bool empty = true;
+            foreach (var listitem in list)
+            {
+                empty = false;
+                sb.AppendLine($"{indentationString}- {(!string.IsNullOrEmpty(listitem.SubSection) ? listitem.SubSection + ": " : string.Empty)}{listitem.Text}");
+                sb.AppendLine();
+            }
+
+            if (empty)
+            {
+                sb.Append($"{indentationString}No help context found");
             }
 
             return sb.ToString();

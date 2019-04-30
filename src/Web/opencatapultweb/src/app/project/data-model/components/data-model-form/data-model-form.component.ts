@@ -3,6 +3,7 @@ import { DataModelDto } from '@app/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { TextHelperService } from '@app/core/services/text-helper.service';
 
 @Component({
   selector: 'app-data-model-form',
@@ -16,7 +17,10 @@ export class DataModelFormComponent implements OnInit, OnChanges {
   dataModelForm: FormGroup;
   private dataModelName = new Subject<string>();
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private textHelperService: TextHelperService
+    ) { }
 
   ngOnInit() {
     this.dataModelForm = this.fb.group({
@@ -62,7 +66,8 @@ export class DataModelFormComponent implements OnInit, OnChanges {
       }
 
       this.dataModelForm.patchValue({
-        name: dataModelName
+        name: dataModelName,
+        label: this.textHelperService.humanizeText(dataModelName)
       });
     });
   }

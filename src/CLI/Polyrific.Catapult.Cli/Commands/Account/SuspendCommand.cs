@@ -18,7 +18,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         }
 
         [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        [Option("-u|--user <USER>", "Username of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
         public override string Execute()
@@ -27,7 +27,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
             string message;
 
-            var user = _accountService.GetUserByEmail(User).Result;
+            var user = _accountService.GetUserByUserName(User).Result;
             if (user != null)
             {
                 _accountService.SuspendUser(int.Parse(user.Id)).Wait();

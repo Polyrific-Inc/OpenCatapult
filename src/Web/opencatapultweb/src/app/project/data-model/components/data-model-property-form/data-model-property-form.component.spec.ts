@@ -4,6 +4,7 @@ import { DataModelPropertyFormComponent } from './data-model-property-form.compo
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule, MatCheckboxModule, MatSelectModule, MatDividerModule } from '@angular/material';
+import { CoreModule } from '@app/core';
 
 describe('DataModelPropertyFormComponent', () => {
   let component: DataModelPropertyFormComponent;
@@ -18,7 +19,8 @@ describe('DataModelPropertyFormComponent', () => {
         MatInputModule,
         MatCheckboxModule,
         MatSelectModule,
-        MatDividerModule
+        MatDividerModule,
+        CoreModule
       ]
     })
     .compileComponents();

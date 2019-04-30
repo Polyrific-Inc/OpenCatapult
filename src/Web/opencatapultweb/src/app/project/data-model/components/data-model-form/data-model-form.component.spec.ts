@@ -4,6 +4,7 @@ import { DataModelFormComponent } from './data-model-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule, MatCheckboxModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CoreModule } from '@app/core';
 
 describe('DataModelFormComponent', () => {
   let component: DataModelFormComponent;
@@ -16,7 +17,8 @@ describe('DataModelFormComponent', () => {
         BrowserAnimationsModule,
         ReactiveFormsModule,
         MatInputModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        CoreModule
       ]
     })
     .compileComponents();

@@ -36,6 +36,10 @@ namespace Polyrific.Catapult.Api.Data
 
         public virtual DbSet<TaskProviderTag> TaskProviderTags { get; set; }
 
+        public virtual DbSet<HelpContext> HelpContexts { get; set; }
+
+        public virtual DbSet<ExternalAccountType> ExternalAccountType { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -66,6 +70,8 @@ namespace Polyrific.Catapult.Api.Data
             modelBuilder.ApplyConfiguration(new ManagedFileConfig());
             modelBuilder.ApplyConfiguration(new TagConfig());
             modelBuilder.ApplyConfiguration(new TaskProviderTagConfig());
+            modelBuilder.ApplyConfiguration(new HelpContextConfig());
+            modelBuilder.ApplyConfiguration(new ExternalAccountTypeConfig());
         }
     }
 }

@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
@@ -23,13 +24,16 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly ICatapultEngineService _engineService;
         private readonly IMapper _mapper;
         private readonly ILogger _logger;
+        private readonly IConfiguration _configuration;
 
-        public JobQueueController(IJobQueueService jobQueueService, ICatapultEngineService engineService, IMapper mapper, ILogger<JobQueueController> logger)
+        public JobQueueController(IJobQueueService jobQueueService, ICatapultEngineService engineService, 
+            IMapper mapper, ILogger<JobQueueController> logger, IConfiguration configuration)
         {
             _jobQueueService = jobQueueService;
             _engineService = engineService;
             _mapper = mapper;
             _logger = logger;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -312,6 +316,23 @@ namespace Polyrific.Catapult.Api.Controllers
             var logs = await _jobQueueService.GetJobLogs(projectId, queueId);
 
             return Ok(logs);
+        }
+
+        /// <summary>
+        /// Send notification to project member about the status of the job queue
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="queueId">Id of the queue</param>
+        /// <returns></returns>
+        [HttpPost("Project/{projectId}/queue/{queueId}/send-notification")]
+        [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
+        public async Task<IActionResult> SendNotification(int projectId, int queueId)
+        {
+            _logger.LogInformation("Sending email notification for job queue {queueId} in project {projectId}", queueId, projectId);
+
+            var jobQueueWebUrl = $"{_configuration["WebUrl"]}/project/{projectId}/job-queue/{queueId}";
+            await _jobQueueService.SendNotification(queueId, jobQueueWebUrl);
+            return Ok();
         }
 
         private string GetEngineVersion(string userAgent)

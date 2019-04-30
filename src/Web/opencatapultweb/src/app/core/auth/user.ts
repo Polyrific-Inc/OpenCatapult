@@ -1,7 +1,8 @@
 import { ProjectMember } from './project-member';
 
 export interface User {
-    email: string;
+    id: number;
+    userName: string;
     firstName: string;
     lastName: string;
     password: string;

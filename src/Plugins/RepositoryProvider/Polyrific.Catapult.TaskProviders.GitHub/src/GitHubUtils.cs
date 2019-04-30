@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Octokit;
 using Repository = LibGit2Sharp.Repository;
 using System.IO;
+using System.Collections.Generic;
 
 namespace Polyrific.Catapult.TaskProviders.GitHub
 {
@@ -314,7 +315,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             }
         }
 
-        public async Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository = true)
+        public async Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository = true, List<string> members = null)
         {
             try
             {
@@ -337,17 +338,28 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
                     if (repositoryOwner.Equals(currentUser.Login, StringComparison.InvariantCultureIgnoreCase))
                     {
-                        await client.Repository.Create(newRepository);
+                        repository = await client.Repository.Create(newRepository);
                     }
                     else
                     {
-                        await client.Repository.Create(repositoryOwner, newRepository);
+                        repository = await client.Repository.Create(repositoryOwner, newRepository);
                     }
                 }
                 else
                 {
                     _logger.LogInformation($"Repository {repositoryOwner}/{projectName} is already exists");
                 }
+
+                if (members != null)
+                {
+                    var currentMembers = await client.Repository.Collaborator.GetAll(repository.Id);
+                    var newMembers = members.Where(m => !currentMembers.Any(u => u.Login.ToLower() == m.ToLower())).ToList();
+
+                    foreach (var member in newMembers)
+                    {
+                        await client.Repository.Collaborator.Add(repository.Id, member);                       
+                    }
+                }                
 
                 return "";
             }

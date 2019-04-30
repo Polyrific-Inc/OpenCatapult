@@ -1,0 +1,1 @@
+The job is composed of tasks that is executed sequentially by the engine. Each task will have its own specific work, such as generating code, pushing the code to repository, or deploying the application to cloud environment

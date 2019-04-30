@@ -38,7 +38,7 @@ export class AuthService {
       this.config = this.configService.getConfig();
     }
 
-    return this.http.post(`${this.config.apiUrl}/Token`, { Email: user.email, Password: user.password },
+    return this.http.post(`${this.config.apiUrl}/Token`, { UserName: user.userName, Password: user.password },
     {
       responseType: 'text'
     }).pipe(map(this.storeToken(user)));
@@ -107,6 +107,14 @@ export class AuthService {
               }));
           }
 
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier')) {
+            user.id = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+          }
+
+          if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name')) {
+            user.userName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'];
+          }
+
           if (decodedToken.hasOwnProperty('http://schemas.microsoft.com/ws/2008/06/identity/claims/role')) {
             user.role = decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
           }
@@ -118,6 +126,8 @@ export class AuthService {
           if (decodedToken.hasOwnProperty('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname')) {
             user.lastName = decodedToken['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname'];
           }
+
+          user.password = null;
 
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);

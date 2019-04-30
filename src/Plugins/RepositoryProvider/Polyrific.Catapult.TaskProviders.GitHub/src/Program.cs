@@ -2,7 +2,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.ProjectMember;
 using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.TaskProviders.GitHub
@@ -37,7 +40,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         public override async Task<(string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage)> Pull()
         {
             var repositoryLocation = PullTaskConfig.RepositoryLocation ?? PullTaskConfig.WorkingLocation;
-            var repoConfig = GetGitAutomationConfig(repositoryLocation, PullTaskConfig.Repository, AdditionalConfigs, PullTaskConfig.IsPrivateRepository);
+            var repoConfig = GetGitAutomationConfig(repositoryLocation, PullTaskConfig.Repository, AdditionalConfigs, PullTaskConfig.IsPrivateRepository, ProjectMembers);
 
             if (_gitAutomation == null)
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
@@ -118,7 +121,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             return (MergeTaskConfig.Repository, null, "");
         }
 
-        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool? isPrivateRepository = null)
+        private GitAutomationConfig GetGitAutomationConfig(string localRepository, string remoteUrl, Dictionary<string, string> additionalConfigs, bool? isPrivateRepository = null, List<ProjectMemberDto> projectMembers = null)
         {
             var config = new GitAutomationConfig
             {
@@ -147,6 +150,12 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
                 if (additionalConfigs.ContainsKey("RepoAuthToken"))
                     config.RepoAuthToken = additionalConfigs["RepoAuthToken"];
+            }
+
+            if (projectMembers != null)
+            {
+                config.Members = projectMembers.Where(p => p.ExternalAccountIds != null && p.ExternalAccountIds.ContainsKey(ExternalAccountType.GitHub))
+                    .Select(p => p.ExternalAccountIds[ExternalAccountType.GitHub]).Where(p => !string.IsNullOrEmpty(p)).Distinct().ToList();
             }
 
             return config;

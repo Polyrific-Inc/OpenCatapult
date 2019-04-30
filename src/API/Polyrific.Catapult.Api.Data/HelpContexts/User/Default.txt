@@ -1,0 +1,1 @@
+You can invite multiple user to work on the opencatapult. You can then set them as a member of a project, or let them create their own project

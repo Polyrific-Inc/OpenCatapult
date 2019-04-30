@@ -7,5 +7,6 @@ export const propertyDataTypes: [string, string][] = [
   [PropertyDataType.Float, 'Float'],
   [PropertyDataType.Double, 'Double'],
   [PropertyDataType.Decimal, 'Decimal'],
-  [PropertyDataType.Boolean, 'Boolean']
+  [PropertyDataType.Boolean, 'Boolean'],
+  [PropertyDataType.DateTime, 'DateTime']
 ];

@@ -22,6 +22,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly IConsole _console;
         private readonly ITestOutputHelper _output;
         private readonly Mock<IAccountService> _accountService;
+        private readonly Mock<IHelpContextService> _helpContextService;
         private readonly Mock<IConsoleReader> _consoleReader;
         private readonly Mock<IManagedFileService> _managedFileService;
 
@@ -32,7 +33,8 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 new UserDto
                 {
                     Id = "1",
-                    Email = "user1@opencatapult.net"
+                    Email = "user1@opencatapult.net",
+                    UserName = "user1@opencatapult.net"
                 }
             };
 
@@ -41,7 +43,6 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _accountService = new Mock<IAccountService>();
             _accountService.Setup(s => s.GetUsers(It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(users);
-            _accountService.Setup(s => s.GetUserByEmail(It.IsAny<string>())).ReturnsAsync((string email) => users.FirstOrDefault(u => u.Email == email));
             _accountService.Setup(s => s.GetUserByUserName(It.IsAny<string>())).ReturnsAsync((string userName) => users.FirstOrDefault(u => u.UserName == userName));
             _accountService.Setup(s => s.RemoveUser(It.IsAny<int>())).Returns(Task.CompletedTask).Callback((int id) =>
             {
@@ -49,15 +50,18 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
                 if (user != null)
                     users.Remove(user);
             });
+            _accountService.Setup(s => s.GetExternalAccountTypes())
+                .ReturnsAsync(new List<ExternalAccountTypeDto>());
 
             _consoleReader = new Mock<IConsoleReader>();
             _managedFileService = new Mock<IManagedFileService>();
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Account_Execute_ReturnsEmpty()
         {
-            var command = new AccountCommand(_console, LoggerMock.GetLogger<AccountCommand>().Object);
+            var command = new AccountCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<AccountCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

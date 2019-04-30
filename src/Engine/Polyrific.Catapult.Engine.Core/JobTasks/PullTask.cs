@@ -8,15 +8,27 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
+using Polyrific.Catapult.Shared.Dto.ProjectMember;
 
 namespace Polyrific.Catapult.Engine.Core.JobTasks
 {
     public class PullTask : BaseJobTask<PullTaskConfig>, IPullTask
     {
+        private readonly IProjectMemberService _projectMemberService;
+
+        private List<ProjectMemberDto> _projectMembers;
+
+        protected List<ProjectMemberDto> ProjectMembers
+        {
+            get => _projectMembers == null || Project?.Id != ProjectId ? (_projectMembers = _projectMemberService.GetProjectMembersForEngine(ProjectId).Result) : _projectMembers;
+            set => _projectMembers = value;
+        }
+
         /// <inheritdoc />
-        public PullTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<PullTask> logger)
+        public PullTask(IProjectService projectService, IProjectMemberService projectMemberService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<PullTask> logger)
             : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
         {
+            _projectMemberService = projectMemberService;
         }
 
         public override string Type => JobTaskDefinitionType.Pull;
@@ -92,6 +104,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             {
                 {"process", process},
                 {"project", Project.Name},
+                {"projectmembers", ProjectMembers},
                 {"pullconfig", TaskConfig},
                 {"additional", AdditionalConfigs}
             };

@@ -25,5 +25,10 @@ namespace Polyrific.Catapult.Api.Data.Identity
         public virtual ApplicationUser ApplicationUser { get; set; }
         
         public int? AvatarFileId { get; set; }
+
+        /// <summary>
+        /// The serialized collection of external account id of the user
+        /// </summary>
+        public string ExternalAccountIds { get; set; }
     }
 }

@@ -45,9 +45,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 });
             _UserRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.Id == id));
-            _UserRepository.Setup(r => r.GetByEmail(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.Email == email));
-            _UserRepository.Setup(r => r.GetByUserName(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _UserRepository.Setup(r => r.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.UserName == name));
             _UserRepository.Setup(r => r.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(UserRole.Administrator);
@@ -91,7 +89,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddUser_ValidItem()
         {
             var UserService = new UserService(_UserRepository.Object);
-            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", "test*1");
+            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", null, "test*1");
 
             Assert.NotNull(newUser);
             Assert.True(_data.Count > 1);
@@ -143,25 +141,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var User = await UserService.GetUser("testempty");
 
             Assert.Null(User);
-        }
-
-        [Fact]
-        public async void GetUserByEmail_ReturnItem()
-        {
-            var userService = new UserService(_UserRepository.Object);
-            var projectUser = await userService.GetUserByEmail("test@test.com");
-
-            Assert.NotNull(projectUser);
-            Assert.Equal(1, projectUser.Id);
-        }
-
-        [Fact]
-        public async void GetUserByEmail_ReturnNull()
-        {
-            var userService = new UserService(_UserRepository.Object);
-            var user = await userService.GetUserByEmail("test@empty.com");
-
-            Assert.Null(user);
         }
 
         [Fact]

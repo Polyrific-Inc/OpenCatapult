@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _userRepository.ConfirmEmail(userId, token, cancellationToken);
         }
 
-        public async Task<User> CreateUser(string email, string firstName, string lastName, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> CreateUser(string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -42,7 +42,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                 UserName = email,
                 Email = email,
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                ExternalAccountIds = externalAccountIds
             };
 
             try
@@ -84,7 +85,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return await _userRepository.GetByUserName(userName, cancellationToken);
+            return await _userRepository.GetUser(userName, cancellationToken);
         }
 
         public async Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken))
@@ -92,13 +93,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             return await _userRepository.GetById(userId, cancellationToken);
-        }
-
-        public async Task<User> GetUserByEmail(string email, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return await _userRepository.GetByEmail(email, cancellationToken);
         }
 
         public async Task<int> GetUserId(ClaimsPrincipal principal, CancellationToken cancellationToken = default(CancellationToken))

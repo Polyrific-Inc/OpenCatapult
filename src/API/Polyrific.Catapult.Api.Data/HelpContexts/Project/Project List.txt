@@ -1,0 +1,1 @@
+The list of project is shown based on your access depending on your project membership. An administrator will have access to all projects

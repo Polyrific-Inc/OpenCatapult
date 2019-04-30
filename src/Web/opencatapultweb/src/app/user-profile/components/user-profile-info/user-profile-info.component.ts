@@ -43,7 +43,7 @@ export class UserProfileInfoComponent implements OnInit {
 
   getUser() {
     this.loading = true;
-    this.accountService.getUserByEmail(this.authService.currentUserValue.email)
+    this.accountService.getUserByUserName(this.authService.currentUserValue.userName)
       .subscribe(data => {
         this.loading = false;
         this.user = data;
@@ -68,6 +68,11 @@ export class UserProfileInfoComponent implements OnInit {
               this.authService.refreshSession().subscribe();
               this.loading = false;
               this.editing = false;
+              this.user = {
+                id: this.user.id,
+                ...this.userInfoForm.value
+              };
+              this.userInfoForm.get('userName').disable();
               this.userInfoForm.get('firstName').disable();
               this.userInfoForm.get('lastName').disable();
               this.snackbar.open('User info has been updated');
@@ -80,12 +85,14 @@ export class UserProfileInfoComponent implements OnInit {
   }
 
   onEditClick() {
+    this.userInfoForm.get('userName').enable();
     this.userInfoForm.get('firstName').enable();
     this.userInfoForm.get('lastName').enable();
     this.editing = true;
   }
 
   onCancelClick() {
+    this.userInfoForm.get('userName').disable();
     this.userInfoForm.get('firstName').disable();
     this.userInfoForm.get('lastName').disable();
     this.editing = false;

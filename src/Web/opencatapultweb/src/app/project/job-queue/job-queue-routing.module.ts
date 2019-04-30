@@ -5,11 +5,19 @@ import { JobQueueDetailComponent } from './job-queue-detail/job-queue-detail.com
 import { JobQueueLogComponent } from './job-queue-log/job-queue-log.component';
 import { JobQueueResolverService } from './services/job-queue-resolver.service';
 import { JobQueueErrorComponent } from './job-queue-error/job-queue-error.component';
+import { JobQueueListComponent } from './job-queue-list/job-queue-list.component';
 
 const routes: Routes = [
   {
-    path: '', component: JobQueueComponent
+    path: 'list', component: JobQueueComponent,
+    children: [
+      {path: '', redirectTo: 'current', pathMatch: 'full'},
+      {path: 'current', component: JobQueueListComponent},
+      {path: 'pending', component: JobQueueListComponent},
+      {path: 'past', component: JobQueueListComponent},
+    ]
   },
+  {path: '', redirectTo: 'list', pathMatch: 'full'},
   {
     path: ':id', component: JobQueueDetailComponent,
     resolve: {

@@ -68,6 +68,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<List<JobTaskStatusDto>>(path);
         }
 
+        public async Task SendNotification(int projectId, int queueId)
+        {
+            var path = $"project/{projectId}/queue/{queueId}/send-notification";
+
+            await Api.Post<object>(path, queueId);
+        }
+
         public async Task UpdateJobQueue(int queueId, UpdateJobDto job)
         {
             var path = $"queue/{queueId}";

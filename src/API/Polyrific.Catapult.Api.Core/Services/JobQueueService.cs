@@ -6,10 +6,12 @@ using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Specifications;
 using Polyrific.Catapult.Shared.Common.Interface;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,18 +21,23 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IJobQueueRepository _jobQueueRepository;
         private readonly IProjectRepository _projectRepository;
+        private readonly IUserRepository _userRepository;
         private readonly IJobCounterService _jobCounterService;
         private readonly ITextWriter _textWriter;
+        private readonly INotificationProvider _notificationProvider;
 
         private readonly string[] _inProgressJobStatus = { JobStatus.Queued, JobStatus.Processing, JobStatus.Pending };
         private readonly string[] _pastJobStatus = { JobStatus.Completed, JobStatus.Error, JobStatus.Cancelled };
 
-        public JobQueueService(IJobQueueRepository jobQueueRepository, IProjectRepository projectRepository, IJobCounterService jobCounterService, ITextWriter textWriter)
+        public JobQueueService(IJobQueueRepository jobQueueRepository, IProjectRepository projectRepository, IUserRepository userRepository,
+            IJobCounterService jobCounterService, ITextWriter textWriter, INotificationProvider notificationProvider)
         {
             _jobQueueRepository = jobQueueRepository;
             _projectRepository = projectRepository;
+            _userRepository = userRepository;
             _jobCounterService = jobCounterService;
             _textWriter = textWriter;
+            _notificationProvider = notificationProvider;
         }
 
         public async Task<int> AddJobQueue(int projectId, string originUrl, string jobType, int? jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken))
@@ -277,6 +284,52 @@ namespace Polyrific.Catapult.Api.Core.Services
                 return await _textWriter.Read($"{JobQueueLog.FolderNamePrefix}_{projectId}_{jobQueueId}", taskName);
 
             return "";
+        }
+
+        public async Task SendNotification(int jobQueueId, string webUrl, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var jobQueueSpec = new JobQueueFilterSpecification(0, jobQueueId);
+            jobQueueSpec.Includes.Add(q => q.Project.Members);
+            jobQueueSpec.Includes.Add(q => q.JobDefinition);
+            var jobQueue = await _jobQueueRepository.GetSingleBySpec(jobQueueSpec, cancellationToken);
+
+            var users = await _userRepository.GetUsersByIds(jobQueue.Project.Members.Select(m => m.UserId).ToArray());
+
+            await _notificationProvider.SendNotification(new SendNotificationRequest
+            {
+                MessageType = NotificationConfig.JobQueueCompleted,
+                Emails = users.Select(u => u.Email).Distinct().ToList()
+            }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.JobCode, jobQueue.Code},
+                        {MessageParameter.JobDefinitionName, jobQueue.JobDefinition.Name},
+                        {MessageParameter.ProjectName, jobQueue.Project.Name},
+                        {MessageParameter.JobStatus, jobQueue.Status},
+                        {MessageParameter.Remarks, jobQueue.Remarks},
+                        {MessageParameter.WebUrl, webUrl},
+                        {MessageParameter.JobTaskStatus, GenerateJobTaskStatusNotificationMessage(jobQueue.JobTasksStatus)}
+                    });
+        }
+
+        private string GenerateJobTaskStatusNotificationMessage(string jobTaskStatus)
+        {
+            if (string.IsNullOrEmpty(jobTaskStatus))
+                return string.Empty;
+
+            var jobTaskStatusList = JsonConvert.DeserializeObject<List<JobTaskStatus>>(jobTaskStatus);
+
+            var sb = new StringBuilder("<ul>");
+            foreach (var taskStatus in jobTaskStatusList.OrderBy(j => j.Sequence))
+            {
+                sb.AppendLine("<li>");
+                sb.AppendLine($"<div>{taskStatus.Sequence}. {taskStatus.TaskName}: {taskStatus.Status}</div>");
+                sb.AppendLine($"<div>{taskStatus.Remarks}</div>");
+                sb.AppendLine("</li>");
+            }
+
+            sb.AppendLine("</ul>");
+
+            return sb.ToString();
         }
     }
 }

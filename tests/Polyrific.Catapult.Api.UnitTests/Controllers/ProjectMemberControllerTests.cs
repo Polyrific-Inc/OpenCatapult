@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetProjectMembers_ReturnsProjectMemberList()
         {
-            _projectMemberService.Setup(s => s.GetProjectMembers(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _projectMemberService.Setup(s => s.GetProjectMembers(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<ProjectMember>
                 {
                     new ProjectMember
@@ -108,7 +108,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateProjectMemberNewUser_ReturnsCreatedProjectMember()
         {
             _projectMemberService
-                .Setup(s => s.AddProjectMember(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddProjectMember(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((1, 1));
             _projectMemberService.Setup(s => s.GetProjectMemberById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using Polyrific.Catapult.Shared.Dto.ProjectMember;
 
 namespace Polyrific.Catapult.TaskProviders.Core
 {
@@ -28,6 +29,9 @@ namespace Polyrific.Catapult.TaskProviders.Core
                 {
                     case "project":
                         ProjectName = ParsedArguments[key].ToString();
+                        break;
+                    case "projectmembers":
+                        ProjectMembers = JsonConvert.DeserializeObject<List<ProjectMemberDto>>(ParsedArguments[key].ToString());
                         break;
                     case "pullconfig":
                         PullTaskConfig = JsonConvert.DeserializeObject<PullTaskConfig>(ParsedArguments[key].ToString());
@@ -164,6 +168,11 @@ namespace Polyrific.Catapult.TaskProviders.Core
         /// Name of the project
         /// </summary>
         public string ProjectName { get; set; }
+
+        /// <summary>
+        /// Members of the project
+        /// </summary>
+        public List<ProjectMemberDto> ProjectMembers { get; set; }
 
         /// <summary>
         /// Pull task configuration

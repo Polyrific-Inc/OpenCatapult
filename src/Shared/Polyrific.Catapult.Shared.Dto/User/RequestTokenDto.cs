@@ -5,9 +5,9 @@ namespace Polyrific.Catapult.Shared.Dto.User
     public class RequestTokenDto
     {
         /// <summary>
-        /// Email address of the user
+        /// UserName of the user
         /// </summary>
-        public string Email { get; set; }
+        public string UserName { get; set; }
 
         /// <summary>
         /// Password of the user

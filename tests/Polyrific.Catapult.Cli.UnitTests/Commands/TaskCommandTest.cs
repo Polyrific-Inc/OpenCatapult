@@ -29,6 +29,7 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         private readonly Mock<IProviderService> _providerService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
+        private readonly Mock<IHelpContextService> _helpContextService;
 
         public TaskCommandTests(ITestOutputHelper output)
         {
@@ -179,12 +180,14 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
 
             _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
             _externalServiceTypeService.Setup(s => s.GetExternalServiceTypeByName(It.IsAny<string>())).ReturnsAsync((string name) => serviceTypes.FirstOrDefault(u => u.Name == name));
+
+            _helpContextService = new Mock<IHelpContextService>();
         }
 
         [Fact]
         public void Task_Execute_ReturnsEmpty()
         {
-            var command = new TaskCommand(_console, LoggerMock.GetLogger<TaskCommand>().Object);
+            var command = new TaskCommand(_helpContextService.Object, _console, LoggerMock.GetLogger<TaskCommand>().Object);
             var resultMessage = command.Execute();
 
             Assert.Equal("", resultMessage);

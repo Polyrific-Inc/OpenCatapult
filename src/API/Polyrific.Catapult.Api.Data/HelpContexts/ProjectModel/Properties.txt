@@ -1,0 +1,1 @@
+Each data model will have properties that describe what the model contains. They can define the internal characteristics of the model, or the relationship of it to other models

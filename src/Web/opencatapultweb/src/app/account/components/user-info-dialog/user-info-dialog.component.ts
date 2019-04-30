@@ -51,12 +51,14 @@ export class UserInfoDialogComponent implements OnInit {
   }
 
   onEditClick() {
+    this.userInfoForm.get('userName').enable();
     this.userInfoForm.get('firstName').enable();
     this.userInfoForm.get('lastName').enable();
     this.editing = true;
   }
 
   onCancelClick() {
+    this.userInfoForm.get('userName').disable();
     this.userInfoForm.get('firstName').disable();
     this.userInfoForm.get('lastName').disable();
     this.editing = false;

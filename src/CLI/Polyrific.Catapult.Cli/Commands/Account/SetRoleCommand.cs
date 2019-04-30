@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
         }
 
         [Required]
-        [Option("-u|--user <USER>", "Username (email) of the user", CommandOptionType.SingleValue)]
+        [Option("-u|--user <USER>", "Username of the user", CommandOptionType.SingleValue)]
         public string User { get; set; }
 
         [Required]
@@ -34,7 +34,7 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
             string message;
 
-            var user = _accountService.GetUserByEmail(User).Result;
+            var user = _accountService.GetUserByUserName(User).Result;
             if (user != null)
             {
                 var userId = int.Parse(user.Id);

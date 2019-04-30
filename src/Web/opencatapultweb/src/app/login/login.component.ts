@@ -14,8 +14,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   error = '';
   loginForm = this.fb.group({
-    email: [null, Validators.compose([
-      Validators.required, Validators.email])],
+    userName: [null, Validators.required],
     password: [null, Validators.required]
   });
 

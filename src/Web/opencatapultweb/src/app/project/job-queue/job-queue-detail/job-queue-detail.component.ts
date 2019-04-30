@@ -17,6 +17,7 @@ export class JobQueueDetailComponent implements OnInit {
   allowRestart: boolean;
   allowCancel: boolean;
   allowRefresh: boolean;
+  currentJobQueueTab: string;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
@@ -43,6 +44,14 @@ export class JobQueueDetailComponent implements OnInit {
       jobQueue.status === JobStatus.Error;
     this.allowCancel = jobQueue.status === JobStatus.Processing || jobQueue.status === JobStatus.Pending;
     this.allowRefresh = jobQueue.status !== JobStatus.Completed;
+
+    if (this.jobQueue.status === JobStatus.Pending) {
+      this.currentJobQueueTab = 'pending';
+    } else if (this.jobQueue.status === JobStatus.Queued || this.jobQueue.status === JobStatus.Processing) {
+      this.currentJobQueueTab = 'current';
+    } else {
+      this.currentJobQueueTab = 'past';
+    }
   }
 
   getJobQueue() {

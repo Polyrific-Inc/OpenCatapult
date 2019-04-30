@@ -49,6 +49,7 @@ namespace Polyrific.Catapult.Api
         public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+            .AddJsonFile("notificationconfig.json", optional: false, reloadOnChange: true)
             .AddJsonFile(
                 $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
                 optional: true)

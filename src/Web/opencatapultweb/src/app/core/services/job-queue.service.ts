@@ -3,19 +3,28 @@ import { ApiService } from './api.service';
 import { JobQueueDto } from '../models/job-queue/job-queue-dto';
 import { NewJobDto } from '../models/job-queue/new-job-dto';
 import { SignalrService } from './signalr.service';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, of, BehaviorSubject } from 'rxjs';
 import { JobLogDto } from '../models/job-queue/job-log-dto';
+import { concatMap } from 'rxjs/operators';
 
 @Injectable()
 export class JobQueueService {
   message = new Subject<JobLogDto>();
+  private currentjobs = new BehaviorSubject<JobQueueDto[]>([]);
+  public get jobs(): JobQueueDto[] {
+      return this.currentjobs.value;
+  }
 
   constructor(
     private api: ApiService,
     private messageService: SignalrService) { }
 
   getJobQueues(projectId: number, filter: string) {
-    return this.api.get<JobQueueDto[]>(`project/${projectId}/queue?filter=${filter}`);
+    return this.api.get<JobQueueDto[]>(`project/${projectId}/queue?filter=${filter}`)
+      .pipe(concatMap((data) => {
+        this.currentjobs.next(data);
+        return of(data);
+      }));
   }
 
   getJobQueue(projectId: number, queueId: number) {

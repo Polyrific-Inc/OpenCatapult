@@ -12,6 +12,7 @@ export * from './services/engine.service';
 export * from './services/yaml.service';
 export * from './services/project-history.service';
 export * from './services/managed-file.service';
+export * from './services/help-context.service';
 
 /* Models */
 export * from './models/project/project-dto';
@@ -46,6 +47,7 @@ export * from './models/account/reset-password-dto';
 export * from './models/account/set-user-role-dto';
 export * from './models/account/update-password-dto';
 export * from './models/account/update-user-dto';
+export * from './models/help-context/help-context-dto';
 
 /* Enums */
 export * from './auth/project-member-role';

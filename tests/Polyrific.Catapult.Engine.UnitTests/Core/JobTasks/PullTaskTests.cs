@@ -17,6 +17,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
     public class PullTaskTests
     {
         private readonly Mock<IProjectService> _projectService;
+        private readonly Mock<IProjectMemberService> _projectMemberService;
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
         private readonly Mock<IProviderService> _providerService;
@@ -66,6 +67,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                         IsSecret = true
                     }
                 });
+
+            _projectMemberService = new Mock<IProjectMemberService>();
         }
 
         [Fact]
@@ -79,7 +82,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
                         
-            var task = new PullTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PullTask(_projectService.Object, _projectMemberService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -101,7 +104,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             var config = new Dictionary<string, string>();
 
-            var task = new PullTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PullTask(_projectService.Object, _projectMemberService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -116,7 +119,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-            var task = new PullTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PullTask(_projectService.Object, _projectMemberService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistRepositoryProvider";
 
@@ -152,7 +155,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new PullTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PullTask(_projectService.Object, _projectMemberService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
             task.AdditionalConfigs = new Dictionary<string, string>

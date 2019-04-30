@@ -6,6 +6,7 @@ import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { TextHelperService } from '@app/core/services/text-helper.service';
 
 export interface NewMemberViewModel {
   projectId: number;
@@ -18,37 +19,38 @@ export interface NewMemberViewModel {
 })
 export class MemberNewDialogComponent implements OnInit {
   newMemberForm: FormGroup;
-  emailControl: FormControl;
+  userNameControl: FormControl;
   firstNameControl: FormControl;
   lastNameControl: FormControl;
   loading: boolean;
   projectMemberRoles = projectMemberRoles;
   newUser: boolean;
   currentUser: UserDto;
-  private email = new Subject<string>();
+  private userName = new Subject<string>();
 
   constructor (
     private fb: FormBuilder,
     private memberService: MemberService,
     private accountService: AccountService,
     private snackbar: SnackbarService,
+    private textHelperService: TextHelperService,
     public dialogRef: MatDialogRef<MemberNewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewMemberViewModel
     ) {
     }
 
   ngOnInit() {
-    this.emailControl = this.fb.control(null, Validators.compose([Validators.required, Validators.email]));
+    this.userNameControl = this.fb.control(null, Validators.required);
     this.firstNameControl = this.fb.control({value: null, disabled: true});
     this.lastNameControl = this.fb.control({value: null, disabled: true});
     this.newMemberForm = this.fb.group({
-      email: this.emailControl,
+      userName: this.userNameControl,
       firstName: this.firstNameControl,
       lastName: this.lastNameControl,
       projectMemberRoleId: [null, Validators.required]
     });
 
-    this.getUserByEmail();
+    this.getUserByUserName();
   }
 
   onFormReady(form: FormGroup) {
@@ -61,7 +63,7 @@ export class MemberNewDialogComponent implements OnInit {
       this.memberService.createMember(this.data.projectId, {
         projectId: this.data.projectId,
         userId: this.currentUser ? this.currentUser.id : 0,
-        userName: this.newMemberForm.value.email,
+        email: this.currentUser ? null : this.newMemberForm.value.userName,
         ...this.newMemberForm.value
       })
         .subscribe(
@@ -82,19 +84,20 @@ export class MemberNewDialogComponent implements OnInit {
     return control.invalid && control.errors && control.getError(errorCode);
   }
 
-  onEmailChanged(email: string) {
-    if (this.emailControl.valid) {
-      this.email.next(email);
+  onUserNameChanged(userName: string) {
+    if (this.userNameControl.valid) {
+      this.userName.next(userName);
     }
   }
 
-  getUserByEmail() {
-    this.email.pipe(
+  getUserByUserName() {
+    this.userName.pipe(
       debounceTime(500),
       distinctUntilChanged()
-    ).subscribe(email => {
+    ).subscribe(userName => {
       this.loading = true;
-      this.accountService.getUserByEmail(email)
+      this.userNameControl.clearValidators();
+      this.accountService.getUserByUserName(userName)
         .subscribe(user => {
           this.loading = false;
           if (user) {
@@ -110,6 +113,12 @@ export class MemberNewDialogComponent implements OnInit {
             this.lastNameControl.enable();
             this.newUser = true;
             this.currentUser = null;
+
+            if (!this.textHelperService.validateEmail(userName)) {
+              this.userNameControl.setErrors({
+                'newEmail': true
+              });
+            }
           }
         });
     });
