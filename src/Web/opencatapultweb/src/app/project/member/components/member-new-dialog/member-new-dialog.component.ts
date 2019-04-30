@@ -96,9 +96,7 @@ export class MemberNewDialogComponent implements OnInit {
       distinctUntilChanged()
     ).subscribe(userName => {
       this.loading = true;
-      this.userNameControl.setErrors({
-        'newEmail': false
-      });
+      this.userNameControl.clearValidators();
       this.accountService.getUserByUserName(userName)
         .subscribe(user => {
           this.loading = false;

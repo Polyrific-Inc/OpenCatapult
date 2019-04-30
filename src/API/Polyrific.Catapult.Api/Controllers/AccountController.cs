@@ -79,6 +79,7 @@ namespace Polyrific.Catapult.Api.Controllers
                     }, new Dictionary<string, string>
                     {
                         {MessageParameter.ConfirmUrl, confirmUrl},
+                        {MessageParameter.UserName, dto.Email },
                         {MessageParameter.TemporaryPassword, temporaryPassword}
                     });
                 }
