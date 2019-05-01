@@ -6,9 +6,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
+using Microsoft.Extensions.Configuration;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 
 namespace Polyrific.Catapult.Api.Core.Services
@@ -16,14 +19,18 @@ namespace Polyrific.Catapult.Api.Core.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly INotificationProvider _notificationProvider;
+        private readonly IConfiguration _configuration;
 
         private static char[] punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
         private static char[] startingChars = new char[] { '<', '&' };
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, INotificationProvider notificationProvider, IConfiguration configuration)
         {
             _userRepository = userRepository;
+            _notificationProvider = notificationProvider;
+            _configuration = configuration;
         }
 
         public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))
@@ -33,7 +40,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _userRepository.ConfirmEmail(userId, token, cancellationToken);
         }
 
-        public async Task<User> CreateUser(string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> CreateUser(string email, string firstName, string lastName, string roleName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -48,9 +55,35 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             try
             {
-                var id = await _userRepository.Create(user, password, cancellationToken);
-                if (id > 0)
-                    user.Id = id;
+                var userId = await _userRepository.Create(user, password, cancellationToken);
+                if (userId > 0)
+                {
+                    user.Id = userId;
+
+                    await SetUserRole(userId, roleName);
+
+                    var token = await GenerateConfirmationToken(userId);
+                    string confirmToken = HttpUtility.UrlEncode(token);
+
+                    var confirmUrl = $"{_configuration[ConfigurationKey.WebUrl]}/confirm-email?userId={userId}&token={confirmToken}";
+                    var loginUrl = $"{_configuration[ConfigurationKey.WebUrl]}/login";
+                    var updatePasswordUrl = $"{_configuration[ConfigurationKey.WebUrl]}/user-profile";
+                    await _notificationProvider.SendNotification(new SendNotificationRequest
+                    {
+                        MessageType = NotificationConfig.RegistrationCompleted,
+                        Emails = new List<string>
+                        {
+                            email
+                        }
+                    }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ConfirmUrl, confirmUrl},
+                        {MessageParameter.LoginUrl, loginUrl},
+                        {MessageParameter.UpdatePasswordUrl, updatePasswordUrl},
+                        {MessageParameter.UserName, email },
+                        {MessageParameter.TemporaryPassword, password}
+                    });
+                }
             }
             catch (Exception ex)
             {
@@ -149,11 +182,16 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _userRepository.GetUsers(isActive, role);
         }
 
-        public async Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<User>> GetUsersByIds(int[] ids, CancellationToken cancellationToken = default)
+        {
+            return await this._userRepository.GetUsersByIds(ids, cancellationToken);
+        }
+
+        public async Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _userRepository.SetUserRole(userId, roleName, cancellationToken);
+            await _userRepository.SetUserRole(userId, !string.IsNullOrEmpty(roleName) ? roleName : UserRole.Guest, cancellationToken);
         }
 
         public async Task Suspend(int userId, CancellationToken cancellationToken = default(CancellationToken))

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Moq;
 using Polyrific.Catapult.Api.Controllers;
@@ -48,8 +47,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _userService.Setup(s => s.GeneratePassword(It.IsAny<int>())).ReturnsAsync("0123456789");
             _userService
-                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken) => 
+                .Setup(s => s.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((string email, string firstName, string lastName, string roleName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken) => 
                     new User
                     {
                         Id = 1,
@@ -63,8 +62,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             {
                 Id = 1
             });
-            _notificationProvider.Setup(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()))
-                .Returns(Task.CompletedTask);
 
             var httpContext = new DefaultHttpContext()
             {
@@ -85,7 +82,6 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var okActionResult = Assert.IsType<OkObjectResult>(result);
             var returnValue = Assert.IsType<UserDto>(okActionResult.Value);
             Assert.Equal("1", returnValue.Id);
-            _notificationProvider.Verify(n => n.SendNotification(It.IsAny<SendNotificationRequest>(), It.IsAny<Dictionary<string, string>>()), Times.Once);
         }
 
         private object Dictionary<T1, T2>()
@@ -457,7 +453,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void SetUserRole_ReturnsSuccess()
         {
             _userService
-                .Setup(s => s.SetUserRole(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.SetUserRole(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,
@@ -473,7 +469,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void SetUserRole_ReturnsBadRequest()
         {
             _userService
-                .Setup(s => s.SetUserRole(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.SetUserRole(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
             var controller = new AccountController(_userService.Object, _externalAccountTypeService.Object, _mapper, _notificationProvider.Object,

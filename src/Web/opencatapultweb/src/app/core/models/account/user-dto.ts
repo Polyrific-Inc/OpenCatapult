@@ -5,6 +5,7 @@ export interface UserDto {
   lastName: string;
   email: string;
   isActive: boolean;
+  emailConfirmed: boolean;
   role: string;
   avatarFileId: number;
   externalAccountIds: { [key: string]: string };

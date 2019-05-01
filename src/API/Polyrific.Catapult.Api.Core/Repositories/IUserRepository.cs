@@ -68,7 +68,7 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <param name="roleName">Name of the role</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken));
+        Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get role of a user

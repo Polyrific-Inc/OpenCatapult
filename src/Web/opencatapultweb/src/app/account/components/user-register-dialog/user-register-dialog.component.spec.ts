@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserRegisterDialogComponent } from './user-register-dialog.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { MatInputModule, MatButtonModule, MatDialogModule, MatProgressBarModule, MatDialogRef } from '@angular/material';
+import { MatInputModule, MatButtonModule, MatDialogModule, MatProgressBarModule, MatDialogRef, MatSelectModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core';
@@ -24,7 +24,8 @@ describe('UserRegisterDialogComponent', () => {
         SharedModule.forRoot(),
         MatProgressBarModule,
         MatDialogModule,
-        CoreModule
+        CoreModule,
+        MatSelectModule
       ],
       providers: [
         {

@@ -25,11 +25,23 @@ export class ApiService {
   private formatErrors(error: HttpErrorResponse) {
     if (error.error) {
       if (typeof error.error === 'string') {
+        try {
+          const parsedError = JSON.parse(error.error);
+
+          if (parsedError.Message) {
+            return throwError(parsedError.Message);
+          }
+        } catch {
+          // do nothing
+        }
+
         return throwError(error.error);
       } else if (error.error[''] && Array.isArray(error.error[''])) {
         return throwError(error.error[''].join('\n'));
       } else if (Array.isArray(error.error)) {
         return throwError(error.error.join('\n'));
+      } else if (error.error.message) {
+        return throwError(error.error.message);
       }
     }
 

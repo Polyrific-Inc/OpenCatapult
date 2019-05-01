@@ -54,35 +54,12 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogInformation("Registering user. Request body: {@dto}", dto);
 
-            int userId = 0;
+            User user = null;
 
             try
             {
                 var temporaryPassword = await _userService.GeneratePassword();
-                var createdUser = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.ExternalAccountIds, temporaryPassword);
-                if (createdUser != null)
-                {
-                    userId = createdUser.Id;
-
-                    var token = await _userService.GenerateConfirmationToken(createdUser.Id);
-                    string confirmToken = HttpUtility.UrlEncode(token);
-
-                    // TODO: We might need to change the confirm url into the web UI url, when it's ready
-                    var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{userId}/confirm?token={confirmToken}";
-                    await _notificationProvider.SendNotification(new SendNotificationRequest
-                    {
-                        MessageType = NotificationConfig.RegistrationCompleted,
-                        Emails = new List<string>
-                        {
-                            dto.Email
-                        }
-                    }, new Dictionary<string, string>
-                    {
-                        {MessageParameter.ConfirmUrl, confirmUrl},
-                        {MessageParameter.UserName, dto.Email },
-                        {MessageParameter.TemporaryPassword, temporaryPassword}
-                    });
-                }
+                user = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.RoleName, dto.ExternalAccountIds, temporaryPassword);                
             }
             catch (UserCreationFailedException uex)
             {
@@ -90,7 +67,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 return BadRequest(uex.GetExceptionMessageList());
             }
 
-            var user = await _userService.GetUserById(userId);
+            user = await _userService.GetUserById(user.Id);
 
             var result = _mapper.Map<UserDto>(user);
 
@@ -447,7 +424,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
             try
             {
-                await _userService.SetUserRole(userId.ToString(), dto.RoleName);
+                await _userService.SetUserRole(userId, dto.RoleName);
             }
             catch (InvalidRoleException irEx)
             {

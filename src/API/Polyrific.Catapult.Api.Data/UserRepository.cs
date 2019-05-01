@@ -216,11 +216,11 @@ namespace Polyrific.Catapult.Api.Data
             return false;
         }
 
-        public async Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
                 var role = await _roleManager.FindByNameAsync(roleName);

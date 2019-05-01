@@ -111,9 +111,8 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Send the notification to project member related to the job queue
         /// </summary>
         /// <param name="jobQueueId">Id of the job queue</param>
-        /// <param name="webUrl">Url of the web UI</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task SendNotification(int jobQueueId, string webUrl, CancellationToken cancellationToken = default(CancellationToken));
+        Task SendNotification(int jobQueueId, CancellationToken cancellationToken = default(CancellationToken));
     }
 }

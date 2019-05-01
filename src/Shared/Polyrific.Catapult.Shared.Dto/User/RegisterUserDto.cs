@@ -25,6 +25,11 @@ namespace Polyrific.Catapult.Shared.Dto.User
         public string Email { get; set; }
 
         /// <summary>
+        /// Name of the role
+        /// </summary>
+        public string RoleName { get; set; }
+
+        /// <summary>
         /// The collection of external account id of the user
         /// </summary>
         public Dictionary<string, string> ExternalAccountIds { get; set; }

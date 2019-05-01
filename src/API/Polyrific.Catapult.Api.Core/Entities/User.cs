@@ -49,6 +49,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public bool IsActive { get; set; }
 
         /// <summary>
+        /// Is user email confirmed?
+        /// </summary>
+        public bool EmailConfirmed { get; set; }
+
+        /// <summary>
         /// Role of the user
         /// </summary>
         public string Role { get; set; }
