@@ -46,12 +46,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueues(int projectId, string filter = JobQueueFilterType.All)
         {
-            _logger.LogInformation("Getting job queues in project {projectId}. Filter: {filter}", projectId, filter);
+            _logger.LogRequest("Getting job queues in project {projectId}. Filter: {filter}", projectId, filter);
 
             try
             {
                 var jobs = await _jobQueueService.GetJobQueues(projectId, filter);
                 var results = _mapper.Map<List<JobDto>>(jobs);
+
+                _logger.LogResponse("Job queues in project {projectId} retrieved. Response body: {@results}", projectId, results);
 
                 return Ok(results);
             }
@@ -72,10 +74,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueue(int projectId, int queueId)
         {
-            _logger.LogInformation("Getting job queue {queueId} in project {projectId}", queueId, projectId);
+            _logger.LogRequest("Getting job queue {queueId} in project {projectId}", queueId, projectId);
 
             var job = await _jobQueueService.GetJobQueueById(projectId, queueId);
             var result = _mapper.Map<JobDto>(job);
+
+            _logger.LogResponse("Job queue {queueId} in project {projectId} retrieved. Response body: {@result}", queueId, projectId, result);
+
             return Ok(result);
         }
 
@@ -89,10 +94,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueueByCode(int projectId, string queueCode)
         {
-            _logger.LogInformation("Getting job queue {queueCode} in project {projectId}", queueCode, projectId);
+            _logger.LogRequest("Getting job queue {queueCode} in project {projectId}", queueCode, projectId);
 
             var job = await _jobQueueService.GetJobQueueByCode(projectId, queueCode);
             var result = _mapper.Map<JobDto>(job);
+
+            _logger.LogResponse("Job queue {queueCode} in project {projectId} retrieved. Response body: {@result}", queueCode, projectId, result);
+
             return Ok(result);
         }
 
@@ -107,7 +115,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CreateJobQueue(int projectId, NewJobDto newJobQueue)
         {
-            _logger.LogInformation("Creating job queue for project {projectId}. Request body: {@newJobQueue}", projectId, newJobQueue);
+            _logger.LogRequest("Creating job queue for project {projectId}. Request body: {@newJobQueue}", projectId, newJobQueue);
 
             try
             {
@@ -124,6 +132,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
                 var job = await _jobQueueService.GetJobQueueById(projectId, queueId);
                 var result = _mapper.Map<JobDto>(job);
+
+                _logger.LogResponse("Job queue in project {projectId} created. Response body: {@result}", projectId, result);
 
                 return CreatedAtRoute("GetJobQueueById", new
                 {
@@ -153,11 +163,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CancelJobQueue(int projectId, int queueId)
         {
-            _logger.LogInformation("Cancel job queue {queueId} in project {projectId}", queueId, projectId);
+            _logger.LogRequest("Cancel job queue {queueId} in project {projectId}", queueId, projectId);
 
             try
             {
                 await _jobQueueService.CancelJobQueue(queueId);
+
+                _logger.LogResponse("Job queue {queueId} in project {projectId} cancelled", queueId, projectId);
 
                 return Ok();
             }
@@ -193,6 +205,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
             // update engine's last seen
             await _engineService.UpdateLastSeen(engineName, GetEngineVersion(Request.Headers["User-Agent"].ToString()));
+            
+            _logger.LogResponse("Queued job queue checked. Response body: {@result}", result);
 
             return Ok(result);
         }
@@ -208,7 +222,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> UpdateJobQueue(int projectId, int queueId, UpdateJobDto job)
         {
-            _logger.LogInformation("Update job queue {queueId} in project {projectId}", queueId, projectId);
+            _logger.LogRequest("Update job queue {queueId} in project {projectId}", queueId, projectId);
 
             if (queueId != job.Id)
             {
@@ -218,6 +232,8 @@ namespace Polyrific.Catapult.Api.Controllers
             var entity = _mapper.Map<JobQueue>(job);
             entity.ProjectId = projectId;
             await _jobQueueService.UpdateJobQueue(entity);
+
+            _logger.LogResponse("Job queue {queueId} in project {projectId} updated", queueId, projectId);
 
             return Ok();
         }
@@ -235,7 +251,7 @@ namespace Polyrific.Catapult.Api.Controllers
             if (!await CheckEngineStatus())
                 return Unauthorized();
                 
-            _logger.LogInformation("Updating job queue. Request body: {@job}", job);
+            _logger.LogRequest("Updating job queue. Request body: {@job}", job);
 
             try
             {
@@ -246,6 +262,9 @@ namespace Polyrific.Catapult.Api.Controllers
 
                 var entity = _mapper.Map<JobQueue>(job);
                 await _jobQueueService.UpdateJobQueue(entity);
+
+
+                _logger.LogResponse("Job queue {queueId} in project {projectId} updated", queueId);
 
                 return Ok();
             }
@@ -267,14 +286,16 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobQueueStatus(int projectId, int queueId, string filter = JobTaskStatusFilterType.All)
         {
-            _logger.LogInformation("Getting status for job queue {queueId} in project {projectId}. Filter: {filter}", queueId, projectId, filter);
+            _logger.LogRequest("Getting status for job queue {queueId} in project {projectId}. Filter: {filter}", queueId, projectId, filter);
 
             try
             {
                 var jobTaskStatus = await _jobQueueService.GetJobTaskStatus(queueId, filter);
-                var result = _mapper.Map<List<JobTaskStatusDto>>(jobTaskStatus);
+                var results = _mapper.Map<List<JobTaskStatusDto>>(jobTaskStatus);
 
-                return Ok(result);
+                _logger.LogResponse("Job queue status list for job queue {queueId} in project {projectId} retrieved. Response body: {@results}", queueId, projectId, results);
+
+                return Ok(results);
             }
             catch (FilterTypeNotFoundException ex)
             {
@@ -294,9 +315,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetTaskLogs(int projectId, int queueId, string taskName)
         {
-            _logger.LogInformation("Getting logs for task {taskName} in job queue {queueId}", taskName, queueId);
+            _logger.LogRequest("Getting logs for task {taskName} in job queue {queueId}", taskName, queueId);
 
             var logs = await _jobQueueService.GetTaskLogs(projectId, queueId, taskName);
+
+            _logger.LogResponse("Log for task {taskName} in job queue {queueId} in project {projectId} retrieved", taskName, queueId, projectId);
 
             return Ok(logs);
         }
@@ -311,9 +334,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> GetJobLogs(int projectId, int queueId)
         {
-            _logger.LogInformation("Getting logs for job queue {queueId}", queueId);
+            _logger.LogRequest("Getting logs for job queue {queueId}", queueId);
 
             var logs = await _jobQueueService.GetJobLogs(projectId, queueId);
+
+            _logger.LogResponse("Log for job queue {queueId} in project {projectId} retrieved", queueId, projectId);
 
             return Ok(logs);
         }
@@ -327,9 +352,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> SendNotification(int queueId)
         {
-            _logger.LogInformation("Sending email notification for job queue {queueId}", queueId);
+            _logger.LogRequest("Sending email notification for job queue {queueId}", queueId);
 
             await _jobQueueService.SendNotification(queueId, _configuration[ConfigurationKey.WebUrl]);
+
+            _logger.LogResponse("Notification for job queue {queueId} sent", queueId);
+
             return Ok();
         }
 

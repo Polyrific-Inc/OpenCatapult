@@ -55,7 +55,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterUser(RegisterUserDto dto)
         {
-            _logger.LogInformation("Registering user. Request body: {@dto}", dto);
+            _logger.LogRequest("Registering user. Request body: {@dto}", dto);
 
             User user = null;
 
@@ -74,6 +74,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
             var result = _mapper.Map<UserDto>(user);
 
+            _logger.LogResponse("User registered. Response body: {@result}", result);
+
             return Ok(result);
         }
 
@@ -86,9 +88,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("{userId}/Confirm")]
         public async Task<IActionResult> ConfirmEmail(int userId, string token)
         {
-            _logger.LogInformation("Confirming email for user {userId}", userId);
+            _logger.LogRequest("Confirming email for user {userId}", userId);
 
             await _userService.ConfirmEmail(userId, token);
+
+            _logger.LogResponse("Email confirmed");
 
             return Ok("Email confirmed.");
         }
@@ -103,11 +107,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetUsers(string status, string role)
         {
-            _logger.LogInformation("Getting users. Filtered by status = {status} and role = {role}", status, role);
+            _logger.LogRequest("Getting users. Filtered by status = {status} and role = {role}", status, role);
 
             var users = await _userService.GetUsers(status, role);
 
             var results = _mapper.Map<List<UserDto>>(users);
+
+            _logger.LogResponse("Users retrieved. Reponse body: {@results}", results);
 
             return Ok(results);
         }
@@ -121,7 +127,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUser(int userId)
         {
-            _logger.LogInformation("Getting user {userId}", userId);
+            _logger.LogRequest("Getting user {userId}", userId);
 
             var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
@@ -134,6 +140,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
             var result = _mapper.Map<UserDto>(user);
 
+            _logger.LogResponse("User {userId} retrieved. Reponse body: {@result}", userId, result);
+
             return Ok(result);
         }
 
@@ -141,13 +149,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetCurrentUser()
         {
-            _logger.LogInformation("Getting current user");
+            _logger.LogRequest("Getting current user");
 
             var currentUserId = User.GetUserId();
 
             var user = await _userService.GetUserById(currentUserId);
 
             var result = _mapper.Map<UserDto>(user);
+
+            _logger.LogResponse("Current user retrieved. Reponse body: {@result}", result);
 
             return Ok(result);
         }
@@ -161,7 +171,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserByName(string userName)
         {
-            _logger.LogInformation("Getting user {userName}", userName);
+            _logger.LogRequest("Getting user {userName}", userName);
 
             if (User.Identity.Name.ToLower() != userName.ToLower() && !User.IsInRole(UserRole.Administrator))
             {
@@ -172,6 +182,8 @@ namespace Polyrific.Catapult.Api.Controllers
             var user = await _userService.GetUser(userName);
 
             var result = _mapper.Map<UserDto>(user);
+
+            _logger.LogResponse("User {userName} retrieved. Reponse body: {@result}", userName, result);
 
             return Ok(result);
         }
@@ -188,7 +200,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             try
             {
-                _logger.LogInformation("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
+                _logger.LogRequest("Updating user {userId}. Request body: {@updatedUser}", userId, updatedUser);
 
                 var currentUserId = User.GetUserId();
                 if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
@@ -206,6 +218,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 var user = _mapper.Map<User>(updatedUser);
 
                 await _userService.UpdateUser(user);
+
+                _logger.LogResponse("User {userId} updated", userId);
 
                 return Ok();
             }
@@ -225,7 +239,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateAvatar(int userId, int? managedFileId)
         {
-            _logger.LogInformation("Updating user {userId} avatar into file {managedFileId}", userId, managedFileId);
+            _logger.LogRequest("Updating user {userId} avatar into file {managedFileId}", userId, managedFileId);
 
             var currentUserId = User.GetUserId();
             if (currentUserId != userId && !User.IsInRole(UserRole.Administrator))
@@ -235,6 +249,8 @@ namespace Polyrific.Catapult.Api.Controllers
             }
             
             await _userService.UpdateAvatar(userId, managedFileId);
+
+            _logger.LogResponse("Avatar for User {userId} updated", userId);
 
             return Ok();
         }
@@ -248,9 +264,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> SuspendUser(int userId)
         {
-            _logger.LogInformation("Suspending user {userId}", userId);
+            _logger.LogRequest("Suspending user {userId}", userId);
 
             await _userService.Suspend(userId);
+
+            _logger.LogResponse("User {userId} suspended", userId);
 
             return Ok("User suspended");
         }
@@ -264,9 +282,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> ReactivateUser(int userId)
         {
-            _logger.LogInformation("Reactivating user {userId}", userId);
+            _logger.LogRequest("Reactivating user {userId}", userId);
 
             await _userService.Reactivate(userId);
+
+            _logger.LogResponse("User {userId} activated", userId);
 
             return Ok("User activated");
         }
@@ -280,13 +300,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> UpdatePassword(UpdatePasswordDto dto)
         {
-            _logger.LogInformation("Updating current user's password");
+            _logger.LogRequest("Updating current user ({Name}) password.", User.Identity.Name);
 
             try
             {
                 var currentUserId = User.GetUserId();
 
                 await _userService.UpdatePassword(currentUserId, dto.OldPassword, dto.NewPassword);
+
+                _logger.LogResponse("current user ({Name}) password updated");
 
                 return Ok("Password updated");
             }
@@ -305,7 +327,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("name/{username}/resetpassword")]
         public async Task<IActionResult> ResetPassword(string username)
         {
-            _logger.LogInformation("Requesting reset password token for user {username}", username);
+            _logger.LogRequest("Requesting reset password token for user {username}", username);
 
             var user = await _userService.GetUser(username);
 
@@ -349,6 +371,8 @@ namespace Polyrific.Catapult.Api.Controllers
                     });
             }
 
+            _logger.LogResponse("Password reset notification for user {username} sent", username);
+
             return Ok();
         }
 
@@ -361,7 +385,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("name/{username}/resetpassword")]
         public async Task<IActionResult> ResetPassword(string username, ResetPasswordDto dto)
         {
-            _logger.LogInformation("Resetting password for user {username}", username);
+            _logger.LogRequest("Resetting password for user {username}", username);
 
             try
             {
@@ -373,6 +397,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 }
 
                 await _userService.ResetPassword(user.Id, dto.Token, dto.NewPassword);
+
+                _logger.LogResponse("Password for user {username} reset", username);
 
                 return Ok("Reset password success");
             }
@@ -392,7 +418,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RemoveUser(int userId)
         {
-            _logger.LogInformation("Removing user {userId}", userId);
+            _logger.LogRequest("Removing user {userId}", userId);
 
             try
             {
@@ -403,6 +429,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(uex, "User deletion failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
+
+            _logger.LogResponse("User {userId} removed", userId);
 
             return NoContent();
         }
@@ -417,7 +445,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> SetUserRole(int userId, SetUserRoleDto dto)
         {
-            _logger.LogInformation("Setting role for user {userId}. Request body: {@dto}", userId, dto);
+            _logger.LogRequest("Setting role for user {userId}. Request body: {@dto}", userId, dto);
 
             if (userId != dto.UserId)
             {
@@ -435,6 +463,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 return BadRequest(irEx.Message);
             }
 
+            _logger.LogResponse("User {userId} role set. Response body: {@dto}", userId, dto);
+
             return Ok(dto);
         }
 
@@ -446,11 +476,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalAccountTypes()
         {
-            _logger.LogInformation("Getting the list of external account types");
+            _logger.LogRequest("Getting the list of external account types");
 
             var entities = await _externalAccountTypeService.GetExternalAccountTypes();
 
             var results = _mapper.Map<List<ExternalAccountTypeDto>>(entities);
+
+            _logger.LogResponse("List of external account types retrieved. Response body: {@dto}", results);
 
             return Ok(results);
         }
