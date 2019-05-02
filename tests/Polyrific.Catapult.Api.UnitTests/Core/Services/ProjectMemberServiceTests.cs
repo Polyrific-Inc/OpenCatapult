@@ -94,7 +94,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) =>
                     userData.FirstOrDefault(u => u.UserName.ToLower() == email.ToLower()));
-            _userService.Setup(r => r.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userService.Setup(r => r.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new User
                 {
                     Id = 2
@@ -146,7 +146,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddProjectMember_NewUser()
         {
             var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
-            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", null, 1);
+            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", null, 1, "http://web");
 
             Assert.True(_data.Count > 1);
             Assert.True(memberId > 1);
@@ -166,7 +166,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddProjectMember_DuplicateEmail()
         {
             var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
-            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", null, 1));
+            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", null, 1, "http://web"));
 
             Assert.IsType<DuplicateUserEmailException>(exception?.Result);
         }

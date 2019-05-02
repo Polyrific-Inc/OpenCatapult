@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="automapper" Version="8.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
     <PackageReference Include="newtonsoft.json" Version="12.0.1" />
     <PackageReference Include="YamlDotNet" Version="6.0.0" />
   </ItemGroup>

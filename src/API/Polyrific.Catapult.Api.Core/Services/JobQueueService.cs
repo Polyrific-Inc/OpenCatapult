@@ -1,6 +1,5 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
@@ -26,13 +25,12 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IJobCounterService _jobCounterService;
         private readonly ITextWriter _textWriter;
         private readonly INotificationProvider _notificationProvider;
-        private readonly IConfiguration _configuration;
 
         private readonly string[] _inProgressJobStatus = { JobStatus.Queued, JobStatus.Processing, JobStatus.Pending };
         private readonly string[] _pastJobStatus = { JobStatus.Completed, JobStatus.Error, JobStatus.Cancelled };
 
         public JobQueueService(IJobQueueRepository jobQueueRepository, IProjectRepository projectRepository, IUserRepository userRepository,
-            IJobCounterService jobCounterService, ITextWriter textWriter, INotificationProvider notificationProvider, IConfiguration configuration)
+            IJobCounterService jobCounterService, ITextWriter textWriter, INotificationProvider notificationProvider)
         {
             _jobQueueRepository = jobQueueRepository;
             _projectRepository = projectRepository;
@@ -40,7 +38,6 @@ namespace Polyrific.Catapult.Api.Core.Services
             _jobCounterService = jobCounterService;
             _textWriter = textWriter;
             _notificationProvider = notificationProvider;
-            _configuration = configuration;
         }
 
         public async Task<int> AddJobQueue(int projectId, string originUrl, string jobType, int? jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken))
@@ -289,7 +286,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return "";
         }
 
-        public async Task SendNotification(int jobQueueId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task SendNotification(int jobQueueId, string webUrl, CancellationToken cancellationToken = default(CancellationToken))
         {
             var jobQueueSpec = new JobQueueFilterSpecification(0, jobQueueId);
             jobQueueSpec.Includes.Add(q => q.Project.Members);
@@ -298,7 +295,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             var users = await _userRepository.GetUsersByIds(jobQueue.Project.Members.Select(m => m.UserId).ToArray());
 
-            var jobQueueWebUrl = $"{_configuration[ConfigurationKey.WebUrl]}/project/{jobQueue.ProjectId}/job-queue/{jobQueueId}";
+            var jobQueueWebUrl = $"{webUrl}/project/{jobQueue.ProjectId}/job-queue/{jobQueueId}";
             await _notificationProvider.SendNotification(new SendNotificationRequest
             {
                 MessageType = NotificationConfig.JobQueueCompleted,

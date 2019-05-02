@@ -27,6 +27,7 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IExternalAccountTypeService _externalAccountTypeService;
         private readonly IMapper _mapper;
         private readonly INotificationProvider _notificationProvider;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
         public AccountController(
@@ -34,12 +35,14 @@ namespace Polyrific.Catapult.Api.Controllers
             IExternalAccountTypeService externalAccountTypeService,
             IMapper mapper, 
             INotificationProvider notificationProvider,
+            IConfiguration configuration,
             ILogger<AccountController> logger)
         {
             _userService = service;
             _externalAccountTypeService = externalAccountTypeService;
             _mapper = mapper;
             _notificationProvider = notificationProvider;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -59,7 +62,7 @@ namespace Polyrific.Catapult.Api.Controllers
             try
             {
                 var temporaryPassword = await _userService.GeneratePassword();
-                user = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.RoleName, dto.ExternalAccountIds, temporaryPassword);                
+                user = await _userService.CreateUser(dto.Email, dto.FirstName, dto.LastName, dto.RoleName, dto.ExternalAccountIds, temporaryPassword, _configuration[ConfigurationKey.WebUrl]);                
             }
             catch (UserCreationFailedException uex)
             {

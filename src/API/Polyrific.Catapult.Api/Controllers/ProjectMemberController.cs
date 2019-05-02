@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -21,15 +22,18 @@ namespace Polyrific.Catapult.Api.Controllers
     {
         private readonly IProjectMemberService _projectMemberService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
         public ProjectMemberController(
             IProjectMemberService projectMemberService,
             IMapper mapper, 
+            IConfiguration configuration,
             ILogger<ProjectMemberController> logger)
         {
             _projectMemberService = projectMemberService;
             _mapper = mapper;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -86,7 +90,8 @@ namespace Polyrific.Catapult.Api.Controllers
                         newProjectMember.FirstName, 
                         newProjectMember.LastName, 
                         newProjectMember.ExternalAccountIds,
-                        newProjectMember.ProjectMemberRoleId);
+                        newProjectMember.ProjectMemberRoleId,
+                        _configuration[ConfigurationKey.WebUrl]);
                 }
 
                 var projectMember = await _projectMemberService.GetProjectMemberById(newProjectMemberId);

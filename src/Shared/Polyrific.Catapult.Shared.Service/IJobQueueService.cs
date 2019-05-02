@@ -90,9 +90,8 @@ namespace Polyrific.Catapult.Shared.Service
         /// <summary>
         /// Send the notification to project member once the engine processing is done
         /// </summary>
-        /// <param name="projectId">Id of the project</param>
         /// <param name="queueId">Id of the queue</param>
         /// <returns></returns>
-        Task SendNotification(int projectId, int queueId);
+        Task SendNotification(int queueId);
     }
 }

@@ -7,7 +7,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
-using Microsoft.Extensions.Configuration;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
@@ -20,17 +19,15 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly INotificationProvider _notificationProvider;
-        private readonly IConfiguration _configuration;
 
         private static char[] punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
         private static char[] startingChars = new char[] { '<', '&' };
 
-        public UserService(IUserRepository userRepository, INotificationProvider notificationProvider, IConfiguration configuration)
+        public UserService(IUserRepository userRepository, INotificationProvider notificationProvider)
         {
             _userRepository = userRepository;
             _notificationProvider = notificationProvider;
-            _configuration = configuration;
         }
 
         public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))
@@ -40,7 +37,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _userRepository.ConfirmEmail(userId, token, cancellationToken);
         }
 
-        public async Task<User> CreateUser(string email, string firstName, string lastName, string roleName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<User> CreateUser(string email, string firstName, string lastName, string roleName, Dictionary<string, string> externalAccountIds, string password, string webUrl, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -65,9 +62,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                     var token = await GenerateConfirmationToken(userId);
                     string confirmToken = HttpUtility.UrlEncode(token);
 
-                    var confirmUrl = $"{_configuration[ConfigurationKey.WebUrl]}/confirm-email?userId={userId}&token={confirmToken}";
-                    var loginUrl = $"{_configuration[ConfigurationKey.WebUrl]}/login";
-                    var updatePasswordUrl = $"{_configuration[ConfigurationKey.WebUrl]}/user-profile";
+                    var confirmUrl = $"{webUrl}/confirm-email?userId={userId}&token={confirmToken}";
+                    var loginUrl = $"{webUrl}/login";
+                    var updatePasswordUrl = $"{webUrl}/user-profile";
                     await _notificationProvider.SendNotification(new SendNotificationRequest
                     {
                         MessageType = NotificationConfig.RegistrationCompleted,

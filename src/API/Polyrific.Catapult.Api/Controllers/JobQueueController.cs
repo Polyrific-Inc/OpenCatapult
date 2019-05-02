@@ -23,14 +23,16 @@ namespace Polyrific.Catapult.Api.Controllers
         private readonly IJobQueueService _jobQueueService;
         private readonly ICatapultEngineService _engineService;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
         public JobQueueController(IJobQueueService jobQueueService, ICatapultEngineService engineService, 
-            IMapper mapper, ILogger<JobQueueController> logger)
+            IMapper mapper, IConfiguration configuration, ILogger<JobQueueController> logger)
         {
             _jobQueueService = jobQueueService;
             _engineService = engineService;
             _mapper = mapper;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -319,16 +321,15 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <summary>
         /// Send notification to project member about the status of the job queue
         /// </summary>
-        /// <param name="projectId">Id of the project</param>
         /// <param name="queueId">Id of the queue</param>
         /// <returns></returns>
-        [HttpPost("Project/{projectId}/queue/{queueId}/send-notification")]
+        [HttpPost("Queue/{queueId}/send-notification")]
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
-        public async Task<IActionResult> SendNotification(int projectId, int queueId)
+        public async Task<IActionResult> SendNotification(int queueId)
         {
-            _logger.LogInformation("Sending email notification for job queue {queueId} in project {projectId}", queueId, projectId);
+            _logger.LogInformation("Sending email notification for job queue {queueId}", queueId);
 
-            await _jobQueueService.SendNotification(queueId);
+            await _jobQueueService.SendNotification(queueId, _configuration[ConfigurationKey.WebUrl]);
             return Ok();
         }
 
