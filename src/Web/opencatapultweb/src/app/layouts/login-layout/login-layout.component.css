@@ -1,0 +1,10 @@
+.version {
+	position: absolute;
+	width: 100%;
+    font-size: 14px;
+    text-align: right;
+    text-decoration: none;
+    color: inherit;
+    bottom: 0.5%;
+    right: 0.5%;
+}
