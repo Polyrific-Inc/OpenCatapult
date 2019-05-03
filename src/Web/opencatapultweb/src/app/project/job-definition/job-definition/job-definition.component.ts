@@ -135,7 +135,9 @@ export class JobDefinitionComponent implements OnInit {
           originUrl: window.location.origin
         }).subscribe(data => this.router.navigateByUrl(`project/${this.projectId}/job-queue`),
           err => {
-            this.snackbar.open(err);
+            this.snackbar.open(err, null, {
+              duration: 3000
+            });
           });
       }
     });

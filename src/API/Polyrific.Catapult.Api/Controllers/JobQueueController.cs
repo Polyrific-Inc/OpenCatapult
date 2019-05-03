@@ -151,6 +151,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(projEx, "Project not found");
                 return BadRequest(projEx.Message);
             }
+            catch (TaskValidationException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Task validation failed");
+                return BadRequest(taskEx.Message);
+            }
         }
 
         /// <summary>

@@ -8,7 +8,7 @@ import { ProjectInfoComponent } from './project-info/project-info.component';
 import { MatSidenavModule, MatToolbarModule, MatListModule, MatIconModule, MatGridListModule,
   MatExpansionModule, MatTabsModule, MatButtonModule, MatFormFieldModule, MatProgressBarModule,
   MatInputModule, MatSelectModule, MatDialogModule, MatCheckboxModule, MatCardModule,
-  MatProgressSpinnerModule, MatChipsModule, MatTooltipModule } from '@angular/material';
+  MatProgressSpinnerModule, MatChipsModule, MatTooltipModule, MatStepperModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ProjectInfoFormComponent } from './components/project-info-form/project-info-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -20,6 +20,8 @@ import { ProjectDashboardComponent } from './project-dashboard/project-dashboard
 import { ProjectErrorComponent } from './project-error/project-error.component';
 import { ProjectResolverService } from './services/project-resolver.service';
 import { ProjectDeletingComponent } from './project-deleting/project-deleting.component';
+import { JobListFormComponent } from './components/job-list-form/job-list-form.component';
+import { TaskConfigListFormComponent, JobConfigFormComponent } from '@app/shared';
 
 @NgModule({
   declarations: [ProjectComponent,
@@ -31,7 +33,10 @@ import { ProjectDeletingComponent } from './project-deleting/project-deleting.co
     ProjectArchiveDetailComponent,
     ProjectDashboardComponent,
     ProjectErrorComponent,
-    ProjectDeletingComponent
+    ProjectDeletingComponent,
+    JobListFormComponent,
+    TaskConfigListFormComponent,
+    JobConfigFormComponent
   ],
   imports: [
     CommonModule,
@@ -56,7 +61,8 @@ import { ProjectDeletingComponent } from './project-deleting/project-deleting.co
     MatCardModule,
     MatProgressSpinnerModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatStepperModule
   ],
   providers: [
     ProjectResolverService

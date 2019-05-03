@@ -12,6 +12,7 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
   @Input() task: CreateJobTaskDefinitionDto;
   @Input() hideTaskInfo: boolean;
   @Input() disableForm: boolean;
+  @Input() skipValidation: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   taskForm: FormGroup;
   taskConfigForm: FormGroup = this.fb.group({});
@@ -54,12 +55,13 @@ export class TaskConfigFormComponent implements OnInit, OnChanges {
                 const externalServiceName = `${requiredService}ExternalService`;
                 const taskExternalService = this.task.configs ? this.task.configs[externalServiceName] : null;
                 this.taskConfigForm.setControl(externalServiceName,
-                  this.fb.control({ value: taskExternalService, disabled: this.disableForm}, Validators.required));
+                  this.fb.control({ value: taskExternalService, disabled: this.disableForm},
+                    !this.skipValidation ? Validators.required : null));
 
                 if (taskExternalService) {
                   this.externalServiceService.getExternalServiceByName(taskExternalService)
                     .subscribe(extService => {
-                      if (!extService) {
+                      if (!extService && !this.skipValidation) {
                         this.taskConfigForm.get(externalServiceName).setErrors({
                           'notFound': `The external service ${taskExternalService} is not found in the server`
                         });

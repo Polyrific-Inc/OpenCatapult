@@ -228,7 +228,6 @@ namespace Polyrific.Catapult.Api.Core.Services
                         {
                             task.Created = DateTime.UtcNow;
                             task.Sequence = sequence++;
-                            await _jobDefinitionService.ValidateJobTaskDefinition(job, task);
                         }
                     }
                 }

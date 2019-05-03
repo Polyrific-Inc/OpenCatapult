@@ -337,6 +337,11 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(jex, "There is already a running job in project");
                 return BadRequest(jex.Message);
             }
+            catch (TaskValidationException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Task validation failed");
+                return BadRequest(taskEx.Message);
+            }
         }
 
         /// <summary>

@@ -12,6 +12,7 @@ export class AdditionalConfigFormComponent implements OnInit, OnChanges {
   @Input() taskProvider: TaskProviderDto;
   @Input() additionalConfigs: { [key: string]: string };
   @Input() disableForm: boolean;
+  @Input() skipValidation: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   additionalConfigForm = this.fb.group({});
   showForm: boolean;
@@ -33,12 +34,14 @@ export class AdditionalConfigFormComponent implements OnInit, OnChanges {
     if (changes.taskProvider && !changes.taskProvider.firstChange) {
 
       if (this.taskProvider.additionalConfigs && this.taskProvider.additionalConfigs.length > 0) {
+        this.additionalConfigForm.reset();
         const normalizedAdditionalConfig = this.utilityService.convertStringToBoolean(this.additionalConfigs);
         this.showForm = true;
         for (const additionalConfig of this.taskProvider.additionalConfigs) {
           const additionalConfigValue = normalizedAdditionalConfig ? normalizedAdditionalConfig[additionalConfig.name] : null;
-          const additionalConfigControl = additionalConfig.isRequired ? new FormControl(additionalConfigValue, Validators.required)
-            : new FormControl(additionalConfigValue);
+          const additionalConfigControl = additionalConfig.isRequired && !this.skipValidation ?
+            new FormControl(additionalConfigValue, Validators.required) :
+            new FormControl(additionalConfigValue);
           this.additionalConfigForm.setControl(additionalConfig.name, additionalConfigControl);
         }
 

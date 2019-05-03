@@ -10,6 +10,7 @@ import { JobTaskDefinitionType } from '@app/core';
 export class DeleteRepositoryConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
   @Input() taskConfigs: { [key: string]: string };
+  @Input() skipValidation: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   deleteRepositoryConfigForm: FormGroup;
   showForm: boolean;
@@ -18,7 +19,7 @@ export class DeleteRepositoryConfigFormComponent implements OnInit, OnChanges {
     private fb: FormBuilder
   ) {
     this.deleteRepositoryConfigForm = this.fb.group({
-      Repository: [null, Validators.required],
+      Repository: null,
       IsPrivateRepository: null,
       CloneLocation: null,
       BaseBranch: null
@@ -27,6 +28,10 @@ export class DeleteRepositoryConfigFormComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if (this.taskType === JobTaskDefinitionType.DeleteRepository) {
+      if (!this.skipValidation) {
+        this.deleteRepositoryConfigForm.get('Repository').setValidators(Validators.required);
+      }
+
       this.formReady.emit(this.deleteRepositoryConfigForm);
     }
   }

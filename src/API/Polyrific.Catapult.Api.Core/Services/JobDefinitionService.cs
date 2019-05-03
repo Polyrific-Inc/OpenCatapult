@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             JobTaskDefinitionType.DeleteRepository,
             JobTaskDefinitionType.DeleteHosting
         };
-
+        
         public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
             IProjectRepository projectRepository,
@@ -300,21 +300,24 @@ namespace Polyrific.Catapult.Api.Core.Services
             return taskDefinition;
         }
 
-        public async Task ValidateJobTaskDefinition(JobDefinition jobDefintion, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
-            bool isTaskTypeNotFitIntoJob = jobDefintion != null && jobTaskDefinition.Type != JobTaskDefinitionType.CustomTask && 
-                ((jobDefintion.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
-                (!jobDefintion.IsDeletion && _deleteTaskTypes.Contains(jobTaskDefinition.Type)));
+            // validate task type
+            bool isTaskTypeNotFitIntoJob = jobDefinition != null && jobTaskDefinition.Type != JobTaskDefinitionType.CustomTask && 
+                ((jobDefinition.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
+                (!jobDefinition.IsDeletion && _deleteTaskTypes.Contains(jobTaskDefinition.Type)));
 
             if (isTaskTypeNotFitIntoJob)
             {
-                throw new JobTaskDefinitionTypeException(jobDefintion.IsDeletion, jobTaskDefinition.Type);
+                throw new JobTaskDefinitionTypeException(jobDefinition.IsDeletion, jobTaskDefinition.Type);
             }
 
+            // Validate task name
             var taskSpec = new JobTaskDefinitionFilterSpecification(jobTaskDefinition.JobDefinitionId, jobTaskDefinition.Name, jobTaskDefinition.Id);
             if (await _jobTaskDefinitionRepository.CountBySpec(taskSpec, cancellationToken) > 0)
                 throw new DuplicateJobTaskDefinitionException(jobTaskDefinition.Name);
 
+            // validate task provider
             var providerSpec = new TaskProviderFilterSpecification(jobTaskDefinition.Provider, null);
             var provider = await _providerRepository.GetSingleBySpec(providerSpec, cancellationToken);
 
@@ -333,6 +336,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new InvalidTaskProviderTypeException(provider.Type, jobTaskDefinition.Provider, allowedTaskType.Item2);
             }
 
+            // validate external service
             if (!string.IsNullOrEmpty(provider.RequiredServicesString))
             {
                 var requiredServices = provider.RequiredServicesString.Split(DataDelimiter.Comma);
@@ -367,6 +371,19 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
 
+            // Validate task config
+            if (provider.Type == TaskProviderType.RepositoryProvider)
+            {
+                var taskConfig = !string.IsNullOrEmpty(jobTaskDefinition.ConfigString) ?
+                    JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.ConfigString) : null;
+
+                if (taskConfig == null || !taskConfig.ContainsKey("Repository") || string.IsNullOrEmpty(taskConfig["Repository"]))
+                {
+                    throw new TaskConfigRequiredException(jobTaskDefinition.Type, "Repository");
+                }
+            }
+
+            // validate additional config
             var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id);
             var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
             var requiredConfigs = additionalConfigsDefinition.Where(c => c.IsRequired).Select(c => c.Name).ToList();

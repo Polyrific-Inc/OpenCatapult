@@ -332,7 +332,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             {
                 JobDefinitionId = 1,
                 Type = JobTaskDefinitionType.Push,
-                ConfigString = @"{""GitHubExternalService"":""github-default""}",
+                ConfigString = @"{""GitHubExternalService"":""github-default"", ""Repository"":""test""}",
                 AdditionalConfigString = @"{""testconfig"":""testvalue""}",
                 Provider = "GitHubProvider"
             });
@@ -460,7 +460,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             {
                 JobDefinitionId = 1,
                 Type = JobTaskDefinitionType.Push,
-                ConfigString = @"{""GitHubExternalService"":""github-default""}",
+                ConfigString = @"{""GitHubExternalService"":""github-default"", ""Repository"":""test""}",
                 AdditionalConfigString = @"{""testconfig"":""testvalue""}",
                 Provider = "GitHubProvider"
             });
@@ -506,6 +506,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 JobDefinitionId = 1,
                 Type = JobTaskDefinitionType.Push,
                 AdditionalConfigString = null,
+                ConfigString = @"{""GitHubExternalService"":""github-default"", ""Repository"":""test""}",
                 Provider = "GitHubProvider"
             }));
 
@@ -535,6 +536,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 JobDefinitionId = 1,
                 Type = JobTaskDefinitionType.Push,
                 AdditionalConfigString = "{}",
+                ConfigString = "{\"Repository\":\"test\"}",
                 Provider = "GitHubProvider"
             }));
 
@@ -662,7 +664,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Name = "Clone",
                     Type = JobTaskDefinitionType.Pull,
                     Provider = "GitHubProvider",
-                    ConfigString = @"{""GitHubExternalService"":""github-default""}"
+                    ConfigString = @"{""GitHubExternalService"":""github-default"", ""Repository"":""test""}"
                 },
                 new JobTaskDefinition
                 {
@@ -670,7 +672,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     Name = "Push",
                     Type = JobTaskDefinitionType.Push,
                     Provider = "GitHubProvider",
-                    ConfigString = @"{""GitHubExternalService"":""github-default""}"
+                    ConfigString = @"{""GitHubExternalService"":""github-default"", ""Repository"":""test""}"
                 }
             });
 

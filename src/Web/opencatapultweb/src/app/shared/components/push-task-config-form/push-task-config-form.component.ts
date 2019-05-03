@@ -11,6 +11,7 @@ import { UtilityService } from '@app/shared/services/utility.service';
 export class PushTaskConfigFormComponent implements OnInit, OnChanges {
   @Input() taskType: string;
   @Input() taskConfigs: { [key: string]: string };
+  @Input() skipValidation: boolean;
   @Output() formReady = new EventEmitter<FormGroup>();
   pushConfigForm: FormGroup;
   showForm: boolean;
@@ -20,7 +21,7 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
     private utilityService: UtilityService
     ) {
     this.pushConfigForm = this.fb.group({
-      Repository: [null, Validators.required],
+      Repository: null,
       SourceLocation: null,
       Branch: null,
       CreatePullRequest: null,
@@ -33,6 +34,10 @@ export class PushTaskConfigFormComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     if (this.taskType === JobTaskDefinitionType.Push) {
+      if (!this.skipValidation) {
+        this.pushConfigForm.get('Repository').setValidators(Validators.required);
+      }
+
       this.formReady.emit(this.pushConfigForm);
     }
   }

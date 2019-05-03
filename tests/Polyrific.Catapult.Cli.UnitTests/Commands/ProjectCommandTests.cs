@@ -249,7 +249,7 @@ jobs:
 
             _consoleReader.Setup(x => x.GetPassword(It.IsAny<string>(), null, null)).Returns("testPassword");
 
-            var console = new TestConsole(_output, "test");
+            var console = new TestConsole(_output, "y", "test");
             var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
@@ -278,7 +278,8 @@ jobs:
     provider: AspNetCoreMvc2"
             );
 
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",
@@ -310,7 +311,8 @@ jobs:
       Branch: master"
             );
 
-            var command = new CreateCommand(_console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
+            var console = new TestConsole(_output, "y");
+            var command = new CreateCommand(console, LoggerMock.GetLogger<CreateCommand>().Object, _consoleReader.Object, _projectService.Object, _providerService.Object, _externalServiceService.Object, _templateWriter.Object, _tokenService.Object, _tokenStore.Object)
             {
                 Name = "Project 2",
                 Client = "Company",

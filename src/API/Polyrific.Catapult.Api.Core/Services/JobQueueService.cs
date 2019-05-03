@@ -23,6 +23,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly IProjectRepository _projectRepository;
         private readonly IUserRepository _userRepository;
         private readonly IJobCounterService _jobCounterService;
+        private readonly IJobDefinitionService _jobDefinitionService;
         private readonly ITextWriter _textWriter;
         private readonly INotificationProvider _notificationProvider;
 
@@ -30,12 +31,13 @@ namespace Polyrific.Catapult.Api.Core.Services
         private readonly string[] _pastJobStatus = { JobStatus.Completed, JobStatus.Error, JobStatus.Cancelled };
 
         public JobQueueService(IJobQueueRepository jobQueueRepository, IProjectRepository projectRepository, IUserRepository userRepository,
-            IJobCounterService jobCounterService, ITextWriter textWriter, INotificationProvider notificationProvider)
+            IJobCounterService jobCounterService, IJobDefinitionService jobDefinitionService, ITextWriter textWriter, INotificationProvider notificationProvider)
         {
             _jobQueueRepository = jobQueueRepository;
             _projectRepository = projectRepository;
             _userRepository = userRepository;
             _jobCounterService = jobCounterService;
+            _jobDefinitionService = jobDefinitionService;
             _textWriter = textWriter;
             _notificationProvider = notificationProvider;
         }
@@ -62,6 +64,11 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
 
                 throw new JobQueueInProgressException(projectId);
+            }
+                     
+            if (jobDefinitionId.HasValue)
+            {
+                await ValidateJobTasks(jobDefinitionId.Value, cancellationToken);
             }
 
             // detemine the jobQueue type if it is not provided by the caller
@@ -331,6 +338,24 @@ namespace Polyrific.Catapult.Api.Core.Services
             sb.AppendLine("</ul>");
 
             return sb.ToString();
+        }
+
+        private async Task ValidateJobTasks(int jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            var jobDefinition = await _jobDefinitionService.GetJobDefinitionById(jobDefinitionId, cancellationToken);
+
+            try
+            {
+                var tasks = await _jobDefinitionService.GetJobTaskDefinitions(jobDefinitionId, cancellationToken);
+                foreach (var task in tasks)
+                {
+                    await _jobDefinitionService.ValidateJobTaskDefinition(jobDefinition, task, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new TaskValidationException(jobDefinition.Name, ex.Message, ex);
+            }
         }
     }
 }

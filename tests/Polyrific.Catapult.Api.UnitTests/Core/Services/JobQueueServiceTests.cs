@@ -26,6 +26,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         private readonly Mock<IProjectRepository> _projectRepository;
         private readonly Mock<IUserRepository> _userRepository;
         private readonly Mock<IJobCounterService> _jobCounterService;
+        private readonly Mock<IJobDefinitionService> _jobDefinitionService;
         private readonly Mock<ITextWriter> _textWriter;
         private readonly Mock<INotificationProvider> _notificationProvider;
 
@@ -117,12 +118,33 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _textWriter = new Mock<ITextWriter>();
             _userRepository = new Mock<IUserRepository>();
             _notificationProvider = new Mock<INotificationProvider>();
+
+            _jobDefinitionService = new Mock<IJobDefinitionService>();
+            _jobDefinitionService.Setup(s => s.GetJobDefinitionById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken token) =>
+                    new JobDefinition
+                    {
+                        Id = id,
+                        Name = "Default"
+                    });
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, CancellationToken token) =>
+                    new List<JobTaskDefinition>
+                    {
+                        new JobTaskDefinition
+                        {
+                            Id = 1,
+                            JobDefinitionId = id
+                        }
+                    });
+            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
         }
 
         [Fact]
         public async void AddJobQueue_ValidItem()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             int newId = await jobQueueService.AddJobQueue(1, "localhost", JobType.Create, null);
 
             Assert.True(newId > 1);
@@ -140,7 +162,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Status = JobStatus.Queued,
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.AddJobQueue(1, "localhost", JobType.Create, null));
 
             Assert.IsType<JobQueueInProgressException>(exception?.Result);
@@ -149,16 +171,29 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobQueue_InvalidProject()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.AddJobQueue(2, "localhost", JobType.Create, null));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
         }
 
         [Fact]
+        public void AddJobQueue_TaskValidationException()
+        {
+            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>()))
+                .Throws(new ExternalServiceNotFoundException("GitHub"));
+
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
+            var exception = Record.ExceptionAsync(() => jobQueueService.AddJobQueue(1, "localhost", JobType.Create, 1));
+
+            Assert.IsType<TaskValidationException>(exception.Result);
+            Assert.IsType<ExternalServiceNotFoundException>(exception.Result.InnerException);
+        }
+
+        [Fact]
         public async void GetJobQueues_FilterAll_ReturnItems()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(1, JobQueueFilterType.All);
 
             Assert.NotEmpty(jobQueues);
@@ -175,7 +210,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Status = JobStatus.Queued,
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(1, JobQueueFilterType.Current);
 
             Assert.NotEmpty(jobQueues);
@@ -184,7 +219,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueues_FilterPast_ReturnItems()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(1, JobQueueFilterType.Past);
 
             Assert.NotEmpty(jobQueues);
@@ -193,7 +228,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueues_FilterSucceeded_ReturnItems()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(1, JobQueueFilterType.Past);
 
             Assert.NotEmpty(jobQueues);
@@ -210,7 +245,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 Status = JobStatus.Error,
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(1, JobQueueFilterType.Past);
 
             Assert.NotEmpty(jobQueues);
@@ -219,7 +254,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueues_ReturnEmpty()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobQueues(2, JobQueueFilterType.All);
 
             Assert.Empty(jobQueues);
@@ -228,7 +263,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void GetJobQueues_UnknownFilterType()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.GetJobQueues(1, "unknown"));
 
             Assert.IsType<FilterTypeNotFoundException>(exception?.Result);
@@ -242,7 +277,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var entity = await jobQueueService.GetJobQueueById(1, 1);
 
             Assert.NotNull(entity);
@@ -257,7 +292,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueue = await jobQueueService.GetJobQueueById(1, 2);
 
             Assert.Null(jobQueue);
@@ -266,7 +301,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueueByCode_ReturnItem()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var entity = await jobQueueService.GetJobQueueByCode(1, "20180817.1");
 
             Assert.NotNull(entity);
@@ -276,7 +311,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobQueueByCode_ReturnNull()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var entity = await jobQueueService.GetJobQueueByCode(1, "20180817.2");
 
             Assert.Null(entity);
@@ -302,7 +337,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 }
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             await jobQueueService.CancelJobQueue(2);
 
             var job = _data.First(d => d.Id == 2);
@@ -317,7 +352,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.CancelJobQueue(1));
 
             Assert.IsType<CancelCompletedJobException>(exception?.Result);
@@ -331,7 +366,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             await jobQueueService.UpdateJobQueue(new JobQueue
             {
                 Id = 1,
@@ -352,7 +387,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 .ReturnsAsync((JobQueueFilterSpecification spec, CancellationToken cancellationToken) =>
                     _data.FirstOrDefault(spec.Criteria.Compile()));
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             await jobQueueService.UpdateJobQueue(new JobQueue
             {
                 Id = 1,
@@ -386,7 +421,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 }
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.UpdateJobQueue(new JobQueue
             {
                 Id = 2,
@@ -431,7 +466,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 }
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var job = await jobQueueService.GetFirstUnassignedQueuedJob("engine01");
 
             Assert.Equal(3, job.Id);
@@ -440,7 +475,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetFirstQueuedJob_ReturnNull()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var job = await jobQueueService.GetFirstUnassignedQueuedJob("engine01");
 
             Assert.Null(job);
@@ -458,7 +493,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 JobTasksStatus = "[{\"Sequence\":1,\"TaskName\":\"Generate\",\"Status\":\"NotExecuted\",\"Remarks\":\"\"}]"
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobTaskStatus(2, JobTaskStatusFilterType.All);
 
             Assert.NotEmpty(jobQueues);
@@ -476,7 +511,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                     JobTasksStatus = "[{\"Sequence\":1,\"TaskName\":\"Generate\",\"Status\":\"Pending\",\"Remarks\":\"\"}, {\"Sequence\":1,\"TaskName\":\"Generate\",\"Status\":\"NotExecuted\",\"Remarks\":\"\"}]"
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobTaskStatus(2, JobTaskStatusFilterType.Latest);
 
             Assert.Single(jobQueues);
@@ -486,7 +521,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetJobTaskStatus_ReturnEmpty()
         {
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var jobQueues = await jobQueueService.GetJobTaskStatus(1, JobTaskStatusFilterType.All);
 
             Assert.Empty(jobQueues);
@@ -504,7 +539,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 JobTasksStatus = "[{\"Sequence\":1,\"TaskName\":\"Generate\",\"Status\":\"NotExecuted\",\"Remarks\":\"\"}]"
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => jobQueueService.GetJobTaskStatus(2, "unknown"));
 
             Assert.IsType<FilterTypeNotFoundException>(exception?.Result);
@@ -522,7 +557,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 }
             });
 
-            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _textWriter.Object, _notificationProvider.Object);
+            var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object,  _jobCounterService.Object,  _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);
             await jobQueueService.SendNotification(1, "http://web");
         }
     }

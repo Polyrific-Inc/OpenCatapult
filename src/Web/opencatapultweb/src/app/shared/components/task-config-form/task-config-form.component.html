@@ -13,7 +13,7 @@
         <div *ngIf="taskProvider">
             <mat-form-field class="full-width-input" *ngFor="let requiredService of taskProvider.requiredServices">
               <mat-label>{{requiredService}}ExternalService</mat-label>
-              <mat-select formControlName="{{requiredService}}ExternalService" required>
+              <mat-select formControlName="{{requiredService}}ExternalService" [required]="!skipValidation">
                 <mat-option *ngFor="let externalService of (getExternalServices(requiredService) | async)" [value]="externalService.name">
                   {{externalService.name}}
                 </mat-option>
@@ -25,18 +25,18 @@
         </div>
 
         <div [ngSwitch]="task.type">
-            <app-pull-task-config-form *ngSwitchCase="'Pull'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-pull-task-config-form>
+            <app-pull-task-config-form *ngSwitchCase="'Pull'" [skipValidation]="skipValidation" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-pull-task-config-form>
             <app-generate-task-config-form *ngSwitchCase="'Generate'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-generate-task-config-form>
-            <app-push-task-config-form *ngSwitchCase="'Push'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-push-task-config-form>
-            <app-merge-task-config-form *ngSwitchCase="'Merge'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-merge-task-config-form>
+            <app-push-task-config-form *ngSwitchCase="'Push'" [skipValidation]="skipValidation" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-push-task-config-form>
+            <app-merge-task-config-form *ngSwitchCase="'Merge'" [skipValidation]="skipValidation" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-merge-task-config-form>
             <app-build-task-config-form *ngSwitchCase="'Build'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-build-task-config-form>
             <app-deploy-db-task-config-form *ngSwitchCase="'DeployDb'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-deploy-db-task-config-form>
             <app-deploy-task-config-form *ngSwitchCase="'Deploy'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-deploy-task-config-form>
             <app-test-task-config-form *ngSwitchCase="'Test'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-test-task-config-form>
-            <app-delete-repository-config-form *ngSwitchCase="'DeleteRepository'" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-delete-repository-config-form>
+            <app-delete-repository-config-form *ngSwitchCase="'DeleteRepository'" [skipValidation]="skipValidation" [taskType]="task.type" [taskConfigs]="task.configs" (formReady)="onTaskConfigFormReady($event)"></app-delete-repository-config-form>
         </div>
 
         <div class="margin10"></div>
-        <app-additional-config-form [taskProvider]="taskProvider" [disableForm]="disableForm" [additionalConfigs]="task.additionalConfigs" (formReady)="onAdditionalConfigFormReady($event)"></app-additional-config-form>
+        <app-additional-config-form [taskProvider]="taskProvider" [disableForm]="disableForm" [additionalConfigs]="task.additionalConfigs" [skipValidation]="skipValidation" (formReady)="onAdditionalConfigFormReady($event)"></app-additional-config-form>
     </div>
 </div>
