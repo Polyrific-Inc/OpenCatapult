@@ -47,7 +47,7 @@ export class JobTaskDefinitionComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
         title: 'Confirm Delete Job Task Definition',
-        confirmationText: 'Please enter job task definition name to confirm deletion process:',
+        confirmationText: `Please enter job task definition name (${task.name}) to confirm deletion process:`,
         confirmationMatch: task.name
       }
     });

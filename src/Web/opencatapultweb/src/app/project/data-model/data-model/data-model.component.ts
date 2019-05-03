@@ -130,7 +130,7 @@ export class DataModelComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
         title: 'Confirm Delete Data Model',
-        confirmationText: 'Please enter data model name to confirm deletion process:',
+        confirmationText: `Please enter data model name (${model.name}) to confirm deletion process:`,
         confirmationMatch: model.name
       }
     });
