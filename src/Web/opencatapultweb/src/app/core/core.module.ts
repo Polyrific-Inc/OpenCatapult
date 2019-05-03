@@ -23,6 +23,7 @@ import { ProjectHistoryService } from './services/project-history.service';
 import { TextHelperService } from './services/text-helper.service';
 import { ManagedFileService } from './services/managed-file.service';
 import { HelpContextService } from './services/help-context.service';
+import { VersionService } from './services/version.service';
 
 @NgModule({
   declarations: [],
@@ -51,7 +52,8 @@ import { HelpContextService } from './services/help-context.service';
     ProjectHistoryService,
     TextHelperService,
     ManagedFileService,
-    HelpContextService
+    HelpContextService,
+    VersionService
   ]
 })
 export class CoreModule {

@@ -8,8 +8,7 @@ import { AuthorizePolicy } from '@app/core';
 })
 export class HomeLayoutComponent implements OnInit {
   authorizePolicyEnum = AuthorizePolicy;
-  public version: string = 'v' + require('../../../../package.json').version;
-  
+
   constructor(
     ) { }
 

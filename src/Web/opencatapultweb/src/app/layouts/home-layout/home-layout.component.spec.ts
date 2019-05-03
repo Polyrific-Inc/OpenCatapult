@@ -12,6 +12,7 @@ import { CoreModule } from '@app/core';
 import { of } from 'rxjs';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FooterComponent } from '@app/footer/footer.component';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -33,7 +34,7 @@ describe('HomeLayoutComponent', () => {
         MatDividerModule,
         MatProgressBarModule
       ],
-      declarations: [ HomeLayoutComponent, HeaderComponent ],
+      declarations: [ HomeLayoutComponent, HeaderComponent, FooterComponent ],
       providers: [
         {
           provide: AuthService, useValue: {

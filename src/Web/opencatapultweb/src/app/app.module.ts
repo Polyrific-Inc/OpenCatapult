@@ -23,6 +23,8 @@ import { ResetPasswordComponent } from './reset-password/reset-password.componen
 import { ConfigServiceProvider } from './config/config.service.provider';
 import { HelpContextDialogComponent } from './help-context-dialog/help-context-dialog.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { FooterComponent } from './footer/footer.component';
+import { VersionComponent } from './version/version.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
     ForgotPasswordComponent,
     ResetPasswordComponent,
     HelpContextDialogComponent,
-    ConfirmEmailComponent
+    ConfirmEmailComponent,
+    FooterComponent,
+    VersionComponent
   ],
   imports: [
     CoreModule,
