@@ -4,7 +4,7 @@ import { ProjectNewComponent } from './project-new.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule, MatInputModule, MatSnackBarModule, MatOptionModule,
-  MatSelectModule, MatIconModule, MatTooltipModule, MatStepperModule } from '@angular/material';
+  MatSelectModule, MatIconModule, MatTooltipModule, MatStepperModule, MatTabsModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CoreModule } from '@app/core';
@@ -40,7 +40,8 @@ describe('ProjectNewComponent', () => {
         CoreModule,
         MatIconModule,
         MatTooltipModule,
-        MatStepperModule
+        MatStepperModule,
+        MatTabsModule
       ]
     })
     .compileComponents();
