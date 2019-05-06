@@ -16,7 +16,7 @@ import {
   AdditionalConfigFieldComponent,
   AdditionalConfigFormComponent,
   DeleteRepositoryConfigFormComponent } from '@app/shared';
-import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule, MatStepperModule } from '@angular/material';
+import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule, MatStepperModule, MatTabsModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
 describe('JobListFormComponent', () => {
@@ -42,7 +42,15 @@ describe('JobListFormComponent', () => {
         AdditionalConfigFieldComponent,
         DeleteRepositoryConfigFormComponent
       ],
-      imports: [ MatExpansionModule, ReactiveFormsModule, MatInputModule, MatCheckboxModule, MatSelectModule, MatStepperModule ]
+      imports: [
+        MatExpansionModule,
+        ReactiveFormsModule,
+        MatInputModule,
+        MatCheckboxModule,
+        MatSelectModule,
+        MatStepperModule,
+        MatTabsModule
+      ]
     })
     .compileComponents();
   }));
