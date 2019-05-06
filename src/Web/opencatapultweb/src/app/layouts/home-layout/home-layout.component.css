@@ -5,3 +5,10 @@ mat-sidenav {
 mat-sidenav button {
   text-align: left;
 }
+
+.layout-container {
+  height: calc(100% - 128px);
+  min-height: calc(100% - 128px);
+  min-width: 100%;
+  width: 100%;
+}

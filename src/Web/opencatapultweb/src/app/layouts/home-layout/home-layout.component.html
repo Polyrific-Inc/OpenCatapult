@@ -1,5 +1,5 @@
 <app-header [sidenav]="sidenav"></app-header>
-<mat-sidenav-container fxFlexFill>
+<mat-sidenav-container class="layout-container">
   <mat-sidenav #sidenav fxLayout="column">
     <div fxLayout="column">
       <a (click)="sidenav.toggle()" mat-button>Close</a>
@@ -12,6 +12,6 @@
   </mat-sidenav>
   <mat-sidenav-content>
     <router-outlet></router-outlet>
-    <app-footer [showVersionPage]="true"></app-footer>
   </mat-sidenav-content>
 </mat-sidenav-container>
+<app-footer [showVersionPage]="true"></app-footer>

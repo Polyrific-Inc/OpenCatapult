@@ -83,7 +83,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
                       this.router.navigate(['project', { dummyData: (new Date).getTime()}])
                         .then(() => this.router.navigate(['project']));
-                    }, () => this.loading = false);
+                    }, (err) => {
+                      this.snackbar.open(err);
+                      this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                        .then(() => this.router.navigate(['project']));
+                      this.loading = false;
+                    });
                 } else {
                   this.hardDeleteProject();
                 }
