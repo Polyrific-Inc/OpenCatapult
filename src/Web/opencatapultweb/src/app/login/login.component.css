@@ -10,7 +10,10 @@ mat-spinner {
 }
 
 .signin-content {
-    padding: 60px 1rem;
+    padding-left: 1rem;
+    padding-left: 1rem;
+    padding-top: 60px;
+    height: calc(100% - 124px);
 }
 
 mat-progress-bar {
@@ -26,4 +29,10 @@ mat-error {
 
 .forgot-password-link {
   color: #337ab7;
+}
+
+@media (max-width: 600px) {
+  .signin-content {
+      height: calc(100% - 116px);
+  }
 }
