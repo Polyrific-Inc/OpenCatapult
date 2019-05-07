@@ -2,6 +2,7 @@
 param(
     [string]$configuration = "Release",
     [string]$connString = "",
+    [string]$dbProvider = "",
     [string]$environment = "Development",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
@@ -128,6 +129,9 @@ if ($noWeb) {
 if ($noPrompt) {
     $buildPrerequisitesArgs += " -noPrompt"
 }
+if ($dbProvider -eq "mssql") {
+    $buildPrerequisitesArgs += " -checkSql"
+}
 $allGood = Invoke-BuildScript "build-prerequisites.ps1" $buildPrerequisitesArgs
 if (!$allGood) {
     Write-Host "Some items don't meet the minimum requirement. Do you want to continue? (y/n)" -ForegroundColor Yellow
@@ -143,6 +147,9 @@ $args = "-configuration " + $configuration
 $args += " -environment " + $environment
 if ($connString) {
     $args += "-connString " + $connString
+}
+if ($dbProvider) {
+    $args += " -dbProvider " + $dbProvider
 }
 if ($noPrompt) {
     $args += " -noPrompt"

@@ -1,6 +1,7 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 param(
+  [switch]$checkSql = $false,
   [switch]$noPrompt = $false,
   [switch]$noWeb = $false
 )
@@ -48,85 +49,87 @@ function Get-SqlServiceStatus ()
     select SystemName, DisplayName, Name, State, Status, StartMode, StartName
 }
 
-Write-Host "Checking sql server local instance..."
-if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
-	# Check SQL Instance in windows
-	$sqlResult = Get-SqlServiceStatus
-	if ($sqlResult) {
-		if ($sqlResult.State -eq "Running") {
-			"SQL Server available in local machine."
-		}
-		else {
-			# Ask user if she want to automatically run the sql service
-			$allGood = $false
-			Write-Host "SQL instance is found in the local machine, but the service is not running. Do you want to start it now? (y/n)" -ForegroundColor Yellow
-			$readRunSql = Read-Host
-			Switch ($readRunSql) { 
-				Y {$runSql=$true} 
-				N {$runSql=$false} 
-				Default {Write-Error "Invalid input"; break;} 
-			} 
+if ($checkSql) {
+    Write-Host "Checking sql server local instance..."
+    if (!($PSVersionTable.Platform) -or $PSVersionTable.Platform -ne "Unix") {
+	    # Check SQL Instance in windows
+	    $sqlResult = Get-SqlServiceStatus
+	    if ($sqlResult) {
+		    if ($sqlResult.State -eq "Running") {
+			    "SQL Server available in local machine."
+		    }
+		    else {
+			    # Ask user if she want to automatically run the sql service
+			    $allGood = $false
+			    Write-Host "SQL instance is found in the local machine, but the service is not running. Do you want to start it now? (y/n)" -ForegroundColor Yellow
+			    $readRunSql = Read-Host
+			    Switch ($readRunSql) { 
+				    Y {$runSql=$true} 
+				    N {$runSql=$false} 
+				    Default {Write-Error "Invalid input"; break;} 
+			    } 
 
-			if ($runSql) {
-				$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
+			    if ($runSql) {
+				    $currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent())
 				
-				if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {                
-					if ($sqlResult.State -eq "Paused") {
-						Resume-Service -Name $sqlResult.Name
-					}
-					else {
-						Start-Service -Name $sqlResult.Name
-					}
-				}
-				else {
-					Write-Host "You need Administrator access to start the service. Please execute the script in a shell with elevated permission or start the service manually." -ForegroundColor Yellow
-					Write-Host "Do you want to continue with the update migration process now? (y/n)" -ForegroundColor Yellow
-					$readContinue = Read-Host
-					Switch ($readContinue) { 
-						Y {$continueBuild=$true} 
-						N {$continueBuild=$false} 
-						Default {Write-Error "Invalid input"; break;} 
-					}
+				    if ($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) {                
+					    if ($sqlResult.State -eq "Paused") {
+						    Resume-Service -Name $sqlResult.Name
+					    }
+					    else {
+						    Start-Service -Name $sqlResult.Name
+					    }
+				    }
+				    else {
+					    Write-Host "You need Administrator access to start the service. Please execute the script in a shell with elevated permission or start the service manually." -ForegroundColor Yellow
+					    Write-Host "Do you want to continue with the update migration process now? (y/n)" -ForegroundColor Yellow
+					    $readContinue = Read-Host
+					    Switch ($readContinue) { 
+						    Y {$continueBuild=$true} 
+						    N {$continueBuild=$false} 
+						    Default {Write-Error "Invalid input"; break;} 
+					    }
 					
-					if (!$continueBuild) {
-						break;
-					}
-				}
-			}
-		}
-	}
-	else {
-		$allGood = $false
-		Write-Host "SQL Server is not found in the local machine. Please install it if you want to use localhost as the db server. Otherwise, you can provide a remote db server." -ForegroundColor Red
-	}
-}
-elseif ($IsMacOS) {
-	Write-Host "You are running on Mac OS which currently does not support SQL Server. Please provide a remote db server when building API." -ForegroundColor Red
-}
-else {
-	# Check SQL Instance in linux
-	$linuxSqlResult = systemctl status mssql-server
-	if ($linuxSqlResult -like "*Active: active*") {
-		"SQL Server available in local machine."
-	}
-	elseif ($linuxSqlResult -like "*Active: inactive*") {	
-		# Ask user if she want to automatically install the dotnet SDK
-		$allGood = $false
-		Write-Host "SQL instance is found in the local machine, but the service is not running. Do you want to start it now? (y/n)" -ForegroundColor Yellow
-		$readRunSqlLinux = Read-Host
-		Switch ($readRunSqlLinux) { 
-			Y {$runSqlLinux=$true} 
-			N {$runSqlLinux=$false} 
-			Default {Write-Error "Invalid input"; break;} 
-		} 
+					    if (!$continueBuild) {
+						    break;
+					    }
+				    }
+			    }
+		    }
+	    }
+	    else {
+		    $allGood = $false
+		    Write-Host "SQL Server is not found in the local machine. Please install it if you want to use localhost as the db server. Otherwise, you can provide a remote db server." -ForegroundColor Red
+	    }
+    }
+    elseif ($IsMacOS) {
+	    Write-Host "You are running on Mac OS which currently does not support SQL Server. Please provide a remote db server when building API." -ForegroundColor Red
+    }
+    else {
+	    # Check SQL Instance in linux
+	    $linuxSqlResult = systemctl status mssql-server
+	    if ($linuxSqlResult -like "*Active: active*") {
+		    "SQL Server available in local machine."
+	    }
+	    elseif ($linuxSqlResult -like "*Active: inactive*") {	
+		    # Ask user if she want to automatically install the dotnet SDK
+		    $allGood = $false
+		    Write-Host "SQL instance is found in the local machine, but the service is not running. Do you want to start it now? (y/n)" -ForegroundColor Yellow
+		    $readRunSqlLinux = Read-Host
+		    Switch ($readRunSqlLinux) { 
+			    Y {$runSqlLinux=$true} 
+			    N {$runSqlLinux=$false} 
+			    Default {Write-Error "Invalid input"; break;} 
+		    } 
 		
-		if ($runSqlLinux) {
-			sudo systemctl start mssql-server
-		}
-	}
-	else {
-		Write-Host "SQL Server is not found in the local machine. Please install it if you want to use localhost as the db server. Otherwise, you can provide a remote db server." -ForegroundColor Red
-	}
+		    if ($runSqlLinux) {
+			    sudo systemctl start mssql-server
+		    }
+	    }
+	    else {
+		    Write-Host "SQL Server is not found in the local machine. Please install it if you want to use localhost as the db server. Otherwise, you can provide a remote db server." -ForegroundColor Red
+	    }
+    }
 }
 
 if (!$noWeb) {
