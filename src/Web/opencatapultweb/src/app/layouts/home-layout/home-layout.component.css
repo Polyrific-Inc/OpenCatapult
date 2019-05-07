@@ -12,3 +12,10 @@ mat-sidenav button {
   min-width: 100%;
   width: 100%;
 }
+
+@media(max-width: 600px) {
+  .layout-container {
+    height: calc(100% - 112px);
+    min-height: calc(100% - 112px);
+  }
+}

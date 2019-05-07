@@ -55,11 +55,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                             }
                         }
                     },
-                    JobDefinition = new JobDefinition
-                    {
-                        Id = 1,
-                        Name = "test"
-                    }
+                    JobDefinitionName = "test"
                 }
             };
             
