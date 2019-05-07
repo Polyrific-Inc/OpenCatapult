@@ -14,6 +14,10 @@ namespace Polyrific.Catapult.Api.Data
         {
         }
 
+        public TaskProviderRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
+
         public override async Task<int> Create(TaskProvider entity, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

@@ -3,6 +3,7 @@
 param(
     [string]$configuration = "Release",
     [string]$connString = "",
+    [string]$dbProvider = "",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
     [string]$environment = "Development",
@@ -25,33 +26,81 @@ $apiPublishPath = Join-Path $rootPath "/publish/api"
 $apiDll = Join-Path $apiPublishPath "/ocapi.dll"
 $dataCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api.Data/Polyrific.Catapult.Api.Data.csproj"
 
+$defaultMsSqlConnectionString = "Server=localhost;Database=opencatapult.db;User ID=sa;Password=password;"
+$defaultSqliteDbFile = "opencatapult.db"
+
 $appSettingsEnvContent = [PSCustomObject]@{
+    DatabaseProvider = "sqlite"
     ConnectionStrings = [PSCustomObject]@{
         DefaultConnection = ""
     }
 }
 
-if (!$noBuild) {
-    # read connection string in appsettings.[env].json
-    if (!(Test-Path $appSettingsEnvPath)) {
-        $appSettingsContent = Get-Content -Path $appSettingsPath | ConvertFrom-Json
-        $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $appSettingsContent.ConnectionStrings.DefaultConnection
-
-        $_ = New-Item -Path $appSettingsEnvPath -ItemType "file" -Value ($appSettingsEnvContent | ConvertTo-Json)
-        Write-Host "New `"appsettings.$environment.json`" file has been created"
+# create or load appsettings.[env].json
+if (!(Test-Path $appSettingsEnvPath)) {
+    if (($dbProvider -eq "") -or ($dbProvider -eq "sqlite")) {
+        if ($connString -eq "") {
+            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = Join-Path $apiPublishPath $defaultSqliteDbFile
+        } else {
+            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
+        }
     } else {
-        $appSettingsEnvContent = Get-Content -Path $appSettingsEnvPath | ConvertFrom-Json
+        $appSettingsEnvContent.DatabaseProvider = $dbProvider
+
+        if ($connString -eq "") {
+            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $defaultMsSqlConnectionString
+        } else {
+            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
+        }
+    }
+    
+    $_ = New-Item -Path $appSettingsEnvPath -ItemType "file" -Value ($appSettingsEnvContent | ConvertTo-Json)
+
+    Write-Host "New `"appsettings.$environment.json`" file has been created"
+} else {
+    $appSettingsEnvContent = Get-Content -Path $appSettingsEnvPath | ConvertFrom-Json
+}
+
+if (!$noBuild) {
+    $currentDbProvider = $appSettingsEnvContent.DatabaseProvider
+
+    # ask for database provider
+    if ($dbProvider -eq "") {
+        $dbProvider = $currentDbProvider
+
+        Write-Output "Current database provider is `"$dbProvider`""
+
+        if (!$noPrompt) {
+            $enteredDbProvider = Read-Host -Prompt "Please enter new database provider (or just ENTER if you want to use current value)"
+            if (![string]::IsNullOrWhiteSpace($enteredDbProvider)) {
+                $dbProvider = $enteredDbProvider
+            }
+        }
     }
 
-    $currentConnString = $appSettingsEnvContent.ConnectionStrings.DefaultConnection
+    # update database provider
+    if ($dbProvider -ne $currentDbProvider) {
+        $appSettingsEnvContent.DatabaseProvider = $dbProvider
+
+        try {
+            $appSettingsEnvContent | ConvertTo-Json -Depth 10 | Out-File -FilePath $appSettingsEnvPath -Encoding utf8 -Force    
+        }
+        catch {
+            Write-Error -Message "[ERROR] $_" -ErrorAction Stop
+        }
+
+        Write-Output "Database Provider has been updated"
+    }
 
     $success = $false;
     while (!$success) {
+        $currentConnString = $appSettingsEnvContent.ConnectionStrings.DefaultConnection
+
         # ask for new connection string
         if ($connString -eq "") {
             $connString = $currentConnString
 
-            Write-Output "Current connection string is `"$currentConnString`""
+            Write-Output "Current connection string is `"$connString`""
 
             if (!$noPrompt) {
                 $enteredConnString = Read-Host -Prompt "Please enter new connection string (or just ENTER if you want to use current value)"    
@@ -76,9 +125,15 @@ if (!$noBuild) {
         }
 
         # apply migration
+        $dbcontext = "CatapultDbContext"
+        if ($dbProvider -eq "sqlite") {
+            $dbcontext = "CatapultSqliteDbContext"
+        }
+
         Write-Output "Applying migration..."
-        Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath"
-        $result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath
+        Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath --context $dbcontext"
+
+        $result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath --context $dbcontext
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message "[ERROR] $result"
             Write-Host "Error occured while trying to migrate database. Do you want to retry entering another connection string? (y/n)" -ForegroundColor Yellow

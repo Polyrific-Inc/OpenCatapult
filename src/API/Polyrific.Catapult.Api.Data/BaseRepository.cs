@@ -20,6 +20,11 @@ namespace Polyrific.Catapult.Api.Data
             Db = dbContext;
         }
 
+        protected BaseRepository(CatapultSqliteDbContext dbContext)
+        {
+            Db = dbContext;
+        }
+
         public virtual async Task<int> CountBySpec(ISpecification<TEntity> spec, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

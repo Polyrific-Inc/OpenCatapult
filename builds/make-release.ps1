@@ -19,7 +19,7 @@ function Publish-Component {
 
     Write-Host "Publishing component..."
 
-    dotnet publish $csprojPath -c Release -o $publishPath -r $runtime /p:Version=$version
+    dotnet publish $csprojPath -c Release -o $publishPath -r $runtime --self-contained false /p:Version=$version
     
     Write-Host "Compressing the package..."
 
