@@ -38,10 +38,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job", Name = "GetJobDefinitions")]
         public async Task<IActionResult> GetJobDefinitions(int projectId)
         {
-            _logger.LogInformation("Getting job definitions in project {projectId}", projectId);
+            _logger.LogRequest("Getting job definitions in project {projectId}", projectId);
 
             var jobDefinitions = await _jobDefinitionService.GetJobDefinitions(projectId);
             var results = _mapper.Map<List<JobDefinitionDto>>(jobDefinitions);
+
+            _logger.LogResponse("Job definitions in project {projectId} retrieved. Reponse body: {@results}", projectId, results);
 
             return Ok(results);
         }
@@ -56,7 +58,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> CreateJobDefinition(int projectId, CreateJobDefinitionDto newJobDefinition)
         {
-            _logger.LogInformation("Creating job definition in project {projectId}. Request body: {@newJobDefinition}", projectId, newJobDefinition);
+            _logger.LogRequest("Creating job definition in project {projectId}. Request body: {@newJobDefinition}", projectId, newJobDefinition);
 
             try
             {
@@ -65,6 +67,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 newJobDefinitionResponse.Id = await _jobDefinitionService.AddJobDefinition(projectId,
                     newJobDefinition.Name,
                     newJobDefinition.IsDeletion);
+
+                _logger.LogResponse("Job definitions in project {projectId} created. Reponse body: {@newJobDefinitionResponse}", projectId, newJobDefinitionResponse);
 
                 return CreatedAtRoute("GetJobDefinitionById", new
                 {
@@ -98,10 +102,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}", Name = "GetJobDefinitionById")]
         public async Task<IActionResult> GetJobDefinition(int projectId, int jobId)
         {
-            _logger.LogInformation("Getting job definition {jobId} in project {projectId}", jobId, projectId);
+            _logger.LogRequest("Getting job definition {jobId} in project {projectId}", jobId, projectId);
 
             var jobDefinition = await _jobDefinitionService.GetJobDefinitionById(jobId);
             var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
+
+            _logger.LogResponse("Job definition {jobId} in project {projectId} retrieved. Reponse body: {@result}", jobId, projectId, result);
+
             return Ok(result);
         }
 
@@ -114,10 +121,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/name/{jobName}")]
         public async Task<IActionResult> GetJobDefinition(int projectId, string jobName)
         {
-            _logger.LogInformation("Getting job definition {jobName} in project {projectId}", jobName, projectId);
+            _logger.LogRequest("Getting job definition {jobName} in project {projectId}", jobName, projectId);
 
             var jobDefinition = await _jobDefinitionService.GetJobDefinitionByName(projectId, jobName);
             var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
+
+            _logger.LogResponse("Job definition {jobName} in project {projectId} retrieved. Reponse body: {@result}", jobName, projectId, result);
+
             return Ok(result);
         }
 
@@ -129,10 +139,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/deletion")]
         public async Task<IActionResult> GetDeletionJobDefinition(int projectId)
         {
-            _logger.LogInformation("Getting deletion job definition in project {projectId}", projectId);
+            _logger.LogRequest("Getting deletion job definition in project {projectId}", projectId);
 
             var jobDefinition = await _jobDefinitionService.GetDeletionJobDefinition(projectId);
             var result = _mapper.Map<JobDefinitionDto>(jobDefinition);
+
+            _logger.LogResponse("Deletion job definition in project {projectId} retrieved. Reponse body: {@result}", projectId, result);
+
             return Ok(result);
         }
 
@@ -146,7 +159,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}")]
         public async Task<IActionResult> UpdateJobDefinition(int projectId, int jobId, UpdateJobDefinitionDto jobDefinition)
         {
-            _logger.LogInformation("Updating job definition {jobId} in project {projectId}. Request body: {@jobDefinition}", jobId, projectId, jobDefinition);
+            _logger.LogRequest("Updating job definition {jobId} in project {projectId}. Request body: {@jobDefinition}", jobId, projectId, jobDefinition);
 
             try
             {
@@ -157,6 +170,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 }                    
 
                 await _jobDefinitionService.RenameJobDefinition(jobId, jobDefinition.Name);
+
+                _logger.LogResponse("Job definition {jobId} in project {projectId} updated", jobId, projectId);
 
                 return Ok();
             }
@@ -171,7 +186,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}/task/order")]
         public async Task<IActionResult> UpdateJobTaskOrder(int projectId, int jobId, UpdateTaskOrderDto dto)
         {
-            _logger.LogInformation("Updating tasks order for job {jobId} in project {projectId}. Request body: {@dto}", jobId, projectId, dto);
+            _logger.LogRequest("Updating tasks order for job {jobId} in project {projectId}. Request body: {@dto}", jobId, projectId, dto);
 
             var jobs = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
 
@@ -181,6 +196,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 job.Sequence = jobOrder.Value;
                 await _jobDefinitionService.UpdateJobTaskDefinition(job);
             }
+
+            _logger.LogResponse("Task order for job definition {jobId} in project {projectId} updated", jobId, projectId);
 
             return Ok();
         }
@@ -194,9 +211,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("Project/{projectId}/job/{jobId}")]
         public async Task<IActionResult> DeleteJobDefinition(int projectId, int jobId)
         {
-            _logger.LogInformation("Deleting job definition {jobId} in project {projectId}", jobId, projectId);
+            _logger.LogRequest("Deleting job definition {jobId} in project {projectId}", jobId, projectId);
 
             await _jobDefinitionService.DeleteJobDefinition(jobId);
+
+            _logger.LogResponse("Job definition {jobId} in project {projectId} deleted", jobId, projectId);
 
             return NoContent();
         }
@@ -211,9 +230,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectContributorAccess)]
         public async Task<IActionResult> DeleteJobDefinitions(int projectId, [FromQuery(Name = "jobIds")]int[] jobIds)
         {
-            _logger.LogInformation("Deleting job definitions {jobIds} in project {projectId}", jobIds, projectId);
+            _logger.LogRequest("Deleting job definitions {jobIds} in project {projectId}", jobIds, projectId);
 
             await _jobDefinitionService.DeleteJobDefinitions(projectId, jobIds);
+
+            _logger.LogResponse("Job definitions {jobIds} in project {projectId} deleted", jobIds, projectId);
 
             return NoContent();
         }
@@ -239,7 +260,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 Type = newTask.Type
             };
 
-            _logger.LogInformation("Creating job task definition in job {jobId} in project {projectId}. Request body: {@requestBodyToLog}", 
+            _logger.LogRequest("Creating job task definition in job {jobId} in project {projectId}. Request body: {@requestBodyToLog}", 
                 jobId, projectId, requestBodyToLog);
 
             try
@@ -249,6 +270,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 entity.Id = await _jobDefinitionService.AddJobTaskDefinition(entity);
                 
                 var newJobTaskDefinitionResponse = _mapper.Map<JobTaskDefinitionDto>(entity);
+
+                _logger.LogResponse("Job task definition in job {jobId} in project {projectId} created. Response body: {@newJobTaskDefinitionResponse}", jobId, projectId, newJobTaskDefinitionResponse);
 
                 return CreatedAtRoute("GetJobTaskDefinitionById", new
                 {
@@ -320,7 +343,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 Type = t.Type
             }).ToList();
 
-            _logger.LogInformation("Creating job task definitions in job {jobId} in project {projectId}. Request body: {@requestBodyToLog}", 
+            _logger.LogRequest("Creating job task definitions in job {jobId} in project {projectId}. Request body: {@requestBodyToLog}", 
                 jobId, projectId, requestBodyToLog);
 
             try
@@ -329,6 +352,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 await _jobDefinitionService.AddJobTaskDefinitions(jobId, entities);
 
                 var newTasksResponse = _mapper.Map<List<JobTaskDefinitionDto>>(entities);
+
+                _logger.LogResponse("Job task definitions in job {jobId} in project {projectId} created. Response body: {@newTasksResponse}", jobId, projectId, newTasksResponse);
 
                 return CreatedAtRoute("GetJobTaskDefinitions", new
                 {
@@ -386,10 +411,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task", Name = "GetJobTaskDefinitions")]
         public async Task<IActionResult> GetJobTaskDefinitions(int jobId)
         {
-            _logger.LogInformation("Getting job task definitions in job {jobId}", jobId);
+            _logger.LogRequest("Getting job task definitions in job {jobId}", jobId);
 
             var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
             var results = _mapper.Map<List<JobTaskDefinitionDto>>(jobTaskDefinitions);
+
+            _logger.LogResponse("Job task definitions in job {jobId} retrieved. Response body: {@results}", jobId, results);
 
             return Ok(results);
         }
@@ -404,10 +431,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task/{taskId}", Name = "GetJobTaskDefinitionById")]
         public async Task<IActionResult> GetJobTaskDefinition(int projectId, int jobId, int taskId)
         {
-            _logger.LogInformation("Getting job task definition {taskId} in job definition {jobId}, project {projectId}", taskId, jobId, projectId);
+            _logger.LogRequest("Getting job task definition {taskId} in job definition {jobId}, project {projectId}", taskId, jobId, projectId);
 
             var jobTaskDefinition = await _jobDefinitionService.GetJobTaskDefinitionById(taskId);
             var result = _mapper.Map<JobTaskDefinitionDto>(jobTaskDefinition);
+
+            _logger.LogResponse("Job task definition {taskId} in job {jobId} in project {projectId} retrieved. Response body: {@result}", taskId, jobId, projectId, result);
+
             return Ok(result);
         }
 
@@ -421,10 +451,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("Project/{projectId}/job/{jobId}/task/name/{taskName}")]
         public async Task<IActionResult> GetJobTaskDefinition(int projectId, int jobId, string taskName)
         {
-            _logger.LogInformation("Getting job task definition {taskName} in job definition {jobId}, project {projectId}", taskName, jobId, projectId);
+            _logger.LogRequest("Getting job task definition {taskName} in job definition {jobId}, project {projectId}", taskName, jobId, projectId);
 
             var jobTaskDefinition = await _jobDefinitionService.GetJobTaskDefinitionByName(jobId, taskName);
             var result = _mapper.Map<JobTaskDefinitionDto>(jobTaskDefinition);
+
+            _logger.LogResponse("Job task definition {taskName} in job {jobId} in project {projectId} retrieved. Response body: {@result}", taskName, jobId, projectId, result);
+
             return Ok(result);
         }
 
@@ -450,7 +483,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 Type = jobTaskDefinition.Type
             };
 
-            _logger.LogInformation("Updating job task definition {taskId} in job definition {jobId}, project {projectId}. Request body: {@requestBodyToLog}", 
+            _logger.LogRequest("Updating job task definition {taskId} in job definition {jobId}, project {projectId}. Request body: {@requestBodyToLog}", 
                 taskId, jobId, projectId, requestBodyToLog);
 
             try
@@ -464,6 +497,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 var entity = _mapper.Map<JobTaskDefinition>(jobTaskDefinition);
                 entity.JobDefinitionId = jobId;
                 await _jobDefinitionService.UpdateJobTaskDefinition(entity);
+
+                _logger.LogResponse("Job task definition {taskId} in job {jobId} in project {projectId} updated", taskId, jobId, projectId);
 
                 return Ok();
             }
@@ -510,7 +545,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPut("Project/{projectId}/job/{jobId}/task/{taskId}/config")]
         public async Task<IActionResult> UpdateJobTaskConfig(int projectId, int jobId, int taskId, UpdateJobTaskConfigDto jobTaskConfig)
         {
-            _logger.LogInformation("Updating job task config for task {taskId} in job definition {jobId}, project {projectId}. Request body: {@jobTaskConfig}", 
+            _logger.LogRequest("Updating job task config for task {taskId} in job definition {jobId}, project {projectId}. Request body: {@jobTaskConfig}", 
                 taskId, jobId, projectId, jobTaskConfig);
 
             if (taskId != jobTaskConfig.Id)
@@ -520,6 +555,8 @@ namespace Polyrific.Catapult.Api.Controllers
             }                
             
             await _jobDefinitionService.UpdateJobTaskConfig(jobTaskConfig.Id, jobTaskConfig.Config);
+
+            _logger.LogResponse("Job task config for task {taskId} in job {jobId} in project {projectId} updated", taskId, jobId, projectId);
 
             return Ok();
         }
@@ -534,9 +571,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("Project/{projectId}/job/{jobId}/task/{taskId}")]
         public async Task<IActionResult> DeleteJobTaskDefinition(int projectId, int jobId, int taskId)
         {
-            _logger.LogInformation("Deleting job task definition {taskId} in job definition {jobId}, project {projectId}", taskId, jobId, projectId);
+            _logger.LogRequest("Deleting job task definition {taskId} in job definition {jobId}, project {projectId}", taskId, jobId, projectId);
 
             await _jobDefinitionService.DeleteJobTaskDefinition(taskId);
+
+            _logger.LogResponse("Job task definition {taskId} in job {jobId} in project {projectId} deleted", taskId, jobId, projectId);
 
             return NoContent();
         }

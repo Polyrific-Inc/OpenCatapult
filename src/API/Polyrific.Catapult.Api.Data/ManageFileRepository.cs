@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public ManagedFileRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public ManagedFileRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

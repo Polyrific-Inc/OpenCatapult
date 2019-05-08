@@ -34,11 +34,14 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("section/{section}")]
         public async Task<IActionResult> GetHelpContextsBySection(string section)
         {
-            _logger.LogInformation("Getting help contexts for section {section}", section);
+            _logger.LogRequest("Getting help contexts for section {section}", section);
 
             var helpContexts = await _helpContextService.GetHelpContextsBySection(section);
-            var result = _mapper.Map<List<HelpContextDto>>(helpContexts);
-            return Ok(result);
+            var results = _mapper.Map<List<HelpContextDto>>(helpContexts);
+
+            _logger.LogResponse("Help contexts for section {section} retrieved. Reponse body: {@results}", section, results);
+
+            return Ok(results);
         }
     }
 }

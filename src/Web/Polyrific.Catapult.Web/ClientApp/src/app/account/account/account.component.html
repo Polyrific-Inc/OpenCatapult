@@ -57,6 +57,12 @@
         <td mat-cell *matCellDef="let element"> {{element.role}} </td>
       </ng-container>
 
+      <!-- emailConfirmed Column -->
+      <ng-container matColumnDef="emailConfirmed">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Email Confirmed? </th>
+        <td mat-cell *matCellDef="let element"> {{element.emailConfirmed ? 'Yes' : 'No'}} </td>
+      </ng-container>
+
       <!-- Action Column -->
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef> </th>
@@ -68,7 +74,7 @@
             <mat-icon>how_to_reg</mat-icon>
           </button>
           <button mat-icon-button (click)="onSuspendClick(element)" matTooltip="Suspend" *ngIf="statusFilter.value === 'active'">
-            <mat-icon>archive</mat-icon>
+            <mat-icon>block</mat-icon>
           </button>
           <button mat-icon-button (click)="onActivateClick(element)" matTooltip="Activate" *ngIf="statusFilter.value === 'suspended'">
             <mat-icon>unarchive</mat-icon>

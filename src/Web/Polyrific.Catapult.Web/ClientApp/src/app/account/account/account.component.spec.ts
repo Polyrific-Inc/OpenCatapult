@@ -46,7 +46,7 @@ describe('AccountComponent', () => {
       providers: [
         {
           provide: ActivatedRoute, useValue: {
-            queryParams: of({ newUser: true})
+            queryParams: of({ newUser: false})
           }
         }
       ]

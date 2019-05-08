@@ -1,0 +1,44 @@
+<div class="container">
+  <div fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="title-desc">
+      <h2>Versions</h2>
+      <span>Opencatapult is composed by multiple components. Here you can check the version of each component installed (<a href="https://docs.opencatapult.net/home/intro#the-components" target="_blank">more...</a>)</span>
+    </div>
+  </div>
+
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+<div *ngIf="!loading">
+    <div fxLayout="column" class="version-detail">
+      <div fxLayout="row">
+          <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Api Version</div>
+        <div>{{version.apiVersion}}</div>
+      </div>
+      <mat-divider></mat-divider>
+      <div fxLayout="row">
+        <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Web Version</div>
+        <div>{{webVersion}}</div>
+      </div>
+      <mat-divider></mat-divider>
+      <div fxLayout="row">
+          <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Registered Engines</div>
+          <div fxLayout="column" fxFlex="90" fxFlex.sm="70" fxFlex.xs="60">
+            <div fxLayout="row" *ngFor="let engine of version.engines">
+              <div fxFlex="5" fxFlex.sm="30" fxFlex.xs="50">{{engine.name}}</div>
+              <div>{{engine.version}}</div>
+            </div>
+          </div>
+      </div>
+      <mat-divider></mat-divider>
+      <div fxLayout="row" fxLayout.sm="column" fxLayout.xs="column">
+          <div fxFlex="10" fxFlex.sm="30" fxFlex.xs="40">Registered Task Providers</div>
+          <div fxLayout="column" fxFlex="90" fxFlex.sm="70" fxFlex.xs="60">
+            <div fxLayout="row" *ngFor="let taskProvider of version.taskProviders">
+              <div fxFlex="50" fxFlex.sm="80" fxFlex.xs="90">{{taskProvider.name}}</div>
+              <div>{{taskProvider.version}}</div>
+            </div>
+          </div>
+      </div>
+    </div>
+</div>
+</div>

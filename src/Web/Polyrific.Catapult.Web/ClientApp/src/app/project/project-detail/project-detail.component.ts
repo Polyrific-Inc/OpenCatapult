@@ -55,7 +55,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
         title: 'Confirm Delete Project',
-        confirmationText: 'Please enter project name to confirm project deletion:',
+        confirmationText: `Please enter project name (${this.project.name}) to confirm project deletion:`,
         confirmationMatch: this.project.name
       }
     });
@@ -83,7 +83,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
                       this.router.navigate(['project', { dummyData: (new Date).getTime()}])
                         .then(() => this.router.navigate(['project']));
-                    }, () => this.loading = false);
+                    }, (err) => {
+                      this.snackbar.open(err);
+                      this.router.navigate(['project', { dummyData: (new Date).getTime()}])
+                        .then(() => this.router.navigate(['project']));
+                      this.loading = false;
+                    });
                 } else {
                   this.hardDeleteProject();
                 }

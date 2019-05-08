@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
         /// <summary>
         /// Indicates whether a user is active or not
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         public int? ApplicationUserId { get; set; }
         public virtual ApplicationUser ApplicationUser { get; set; }

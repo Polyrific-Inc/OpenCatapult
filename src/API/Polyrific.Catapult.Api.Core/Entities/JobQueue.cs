@@ -61,7 +61,15 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// </summary>
         public int? JobDefinitionId { get; set; }
 
-        public virtual JobDefinition JobDefinition { get; set; }
+        /// <summary>
+        /// Name of the job definition
+        /// </summary>
+        public string JobDefinitionName { get; set; }
+
+        /// <summary>
+        /// Is the job definition is a deletion job?
+        /// </summary>
+        public bool IsDeletion { get; set; }
 
         /// <summary>
         /// JSON string of the job task status

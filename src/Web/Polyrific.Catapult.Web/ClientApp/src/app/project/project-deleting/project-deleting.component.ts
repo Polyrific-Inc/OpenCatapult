@@ -36,7 +36,7 @@ export class ProjectDeletingComponent implements OnInit {
     const dialogRef = this.dialog.open(ConfirmationWithInputDialogComponent, {
       data: {
         title: 'Confirm Delete Project',
-        confirmationText: 'Please enter project name to confirm project deletion:',
+        confirmationText: `Please enter project name (${this.project.name}) to confirm project deletion:`,
         confirmationMatch: this.project.name
       }
     });

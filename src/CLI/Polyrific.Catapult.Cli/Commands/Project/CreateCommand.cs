@@ -67,7 +67,7 @@ namespace Polyrific.Catapult.Cli.Commands.Project
         public override string Execute()
         {
             Console.WriteLine($"Trying to create project \"{Name}\"...");
-
+            bool promptAllConfig;
             NewProjectDto projectDto;
             if (!string.IsNullOrEmpty(Template))
             {
@@ -76,9 +76,12 @@ namespace Polyrific.Catapult.Cli.Commands.Project
                 projectDto.Name = Name;
                 projectDto.DisplayName = DisplayName;
                 projectDto.Client = Client;
+
+                promptAllConfig = Console.GetYesNo("Do you want to complete the job definition configuration now?", false);
             }
             else
             {
+                promptAllConfig = true;
                 projectDto = new NewProjectDto
                 {
                     Name = Name,
@@ -91,14 +94,20 @@ namespace Polyrific.Catapult.Cli.Commands.Project
             projectDto.Members = projectDto.Members ?? new List<NewProjectMemberDto>();
             projectDto.Models = projectDto.Models ?? new List<CreateProjectDataModelWithPropertiesDto>();
             projectDto.Jobs = projectDto.Jobs ?? new List<CreateJobDefinitionWithTasksDto>();
-
-            var message = ValidateTask(projectDto.Jobs);
-            if (!string.IsNullOrEmpty(message))
-                return message;
+            string message;
+            if (promptAllConfig)
+            {
+                message = ValidateTask(projectDto.Jobs);
+                if (!string.IsNullOrEmpty(message))
+                    return message;
+            }
 
             var project = _projectService.CreateProject(projectDto).Result;
 
-            message = project.ToCliString("Project created:");
+            message = project.ToCliString(promptAllConfig ? 
+                "Project created:" : 
+                "The project has been successfully created. However, you cannot queue the Default job until you complete the configuration");
+
             Logger.LogInformation(message);
 
             RefreshToken();

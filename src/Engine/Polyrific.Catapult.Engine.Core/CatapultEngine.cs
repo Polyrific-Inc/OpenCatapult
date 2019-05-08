@@ -89,7 +89,7 @@ namespace Polyrific.Catapult.Engine.Core
                 
                 await _jobLogWriter.EndJobLog(jobQueue.Id);
 
-                await _jobQueueService.SendNotification(jobQueue.ProjectId, jobQueue.Id);
+                await _jobQueueService.SendNotification(jobQueue.Id);
 
                 if (jobQueue.Status == JobStatus.Completed &&
                     jobQueue.IsDeletion &&

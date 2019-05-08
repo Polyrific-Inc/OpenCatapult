@@ -541,7 +541,11 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<DateTime>("Created");
 
+                    b.Property<bool>("IsDeletion");
+
                     b.Property<int?>("JobDefinitionId");
+
+                    b.Property<string>("JobDefinitionName");
 
                     b.Property<string>("JobTasksStatus");
 
@@ -560,8 +564,6 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                     b.Property<DateTime?>("Updated");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("JobDefinitionId");
 
                     b.HasIndex("ProjectId");
 
@@ -1981,7 +1983,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<DateTime>("Created");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
@@ -2018,7 +2020,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<string>("FirstName");
 
-                    b.Property<bool>("IsActive")
+                    b.Property<bool?>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasDefaultValue(true);
 
@@ -2073,10 +2075,6 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobQueue", b =>
                 {
-                    b.HasOne("Polyrific.Catapult.Api.Core.Entities.JobDefinition", "JobDefinition")
-                        .WithMany()
-                        .HasForeignKey("JobDefinitionId");
-
                     b.HasOne("Polyrific.Catapult.Api.Core.Entities.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId")

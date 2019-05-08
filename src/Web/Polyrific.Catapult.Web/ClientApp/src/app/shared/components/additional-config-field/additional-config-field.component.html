@@ -1,7 +1,7 @@
 <div [ngSwitch]="additionalConfig.type" [formGroup]="form">
     <mat-form-field *ngSwitchCase="'string'" class="full-width-input">
         <mat-label>{{additionalConfig.label}}</mat-label>
-        <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired ? 'required' : null">
+        <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired && !skipValidation ? 'required' : null">
         <mat-error *ngIf="isFieldInvalid(additionalConfig.name, 'required')">
           Please inform the {{additionalConfig.label}}
         </mat-error>
@@ -9,7 +9,7 @@
 
     <mat-form-field *ngSwitchCase="'number'" class="full-width-input">
         <mat-label>{{additionalConfig.label}}</mat-label>
-        <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired ? 'required' : null">
+        <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired && !skipValidation ? 'required' : null">
         <mat-error *ngIf="isFieldInvalid(additionalConfig.name, 'required')">
           Please inform the {{additionalConfig.label}}
         </mat-error>

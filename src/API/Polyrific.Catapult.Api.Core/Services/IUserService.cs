@@ -16,11 +16,13 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="email">Email of the user</param>
         /// <param name="firstName">First name of the user</param>
         /// <param name="lastName">Last name of the user</param>
+        /// <param name="roleName">Name of the user role</param>
         /// <param name="externalAccountIds">External accound ids of the new user</param>
         /// <param name="password">Password for the user</param>
+        /// <param name="webUrl">The base web url</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>New user object</returns>
-        Task<User> CreateUser(string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> CreateUser(string email, string firstName, string lastName, string roleName, Dictionary<string, string> externalAccountIds, string password, string webUrl, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a user
@@ -53,6 +55,14 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>The user entity</returns>
         Task<User> GetUserById(int userId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get user list by ids
+        /// </summary>
+        /// <param name="ids">Array of user ids</param>
+        /// /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns>The user entity list</returns>
+        Task<List<User>> GetUsersByIds(int[] ids, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Confirm registered email
@@ -113,7 +123,7 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="roleName">Name of the role</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task SetUserRole(string userId, string roleName, CancellationToken cancellationToken = default(CancellationToken));
+        Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get role of a user

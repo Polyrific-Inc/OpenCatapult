@@ -1,0 +1,18 @@
+.container {
+  margin-left: 25px;
+  margin-right: 25px;
+}
+
+.version-detail {
+  margin-left: 20px;
+  padding-right: 20px;
+  width: 100%;
+}
+
+.version-detail mat-divider {
+  position: inherit;
+}
+
+.version-detail > div, .version-detail > mat-divider {
+  margin-top: 10px;
+}

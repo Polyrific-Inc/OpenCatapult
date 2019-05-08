@@ -42,7 +42,7 @@ describe('EngineComponent', () => {
       providers: [
         {
           provide: ActivatedRoute, useValue: {
-            queryParams: of({ newEngine: true})
+            queryParams: of({ newEngine: false})
           }
         }
       ]

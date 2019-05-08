@@ -40,13 +40,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetTaskProviders()
         {
-            _logger.LogInformation("Getting taskProviders");
+            _logger.LogRequest("Getting task providers");
 
             var taskProviders = await _taskProviderService.GetTaskProviders();
 
-            var result = _mapper.Map<List<TaskProviderDto>>(taskProviders);
+            var results = _mapper.Map<List<TaskProviderDto>>(taskProviders);
 
-            return Ok(result);
+            _logger.LogResponse("Task providers retrieved. Response body: {@results}", results);
+
+            return Ok(results);
         }
 
         /// <summary>
@@ -58,13 +60,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetTaskProvidersByType(string taskProviderType)
         {
-            _logger.LogInformation("Getting taskProviders for type {taskProviderType}", taskProviderType);
+            _logger.LogRequest("Getting task providers for type {taskProviderType}", taskProviderType);
 
             var taskProviders = await _taskProviderService.GetTaskProviders(taskProviderType);
 
-            var result = _mapper.Map<List<TaskProviderDto>>(taskProviders);
+            var results = _mapper.Map<List<TaskProviderDto>>(taskProviders);
 
-            return Ok(result);
+            _logger.LogResponse("Task providers for type {taskProviderType} retrieved. Response body: {@results}", taskProviderType, results);
+
+            return Ok(results);
         }
 
         /// <summary>
@@ -76,7 +80,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetTaskProviderById(int taskProviderId)
         {
-            _logger.LogInformation("Getting taskProvider {taskProviderId}", taskProviderId);
+            _logger.LogRequest("Getting task provider {taskProviderId}", taskProviderId);
 
             var taskProvider = await _taskProviderService.GetTaskProviderById(taskProviderId);
             if (taskProvider == null)
@@ -86,6 +90,9 @@ namespace Polyrific.Catapult.Api.Controllers
 
             var result = _mapper.Map<TaskProviderDto>(taskProvider);
             result.AdditionalConfigs = _mapper.Map<TaskProviderAdditionalConfigDto[]>(additionalConfigs);
+
+
+            _logger.LogResponse("Task provider {taskProviderId} retrieved. Response body: {@result}", taskProviderId, result);
 
             return Ok(result);
         }
@@ -99,7 +106,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetTaskProviderByName(string taskProviderName)
         {
-            _logger.LogInformation("Getting taskProvider {taskProviderName}", taskProviderName);
+            _logger.LogRequest("Getting task provider {taskProviderName}", taskProviderName);
 
             var taskProvider = await _taskProviderService.GetTaskProviderByName(taskProviderName);
             if (taskProvider == null)
@@ -109,6 +116,8 @@ namespace Polyrific.Catapult.Api.Controllers
 
             var result = _mapper.Map<TaskProviderDto>(taskProvider);
             result.AdditionalConfigs = _mapper.Map<TaskProviderAdditionalConfigDto[]>(additionalConfigs);
+
+            _logger.LogResponse("Task provider {taskProviderName} retrieved. Response body: {@result}", taskProviderName, result);
 
             return Ok(result);
 
@@ -123,7 +132,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RegisterTaskProvider(NewTaskProviderDto dto)
         {
-            _logger.LogInformation("Registering taskProvider. Request body: {@dto}", dto);
+            _logger.LogRequest("Registering task provider. Request body: {@dto}", dto);
 
             try
             {
@@ -136,6 +145,8 @@ namespace Polyrific.Catapult.Api.Controllers
                     var additionalConfigs = _mapper.Map<List<TaskProviderAdditionalConfig>>(dto.AdditionalConfigs);
                     var _ = await _taskProviderAdditionalConfigService.AddAdditionalConfigs(taskProvider.Id, additionalConfigs);
                 }
+
+                _logger.LogResponse("Task provider created. Response body: {@result}", result);
 
                 return CreatedAtRoute("GetProviderById", new { taskProviderId = taskProvider.Id }, result);
             }
@@ -154,9 +165,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> DeleteTaskProviderById(int taskProviderId)
         {
-            _logger.LogInformation("Deleting taskProvider {taskProviderId}", taskProviderId);
+            _logger.LogRequest("Deleting task provider {taskProviderId}", taskProviderId);
 
             await _taskProviderService.DeleteTaskProvider(taskProviderId);
+
+            _logger.LogResponse("Task provider {taskProviderId} deleted", taskProviderId);
 
             return NoContent();
         }
@@ -170,13 +183,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleBasicEngineAccess)]
         public async Task<IActionResult> GetTaskProviderAdditionalConfigsByTaskProviderName(string taskProviderName)
         {
-            _logger.LogInformation("Getting additional configs for taskProvider {taskProviderName}", taskProviderName);
+            _logger.LogRequest("Getting additional configs for task provider {taskProviderName}", taskProviderName);
 
             var additionalConfigs = await _taskProviderAdditionalConfigService.GetByTaskProviderName(taskProviderName);
 
-            var result = _mapper.Map<List<TaskProviderAdditionalConfigDto>>(additionalConfigs);
+            var results = _mapper.Map<List<TaskProviderAdditionalConfigDto>>(additionalConfigs);
 
-            return Ok(result);
+            _logger.LogResponse("Additional configs for task provider {taskProviderName} retrieved. Response body: {@result}", taskProviderName, results);
+
+            return Ok(results);
         }
 
     }

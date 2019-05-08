@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public ProjectRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public ProjectRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

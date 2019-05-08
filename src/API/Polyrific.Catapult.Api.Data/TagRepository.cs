@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public TagRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public TagRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

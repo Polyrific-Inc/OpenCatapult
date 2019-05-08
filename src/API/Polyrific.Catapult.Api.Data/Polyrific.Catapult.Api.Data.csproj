@@ -109,10 +109,18 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="2.2.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="2.2.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <!--The System packages below are explicitely refferenced to resolve "package downgrade" issues when publishing the app-->
+    <PackageReference Include="System.Collections" Version="4.3.0"></PackageReference>
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0"></PackageReference>
+    <PackageReference Include="System.IO.FileSystem.Primitives" Version="4.3.0"></PackageReference>
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0"></PackageReference>
+    <PackageReference Include="System.Runtime.Handles" Version="4.3.0"></PackageReference>
+    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0"></PackageReference>
   </ItemGroup>
 
   <ItemGroup>

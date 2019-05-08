@@ -16,6 +16,10 @@ namespace Polyrific.Catapult.Api.Data
         {
         }
 
+        public JobTaskDefinitionRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
+
         public async Task<List<int>> CreateRange(List<JobTaskDefinition> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

@@ -16,6 +16,12 @@ namespace Polyrific.Catapult.Api.Data
             
         }
 
+        public CatapultDbContext(DbContextOptions<CatapultSqliteDbContext> options)
+            : base(options)
+        {
+
+        }
+
         public virtual DbSet<Project> Projects { get; set; }
         public virtual DbSet<ProjectDataModel> ProjectDataModels { get; set; }
         public virtual DbSet<ProjectDataModelProperty> ProjectDataModelProperties { get; set; }

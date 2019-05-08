@@ -8,6 +8,8 @@ import { LoginComponent } from './login/login.component';
 import { UnauthorizedComponent } from './unauthorized/unauthorized.component';
 import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
+import { VersionComponent } from './version/version.component';
 
 const routes: Routes = [
   {
@@ -40,6 +42,10 @@ const routes: Routes = [
       {
         path: 'unauthorized',
         component: UnauthorizedComponent
+      },
+      {
+        path: 'version',
+        component: VersionComponent
       }
     ]
   },
@@ -60,6 +66,10 @@ const routes: Routes = [
   {
     path: 'reset-password',
     component: ResetPasswordComponent
+  },
+  {
+    path: 'confirm-email',
+    component: ConfirmEmailComponent
   }
 ];
 

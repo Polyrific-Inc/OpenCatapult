@@ -45,6 +45,11 @@ namespace Polyrific.Catapult.Shared.Dto.User
         public int? AvatarFileId { get; set; }
 
         /// <summary>
+        /// Is user email confirmed?
+        /// </summary>
+        public bool EmailConfirmed { get; set; }
+
+        /// <summary>
         /// The collection of external account id of the user
         /// </summary>
         public Dictionary<string, string> ExternalAccountIds { get; set; }

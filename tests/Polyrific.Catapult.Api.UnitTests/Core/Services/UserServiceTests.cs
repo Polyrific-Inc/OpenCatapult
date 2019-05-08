@@ -1,11 +1,13 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Repositories;
 using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Shared.Common.Notification;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +21,9 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
     public class UserServiceTests
     {
         private readonly List<User> _data;
-        private readonly Mock<IUserRepository> _UserRepository;
+        private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<INotificationProvider> _notificationProvider;
 
         public UserServiceTests()
         {
@@ -35,37 +39,37 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 }
             };
 
-            _UserRepository = new Mock<IUserRepository>();
-            _UserRepository.Setup(r => r.Delete(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _userRepository = new Mock<IUserRepository>();
+            _userRepository.Setup(r => r.Delete(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask).Callback((int id, CancellationToken cancellationToken) =>
                 {
                     var entity = _data.FirstOrDefault(d => d.Id == id);
                     if (entity != null)
                         _data.Remove(entity);
                 });
-            _UserRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.Id == id));
-            _UserRepository.Setup(r => r.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string name, CancellationToken cancellationToken) => _data.FirstOrDefault(d => d.UserName == name));
-            _UserRepository.Setup(r => r.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetUserRole(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(UserRole.Administrator);
-            _UserRepository.Setup(r => r.GetUsers(It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetUsers(It.IsAny<bool?>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_data);
-            _UserRepository.Setup(r => r.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetResetPasswordToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("test");
-            _UserRepository.Setup(r => r.GetByPrincipal(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GetByPrincipal(It.IsAny<ClaimsPrincipal>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((ClaimsPrincipal principal, CancellationToken cancellationToken) => _data.FirstOrDefault());
-            _UserRepository.Setup(r => r.GenerateConfirmationToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.GenerateConfirmationToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("test");
-            _UserRepository.Setup(r => r.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(true);
-            _UserRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2).Callback((User entity, CancellationToken cancellationToken) =>
                 {
                     entity.Id = 2;
                     _data.Add(entity);
                 });
-            _UserRepository
+            _userRepository
                 .Setup(r => r.Create(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2).Callback(
                     (User entity, string password, CancellationToken cancellationToken) =>
@@ -73,7 +77,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                         entity.Id = 2;
                         _data.Add(entity);
                     });
-            _UserRepository.Setup(r => r.Update(It.IsAny<User>(), It.IsAny<CancellationToken>()))
+            _userRepository.Setup(r => r.Update(It.IsAny<User>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask).Callback((User entity, CancellationToken cancellationToken) =>
                 {
                     var oldEntity = _data.FirstOrDefault(d => d.Id == entity.Id);
@@ -83,13 +87,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                         _data.Add(entity);
                     }
                 });
+
+            _configuration = new Mock<IConfiguration>();
+            _configuration.SetupGet(x => x[ConfigurationKey.WebUrl]).Returns("http://web");
+
+            _notificationProvider = new Mock<INotificationProvider>();
         }
 
         [Fact]
         public async void AddUser_ValidItem()
         {
-            var UserService = new UserService(_UserRepository.Object);
-            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", null, "test*1");
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
+            var newUser = await UserService.CreateUser("test2@test.com", "first test", "last test", UserRole.Basic, null, "test*1", "http://web");
 
             Assert.NotNull(newUser);
             Assert.True(_data.Count > 1);
@@ -98,7 +107,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetUsers_ReturnItems()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var Users = await UserService.GetUsers(null);
 
             Assert.NotEmpty(Users);
@@ -109,7 +118,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         {
             _data.Clear();
 
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var Users = await UserService.GetUsers(UserStatus.Active);
 
             Assert.Empty(Users);
@@ -118,7 +127,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void GetUsers_UserStatusNotFoundException()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var exception = Record.ExceptionAsync(() => UserService.GetUsers("test"));
 
             Assert.IsType<UserStatusNotFoundException>(exception?.Result);
@@ -127,7 +136,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetUser_ReturnItem()
         {            
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var projectUser = await UserService.GetUser("test");
 
             Assert.NotNull(projectUser);
@@ -137,7 +146,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetUser_ReturnNull()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var User = await UserService.GetUser("testempty");
 
             Assert.Null(User);
@@ -146,7 +155,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void DeleteUser_ValidItem()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.DeleteUser(1);
 
             Assert.Empty(_data);
@@ -155,7 +164,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GenerateConfirmationToken_ReturnToken()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var token = await UserService.GenerateConfirmationToken(1);
 
             Assert.NotNull(token);
@@ -164,34 +173,34 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void ConfirmRegistration_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.ConfirmEmail(1, "test");
 
-            _UserRepository.Verify(r => r.ConfirmEmail(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.ConfirmEmail(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void Suspend_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.Suspend(1);
 
-            _UserRepository.Verify(r => r.Suspend(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.Suspend(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void Reactivate_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.Reactivate(1);
 
-            _UserRepository.Verify(r => r.Reactivate(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.Reactivate(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void GetUserId_ReturnId()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var id = await UserService.GetUserId(new ClaimsPrincipal());
 
             Assert.NotEqual(0, id);
@@ -200,7 +209,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetUserEmail_ReturnUserEmail()
         {
-            var userService = new UserService(_UserRepository.Object);
+            var userService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var email = await userService.GetUserEmail(new ClaimsPrincipal());
 
             Assert.NotEqual(string.Empty, email);
@@ -209,7 +218,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void ValidateUserPassword_ReturnValid()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var result = await UserService.ValidateUserPassword("test", "test");
 
             Assert.True(result);
@@ -218,7 +227,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetUserRole_ReturnAdminRole()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var result = await UserService.GetUserRole("test");
 
             Assert.Equal(UserRole.Administrator, result);
@@ -227,34 +236,34 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void SetUserRole_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
-            await UserService.SetUserRole("test", UserRole.Basic);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
+            await UserService.SetUserRole(1, UserRole.Basic);
 
-            _UserRepository.Verify(r => r.SetUserRole(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.SetUserRole(1, UserRole.Basic, It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void ResetPassword_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.ResetPassword(1, "test", "test");
 
-            _UserRepository.Verify(r => r.ResetPassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.ResetPassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void UpdatePassword_Success()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             await UserService.UpdatePassword(1, "test", "test");
 
-            _UserRepository.Verify(r => r.UpdatePassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+            _userRepository.Verify(r => r.UpdatePassword(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Fact]
         public async void GetResetPasswordToken_ReturnToken()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var token = await UserService.GetResetPasswordToken(1);
             
             Assert.NotNull(token);
@@ -263,7 +272,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GeneratePassword_SatisfyRequirement()
         {
-            var UserService = new UserService(_UserRepository.Object);
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object);
             var passwordValidator = new PasswordValidator<User>();
             var userManager = GetMockUserManager().Object;
             var user = new User();

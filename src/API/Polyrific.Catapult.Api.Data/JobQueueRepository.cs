@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public JobQueueRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public JobQueueRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

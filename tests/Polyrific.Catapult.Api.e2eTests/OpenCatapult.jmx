@@ -130,7 +130,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -232,7 +232,7 @@
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
                       <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
@@ -304,7 +304,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${email_3}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${email_3}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -397,7 +397,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -509,7 +509,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -599,7 +599,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -767,7 +767,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -1107,7 +1107,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -1591,7 +1591,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -1741,7 +1741,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by username" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -1749,7 +1749,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -1845,7 +1845,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -2013,7 +2013,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -2209,7 +2209,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -2368,7 +2368,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -2468,7 +2468,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -2630,7 +2630,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by user name" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -2638,7 +2638,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -2728,7 +2728,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -2884,7 +2884,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${email_4}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${email_4}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -3121,7 +3121,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -3406,7 +3406,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -3506,7 +3506,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -3726,7 +3726,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by user name" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -3734,7 +3734,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -3824,7 +3824,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -3980,7 +3980,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${email_4}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${email_4}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -4180,7 +4180,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -4344,7 +4344,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -4473,7 +4473,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -4577,7 +4577,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by user name" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -4585,7 +4585,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -4663,7 +4663,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${email_4}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${email_4}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -5010,7 +5010,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -5396,7 +5396,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -5467,7 +5467,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -5616,7 +5616,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by username" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -5624,7 +5624,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -5702,7 +5702,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${email_4}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${email_4}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -6059,7 +6059,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -6557,7 +6557,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -6657,7 +6657,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -6882,7 +6882,8 @@
                   <stringProp name="Argument.value">{&#xd;
   &quot;id&quot;: ${userId},&#xd;
   &quot;firstName&quot;: &quot;user&quot;,&#xd;
-  &quot;lastName&quot;: &quot;${randomString} edited&quot;&#xd;
+  &quot;lastName&quot;: &quot;${randomString} edited&quot;,&#xd;
+  &quot;userName&quot;: &quot;${userName}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
                 </elementProp>
@@ -6951,35 +6952,6 @@
             <stringProp name="HTTPSampler.protocol"></stringProp>
             <stringProp name="HTTPSampler.contentEncoding"></stringProp>
             <stringProp name="HTTPSampler.path">/Account/name/${userName} </stringProp>
-            <stringProp name="HTTPSampler.method">GET</stringProp>
-            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
-            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
-            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
-            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
-            <stringProp name="HTTPSampler.embedded_url_re"></stringProp>
-            <stringProp name="HTTPSampler.connect_timeout"></stringProp>
-            <stringProp name="HTTPSampler.response_timeout"></stringProp>
-          </HTTPSamplerProxy>
-          <hashTree>
-            <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Headers" enabled="true">
-              <collectionProp name="HeaderManager.headers">
-                <elementProp name="" elementType="Header">
-                  <stringProp name="Header.name">Authorization</stringProp>
-                  <stringProp name="Header.value">Bearer ${token}</stringProp>
-                </elementProp>
-              </collectionProp>
-            </HeaderManager>
-            <hashTree/>
-          </hashTree>
-          <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
-            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
-              <collectionProp name="Arguments.arguments"/>
-            </elementProp>
-            <stringProp name="HTTPSampler.domain"></stringProp>
-            <stringProp name="HTTPSampler.port"></stringProp>
-            <stringProp name="HTTPSampler.protocol"></stringProp>
-            <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-            <stringProp name="HTTPSampler.path">/Account/email/${email} </stringProp>
             <stringProp name="HTTPSampler.method">GET</stringProp>
             <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
             <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -7206,7 +7178,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>

@@ -16,6 +16,10 @@ namespace Polyrific.Catapult.Api.Data
         {
         }
 
+        public TaskProviderAdditionalConfigRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
+
         public async Task<List<int>> AddRange(List<TaskProviderAdditionalConfig> entities, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

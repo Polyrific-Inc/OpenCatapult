@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AccountService, UserDto } from '@app/core';
+import { AccountService, UserDto, userRoles } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef } from '@angular/material';
+import { UserRole } from '@app/core/enums/user-role';
 
 @Component({
   selector: 'app-user-register-dialog',
@@ -12,6 +13,7 @@ import { MatDialogRef } from '@angular/material';
 export class UserRegisterDialogComponent implements OnInit {
   userForm: FormGroup;
   loading: boolean;
+  userRoles = userRoles;
 
   constructor (
     private fb: FormBuilder,
@@ -25,7 +27,8 @@ export class UserRegisterDialogComponent implements OnInit {
     this.userForm = this.fb.group({
       email: [null, Validators.compose([Validators.required, Validators.email])],
       firstName: null,
-      lastName: null
+      lastName: null,
+      roleName: UserRole.Guest
     });
   }
 

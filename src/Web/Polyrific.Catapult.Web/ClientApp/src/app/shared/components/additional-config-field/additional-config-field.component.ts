@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AdditionalConfigDto } from '@app/core';
 import { FormGroup } from '@angular/forms';
-import { formArrayNameProvider } from '@angular/forms/src/directives/reactive_directives/form_group_name';
 
 @Component({
   selector: 'app-additional-config-field',
@@ -11,6 +10,7 @@ import { formArrayNameProvider } from '@angular/forms/src/directives/reactive_di
 export class AdditionalConfigFieldComponent implements OnInit {
   @Input() additionalConfig: AdditionalConfigDto;
   @Input() form: FormGroup;
+  @Input() skipValidation: boolean;
   additionalConfigFile: string;
 
   constructor() { }

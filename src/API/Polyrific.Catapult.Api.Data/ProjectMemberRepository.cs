@@ -21,6 +21,11 @@ namespace Polyrific.Catapult.Api.Data
             _mapper = mapper;
         }
 
+        public ProjectMemberRepository(CatapultSqliteDbContext dbContext, IMapper mapper) : base(dbContext)
+        {
+            _mapper = mapper;
+        }
+
         public override async Task<IEnumerable<ProjectMember>> GetBySpec(ISpecification<ProjectMember> spec, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();

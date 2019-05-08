@@ -42,7 +42,7 @@ describe('TaskProviderComponent', () => {
       providers: [
         {
           provide: ActivatedRoute, useValue: {
-            queryParams: of({ newProvider: true})
+            queryParams: of({ newProvider: false})
           }
         }
       ]

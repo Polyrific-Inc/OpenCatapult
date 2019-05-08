@@ -65,4 +65,8 @@ export class AccountService {
     return this.api.postString(`account/name/${username}/resetpassword`, dto);
   }
 
+  confirmEmail(userId: number, token: string) {
+    return this.api.getString(`account/${userId}/confirm?token=${token}`);
+  }
+
 }

@@ -1,0 +1,9 @@
+<mat-toolbar color="primary" fxLayout="row" fxLayoutAlign="space-between center" class="version">
+    <div>
+
+    </div>
+    <div>
+        <button mat-button routerLink="/version" *ngIf="showVersionPage">OpenCatapult Web UI v{{version}}</button>
+        <button mat-button *ngIf="!showVersionPage">OpenCatapult Web UI v{{version}}</button>
+    </div>
+</mat-toolbar>

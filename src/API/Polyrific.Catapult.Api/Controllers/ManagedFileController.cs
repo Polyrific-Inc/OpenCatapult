@@ -40,7 +40,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             var fileName = file.FileName;
 
-            _logger.LogInformation("Creating managed file {fileName}...", fileName);
+            _logger.LogRequest("Creating managed file {fileName}...", fileName);
 
             using (var stream = file.OpenReadStream())
             {
@@ -68,17 +68,21 @@ namespace Polyrific.Catapult.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GetManagedFile(int managedFileId)
         {
-            _logger.LogInformation("Getting managed file {managedFileId}...", managedFileId);
+            _logger.LogRequest("Getting managed file {managedFileId}...", managedFileId);
 
             var managedFile = await _managedFileService.GetManagedFileById(managedFileId);
             
             if (managedFile != null)
             {
                 new FileExtensionContentTypeProvider().TryGetContentType(managedFile.FileName, out var contentType);
+                
+                _logger.LogResponse("File {managedFileId} retrieved", managedFileId);
+
                 return File(managedFile.File, contentType ?? "application/octet-stream");
             }
             else
             {
+                _logger.LogResponse("File {managedFileId} not found", managedFileId);
                 return NoContent();
             }
         }
@@ -93,7 +97,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [ProducesResponseType(201)]
         public async Task<IActionResult> UpdateManagedFile(int managedFileId, IFormFile file)
         {
-            _logger.LogInformation("Updating managed file {managedFileId}...", managedFileId);
+            _logger.LogRequest("Updating managed file {managedFileId}...", managedFileId);
 
             using (var stream = file.OpenReadStream())
             {
@@ -110,6 +114,7 @@ namespace Polyrific.Catapult.Api.Controllers
                         File = ms.ToArray()
                     });
 
+                    _logger.LogResponse("File {managedFileId} updated", managedFileId);
                     return Ok();
                 }
             }
@@ -123,9 +128,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("{managedFileId}")]
         public async Task<IActionResult> DeleteManagedFile(int managedFileId)
         {
-            _logger.LogInformation("Deleting managed file {managedFileId}...", managedFileId);
+            _logger.LogRequest("Deleting managed file {managedFileId}...", managedFileId);
 
             await _managedFileService.DeleteManagedFile(managedFileId);
+
+            _logger.LogResponse("File {managedFileId} deleted", managedFileId);
 
             return NoContent();
         }
