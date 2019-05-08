@@ -40,7 +40,8 @@ $appSettingsEnvContent = [PSCustomObject]@{
 if (!(Test-Path $appSettingsEnvPath)) {
     if (($dbProvider -eq "") -or ($dbProvider -eq "sqlite")) {
         if ($connString -eq "") {
-            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = Join-Path $apiPublishPath $defaultSqliteDbFile
+            $sqliteDbPath = Join-Path $apiPublishPath $defaultSqliteDbFile
+            $appSettingsEnvContent.ConnectionStrings.DefaultConnection = "Data Source=$sqliteDbPath"
         } else {
             $appSettingsEnvContent.ConnectionStrings.DefaultConnection = $connString
         }
@@ -90,6 +91,10 @@ if (!$noBuild) {
         }
 
         Write-Output "Database Provider has been updated"
+    }
+
+    if (!(Test-Path $apiPublishPath)) {
+        New-Item -Path $apiPublishPath -ItemType directory | Out-Null
     }
 
     $success = $false;
