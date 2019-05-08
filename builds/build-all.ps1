@@ -6,8 +6,8 @@ param(
     [string]$environment = "Development",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
-    [string]$webHost = "localhost",
-    [string]$webPort = "44300",
+    [string]$webHttp = "http://localhost:8000",
+    [string]$webHttps = "https://localhost:44300",
     [switch]$noConfig = $false,
     [switch]$noCli = $false,
     [switch]$noPrompt = $false,
@@ -179,8 +179,10 @@ if (!$noCli) {
 ## Build Web
 if (!$noWeb) {
 	Write-Host "Publishing Web UI..."
-	$args = "-host " + $webHost
-	$args += " -port " + $webPort
+	$args = "-http " + $webHttp
+	$args += " -https " + $webHttps
+	$args += " -configuration " + $configuration
+	$args += " -environment " + $environment
     $done = Invoke-BuildScriptNewWindow "build-web.ps1" $args
 }
 

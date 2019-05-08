@@ -1,50 +1,33 @@
 param(
-    [string]$hostName = "localhost",
-    [string]$portNumber = "44300"
+    [string]$http = "http://localhost:8000",
+    [string]$https = "https://localhost:44300",
+    [string]$configuration = "Release",
+    [string]$environment = "Development"
 )
+
+$env:ASPNETCORE_ENVIRONMENT = $environment
 
 $host.UI.RawUI.WindowTitle = "OpenCatapult Web";
 
 $rootPath = Split-Path $PSScriptRoot
-$webLocation = Join-Path $rootPath "/src/Web/opencatapultweb"
+$webCsprojPath = Join-Path $rootPath "/src/Web/Polyrific.Catapult.Web/Polyrific.Catapult.Web.csproj"
+$webPublishPath = Join-Path $rootPath "/publish/web"
+$webDll = Join-Path $webPublishPath "/ocweb.dll"
 
-Set-Location -Path $webLocation
-
-
-function TrustCertificateOnWindows([string]$certFile) 
-{    
-write-host $webLocation + $certFile
-	$cert = new-object System.Security.Cryptography.X509Certificates.X509Certificate2($certFile)
-	
-	$certStore = new-object System.Security.Cryptography.X509Certificates.X509Store([System.Security.Cryptography.X509Certificates.StoreName]::Root, [System.Security.Cryptography.X509Certificates.StoreLocation]::CurrentUser)
-	$certStore.Open([System.Security.Cryptography.X509Certificates.OpenFlags]::ReadWrite)
-	
-	$existingCert = $certStore.Certificates.Find([System.Security.Cryptography.X509Certificates.X509FindType]::FindByThumbprint, $cert.Thumbprint, $false)
-	if ($existingCert.Count -gt 0) {
-		Write-Host "Certificate already trusted. Skipping trust step"
-		return
-	}
-		
-	$certStore.Add($cert)
-	$certStore.Close()
+if (!(Test-Path $webPublishPath)) {
+	New-Item -Path $webPublishPath -ItemType directory | Out-Null
 }
 
-function TrustCertificateOnMac([string]$certFile) 
-{
-	sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $certFile
+# publish Web
+Write-Output "Publishing Web..."
+Write-Output "dotnet publish $webCsprojPath -c $configuration -o $webPublishPath"
+$result = dotnet publish $webCsprojPath -c $configuration -o $webPublishPath
+if ($LASTEXITCODE -ne 0) {
+	Write-Error -Message "[ERROR] $result"
+	break
 }
 
-#Import-Certificate -Filepath "ssl/server.crt" -CertStoreLocation cert:\CurrentUser\Root
-if ($IsLinux) {
-    Write-Host "The automated ssl certificate trust is currently only supported on Windows and Mac. For establishing certficate trust on other platforms please refer to the platform specific documentation." -ForegroundColor Yellow 
-}
-elseif ($IsMacOS) {
-	TrustCertificateOnMac($webLocation + "/ssl/server.crt")
-}
-else {
-	TrustCertificateOnWindows($webLocation + "/ssl/server.crt")
-}
-
-npm install
-
-npm run start -- --ssl --host $hostName --port $portNumber --ssl-cert "ssl/server.crt" --ssl-key "ssl/server.key"
+Write-Output "Running Web..."
+Write-Output "dotnet $webDll --urls `"$http;$https`""
+Set-Location $webPublishPath
+dotnet $webDll --urls "$http;$https"
