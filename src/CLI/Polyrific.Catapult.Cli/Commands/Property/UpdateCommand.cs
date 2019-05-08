@@ -42,7 +42,7 @@ namespace Polyrific.Catapult.Cli.Commands.Property
 
         [Option("-t|--type <TYPE>", "Data type", CommandOptionType.SingleValue)]
         [AllowedValues(PropertyDataType.String, PropertyDataType.Integer, PropertyDataType.Short, PropertyDataType.Float, PropertyDataType.Double, PropertyDataType.Decimal,
-            PropertyDataType.Boolean, PropertyDataType.DateTime, PropertyDataType.Byte, PropertyDataType.Guid, PropertyDataType.DbGeography)]
+            PropertyDataType.Boolean, PropertyDataType.DateTime, PropertyDataType.File, PropertyDataType.Guid, PropertyDataType.DbGeography)]
         public string Type { get; set; }
 
         [Option("-ct|--controltype <CONTROLTYPE>", "Control type", CommandOptionType.SingleValue)]

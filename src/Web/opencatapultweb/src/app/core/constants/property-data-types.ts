@@ -8,5 +8,7 @@ export const propertyDataTypes: [string, string][] = [
   [PropertyDataType.Double, 'Double'],
   [PropertyDataType.Decimal, 'Decimal'],
   [PropertyDataType.Boolean, 'Boolean'],
-  [PropertyDataType.DateTime, 'DateTime']
+  [PropertyDataType.DateTime, 'DateTime'],
+  [PropertyDataType.File, 'File'],
+  [PropertyDataType.DbGeography, 'Geography']
 ];

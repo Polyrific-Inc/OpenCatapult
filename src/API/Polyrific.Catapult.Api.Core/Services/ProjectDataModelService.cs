@@ -206,9 +206,14 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (includeProperties)
                 dataModelByProjectSpec.IncludeStrings.Add("Properties.RelatedProjectDataModel");
 
-            var dataModels = await _dataModelRepository.GetBySpec(dataModelByProjectSpec, cancellationToken);
+            var dataModels = (await _dataModelRepository.GetBySpec(dataModelByProjectSpec, cancellationToken)).ToList();
 
-            return dataModels.ToList();
+            foreach (var dataModel in dataModels)
+            {
+                dataModel.Properties = dataModel.Properties.OrderBy(p => p.Sequence).ToList();
+            }
+
+            return dataModels;
         }
 
         public async Task UpdateDataModel(ProjectDataModel updatedDataModel, CancellationToken cancellationToken = default(CancellationToken))

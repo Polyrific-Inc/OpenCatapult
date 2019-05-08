@@ -87,6 +87,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                     Name = m.Name,
                     Description = m.Description,
                     Label = m.Label,
+                    DatabaseTableName = m.DatabaseTableName,
                     Properties = m.Properties?.Select(p => new ProjectDataModelProperty
                     {
                         Name = p.Name,
@@ -96,6 +97,10 @@ namespace Polyrific.Catapult.Api.Core.Services
                         RelationalType = p.RelationalType,
                         RelatedProjectDataModelName = p.RelatedProjectDataModel?.Name,
                         IsRequired = p.IsRequired,
+                        IsManaged = p.IsManaged,
+                        IsKey = p.IsKey,
+                        DatabaseColumnName = p.DatabaseColumnName,
+                        Sequence = p.Sequence,
                         Created = DateTime.UtcNow
                     }).ToList(),
                     Created = DateTime.UtcNow
@@ -208,11 +213,13 @@ namespace Polyrific.Catapult.Api.Core.Services
                 {
                     model.Created = DateTime.UtcNow;
 
+                    int sequence = 1;
                     if (model.Properties != null)
                     {
                         foreach (var property in model.Properties)
                         {
                             property.Created = DateTime.UtcNow;
+                            property.Sequence = sequence++;
                         }
                     }
                 }

@@ -30,7 +30,7 @@ export class DataModelPropertyFormComponent implements OnInit, OnChanges {
     [PropertyDataType.String]: PropertyControlType.InputText,
     [PropertyDataType.Integer]: PropertyControlType.InputNumber,
     [PropertyDataType.Short]: PropertyControlType.InputNumber,
-    [PropertyDataType.Byte]: PropertyControlType.InputNumber,
+    [PropertyDataType.File]: PropertyControlType.InputFile,
     [PropertyDataType.Double]: PropertyControlType.InputNumber,
     [PropertyDataType.Decimal]: PropertyControlType.InputNumber,
     [PropertyDataType.Float]: PropertyControlType.InputNumber,

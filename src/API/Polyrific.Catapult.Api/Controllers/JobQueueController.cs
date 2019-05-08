@@ -269,7 +269,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 await _jobQueueService.UpdateJobQueue(entity);
 
 
-                _logger.LogResponse("Job queue {queueId} in project {projectId} updated", queueId);
+                _logger.LogResponse("Job queue {queueId} updated", queueId);
 
                 return Ok();
             }
