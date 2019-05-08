@@ -1,5 +1,5 @@
 {
-  "name": "opencatapultweb",
+  "name": "Polyrific.Catapult.Web",
   "version": "1.0.0-beta4",
   "scripts": {
     "ng": "ng",
