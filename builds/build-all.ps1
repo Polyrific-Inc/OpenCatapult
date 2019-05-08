@@ -182,6 +182,7 @@ if (!$noWeb) {
 	$args = "-http " + $webHttp
 	$args += " -https " + $webHttps
 	$args += " -configuration " + $configuration
+	$args += " -environment " + $environment
     $done = Invoke-BuildScriptNewWindow "build-web.ps1" $args
 }
 

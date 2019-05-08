@@ -1,10 +1,11 @@
 param(
     [string]$http = "http://localhost:8000",
     [string]$https = "https://localhost:44300",
-    [string]$configuration = "Release"
+    [string]$configuration = "Release",
+    [string]$environment = "Development"
 )
 
-$env:ASPNETCORE_ENVIRONMENT = "Production"
+$env:ASPNETCORE_ENVIRONMENT = $environment
 
 $host.UI.RawUI.WindowTitle = "OpenCatapult Web";
 
