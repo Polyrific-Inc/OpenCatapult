@@ -2,7 +2,7 @@
 <form [formGroup]="confirmationForm" (ngSubmit)="onSubmit()">
 <div mat-dialog-content>
   <div>{{data.confirmationText}}</div>
-  <div class="sub-text">{{data.subText}}</div>
+  <div class="sub-text" *ngIf="data.subText">{{data.subText}}</div>
   <mat-form-field class="full-width-input">
     <input matInput [formControl]="inputControl" required>
     <mat-error *ngIf="inputControl.invalid && inputControl.errors.required">
