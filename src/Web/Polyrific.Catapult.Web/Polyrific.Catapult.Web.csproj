@@ -53,7 +53,7 @@
   </Target>
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="npm --prefix ClientApp run build" />
+    <Exec Command="npm install ClientApp&#xD;&#xA;npm --prefix ClientApp run build" />
   </Target>
 
 </Project>
