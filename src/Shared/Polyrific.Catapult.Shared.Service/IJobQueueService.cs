@@ -41,6 +41,14 @@ namespace Polyrific.Catapult.Shared.Service
         Task<JobDto> CreateJobQueue(int projectId, NewJobDto newJobQueue);
 
         /// <summary>
+        /// Add the default job definition to queue
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="newJobQueue">Job details</param>
+        /// <returns></returns>
+        Task<JobDto> CreateDefaultJobQueue(int projectId, NewJobDto newJobQueue);
+
+        /// <summary>
         /// Cancel a job in queue
         /// </summary>
         /// <param name="projectId">Id of the project</param>

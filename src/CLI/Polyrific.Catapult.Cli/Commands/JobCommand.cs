@@ -11,6 +11,7 @@ namespace Polyrific.Catapult.Cli.Commands
 {
     [Command(Description = "Job definition related command")]
     [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(SetDefaultCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(ListCommand))]
     [Subcommand(typeof(RemoveCommand))]

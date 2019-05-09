@@ -67,7 +67,8 @@ export class JobDefinitionComponent implements OnInit {
     const dialogRef = this.dialog.open(JobDefinitionNewDialogComponent, {
       data: {
         projectId: this.projectId
-      }
+      },
+      minWidth: 480
     });
 
     dialogRef.afterClosed().subscribe(success => {
@@ -211,5 +212,13 @@ export class JobDefinitionComponent implements OnInit {
       this.getJobTaskDefinitions(jobDefinition);
       jobDefinition.expanded = true;
     }
+  }
+
+  onSetDefaultClick(jobDefinition: JobDefinitionDto) {
+    this.jobDefinitionService.setJobDefinitionAsDefault(this.projectId, jobDefinition.id)
+      .subscribe(data => {
+        this.snackbar.open(`Job ${jobDefinition.name} is set to default`);
+        this.getJobDefinitions();
+      }, err => this.snackbar.open(err));
   }
 }

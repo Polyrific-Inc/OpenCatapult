@@ -13,6 +13,7 @@
         <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
         <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
         <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
+        <button mat-raised-button (click)="onQueueJobClick()" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Queue Job</button>
     </div>
   </mat-card-header>
   <mat-card-content>

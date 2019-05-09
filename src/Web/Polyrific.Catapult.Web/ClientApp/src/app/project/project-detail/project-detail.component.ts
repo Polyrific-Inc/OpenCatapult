@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { ProjectService, ProjectDto, AuthorizePolicy, ProjectHistoryService, JobDefinitionService } from '@app/core';
+import { ProjectService, ProjectDto, AuthorizePolicy, ProjectHistoryService, JobDefinitionService, JobQueueService } from '@app/core';
 import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
 import { filter } from 'rxjs/operators';
@@ -23,6 +23,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private projectHistoryService: ProjectHistoryService,
     private jobDefinitionService: JobDefinitionService,
+    private jobQueueService: JobQueueService,
     private dialog: MatDialog,
     private snackbar: SnackbarService,
     private router: Router
@@ -147,5 +148,19 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
         this.router.navigate(['project', { dummyData: (new Date).getTime()}])
           .then(() => this.router.navigate(['project']));
       }, () => this.loading = false);
+  }
+
+  onQueueJobClick() {
+    this.jobQueueService.addDefaultJobQueue(this.project.id, {
+      projectId: this.project.id,
+      jobType: null,
+      originUrl: window.location.origin,
+      jobDefinitionId: null
+    }).subscribe(data => this.router.navigateByUrl(`project/${this.project.id}/job-queue`),
+      err => {
+        this.snackbar.open(err, null, {
+          duration: 3000
+        });
+      });
   }
 }

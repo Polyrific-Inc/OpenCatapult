@@ -66,6 +66,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 newJobDefinitionResponse.ProjectId = projectId;
                 newJobDefinitionResponse.Id = await _jobDefinitionService.AddJobDefinition(projectId,
                     newJobDefinition.Name,
+                    newJobDefinition.IsDefault,
                     newJobDefinition.IsDeletion);
 
                 _logger.LogResponse("Job definitions in project {projectId} created. Reponse body: {@newJobDefinitionResponse}", projectId, newJobDefinitionResponse);
@@ -90,6 +91,11 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(jobEx, "A deletion job definition is already exist. A project should only contain one deletion job definition.");
                 return BadRequest(jobEx.Message);
+            }
+            catch (InvalidDefaultJobDefinition delEx)
+            {
+                _logger.LogWarning(delEx, "Job definition cannot be set as default.");
+                return BadRequest(delEx.Message);
             }
         }
 
@@ -147,6 +153,32 @@ namespace Polyrific.Catapult.Api.Controllers
             _logger.LogResponse("Deletion job definition in project {projectId} retrieved. Reponse body: {@result}", projectId, result);
 
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Set a job definition as default
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="jobId">Id of the job definition</param>
+        /// <returns></returns>
+        [HttpPost("Project/{projectId}/job/{jobId}/default")]
+        public async Task<IActionResult> SetJobDefinitionAsDefault(int projectId, int jobId)
+        {
+            _logger.LogRequest("Setting job definition {jobId} in project {projectId} as default", jobId, projectId);
+
+            try
+            {
+                await _jobDefinitionService.SetJobDefinitionAsDefault(jobId);
+
+                _logger.LogResponse("Job definition {jobId} in project {projectId} set as default", jobId, projectId);
+
+                return Ok();
+            }
+            catch (InvalidDefaultJobDefinition delEx)
+            {
+                _logger.LogWarning(delEx, "Job definition cannot be set as default.");
+                return BadRequest(delEx.Message);
+            }
         }
 
         /// <summary>

@@ -3,7 +3,6 @@
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Cli.Commands.Queue;
-using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Service;
 
@@ -11,6 +10,7 @@ namespace Polyrific.Catapult.Cli.Commands
 {
     [Command(Description = "Job queue related command")]
     [Subcommand(typeof(AddCommand))]
+    [Subcommand(typeof(AddDefaultCommand))]
     [Subcommand(typeof(GetCommand))]
     [Subcommand(typeof(LogCommand))]
     [Subcommand(typeof(ListCommand))]

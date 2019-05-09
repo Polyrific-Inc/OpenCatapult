@@ -495,6 +495,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
 
                     b.Property<DateTime>("Created");
 
+                    b.Property<bool>("IsDefault");
+
                     b.Property<bool>("IsDeletion");
 
                     b.Property<string>("Name");

@@ -159,6 +159,64 @@ namespace Polyrific.Catapult.Api.Controllers
         }
 
         /// <summary>
+        /// Create a job queue for default job definition
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="newJobQueue">Create job queue request body</param>
+        /// <returns></returns>
+        [HttpPost("Project/{projectId}/queue/default", Name = "CreateDefaultJobQueue")]
+        [ProducesResponseType(201)]
+        [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
+        public async Task<IActionResult> CreateDefaultJobQueue(int projectId, NewJobDto newJobQueue)
+        {
+            _logger.LogRequest("Creating default job queue for project {projectId}. Request body: {@newJobQueue}", projectId, newJobQueue);
+
+            try
+            {
+                if (projectId != newJobQueue.ProjectId)
+                {
+                    _logger.LogWarning("Project Id doesn't match");
+                    return BadRequest("Project Id doesn't match.");
+                }
+
+                var queueId = await _jobQueueService.AddDefaultJobQueue(newJobQueue.ProjectId,
+                    newJobQueue.OriginUrl,
+                    newJobQueue.JobType);
+
+                var job = await _jobQueueService.GetJobQueueById(projectId, queueId);
+                var result = _mapper.Map<JobDto>(job);
+
+                _logger.LogResponse("Default job queue in project {projectId} created. Response body: {@result}", projectId, result);
+
+                return CreatedAtRoute("GetJobQueueById", new
+                {
+                    projectId = newJobQueue.ProjectId,
+                    queueId
+                }, result);
+            }
+            catch (JobQueueInProgressException jobEx)
+            {
+                _logger.LogWarning(jobEx, "Job queue in progress");
+                return BadRequest(jobEx.Message);
+            }
+            catch (ProjectNotFoundException projEx)
+            {
+                _logger.LogWarning(projEx, "Project not found");
+                return BadRequest(projEx.Message);
+            }
+            catch (TaskValidationException taskEx)
+            {
+                _logger.LogWarning(taskEx, "Task validation failed");
+                return BadRequest(taskEx.Message);
+            }
+            catch (DefaultJobDefinitionNotFoundException jobEx)
+            {
+                _logger.LogWarning(jobEx, "Default job definition not found");
+                return BadRequest(jobEx.Message);
+            }
+        }
+
+        /// <summary>
         /// Cancel an in progress job
         /// </summary>
         /// <param name="projectId">Id of the project</param>

@@ -21,6 +21,16 @@ namespace Polyrific.Catapult.Api.Core.Services
         Task<int> AddJobQueue(int projectId, string originUrl, string jobType, int? jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
+        /// Queue a new job of default job definition
+        /// </summary>
+        /// <param name="projectId">The project which we queue</param>
+        /// <param name="originUrl">The origin url where the job is queue</param>
+        /// <param name="jobType">The job type</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns>The new job queue id</returns>
+        Task<int> AddDefaultJobQueue(int projectId, string originUrl, string jobType, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
         /// update a job queue
         /// </summary>
         /// <param name="updatedJob">The updated job queue</param>

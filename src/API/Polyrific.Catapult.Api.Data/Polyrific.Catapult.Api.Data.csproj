@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190509071850_DefaultJobDefinition.cs" />
+    <Compile Remove="Migrations\20190509071850_DefaultJobDefinition.Designer.cs" />
+    <Compile Remove="Migrations\CatapultSqliteDb\20190509071557_DefaultJobDefinition.cs" />
+    <Compile Remove="Migrations\CatapultSqliteDb\20190509071557_DefaultJobDefinition.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="HelpContexts\TaskProvider\Default.txt" />
     <None Remove="HelpContexts\ExternalService\Default.txt" />
     <None Remove="HelpContexts\ExternalService\External Service Type.txt" />

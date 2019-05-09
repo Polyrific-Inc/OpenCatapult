@@ -144,6 +144,32 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void CreateDefaultJobQueue_ReturnsCreatedJobQueue()
+        {
+            _jobQueueService
+                .Setup(s => s.AddDefaultJobQueue(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(1);
+            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int projectId, int id, CancellationToken cancellationToken) =>
+                    new JobQueue
+                    {
+                        Id = id,
+                        ProjectId = projectId
+                    });
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
+
+            var result = await controller.CreateDefaultJobQueue(1, new NewJobDto
+            {
+                ProjectId = 1
+            });
+
+            var createAtRouteActionResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnValue = Assert.IsType<JobDto>(createAtRouteActionResult.Value);
+            Assert.Equal(1, returnValue.Id);
+        }
+
+        [Fact]
         public async void CancelJobQueue_ReturnsSuccess()
         {
             _jobQueueService.Setup(s => s.CancelJobQueue(It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);

@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddJobDefinition_ValidItem()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
-            int newId = await projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD", false);
+            int newId = await projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD", false, false);
 
             Assert.True(newId > 1);
             Assert.True(_data.Count > 1);
@@ -169,7 +169,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobDefinition_DuplicateItem()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Default", false));
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Default", false, false));
 
             Assert.IsType<DuplicateJobDefinitionException>(exception?.Result);
         }
@@ -178,9 +178,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddJobDefinition_InvalidProject()
         {
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(2, "Category", false));
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(2, "Category", false, false));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
+        }
+
+        [Fact]
+        public void AddJobDefinition_InvalidDefaultJobDefinition()
+        {
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Complete CI/CD", true, true));
+
+            Assert.IsType<InvalidDefaultJobDefinition>(exception?.Result);
         }
 
         [Fact]
@@ -188,7 +197,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         {
             _data[0].IsDeletion = true;
             var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Category", true));
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobDefinition(1, "Category", false, true));
 
             Assert.IsType<MultipleDeletionJobException>(exception?.Result);
         }
@@ -294,6 +303,28 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             var exception = Record.ExceptionAsync(() => projectJobDefinitionService.RenameJobDefinition(1, "newName"));
 
             Assert.IsType<DuplicateJobDefinitionException>(exception?.Result);
+        }
+
+        [Fact]
+        public async void SetJobDefinitionAsDefault_ValidItem()
+        {
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
+            await projectJobDefinitionService.SetJobDefinitionAsDefault(1);
+
+            var dataModel = _data.First(d => d.Id == 1);
+
+            Assert.True(dataModel.IsDefault);
+        }
+
+        [Fact]
+        public void SetJobDefinitionAsDefault_InvalidItem()
+        {
+            _data[0].IsDeletion = true;
+
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.SetJobDefinitionAsDefault(1));
+
+            Assert.IsType<InvalidDefaultJobDefinition>(exception?.Result);
         }
 
         [Fact]

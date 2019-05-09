@@ -53,7 +53,8 @@ describe('JobConfigFormComponent', () => {
     component.job = {
       name: 'test',
       tasks: [],
-      isDeletion: false
+      isDeletion: false,
+      isDefault: false
     };
     fixture.detectChanges();
   });

@@ -17,6 +17,7 @@ export class JobConfigFormComponent implements OnInit, OnChanges {
       {
         name: null,
         isDeletion: false,
+        isDefault: false
       }
     );
   }
@@ -28,7 +29,8 @@ export class JobConfigFormComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     this.jobForm.patchValue({
       name: this.job.name,
-      isDeletion: this.job.isDeletion
+      isDeletion: this.job.isDeletion,
+      isDefault: this.job.isDefault
     });
   }
 

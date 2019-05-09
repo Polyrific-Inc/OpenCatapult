@@ -99,6 +99,15 @@ namespace Polyrific.Catapult.Api.Core.Services
             };
             return await _jobQueueRepository.Create(newJobQueue, cancellationToken);
         }
+        
+        public async Task<int> AddDefaultJobQueue(int projectId, string originUrl, string jobType, CancellationToken cancellationToken = default)
+        {
+            var defaultJobDefinition = await _jobDefinitionService.GetDefaultJobDefinition(projectId);
+            if (defaultJobDefinition == null)
+                throw new DefaultJobDefinitionNotFoundException(projectId);
+
+            return await AddJobQueue(projectId, originUrl, jobType, defaultJobDefinition.Id);
+        }
 
         public async Task UpdateJobQueue(JobQueue updatedJobQueue, CancellationToken cancellationToken = default(CancellationToken))
         {

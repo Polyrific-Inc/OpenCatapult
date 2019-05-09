@@ -123,6 +123,43 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
         }
 
         [Fact]
+        public void QueueAddDefault_Execute_ReturnsSuccessMessage()
+        {
+            _jobQueueService.Setup(s => s.CreateDefaultJobQueue(It.IsAny<int>(), It.IsAny<NewJobDto>()))
+                   .ReturnsAsync((int projectId, NewJobDto dto) => new JobDto
+                   {
+                       Id = 2,
+                       ProjectId = projectId,
+                       JobType = dto.JobType,
+                       OriginUrl = dto.OriginUrl,
+                       JobDefinitionId = dto.JobDefinitionId,
+                       JobDefinitionName = "Default"
+                   });
+
+            var command = new AddDefaultCommand(_console, LoggerMock.GetLogger<AddDefaultCommand>().Object, _projectService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 1"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("Default job \"Default\" has been queued successfully:", resultMessage);
+        }
+
+        [Fact]
+        public void QueueAddDefault_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new AddDefaultCommand(_console, LoggerMock.GetLogger<AddDefaultCommand>().Object, _projectService.Object, _jobQueueService.Object)
+            {
+                Project = "Project 2"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Project Project 2 was not found", resultMessage);
+        }
+
+        [Fact]
         public void QueueGet_Execute_ReturnsSuccessMessage()
         {
             var command = new GetCommand(_projectService.Object, _jobQueueService.Object, _console, LoggerMock.GetLogger<GetCommand>().Object)

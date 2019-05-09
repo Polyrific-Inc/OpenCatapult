@@ -5,5 +5,6 @@ export interface JobDefinitionDto {
   name: string;
   projectId: number;
   isDeletion: boolean;
+  isDefault: boolean;
   tasks: JobTaskDefinitionDto[];
 }

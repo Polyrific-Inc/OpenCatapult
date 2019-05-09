@@ -131,6 +131,7 @@ models:
         is-required: false
 jobs:
 - name: Default
+  is-default: true
   tasks:
   - name: Clone
     type: Pull

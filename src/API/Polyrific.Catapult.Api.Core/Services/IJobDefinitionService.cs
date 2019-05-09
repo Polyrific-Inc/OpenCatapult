@@ -14,10 +14,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="projectId">Id of the project</param>
         /// <param name="name">Name of the job definition</param>
+        /// <param name="isDefault">Is the job definition is a default job in the project?</param>
         /// <param name="isDeletion">Is the job definition for resource deletion?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added job definition</returns>
-        Task<int> AddJobDefinition(int projectId, string name, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddJobDefinition(int projectId, string name, bool isDefault, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Rename a job definition
@@ -27,6 +28,22 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task RenameJobDefinition(int id, string newName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Set a job definition as the default in project
+        /// </summary>
+        /// <param name="id">Id of the job definition</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task SetJobDefinitionAsDefault(int id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get a default job definition in project
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<JobDefinition> GetDefaultJobDefinition(int projectId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete a job definition

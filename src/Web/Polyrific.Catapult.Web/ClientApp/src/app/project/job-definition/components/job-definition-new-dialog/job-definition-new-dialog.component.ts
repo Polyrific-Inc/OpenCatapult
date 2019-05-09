@@ -2,7 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { JobDefinitionService, JobDefinitionDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialogRef, MAT_DIALOG_DATA, MatCheckboxChange } from '@angular/material';
 import { NewModelDialogData } from '@app/project/data-model/components/data-model-new-dialog/data-model-new-dialog.component';
 
 export interface NewJobDefinitionDialogData {
@@ -16,9 +16,11 @@ export interface NewJobDefinitionDialogData {
 })
 export class JobDefinitionNewDialogComponent implements OnInit {
   jobDefinitionForm: FormGroup = this.fb.group({
-    isDeletion: false
+    isDeletion: false,
+    isDefault: false
   });
   loading: boolean;
+  isDefaultChecked: boolean;
 
   constructor (
     private fb: FormBuilder,
@@ -53,6 +55,13 @@ export class JobDefinitionNewDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    }
+  }
+
+  onDefaultChange(event: MatCheckboxChange) {
+    this.isDefaultChecked = event.checked;
+    if (this.isDefaultChecked) {
+      this.jobDefinitionForm.get('isDeletion').setValue(false);
     }
   }
 

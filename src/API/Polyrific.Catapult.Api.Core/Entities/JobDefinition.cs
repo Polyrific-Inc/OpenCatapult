@@ -27,6 +27,11 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public bool IsDeletion { get; set; }
 
         /// <summary>
+        /// Is the job definition is a default job in the project?
+        /// </summary>
+        public bool IsDefault { get; set; }
+
+        /// <summary>
         /// Tasks of the job definition
         /// </summary>
         public virtual ICollection<JobTaskDefinition> Tasks { get; set; }

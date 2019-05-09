@@ -43,7 +43,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             JobTaskDefinitionType.DeleteHosting
         };
         
-        public JobDefinitionService(IJobDefinitionRepository dataModelRepository,
+        public JobDefinitionService(IJobDefinitionRepository jobDefinitionRepository,
             IJobTaskDefinitionRepository jobTaskDefinitionRepository,
             IProjectRepository projectRepository,
             ITaskProviderRepository providerRepository,
@@ -51,7 +51,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             ITaskProviderAdditionalConfigRepository providerAdditionalConfigRepository,
             ISecretVault secretVault)
         {
-            _jobDefinitionRepository = dataModelRepository;
+            _jobDefinitionRepository = jobDefinitionRepository;
             _jobTaskDefinitionRepository = jobTaskDefinitionRepository;
             _projectRepository = projectRepository;
             _providerRepository = providerRepository;
@@ -60,9 +60,12 @@ namespace Polyrific.Catapult.Api.Core.Services
             _secretVault = secretVault;
         }
 
-        public async Task<int> AddJobDefinition(int projectId, string name, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddJobDefinition(int projectId, string name, bool isDefault, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
+
+            if (isDefault && isDeletion)
+                throw new InvalidDefaultJobDefinition();
 
             var project = await _projectRepository.GetById(projectId, cancellationToken);
             if (project == null)
@@ -85,7 +88,12 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
 
-            var newJobDefinition = new JobDefinition { ProjectId = projectId, Name = name, IsDeletion = isDeletion };
+            if (isDefault)
+            {
+                await UnsetDefaultJobDefinition(projectId, cancellationToken);
+            }
+
+            var newJobDefinition = new JobDefinition { ProjectId = projectId, Name = name, IsDeletion = isDeletion, IsDefault = true };
             return await _jobDefinitionRepository.Create(newJobDefinition, cancellationToken);
         }
 
@@ -154,19 +162,43 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var dataModel = await _jobDefinitionRepository.GetById(id, cancellationToken);
+            var jobDefinition = await _jobDefinitionRepository.GetById(id, cancellationToken);
 
-            if (dataModel != null)
+            if (jobDefinition != null)
             {
-                var dataModelByNameSpec = new JobDefinitionFilterSpecification(newName, dataModel.ProjectId, id);
-                if (await _jobDefinitionRepository.CountBySpec(dataModelByNameSpec, cancellationToken) > 0)
+                var jobDefinitionByNameSpec = new JobDefinitionFilterSpecification(newName, jobDefinition.ProjectId, id);
+                if (await _jobDefinitionRepository.CountBySpec(jobDefinitionByNameSpec, cancellationToken) > 0)
                 {
                     throw new DuplicateJobDefinitionException(newName);
                 }
 
-                dataModel.Name = newName;
-                await _jobDefinitionRepository.Update(dataModel, cancellationToken);
+                jobDefinition.Name = newName;
+                await _jobDefinitionRepository.Update(jobDefinition, cancellationToken);
             }
+        }
+
+        public async Task SetJobDefinitionAsDefault(int id, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var jobDefinition = await _jobDefinitionRepository.GetById(id, cancellationToken);
+
+            if (jobDefinition != null)
+            {
+                if (jobDefinition.IsDeletion)
+                    throw new InvalidDefaultJobDefinition();
+
+                await UnsetDefaultJobDefinition(jobDefinition.ProjectId, cancellationToken);
+
+                jobDefinition.IsDefault = true;
+                await _jobDefinitionRepository.Update(jobDefinition, cancellationToken);
+            }
+        }
+        
+        public async Task<JobDefinition> GetDefaultJobDefinition(int projectId, CancellationToken cancellationToken = default)
+        {
+            var defaultJobSpec = new JobDefinitionFilterSpecification(projectId, null, true);
+            return await _jobDefinitionRepository.GetSingleBySpec(defaultJobSpec, cancellationToken);
         }
 
         public async Task<int> AddJobTaskDefinition(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
@@ -455,6 +487,19 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
 
                 jobTaskDefinition.AdditionalConfigString = JsonConvert.SerializeObject(taskAdditionalConfigs);
+            }
+        }
+
+        private async Task UnsetDefaultJobDefinition(int projectId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var currentDefaultJobSpec = new JobDefinitionFilterSpecification(projectId, null, true);
+            var defaultJobs = await _jobDefinitionRepository.GetBySpec(currentDefaultJobSpec, cancellationToken);
+            foreach (var defaultJob in defaultJobs)
+            {
+                defaultJob.IsDefault = false;
+                await _jobDefinitionRepository.Update(defaultJob, cancellationToken);
             }
         }
     }

@@ -4,6 +4,9 @@
         <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
         <app-job-definition-form (formReady)="onFormReady($event)"></app-job-definition-form>
         <div>
+          <mat-checkbox formControlName="isDefault" (change)="onDefaultChange($event)">Set as default?</mat-checkbox>
+        </div>
+        <div *ngIf="!isDefaultChecked">
           <mat-checkbox formControlName="isDeletion">Is resource deletion job?</mat-checkbox>
         </div>
       </div>

@@ -27,6 +27,10 @@ export class JobDefinitionService {
     return this.api.post<JobDefinitionDto>(`project/${projectId}/job`, jobDefinition);
   }
 
+  setJobDefinitionAsDefault(projectId: number, jobDefinitionId: number) {
+    return this.api.post(`project/${projectId}/job/${jobDefinitionId}/default`);
+  }
+
   updateJobDefinition(projectId: number, jobDefinition: JobDefinitionDto) {
     return this.api.put(`project/${projectId}/job/${jobDefinition.id}`, jobDefinition);
   }
