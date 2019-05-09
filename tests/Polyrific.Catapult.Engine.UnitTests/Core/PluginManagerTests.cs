@@ -159,7 +159,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
 
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var result = await pluginManager.InvokeTaskProvider("path/to/plugin.exe", "plugin args");
+            var result = await pluginManager.InvokeTaskProvider(Path.Combine(AppContext.BaseDirectory, "plugin.exe"), "plugin args");
             Assert.Equal("success", result["output"]);
         }
 

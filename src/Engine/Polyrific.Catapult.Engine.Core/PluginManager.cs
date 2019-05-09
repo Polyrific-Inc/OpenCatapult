@@ -194,7 +194,7 @@ namespace Polyrific.Catapult.Engine.Core
                 }
             }
 
-            //File.Delete(temporaryFile);
+            File.Delete(temporaryFile);
 
             return result;
         }
