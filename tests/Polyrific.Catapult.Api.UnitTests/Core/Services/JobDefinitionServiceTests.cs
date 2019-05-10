@@ -636,6 +636,36 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         }
 
         [Fact]
+        public void AddJobTaskDefinition_TaskProviderAdditionalConfigAllowedValuesException()
+        {
+            _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new TaskProvider { Id = 3, Name = "GitHubProvider", Type = TaskProviderType.RepositoryProvider });
+
+            _providerAdditionalConfigRepository.Setup(r => r.GetBySpec(It.IsAny<ISpecification<TaskProviderAdditionalConfig>>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new List<TaskProviderAdditionalConfig>
+                {
+                    new TaskProviderAdditionalConfig
+                    {
+                        Id = 1,
+                        Name = "testconfig",
+                        AllowedValues = "test_value"
+                    }
+                });
+
+            var projectJobDefinitionService = new JobDefinitionService(_jobDefinitionRepository.Object, _jobTaskDefinitionRepository.Object, _projectRepository.Object, _providerRepository.Object, _externalServiceRepository.Object, _providerAdditionalConfigRepository.Object, _secretVault.Object);
+            var exception = Record.ExceptionAsync(() => projectJobDefinitionService.AddJobTaskDefinition(new JobTaskDefinition
+            {
+                JobDefinitionId = 1,
+                Type = JobTaskDefinitionType.Push,
+                AdditionalConfigString = "{\"testconfig\":\"test\"}",
+                ConfigString = "{\"Repository\":\"test\"}",
+                Provider = "GitHubProvider"
+            }));
+
+            Assert.IsType<TaskProviderAdditionalConfigAllowedValuesException>(exception?.Result);
+        }
+
+        [Fact]
         public async void AddJobTaskDefinitions_ValidItem()
         {
             _providerRepository.Setup(r => r.GetSingleBySpec(It.IsAny<ISpecification<TaskProvider>>(), It.IsAny<CancellationToken>()))

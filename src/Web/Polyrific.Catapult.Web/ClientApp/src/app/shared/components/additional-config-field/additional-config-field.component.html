@@ -1,4 +1,18 @@
-<div [ngSwitch]="additionalConfig.type" [formGroup]="form">
+<div [ngSwitch]="additionalConfig.type" [formGroup]="form" *ngIf="additionalConfig.allowedValues && additionalConfig.allowedValues.length > 0">
+  <mat-form-field *ngSwitchCase="'string'" class="full-width-input">
+      <mat-label>{{additionalConfig.label}}</mat-label>
+      <mat-select [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired && !skipValidation ? 'required' : null">
+        <mat-option *ngFor="let allowedValue of additionalConfig.allowedValues" [value]="allowedValue">
+          {{allowedValue}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="isFieldInvalid(additionalConfig.name, 'required')">
+        Please inform the {{additionalConfig.label}}
+      </mat-error>
+  </mat-form-field>
+
+</div>
+<div [ngSwitch]="additionalConfig.type" [formGroup]="form" *ngIf="!additionalConfig.allowedValues || additionalConfig.allowedValues.length == 0">
     <mat-form-field *ngSwitchCase="'string'" class="full-width-input">
         <mat-label>{{additionalConfig.label}}</mat-label>
         <input matInput placeholder="{{additionalConfig.hint}}" [formControlName]="additionalConfig.name" [required]="additionalConfig.isRequired && !skipValidation ? 'required' : null">

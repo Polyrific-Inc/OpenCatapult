@@ -320,6 +320,21 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(taskEx, "Incorrect task definition type");
                 return BadRequest(taskEx.Message);
             }
+            catch (TaskConfigRequiredException tcEx)
+            {
+                _logger.LogWarning(tcEx, "Incorrect task config");
+                return BadRequest(tcEx.Message);
+            }
+            catch (TaskProviderAdditionalConfigRequiredException acReqEx)
+            {
+                _logger.LogWarning(acReqEx, "Incorrect task additional config");
+                return BadRequest(acReqEx.Message);
+            }
+            catch (TaskProviderAdditionalConfigAllowedValuesException avEx)
+            {
+                _logger.LogWarning(avEx, "Incorrect task additional config");
+                return BadRequest(avEx.Message);
+            }            
         }
 
         /// <summary>
@@ -400,6 +415,21 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(taskEx, "Incorrect task definition type");
                 return BadRequest(taskEx.Message);
+            }
+            catch (TaskConfigRequiredException tcEx)
+            {
+                _logger.LogWarning(tcEx, "Incorrect task config");
+                return BadRequest(tcEx.Message);
+            }
+            catch (TaskProviderAdditionalConfigRequiredException acReqEx)
+            {
+                _logger.LogWarning(acReqEx, "Incorrect task additional config");
+                return BadRequest(acReqEx.Message);
+            }
+            catch (TaskProviderAdditionalConfigAllowedValuesException avEx)
+            {
+                _logger.LogWarning(avEx, "Incorrect task additional config");
+                return BadRequest(avEx.Message);
             }
         }
 

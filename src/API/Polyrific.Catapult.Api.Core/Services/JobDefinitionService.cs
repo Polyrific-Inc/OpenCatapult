@@ -387,6 +387,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id);
             var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
             var requiredConfigs = additionalConfigsDefinition.Where(c => c.IsRequired).Select(c => c.Name).ToList();
+            var configsWithAllowedValues = additionalConfigsDefinition.Where(c => !string.IsNullOrEmpty(c.AllowedValues)).ToList();
             var taskAdditionalConfigs = !string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString) ?
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString) : null;
             if (requiredConfigs.Count > 0)
@@ -402,6 +403,19 @@ namespace Polyrific.Catapult.Api.Core.Services
                     if (conf == null)
                     {
                         throw new TaskProviderAdditionalConfigRequiredException(requiredConfig, provider.Name);
+                    }
+                }
+            }
+
+            if (configsWithAllowedValues.Count > 0)
+            {
+                foreach (var configWithAllowedValues in configsWithAllowedValues)
+                {
+                    var allowedValues = configWithAllowedValues.AllowedValues.ToLower().Split(DataDelimiter.Comma).Select(av => av.Trim()).ToList();
+                    taskAdditionalConfigs.TryGetValue(configWithAllowedValues.Name, out var conf);
+                    if (!string.IsNullOrEmpty(conf) && !allowedValues.Contains(conf.ToLower()))
+                    {
+                        throw new TaskProviderAdditionalConfigAllowedValuesException(configWithAllowedValues.Name, provider.Name, configWithAllowedValues.AllowedValues);
                     }
                 }
             }
