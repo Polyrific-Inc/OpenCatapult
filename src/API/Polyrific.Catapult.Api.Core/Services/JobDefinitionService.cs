@@ -494,12 +494,12 @@ namespace Polyrific.Catapult.Api.Core.Services
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var currentDefaultJobSpec = new JobDefinitionFilterSpecification(projectId, null, true);
-            var defaultJobs = await _jobDefinitionRepository.GetBySpec(currentDefaultJobSpec, cancellationToken);
-            foreach (var defaultJob in defaultJobs)
+            var currentDefaultJob = await GetDefaultJobDefinition(projectId);
+
+            if (currentDefaultJob != null)
             {
-                defaultJob.IsDefault = false;
-                await _jobDefinitionRepository.Update(defaultJob, cancellationToken);
+                currentDefaultJob.IsDefault = false;
+                await _jobDefinitionRepository.Update(currentDefaultJob, cancellationToken);
             }
         }
     }
