@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AdditionalConfigFieldComponent } from './additional-config-field.component';
-import { ReactiveFormsModule, FormGroup, FormBuilder } from '@angular/forms';
-import { MatInputModule, MatCheckboxModule } from '@angular/material';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
+import { MatInputModule, MatCheckboxModule, MatSelectModule } from '@angular/material';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('AdditionalConfigFieldComponent', () => {
@@ -16,7 +16,8 @@ describe('AdditionalConfigFieldComponent', () => {
         BrowserAnimationsModule,
         ReactiveFormsModule,
         MatInputModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatSelectModule
       ]
     })
     .compileComponents();
