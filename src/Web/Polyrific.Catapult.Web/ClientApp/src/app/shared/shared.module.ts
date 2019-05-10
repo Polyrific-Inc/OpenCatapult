@@ -23,6 +23,7 @@ import { DeleteRepositoryConfigFormComponent } from './components/delete-reposit
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { ExternalAccountFormComponent } from './components/external-account-form/external-account-form.component';
 import { UtilityService } from './services/utility.service';
+import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UtilityService } from './services/utility.service';
     HasAccessDirective,
     DeleteRepositoryConfigFormComponent,
     LoadingSpinnerComponent,
-    ExternalAccountFormComponent
+    ExternalAccountFormComponent,
+    MessageDialogComponent
   ],
   imports: [
     CommonModule,
@@ -77,11 +79,13 @@ import { UtilityService } from './services/utility.service';
     HasAccessDirective,
     DeleteRepositoryConfigFormComponent,
     LoadingSpinnerComponent,
-    ExternalAccountFormComponent
+    ExternalAccountFormComponent,
+    MessageDialogComponent
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,
-    ConfirmationDialogComponent
+    ConfirmationDialogComponent,
+    MessageDialogComponent
   ]
 })
 export class SharedModule {

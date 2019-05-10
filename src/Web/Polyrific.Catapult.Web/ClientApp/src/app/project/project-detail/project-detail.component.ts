@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationWithInputDialogComponent, ConfirmationDialogComponent } from '@app/shared';
 import { filter } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { MessageDialogComponent } from '@app/shared/components/message-dialog/message-dialog.component';
 
 @Component({
   selector: 'app-project-detail',
@@ -158,8 +159,11 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
       jobDefinitionId: null
     }).subscribe(data => this.router.navigateByUrl(`project/${this.project.id}/job-queue`),
       err => {
-        this.snackbar.open(err, null, {
-          duration: 3000
+        this.dialog.open(MessageDialogComponent, {
+          data: {
+            title: 'Queue Job Failed',
+            message: `${err}\n\nPlease make sure each task configuration is properly set.`
+          }
         });
       });
   }
