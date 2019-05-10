@@ -245,6 +245,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                         int sequence = 1;
                         foreach (var task in job.Tasks)
                         {
+                            await _jobDefinitionService.EncryptSecretAdditionalConfig(task, cancellationToken);
                             task.Created = DateTime.UtcNow;
                             task.Sequence = sequence++;
                         }
