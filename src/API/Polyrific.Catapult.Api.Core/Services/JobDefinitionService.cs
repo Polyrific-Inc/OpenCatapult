@@ -302,6 +302,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             // validate task type
             bool isTaskTypeNotFitIntoJob = jobDefinition != null && jobTaskDefinition.Type != JobTaskDefinitionType.CustomTask && 
                 ((jobDefinition.IsDeletion && !_deleteTaskTypes.Contains(jobTaskDefinition.Type)) ||
@@ -424,6 +426,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task EncryptSecretAdditionalConfig(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             var providerSpec = new TaskProviderFilterSpecification(jobTaskDefinition.Provider, null);
             var provider = await _providerRepository.GetSingleBySpec(providerSpec, cancellationToken);
 
@@ -459,6 +463,8 @@ namespace Polyrific.Catapult.Api.Core.Services
 
         public async Task DecryptSecretAdditionalConfigs(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (string.IsNullOrEmpty(jobTaskDefinition?.Provider))
                 return;
 
@@ -468,9 +474,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (provider == null)
                 return;
 
-            var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id);
+            var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id, true);
             var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
-            var secretConfigs = additionalConfigsDefinition.Where(c => c.IsSecret).Select(c => c.Name).ToList();
+            var secretConfigs = additionalConfigsDefinition.Select(c => c.Name).ToList();
             var taskAdditionalConfigs = !string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString) ?
                 JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString) : null;
             if (secretConfigs.Count > 0 && taskAdditionalConfigs != null)
