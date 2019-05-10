@@ -23,7 +23,7 @@ class PasswordErrorStateMatcher implements ErrorStateMatcher {
 export class ResetPasswordComponent implements OnInit {
   loading = false;
   resetPasswordDone: boolean;
-  email: string;
+  username: string;
   token: string;
   matcher = new PasswordErrorStateMatcher();
 
@@ -37,7 +37,7 @@ export class ResetPasswordComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.email = this.route.snapshot.queryParams['email'];
+    this.username = this.route.snapshot.queryParams['username'];
     this.token = this.route.snapshot.queryParams['token'];
 
     this.resetPasswordForm = this.fb.group({
@@ -55,7 +55,7 @@ export class ResetPasswordComponent implements OnInit {
   onSubmit() {
     if (this.resetPasswordForm.valid) {
       this.loading = true;
-      this.accountService.resetPassword(this.email, this.resetPasswordForm.value)
+      this.accountService.resetPassword(this.username, this.resetPasswordForm.value)
         .subscribe(
             data => {
               this.resetPasswordDone = true;
