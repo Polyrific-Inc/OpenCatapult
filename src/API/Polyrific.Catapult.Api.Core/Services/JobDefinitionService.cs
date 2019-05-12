@@ -433,9 +433,9 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (provider != null)
             {
-                var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id);
+                var additionalConfigsDefinitionSpec = new TaskProviderAdditionalConfigFilterSpecification(provider.Id, true);
                 var additionalConfigsDefinition = await _providerAdditionalConfigRepository.GetBySpec(additionalConfigsDefinitionSpec, cancellationToken);
-                var secretConfigs = additionalConfigsDefinition.Where(c => c.IsSecret).Select(c => c.Name).ToList();
+                var secretConfigs = additionalConfigsDefinition.Select(c => c.Name).ToList();
 
                 var taskAdditionalConfigs = !string.IsNullOrEmpty(jobTaskDefinition.AdditionalConfigString) ?
                     JsonConvert.DeserializeObject<Dictionary<string, string>>(jobTaskDefinition.AdditionalConfigString) : null;
