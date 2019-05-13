@@ -7,6 +7,7 @@ using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Polyrific.Catapult.Api
 {
@@ -14,21 +15,27 @@ namespace Polyrific.Catapult.Api
     {
         public static void Main(string[] args)
         {
-            Console.Title = "OpenCatapult API";
+            var isService = args.Contains("--service");
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(Configuration)
+                .ReadFrom.Configuration(GetConfiguration(isService))
                 .CreateLogger();
 
             try
             {
-                Log.Information("Starting Catapult API host..");
+                var webhost = CreateWebHostBuilder(args.Where(a => a != "--service").ToArray(), isService).Build();
 
-                var webhost = CreateWebHostBuilder(args).Build();
-
-                Console.WriteLine($"Ready for debugger to attach. Process ID: {Process.GetCurrentProcess().Id}.");
-
-                webhost.Run();
+                if (isService)
+                {
+                    webhost.RunAsCustomService();
+                } 
+                else
+                {
+                    Console.Title = "OpenCatapult API";
+                    Log.Information("Starting Catapult API host..");
+                    Console.WriteLine($"Process ID: {Process.GetCurrentProcess().Id}.");
+                    webhost.Run();
+                }                
             }
             catch (Exception ex)
             {
@@ -40,20 +47,31 @@ namespace Polyrific.Catapult.Api
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args, bool isService) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseConfiguration(Configuration)
+                .UseConfiguration(GetConfiguration(isService))
                 .UseSerilog();
+        
+        public static IConfiguration GetConfiguration(bool isService) {
+            var basePath = Directory.GetCurrentDirectory();
+            if (isService)
+            {
+                var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
+                basePath = Path.GetDirectoryName(pathToExe);
+            }
 
-        public static IConfiguration Configuration { get; } = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-            .AddJsonFile("notificationconfig.json", optional: false, reloadOnChange: true)
-            .AddJsonFile(
-                $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
-                optional: true)
-            .AddEnvironmentVariables()
-            .Build();
+            var config = new ConfigurationBuilder()
+                    .SetBasePath(basePath)
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile("notificationconfig.json", optional: false, reloadOnChange: true)
+                    .AddJsonFile(
+                        $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
+                        optional: true)
+                    .AddEnvironmentVariables()
+                    .Build();
+            
+            return config;
+        }
     }
 }
