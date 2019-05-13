@@ -21,7 +21,7 @@
       <mat-label>Description</mat-label>
       <textarea matInput placeholder="The description of the external service" formControlName="description"></textarea>
   </mat-form-field>
-  <div *ngIf="!isDefaultChecked">
+  <div>
     <mat-checkbox formControlName="isGlobal">Allow global access?</mat-checkbox>
   </div>
 

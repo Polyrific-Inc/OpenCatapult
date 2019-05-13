@@ -2,7 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ExternalServiceComponent } from './external-service.component';
 import { FlexModule } from '@angular/flex-layout';
-import { ExternalServiceRoutingModule } from '../external-service-routing.module';
 import { MatTableModule, MatIconModule, MatButtonModule, MatDialogModule,
   MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
