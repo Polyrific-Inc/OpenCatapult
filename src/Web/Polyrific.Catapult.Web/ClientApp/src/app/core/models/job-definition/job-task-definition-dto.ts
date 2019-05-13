@@ -7,4 +7,6 @@ export interface JobTaskDefinitionDto {
   configs: { [key: string]: string };
   additionalConfigs: { [key: string]: string };
   sequence: number;
+  valid: boolean;
+  validationError: string;
 }

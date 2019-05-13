@@ -12,7 +12,7 @@
 </div>
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 <mat-accordion class="headers-align" *ngIf="!loading">
-<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions"
+<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions" [expanded]="jobDefinition.expanded"
   (afterExpand)="onTaskExpanded(jobDefinition)">
   <mat-expansion-panel-header>
     <mat-panel-title>

@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobTaskDefinitionComponent } from './job-task-definition.component';
-import { MatButtonModule, MatListModule, MatIconModule, MatDialogModule, MatSnackBarModule } from '@angular/material';
+import { MatButtonModule, MatListModule, MatIconModule, MatDialogModule, MatSnackBarModule, MatTooltipModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -24,7 +24,8 @@ describe('JobTaskDefinitionComponent', () => {
         MatDialogModule,
         HttpClientTestingModule,
         DragDropModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatTooltipModule
       ],
       providers: [
         SnackbarService

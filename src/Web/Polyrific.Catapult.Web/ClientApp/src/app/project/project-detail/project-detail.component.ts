@@ -12,9 +12,8 @@ import { MessageDialogComponent } from '@app/shared/components/message-dialog/me
   templateUrl: './project-detail.component.html',
   styleUrls: ['./project-detail.component.css']
 })
-export class ProjectDetailComponent implements OnInit, OnDestroy {
+export class ProjectDetailComponent implements OnInit {
   project: ProjectDto;
-  activeLink: string;
   authorizePolicy = AuthorizePolicy;
   routerSubscription: Subscription;
   loading: boolean;
@@ -32,22 +31,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getProject();
-    this.activeLink = this.route.firstChild.snapshot.url.pop().path;
-    this.routerSubscription = this.router.events.pipe(filter(e => e instanceof NavigationStart)).subscribe((e: NavigationStart) => {
-      if (e.url.includes(`/project/${this.project.id}/`)) {
-        this.activeLink = e.url.replace(`/project/${this.project.id}/`, '').split('/')[0];
-      }
-    });
-  }
-
-  ngOnDestroy() {
-    this.routerSubscription.unsubscribe();
   }
 
   getProject(): void {
     this.route.data.subscribe((data: {project: ProjectDto}) => {
-      this.activeLink = 'info';
-
       this.project = data.project;
       this.projectHistoryService.addProjectHistory(this.project);
     });
@@ -181,12 +168,27 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
                   this.router.navigateByUrl('/service?newService=true');
                 }
               });
-            } else {
+            } else if (err.includes('does not have a default job definition')) {
+              // Stay on the page
               this.dialog.open(MessageDialogComponent, {
                 data: {
                   title: 'Queue Job Failed',
-                  message: `${err}\n\nPlease make sure each task configuration is properly set.`
+                  // tslint:disable-next-line: max-line-length
+                  message: `Project ${this.project.name} does not have a default job definition`
                 }
+              });
+            } else {
+              // Redirect to the job definition page
+              const failedDialogRef = this.dialog.open(MessageDialogComponent, {
+                data: {
+                  title: 'Queue Job Failed',
+                  // tslint:disable-next-line: max-line-length
+                  message: `The default job in project ${this.project.name} has incomplete task configs. Please complete them before putting this job in queue.`
+                }
+              });
+
+              failedDialogRef.afterClosed().subscribe(() => {
+                this.router.navigate(['job-definition'], { queryParams: { showDefaultJob: true }, relativeTo: this.route });
               });
             }
           });

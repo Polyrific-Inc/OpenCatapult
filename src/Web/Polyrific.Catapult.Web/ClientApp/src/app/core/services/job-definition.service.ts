@@ -15,8 +15,8 @@ export class JobDefinitionService {
     return this.api.get<JobDefinitionDto[]>(`project/${projectId}/job`);
   }
 
-  getJobTaskDefinitions(projectId: number, jobDefinitionId: number) {
-    return this.api.get<JobTaskDefinitionDto[]>(`project/${projectId}/job/${jobDefinitionId}/task`);
+  getJobTaskDefinitions(projectId: number, jobDefinitionId: number, validate: boolean) {
+    return this.api.get<JobTaskDefinitionDto[]>(`project/${projectId}/job/${jobDefinitionId}/task?validate=${validate}`);
   }
 
   getDeletionJobDefinition(projectId: number) {

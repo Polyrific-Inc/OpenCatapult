@@ -469,13 +469,14 @@ namespace Polyrific.Catapult.Api.Controllers
         /// Get job task definitions for a job definition
         /// </summary>
         /// <param name="jobId">Id of the job definition</param>
+        /// <param name="validate">Do validation?</param>
         /// <returns>List of job task definitions</returns>
         [HttpGet("Project/{projectId}/job/{jobId}/task", Name = "GetJobTaskDefinitions")]
-        public async Task<IActionResult> GetJobTaskDefinitions(int jobId)
+        public async Task<IActionResult> GetJobTaskDefinitions(int jobId, bool validate = false)
         {
             _logger.LogRequest("Getting job task definitions in job {jobId}", jobId);
 
-            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
+            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId, validate);
             var results = _mapper.Map<List<JobTaskDefinitionDto>>(jobTaskDefinitions);
 
             _logger.LogResponse("Job task definitions in job {jobId} retrieved. Response body: {@results}", jobId, results);

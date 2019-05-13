@@ -2,7 +2,9 @@
   <mat-list-item *ngFor="let task of jobTaskDefinitions" cdkDrag>
     <div fxLayout="row" fxLayoutAlign="space-between center" class="task-item">
       <div fxLayout="row" fxLayoutAlign="flex-start center">
-          <mat-icon>drag_handle</mat-icon> {{task.name}} <span class="task-provider">({{task.provider}})</span>
+          <mat-icon>drag_handle</mat-icon> {{task.name}}
+          <span class="task-provider">({{task.provider}})</span>
+          <mat-icon *ngIf="task.valid === false" matTooltip="{{task.validationError}}" class="error">error</mat-icon>
       </div>
       <div class="action-buttons">
         <button mat-icon-button (click)="onTaskInfoClick(task)">

@@ -229,7 +229,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetJobTaskDefinitions_ReturnsJobTaskDefinitionList()
         {
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<JobTaskDefinition>
                 {
                     new JobTaskDefinition
@@ -311,7 +311,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void UpdateJobTaskOrder_ReturnsSuccess()
         {
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<JobTaskDefinition>
                 {
                     new JobTaskDefinition

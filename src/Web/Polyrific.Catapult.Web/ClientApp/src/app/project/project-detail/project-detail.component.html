@@ -18,15 +18,13 @@
   </mat-card-header>
   <mat-card-content>
       <nav mat-tab-nav-bar flex>
-          <a mat-tab-link (click)="activeLink = 'info'" [active]="activeLink == 'info'" routerLink='info'>Info</a>
-          <a mat-tab-link (click)="activeLink = 'data-model'" [active]="activeLink == 'data-model'" routerLink='data-model'>Data Models</a>
-          <a mat-tab-link (click)="activeLink = 'job-definition'"
-            [active]="activeLink == 'job-definition'" routerLink='job-definition'
+          <a mat-tab-link routerLink="info" routerLinkActive #rlaInfo="routerLinkActive" [active]="rlaInfo.isActive">Info</a>
+          <a mat-tab-link routerLink="data-model"  routerLinkActive #rlaModel="routerLinkActive" [active]="rlaModel.isActive">Data Models</a>
+          <a mat-tab-link routerLink="job-definition" routerLinkActive #rlaJob="routerLinkActive" [active]="rlaJob.isActive"
             *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
-          <a mat-tab-link (click)="activeLink = 'job-queue'"
-            [active]="activeLink == 'job-queue'" routerLink='job-queue'
+          <a mat-tab-link routerLink="job-queue" routerLinkActive #rlaQueue="routerLinkActive" [active]="rlaQueue.isActive"
             *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
-          <a mat-tab-link (click)="activeLink = 'member'" [active]="activeLink == 'member'" routerLink='member'>Members</a>
+          <a mat-tab-link routerLink="member" routerLinkActive #rlaMember="routerLinkActive" [active]="rlaMember.isActive">Members</a>
       </nav>
       <router-outlet></router-outlet>
   </mat-card-content>

@@ -4,7 +4,7 @@ import { JobDefinitionComponent } from './job-definition.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { MatButtonModule, MatExpansionModule, MatListModule, MatIconModule,
-  MatCheckboxModule, MatDialogModule, MatSnackBarModule, MatProgressSpinnerModule } from '@angular/material';
+  MatCheckboxModule, MatDialogModule, MatSnackBarModule, MatProgressSpinnerModule, MatTooltipModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { FormsModule } from '@angular/forms';
@@ -38,6 +38,7 @@ describe('JobDefinitionComponent', () => {
         DragDropModule,
         MatProgressSpinnerModule,
         MatCheckboxModule,
+        MatTooltipModule,
         SharedModule.forRoot()
       ],
       providers: [

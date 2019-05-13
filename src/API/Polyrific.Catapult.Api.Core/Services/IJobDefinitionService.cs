@@ -141,9 +141,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Get list of job task definitions for a job definition
         /// </summary>
         /// <param name="jobDefinitionId">Id of the job definition</param>
+        /// <param name="validate">Do validation?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of job task definitions</returns>
-        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a job task definition by id
@@ -167,9 +168,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="jobDefinition">The job definition object</param>
         /// <param name="jobTaskDefinition">The job task definition object</param>
+        /// <param name="encryptConfig">Encrypt additional config?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
+        Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, bool encryptConfig = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Encrypt all secret additional config in a task

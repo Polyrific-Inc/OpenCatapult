@@ -153,9 +153,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var jobDefinitionSpec = new JobDefinitionFilterSpecification(projectId);
-            var projectMembers = await _jobDefinitionRepository.GetBySpec(jobDefinitionSpec, cancellationToken);
+            var jobDefinitions = await _jobDefinitionRepository.GetBySpec(jobDefinitionSpec, cancellationToken);
 
-            return projectMembers.ToList();
+            return jobDefinitions.ToList();
         }
 
         public async Task RenameJobDefinition(int id, string newName, CancellationToken cancellationToken = default(CancellationToken))
@@ -214,7 +214,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             if (jobTaskDefinition.Sequence == null)
                 jobTaskDefinition.Sequence = _jobTaskDefinitionRepository.GetMaxTaskSequence(jobTaskDefinition.JobDefinitionId) + 1;
 
-            await ValidateJobTaskDefinition(jobDefinition, jobTaskDefinition, cancellationToken);
+            await ValidateJobTaskDefinition(jobDefinition, jobTaskDefinition, encryptConfig: true, cancellationToken);
 
             return await _jobTaskDefinitionRepository.Create(jobTaskDefinition, cancellationToken);
         }
@@ -247,7 +247,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 if (task.Sequence == null)
                     task.Sequence = ++maxSequence;
 
-                await ValidateJobTaskDefinition(jobDefinition, task, cancellationToken);
+                await ValidateJobTaskDefinition(jobDefinition, task, encryptConfig: true, cancellationToken);
             }                
 
             jobTaskDefinitions.ForEach(j => j.JobDefinitionId = jobDefinitionId);
@@ -272,7 +272,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 jobTaskDefinition.AdditionalConfigString = editedJobTaskDefinition.AdditionalConfigString;
                 jobTaskDefinition.Sequence = editedJobTaskDefinition.Sequence;
                 
-                await ValidateJobTaskDefinition(jobTaskDefinition.JobDefinition, jobTaskDefinition, cancellationToken);
+                await ValidateJobTaskDefinition(jobTaskDefinition.JobDefinition, jobTaskDefinition, encryptConfig: true, cancellationToken);
 
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
@@ -288,7 +288,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 jobTaskDefinition.ConfigString = JsonConvert.SerializeObject(jobTaskConfig);
 
-                await ValidateJobTaskDefinition(null, jobTaskDefinition, cancellationToken);
+                await ValidateJobTaskDefinition(jobDefinition: null, jobTaskDefinition, encryptConfig: true, cancellationToken);
 
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
@@ -301,7 +301,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _jobTaskDefinitionRepository.Delete(id, cancellationToken);
         }
 
-        public async Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -309,7 +309,23 @@ namespace Polyrific.Catapult.Api.Core.Services
             var tasks = (await _jobTaskDefinitionRepository.GetBySpec(taskByJobSpec, cancellationToken)).ToList();
 
             foreach (var task in tasks)
+            {
+                if (validate)
+                {
+                    try
+                    {
+                        task.Valid = true;
+                        await ValidateJobTaskDefinition(jobDefinition: null, task, encryptConfig: false, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        task.Valid = false;
+                        task.ValidationError = ex.Message;
+                    }
+                }                
+
                 await DecryptSecretAdditionalConfigs(task);
+            }                
 
             return tasks;
         }
@@ -332,7 +348,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return taskDefinition;
         }
 
-        public async Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, bool encryptConfig, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -454,20 +470,23 @@ namespace Polyrific.Catapult.Api.Core.Services
                 }
             }
 
-            var secretConfigs = additionalConfigsDefinition.Where(c => c.IsSecret).Select(c => c.Name).ToList();
-            if (secretConfigs.Count > 0 && taskAdditionalConfigs != null)
+            if (encryptConfig)
             {
-                foreach (var secretConfig in secretConfigs)
+                var secretConfigs = additionalConfigsDefinition.Where(c => c.IsSecret).Select(c => c.Name).ToList();
+                if (secretConfigs.Count > 0 && taskAdditionalConfigs != null)
                 {
-                    if (taskAdditionalConfigs.TryGetValue(secretConfig, out var secretConfigValue))
+                    foreach (var secretConfig in secretConfigs)
                     {
-                        var encryptedValue = await _secretVault.Encrypt(secretConfigValue);
-                        taskAdditionalConfigs[secretConfig] = encryptedValue;
+                        if (taskAdditionalConfigs.TryGetValue(secretConfig, out var secretConfigValue))
+                        {
+                            var encryptedValue = await _secretVault.Encrypt(secretConfigValue);
+                            taskAdditionalConfigs[secretConfig] = encryptedValue;
+                        }
                     }
-                }
 
-                jobTaskDefinition.AdditionalConfigString = JsonConvert.SerializeObject(taskAdditionalConfigs);
-            }
+                    jobTaskDefinition.AdditionalConfigString = JsonConvert.SerializeObject(taskAdditionalConfigs);
+                }
+            }            
         }
 
         public async Task EncryptSecretAdditionalConfig(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))

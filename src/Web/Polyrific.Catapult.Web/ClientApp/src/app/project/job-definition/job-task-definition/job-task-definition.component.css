@@ -36,3 +36,7 @@ mat-list-item {
   opacity: 0;
 }
 
+.error {
+  color: #9c1212;
+  margin-left: 8px;
+}

@@ -26,6 +26,7 @@ export class JobDefinitionComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private jobDefinitionService: JobDefinitionService,
     private jobQueueService: JobQueueService,
@@ -42,17 +43,23 @@ export class JobDefinitionComponent implements OnInit {
     this.loading = true;
     this.jobDefinitionService.getJobDefinitions(this.projectId)
       .subscribe(data => {
+        this.loading = false;
         this.jobDefinitions = data.map(item => ({
           selected: false,
           expanded: false,
           ...item
         }));
-        this.loading = false;
+
+        if (this.route.snapshot.queryParams.showDefaultJob) {
+          const defaultJob = this.jobDefinitions.find(j => j.isDefault);
+
+          this.onTaskExpanded(defaultJob);
+        }
       });
   }
 
   getJobTaskDefinitions(jobDefinition: JobDefinitionDto) {
-    this.jobDefinitionService.getJobTaskDefinitions(jobDefinition.projectId, jobDefinition.id)
+    this.jobDefinitionService.getJobTaskDefinitions(jobDefinition.projectId, jobDefinition.id, true)
       .subscribe(data => {
         this.jobDefinitions = this.jobDefinitions.map(job => {
           if (job.id === jobDefinition.id) {
@@ -120,7 +127,7 @@ export class JobDefinitionComponent implements OnInit {
     });
   }
 
-  onQueueJobClick(jobDefinition: JobDefinitionDto) {
+  onQueueJobClick(jobDefinition: JobDefinitionViewModel) {
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       data: {
         title: 'Queue Job Definition',
@@ -151,10 +158,12 @@ export class JobDefinitionComponent implements OnInit {
                 }
               });
             } else {
+              this.onTaskExpanded(jobDefinition);
               this.dialog.open(MessageDialogComponent, {
                 data: {
                   title: 'Queue Job Failed',
-                  message: `${err}\n\nPlease make sure each task configuration is properly set.`
+                  // tslint:disable-next-line: max-line-length
+                  message: `The "${jobDefinition.name}" job has incomplete task configs. Please complete them before putting this job in queue.`
                 }
               });
             }
