@@ -63,6 +63,7 @@ namespace Polyrific.Catapult.Api.Data
 
             var profile = _mapper.Map<CatapultEngineProfile>(entity);
             profile.CatapultEngine = user;
+            profile.IsActive = true;
             await _profileRepository.Create(profile, cancellationToken);
 
             return user.Id;

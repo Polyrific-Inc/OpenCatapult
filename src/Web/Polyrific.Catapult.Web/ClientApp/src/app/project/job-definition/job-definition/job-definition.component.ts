@@ -137,12 +137,27 @@ export class JobDefinitionComponent implements OnInit {
           originUrl: window.location.origin
         }).subscribe(data => this.router.navigateByUrl(`project/${this.projectId}/job-queue`),
           err => {
-            this.dialog.open(MessageDialogComponent, {
-              data: {
-                title: 'Queue Job Failed',
-                message: `${err}\n\nPlease make sure each task configuration is properly set.`
-              }
-            });
+            if (err.includes('have invalid task(s): External service') && err.includes('is not found')) {
+              const addServiceDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'Add External Service?',
+                  confirmationText: `${err}. Do you want to create it now?`
+                }
+              });
+
+              addServiceDialogRef.afterClosed().subscribe(confirmed => {
+                if (confirmed) {
+                  this.router.navigateByUrl('/service?newService=true');
+                }
+              });
+            } else {
+              this.dialog.open(MessageDialogComponent, {
+                data: {
+                  title: 'Queue Job Failed',
+                  message: `${err}\n\nPlease make sure each task configuration is properly set.`
+                }
+              });
+            }
           });
       }
     });

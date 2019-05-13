@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExternalServiceInfoDialogComponent } from './external-service-info-dialog.component';
 import { FlexModule } from '@angular/flex-layout';
 import { MatTableModule, MatIconModule, MatButtonModule, MatDialogModule, MatInputModule,
-  MatSelectModule, MatProgressBarModule, MatDividerModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+  MatSelectModule, MatProgressBarModule, MatDividerModule, MatDialogRef, MAT_DIALOG_DATA, MatCheckboxModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared/shared.module';
@@ -39,6 +39,7 @@ describe('ExternalServiceInfoDialogComponent', () => {
         MatSelectModule,
         MatProgressBarModule,
         MatDividerModule,
+        MatCheckboxModule,
         CoreModule,
         SharedModule.forRoot()
       ],

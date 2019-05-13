@@ -152,19 +152,45 @@ export class ProjectDetailComponent implements OnInit, OnDestroy {
   }
 
   onQueueJobClick() {
-    this.jobQueueService.addDefaultJobQueue(this.project.id, {
-      projectId: this.project.id,
-      jobType: null,
-      originUrl: window.location.origin,
-      jobDefinitionId: null
-    }).subscribe(data => this.router.navigateByUrl(`project/${this.project.id}/job-queue`),
-      err => {
-        this.dialog.open(MessageDialogComponent, {
-          data: {
-            title: 'Queue Job Failed',
-            message: `${err}\n\nPlease make sure each task configuration is properly set.`
-          }
-        });
-      });
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+      data: {
+        title: 'Queue Default Job Definition',
+        confirmationText: `Are you sure you want to add default job to the queue?`
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(success => {
+      if (success) {
+        this.jobQueueService.addDefaultJobQueue(this.project.id, {
+          projectId: this.project.id,
+          jobType: null,
+          originUrl: window.location.origin,
+          jobDefinitionId: null
+        }).subscribe(data => this.router.navigateByUrl(`project/${this.project.id}/job-queue`),
+          err => {
+            if (err.includes('have invalid task(s): External service') && err.includes('is not found')) {
+              const addServiceDialogRef = this.dialog.open(ConfirmationDialogComponent, {
+                data: {
+                  title: 'Add External Service?',
+                  confirmationText: `${err}. Do you want to create it now?`
+                }
+              });
+
+              addServiceDialogRef.afterClosed().subscribe(confirmed => {
+                if (confirmed) {
+                  this.router.navigateByUrl('/service?newService=true');
+                }
+              });
+            } else {
+              this.dialog.open(MessageDialogComponent, {
+                data: {
+                  title: 'Queue Job Failed',
+                  message: `${err}\n\nPlease make sure each task configuration is properly set.`
+                }
+              });
+            }
+          });
+      }
+    });
   }
 }

@@ -62,6 +62,7 @@ namespace Polyrific.Catapult.Api.Data
 
             var userProfile = _mapper.Map<UserProfile>(entity);
             userProfile.ApplicationUser = user;
+            userProfile.IsActive = true;
             await _userProfileRepository.Create(userProfile, cancellationToken);
 
             return user.Id;
@@ -79,6 +80,7 @@ namespace Polyrific.Catapult.Api.Data
 
             var userProfile = _mapper.Map<UserProfile>(entity);
             userProfile.ApplicationUser = user;
+            userProfile.IsActive = true;
             await _userProfileRepository.Create(userProfile, cancellationToken);
 
             return user.Id;

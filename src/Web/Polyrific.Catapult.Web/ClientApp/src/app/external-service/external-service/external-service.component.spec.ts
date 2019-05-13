@@ -11,6 +11,7 @@ import { SharedModule } from '@app/shared/shared.module';
 import { CoreModule } from '@app/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('ExternalServiceComponent', () => {
   let component: ExternalServiceComponent;
@@ -22,6 +23,7 @@ describe('ExternalServiceComponent', () => {
       imports: [
         BrowserAnimationsModule,
         HttpClientTestingModule,
+        RouterTestingModule,
         FlexModule,
         MatTableModule,
         MatIconModule,

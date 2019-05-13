@@ -38,6 +38,12 @@
       <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
       <td mat-cell *matCellDef="let element"> {{element.externalServiceTypeName}} </td>
     </ng-container>
+
+    <!-- externalServiceTypeName Column -->
+    <ng-container matColumnDef="isGlobal">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Allow global access? </th>
+      <td mat-cell *matCellDef="let element"> {{element.isGlobal ? 'Yes' : 'No'}} </td>
+    </ng-container>
     <!-- Action Column -->
     <ng-container matColumnDef="actions">
       <th mat-header-cell *matHeaderCellDef> </th>

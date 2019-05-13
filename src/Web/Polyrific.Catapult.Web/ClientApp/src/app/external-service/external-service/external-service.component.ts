@@ -1,31 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { ExternalServiceDto, ExternalServiceService } from '@app/core';
 import { MatDialog } from '@angular/material';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { ExternalServiceInfoDialogComponent } from '../components/external-service-info-dialog/external-service-info-dialog.component';
 import { ExternalServiceNewDialogComponent } from '../components/external-service-new-dialog/external-service-new-dialog.component';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-external-service',
   templateUrl: './external-service.component.html',
   styleUrls: ['./external-service.component.css']
 })
-export class ExternalServiceComponent implements OnInit {
+export class ExternalServiceComponent implements OnInit, AfterViewInit {
   externalServices: ExternalServiceDto[];
   projectId: number;
   roleId = 0;
   loading: boolean;
 
-  displayedColumns: string[] = ['name', 'description', 'externalServiceTypeName', 'actions'];
+  displayedColumns: string[] = ['name', 'description', 'externalServiceTypeName', 'isGlobal', 'actions'];
 
   constructor(
     private externalServiceService: ExternalServiceService,
+    private route: ActivatedRoute,
     private dialog: MatDialog,
     private snackbar: SnackbarService
     ) { }
 
   ngOnInit() {
     this.getExternalServices();
+  }
+
+  ngAfterViewInit() {
+    this.route.queryParams.subscribe(data => {
+      if (data.newService) {
+        setTimeout(() => {
+          this.onNewExternalServiceClick();
+        }, 0);
+      }
+    });
   }
 
   getExternalServices() {

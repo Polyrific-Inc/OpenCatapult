@@ -1,11 +1,12 @@
 import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormArray, FormControl } from '@angular/forms';
-import { ExternalServiceDto, genericExternalService } from '@app/core';
+import { ExternalServiceDto, genericExternalService, ExternalServiceType } from '@app/core';
 import { ExternalServiceTypeDto } from '@app/core/models/external-service/external-service-type-dto';
 import { ExternalServiceTypeService } from '@app/core/services/external-service-type.service';
 import { Observable } from 'rxjs';
 import { ExternalServicePropertyDto } from '@app/core/models/external-service/external-service-property-dto';
 import { tap } from 'rxjs/operators';
+import { MatSelectChange, MatOption } from '@angular/material';
 
 export interface ExternalServiceFormOutput {
   mainForm: FormGroup;
@@ -39,7 +40,8 @@ export class ExternalServiceFormComponent implements OnInit, OnChanges {
       name: [{value: null, disabled: this.disableForm}, Validators.required],
       description: [{value: null, disabled: this.disableForm}],
       externalServiceTypeId: [{value: null, disabled: this.disableForm}, Validators.required],
-      config: this.externalServiceConfigForm
+      config: this.externalServiceConfigForm,
+      isGlobal: [{value: false, disabled: this.disableForm}]
     });
 
     this.genericServiceProperties = this.fb.array([]);
@@ -119,8 +121,18 @@ export class ExternalServiceFormComponent implements OnInit, OnChanges {
       }));
   }
 
-  onServiceTypeChanged(control) {
+  onServiceTypeChanged(control: MatSelectChange) {
+    let defaultName = '';
+    if ((<MatOption>control.source.selected).viewValue === ExternalServiceType.Azure) {
+      defaultName = 'azure-default';
+    } else if ((<MatOption>control.source.selected).viewValue === ExternalServiceType.GitHub) {
+      defaultName = 'github-default';
+    }
+
     this.getExternalServiceType(control.value).subscribe();
+    this.externalServiceForm.patchValue({
+      name: defaultName
+    });
   }
 
   onAddGenericPropertyClick() {

@@ -66,6 +66,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations
 
                     b.Property<int?>("ExternalServiceTypeId");
 
+                    b.Property<bool>("IsGlobal");
+
                     b.Property<string>("Name")
                         .IsRequired();
 

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ExternalServiceFormComponent } from './external-service-form.component';
 import { FlexModule } from '@angular/flex-layout';
 import { MatTableModule, MatIconModule, MatButtonModule, MatDialogModule,
-  MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule } from '@angular/material';
+  MatInputModule, MatSelectModule, MatProgressBarModule, MatDividerModule, MatCheckboxModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 import { GenericService } from '@app/external-service/services/generic.service';
 import { SharedModule } from '@app/shared/shared.module';
@@ -33,6 +33,7 @@ describe('ExternalServiceFormComponent', () => {
         MatSelectModule,
         MatProgressBarModule,
         MatDividerModule,
+        MatCheckboxModule,
         CoreModule,
         SharedModule.forRoot()
       ],

@@ -1,5 +1,15 @@
 <div [formGroup]="externalServiceForm">
   <mat-form-field class="full-width-input">
+    <mat-select #serviceTypeControl placeholder="External Service Type" formControlName="externalServiceTypeId" (selectionChange)="onServiceTypeChanged($event)">
+      <mat-option *ngFor="let serviceType of externalServiceTypes$ | async" [value]="serviceType.id">
+        {{serviceType.name}}
+      </mat-option>
+    </mat-select>
+    <mat-error *ngIf="isFieldInvalid('externalServiceTypeId', 'required')">
+      Please inform the external service type
+    </mat-error>
+  </mat-form-field>
+  <mat-form-field class="full-width-input">
     <mat-label>Name</mat-label>
     <input matInput placeholder="Name of the external service"
       formControlName="name" required>
@@ -11,16 +21,9 @@
       <mat-label>Description</mat-label>
       <textarea matInput placeholder="The description of the external service" formControlName="description"></textarea>
   </mat-form-field>
-  <mat-form-field class="full-width-input">
-    <mat-select #serviceTypeControl placeholder="External Service Type" formControlName="externalServiceTypeId" (selectionChange)="onServiceTypeChanged($event)">
-      <mat-option *ngFor="let serviceType of externalServiceTypes$ | async" [value]="serviceType.id">
-        {{serviceType.name}}
-      </mat-option>
-    </mat-select>
-    <mat-error *ngIf="isFieldInvalid('externalServiceTypeId', 'required')">
-      Please inform the external service type
-    </mat-error>
-  </mat-form-field>
+  <div *ngIf="!isDefaultChecked">
+    <mat-checkbox formControlName="isGlobal">Allow global access?</mat-checkbox>
+  </div>
 
   <div *ngIf="showGenericProperties">
       <app-external-service-generic-form *ngFor="let genericForm of genericServiceProperties.controls; let idx = index"

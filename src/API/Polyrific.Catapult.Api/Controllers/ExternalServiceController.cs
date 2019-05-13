@@ -102,7 +102,8 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 Name = dto.Name,
                 Description = dto.Description,
-                ExternalServiceTypeId = dto.ExternalServiceTypeId
+                ExternalServiceTypeId = dto.ExternalServiceTypeId,
+                IsGlobal = dto.IsGlobal
             };
             _logger.LogRequest("Creating external service. Request body: {@requestBodyToLog}", requestBodyToLog);
 
@@ -114,7 +115,8 @@ namespace Polyrific.Catapult.Api.Controllers
                     dto.Description,
                     dto.ExternalServiceTypeId,
                     JsonConvert.SerializeObject(dto.Config),
-                    currentUserId);
+                    currentUserId,
+                    dto.IsGlobal);
 
                 var externalService = await _externalServiceService.GetExternalService(serviceId);
                 var result = _mapper.Map<ExternalServiceDto>(externalService);

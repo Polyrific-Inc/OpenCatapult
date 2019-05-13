@@ -5,4 +5,5 @@ export interface ExternalServiceDto {
     externalServiceTypeId: number;
     externalServiceTypeName: string;
     config: { [key: string]: string };
+    isGlobal: boolean;
 }
