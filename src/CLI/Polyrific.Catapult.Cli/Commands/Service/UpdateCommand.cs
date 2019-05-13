@@ -36,6 +36,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the external service", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
+        [Option("-g|--global <ISGLOBAL>", "Indicates whether the external service can be accessed globally?", CommandOptionType.SingleValue)]
+        public bool? Global { get; set; }
+
         public override string Execute()
         {
             Console.WriteLine($"Trying to update external service \"{Name}\"...");
@@ -95,6 +98,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                 _externalServiceService.UpdateExternalService(service.Id, new UpdateExternalServiceDto
                 {
                     Description = Description ?? service.Description,
+                    IsGlobal = Global ?? service.IsGlobal,
                     Config = service.Config
                 }).Wait();
                 message = $"External Service {Name} has been updated successfully";
