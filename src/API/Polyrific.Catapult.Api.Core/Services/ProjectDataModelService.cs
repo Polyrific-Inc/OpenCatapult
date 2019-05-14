@@ -210,7 +210,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             foreach (var dataModel in dataModels)
             {
-                dataModel.Properties = dataModel.Properties.OrderBy(p => p.Sequence).ToList();
+                dataModel.Properties = dataModel.Properties?.OrderBy(p => p.Sequence).ToList();
             }
 
             return dataModels;
