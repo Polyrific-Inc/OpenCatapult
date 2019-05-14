@@ -255,7 +255,7 @@ namespace Polyrific.Catapult.Api.Controllers
                 return Unauthorized();
 
             // log as debug so it won't be put to log when min level is Info
-            _logger.LogDebug("Checking for job queue");
+            _logger.LogRequestDebug("Checking for job queue");
 
             var isEngine = User.IsInRole(UserRole.Engine);
 
@@ -269,7 +269,7 @@ namespace Polyrific.Catapult.Api.Controllers
             // update engine's last seen
             await _engineService.UpdateLastSeen(engineName, GetEngineVersion(Request.Headers["User-Agent"].ToString()));
             
-            _logger.LogResponse("Queued job queue checked. Response body: {@result}", result);
+            _logger.LogResponseDebug("Queued job queue checked. Response body: {@result}", result);
 
             return Ok(result);
         }
