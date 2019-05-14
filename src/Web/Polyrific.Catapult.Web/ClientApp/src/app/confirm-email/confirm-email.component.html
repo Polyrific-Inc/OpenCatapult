@@ -1,0 +1,11 @@
+<div class="signin-content">
+  <h1>Confirm Email</h1>
+
+  <mat-card>
+    <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+    <mat-card-content>
+      <p>{{confirmResult}}</p>
+      <button mat-raised-button routerLink="/login">Go to Login Page</button>
+    </mat-card-content>
+  </mat-card>
+</div>

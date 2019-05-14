@@ -1,0 +1,8 @@
+<mat-tab-group>
+  <mat-tab *ngFor="let jobDefinition of jobDefinitions">
+    <ng-template mat-tab-label>
+      Job: {{jobDefinition.name}}
+    </ng-template>
+    <app-job-config-form [job]="jobDefinition" (formReady)="onJobFormReady($event)"></app-job-config-form>
+  </mat-tab>
+</mat-tab-group>

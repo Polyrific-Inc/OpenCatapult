@@ -15,5 +15,10 @@ namespace Polyrific.Catapult.Shared.Dto.ExternalService
         /// Config of the external service
         /// </summary>
         public Dictionary<string, string> Config { get; set; }
+
+        /// <summary>
+        /// Is the external service can be access globally?
+        /// </summary>
+        public bool IsGlobal { get; set; }
     }
 }

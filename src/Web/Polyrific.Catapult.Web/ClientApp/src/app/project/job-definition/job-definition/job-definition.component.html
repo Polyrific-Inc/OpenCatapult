@@ -1,0 +1,47 @@
+<div class="project-module-description">
+  <span>Maintain the project job definition to set up task configurations that will be run by the engine once the job is queued. (<a href="https://docs.opencatapult.net/home/concept#job-definition" target="_blank">more...</a>)</span>
+</div>
+<div fxLayout="row" fxLayoutAlign="space-between center">
+  <div class="action-buttons">
+      <mat-checkbox class="all-checkbox" (change)="onCheckboxAllChanged($event)"></mat-checkbox>
+      <button mat-raised-button [disabled]="!isJobDefinitionsSelected()" (click)="onBulkDeleteClick()">Bulk Delete</button>
+  </div>
+  <div class="action-buttons">
+    <button mat-raised-button (click)="onNewJobDefinitionClick()">New Job Definition</button>
+  </div>
+</div>
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+<mat-accordion class="headers-align" *ngIf="!loading">
+<mat-expansion-panel *ngFor="let jobDefinition of jobDefinitions" [expanded]="jobDefinition.expanded"
+  (afterExpand)="onTaskExpanded(jobDefinition)">
+  <mat-expansion-panel-header>
+    <mat-panel-title>
+      <mat-checkbox class="job-checkbox" [(ngModel)]="jobDefinition.selected" (click)="$event.stopPropagation();"></mat-checkbox>
+      <span class="job-name">{{jobDefinition.name}}</span>
+      <mat-icon *ngIf="jobDefinition.isDeletion" matTooltip="This job can be automatically queued before project deletion">help_outline</mat-icon>
+    </mat-panel-title>
+    <mat-panel-description>
+      <button mat-icon-button (click)="onQueueJobClick(jobDefinition); $event.stopPropagation();"
+        matTooltip="Queue" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">
+        <mat-icon>play_circle_filled</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobDefinitionInfoClick(jobDefinition); $event.stopPropagation();" matTooltip="View">
+        <mat-icon>info</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobDefinitionDeleteClick(jobDefinition); $event.stopPropagation();" matTooltip="Delete">
+        <mat-icon>delete</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onSetDefaultClick(jobDefinition); $event.stopPropagation();" matTooltip="Set as Default" *ngIf="!jobDefinition.isDefault && !jobDefinition.isDeletion">
+        <mat-icon>home</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onJobTaskDefinitionAddClick(jobDefinition); $event.stopPropagation();" matTooltip="Add task">
+        <mat-icon>add_circle</mat-icon>
+      </button>
+    </mat-panel-description>
+  </mat-expansion-panel-header>
+  <app-job-task-definition [jobTaskDefinitions]="jobDefinition.tasks"
+    [jobDefinition]="jobDefinition"
+    (tasksChanged)="onTasksUpdated(jobDefinition)">
+  </app-job-task-definition>
+</mat-expansion-panel>
+</mat-accordion>

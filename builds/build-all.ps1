@@ -2,11 +2,12 @@
 param(
     [string]$configuration = "Release",
     [string]$connString = "",
+    [string]$dbProvider = "",
     [string]$environment = "Development",
     [string]$http = "http://localhost:8005",
     [string]$https = "https://localhost:44305",
-    [string]$webHost = "localhost",
-    [string]$webPort = "44300",
+    [string]$webHttp = "http://localhost:8000",
+    [string]$webHttps = "https://localhost:44300",
     [switch]$noConfig = $false,
     [switch]$noCli = $false,
     [switch]$noPrompt = $false,
@@ -128,6 +129,9 @@ if ($noWeb) {
 if ($noPrompt) {
     $buildPrerequisitesArgs += " -noPrompt"
 }
+if ($dbProvider -eq "mssql") {
+    $buildPrerequisitesArgs += " -checkSql"
+}
 $allGood = Invoke-BuildScript "build-prerequisites.ps1" $buildPrerequisitesArgs
 if (!$allGood) {
     Write-Host "Some items don't meet the minimum requirement. Do you want to continue? (y/n)" -ForegroundColor Yellow
@@ -143,6 +147,9 @@ $args = "-configuration " + $configuration
 $args += " -environment " + $environment
 if ($connString) {
     $args += "-connString " + $connString
+}
+if ($dbProvider) {
+    $args += " -dbProvider " + $dbProvider
 }
 if ($noPrompt) {
     $args += " -noPrompt"
@@ -172,8 +179,10 @@ if (!$noCli) {
 ## Build Web
 if (!$noWeb) {
 	Write-Host "Publishing Web UI..."
-	$args = "-host " + $webHost
-	$args += " -port " + $webPort
+	$args = "-http " + $webHttp
+	$args += " -https " + $webHttps
+	$args += " -configuration " + $configuration
+	$args += " -environment " + $environment
     $done = Invoke-BuildScriptNewWindow "build-web.ps1" $args
 }
 

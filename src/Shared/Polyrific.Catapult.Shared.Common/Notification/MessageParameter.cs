@@ -6,6 +6,8 @@ namespace Polyrific.Catapult.Shared.Common.Notification
     {
         public const string UserName = "UserName";
         public const string ConfirmUrl = "ConfirmUrl";
+        public const string LoginUrl = "LoginUrl";
+        public const string UpdatePasswordUrl = "UpdatePasswordUrl";
         public const string ResetPasswordToken = "ResetPasswordToken";
         public const string ResetPasswordLink = "ResetPasswordLink";
         public const string TemporaryPassword = "TemporaryPassword";

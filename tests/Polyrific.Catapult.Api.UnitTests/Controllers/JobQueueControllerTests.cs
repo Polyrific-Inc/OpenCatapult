@@ -25,8 +25,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly Mock<ICatapultEngineService> _catapultEngineService;
         private readonly IMapper _mapper;
-        private readonly Mock<ILogger<JobQueueController>> _logger;
         private readonly Mock<IConfiguration> _configuration;
+        private readonly Mock<ILogger<JobQueueController>> _logger;
 
         public JobQueueControllerTests()
         {
@@ -34,10 +34,11 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
 
             _catapultEngineService = new Mock<ICatapultEngineService>();
 
+            _configuration = new Mock<IConfiguration>();
+
             _mapper = AutoMapperUtils.GetMapper();
 
             _logger = LoggerMock.GetLogger<JobQueueController>();
-            _configuration = new Mock<IConfiguration>();
         }
 
         [Fact]
@@ -53,7 +54,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
             var result = await controller.GetJobQueues(1);
 
@@ -74,7 +75,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
             var result = await controller.GetJobQueue(1, 1);
 
@@ -96,7 +97,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
             var result = await controller.GetJobQueueByCode(1, "20181101.1");
 
@@ -119,7 +120,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                         ProjectId = projectId
                     });
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object);
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
 
             var result = await controller.CreateJobQueue(1, new NewJobDto
             {
@@ -134,7 +135,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void CreateJobQueue_ReturnsBadRequest()
         {
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object);
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
 
             var result = await controller.CreateJobQueue(1, new NewJobDto());
 
@@ -143,11 +144,37 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         }
 
         [Fact]
+        public async void CreateDefaultJobQueue_ReturnsCreatedJobQueue()
+        {
+            _jobQueueService
+                .Setup(s => s.AddDefaultJobQueue(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(1);
+            _jobQueueService.Setup(s => s.GetJobQueueById(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int projectId, int id, CancellationToken cancellationToken) =>
+                    new JobQueue
+                    {
+                        Id = id,
+                        ProjectId = projectId
+                    });
+
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
+
+            var result = await controller.CreateDefaultJobQueue(1, new NewJobDto
+            {
+                ProjectId = 1
+            });
+
+            var createAtRouteActionResult = Assert.IsType<CreatedAtRouteResult>(result);
+            var returnValue = Assert.IsType<JobDto>(createAtRouteActionResult.Value);
+            Assert.Equal(1, returnValue.Id);
+        }
+
+        [Fact]
         public async void CancelJobQueue_ReturnsSuccess()
         {
             _jobQueueService.Setup(s => s.CancelJobQueue(It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object);
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
 
             var result = await controller.CancelJobQueue(1, 1);
 
@@ -182,7 +209,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 }),
             };
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object)
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -215,7 +242,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 }),
             };
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object)
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -242,7 +269,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 }),
             };
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object)
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -257,7 +284,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _jobQueueService.Setup(s => s.UpdateJobQueue(It.IsAny<JobQueue>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object);
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object);
 
             var result = await controller.UpdateJobQueue(1, 1, new UpdateJobDto
             {
@@ -290,7 +317,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 }),
             };
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object)
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -326,7 +353,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 }),
             };
 
-            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _logger.Object, _configuration.Object)
+            var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper, _configuration.Object, _logger.Object)
             {
                 ControllerContext = new ControllerContext { HttpContext = httpContext }
             };
@@ -350,7 +377,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 });
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
             var result = await controller.GetJobQueueStatus(1, 1);
 
@@ -366,7 +393,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                 .ReturnsAsync("logs");
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
             var result = await controller.GetJobLogs(1, 1);
 
@@ -378,14 +405,14 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void SendNotification_ReturnsJobQueue()
         {
+            _configuration.SetupGet(s => s[ConfigurationKey.WebUrl]).Returns("http://web");
             _jobQueueService.Setup(s => s.SendNotification(1, "http://web", It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
-            _configuration.SetupGet(x => x["WebUrl"]).Returns("http://web");
 
             var controller = new JobQueueController(_jobQueueService.Object, _catapultEngineService.Object, _mapper,
-                _logger.Object, _configuration.Object);
+                _configuration.Object, _logger.Object);
 
-            var result = await controller.SendNotification(1, 1);
+            var result = await controller.SendNotification(1);
 
             var okActionResult = Assert.IsType<OkResult>(result);
         }

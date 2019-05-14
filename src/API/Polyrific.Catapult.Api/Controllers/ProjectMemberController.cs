@@ -3,6 +3,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
@@ -20,22 +21,19 @@ namespace Polyrific.Catapult.Api.Controllers
     public class ProjectMemberController : ControllerBase
     {
         private readonly IProjectMemberService _projectMemberService;
-        private readonly IUserService _userService;
-        private readonly INotificationProvider _notificationProvider;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _configuration;
         private readonly ILogger _logger;
 
         public ProjectMemberController(
             IProjectMemberService projectMemberService,
-            IUserService userService,
-            INotificationProvider notificationProvider,
             IMapper mapper, 
+            IConfiguration configuration,
             ILogger<ProjectMemberController> logger)
         {
             _projectMemberService = projectMemberService;
-            _userService = userService;
-            _notificationProvider = notificationProvider;
             _mapper = mapper;
+            _configuration = configuration;
             _logger = logger;
         }
 
@@ -49,10 +47,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMembers(int projectId, int roleId)
         {
-            _logger.LogInformation("Getting members in project {projectId} with role {roleId}", projectId, roleId);
+            _logger.LogRequest("Getting members in project {projectId} with role {roleId}", projectId, roleId);
 
             var projects = await _projectMemberService.GetProjectMembers(projectId, roleId);
             var results = _mapper.Map<List<ProjectMemberDto>>(projects);
+
+            _logger.LogResponse("Members in project {projectId} retrieved. Response body: {@results}", projectId, results);
 
             return Ok(results);
         }
@@ -68,7 +68,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> CreateProjectMember(int projectId, NewProjectMemberDto newProjectMember)
         {
-            _logger.LogInformation("Creating member in project {projectId}. Request body: {@newProjectMember}", projectId, newProjectMember);
+            _logger.LogRequest("Creating member in project {projectId}. Request body: {@newProjectMember}", projectId, newProjectMember);
 
             try
             {
@@ -87,41 +87,19 @@ namespace Polyrific.Catapult.Api.Controllers
                 }
                 else
                 {
-                    var temporaryPassword = await _userService.GeneratePassword();
-
                     (newProjectMemberId, newUserId) = await _projectMemberService.AddProjectMember(newProjectMember.ProjectId, 
                         newProjectMember.Email, 
                         newProjectMember.FirstName, 
                         newProjectMember.LastName, 
                         newProjectMember.ExternalAccountIds,
-                        temporaryPassword,
-                        newProjectMember.ProjectMemberRoleId);
-
-                    if (newUserId > 0)
-                    {
-                        var token = await _userService.GenerateConfirmationToken(newUserId);
-                        string confirmToken = HttpUtility.UrlEncode(token);
-
-                        // TODO: We might need to change the confirm url into the web UI url, when it's ready
-                        var confirmUrl = $"{this.Request.Scheme}://{Request.Host}/account/{newUserId}/confirm?token={confirmToken}";
-                        await _notificationProvider.SendNotification(new SendNotificationRequest
-                        {
-                            MessageType = NotificationConfig.RegistrationCompleted,
-                            Emails = new List<string>
-                        {
-                            newProjectMember.Email
-                        }
-                        }, new Dictionary<string, string>
-                        {
-                            {MessageParameter.ConfirmUrl, confirmUrl},
-                            {MessageParameter.UserName, newProjectMember.Email },
-                            {MessageParameter.TemporaryPassword, temporaryPassword}
-                        });
-                    }
+                        newProjectMember.ProjectMemberRoleId,
+                        _configuration[ConfigurationKey.WebUrl]);
                 }
 
                 var projectMember = await _projectMemberService.GetProjectMemberById(newProjectMemberId);
                 var result = _mapper.Map<ProjectMemberDto>(projectMember);
+                
+                _logger.LogResponse("Members in project {projectId} created. Response body: {@results}", projectId, result);
 
                 return CreatedAtRoute("GetProjectMemberById", new { projectId = newProjectMember.ProjectId,
                     memberId = newProjectMemberId }, result);
@@ -130,6 +108,11 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 _logger.LogWarning(userEx, "User not found");
                 return BadRequest(userEx.Message);
+            }
+            catch (UserCreationFailedException userCreateEx)
+            {
+                _logger.LogWarning(userCreateEx, "User creation failed");
+                return BadRequest(userCreateEx.Message);
             }
             catch (DuplicateUserEmailException dupUserEx)
             {
@@ -153,10 +136,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMember(int projectId, int memberId)
         {
-            _logger.LogInformation("Getting member {memberId} in project {projectId}", memberId, projectId);
+            _logger.LogRequest("Getting member {memberId} in project {projectId}", memberId, projectId);
 
             var projectMember = await _projectMemberService.GetProjectMemberById(memberId);
             var result = _mapper.Map<ProjectMemberDto>(projectMember);
+
+            _logger.LogResponse("Member {memberId} in project {projectId} retrieved. Response body: {@result}", memberId, projectId, result);
+
             return Ok(result);
         }
 
@@ -170,10 +156,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectAccess)]
         public async Task<IActionResult> GetProjectMemberByUserId(int projectId, int userId)
         {
-            _logger.LogInformation("Getting member for user {userId} in project {projectId}", userId, projectId);
+            _logger.LogRequest("Getting member for user {userId} in project {projectId}", userId, projectId);
 
             var projectMember = await _projectMemberService.GetProjectMemberByUserId(projectId, userId);
             var result = _mapper.Map<ProjectMemberDto>(projectMember);
+
+            _logger.LogResponse("Member with user id {userId} in project {projectId} retrieved. Response body: {@result}", userId, projectId, result);
+
             return Ok(result);
         }
 
@@ -188,7 +177,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> UpdateProjectMember(int projectId, int memberId, UpdateProjectMemberDto projectMember)
         {
-            _logger.LogInformation("Updating member {memberId} in project {projectId}. Request body: {@projectMember}", memberId, projectId, projectMember);
+            _logger.LogRequest("Updating member {memberId} in project {projectId}. Request body: {@projectMember}", memberId, projectId, projectMember);
 
             if (memberId != projectMember.Id)
             {
@@ -197,6 +186,8 @@ namespace Polyrific.Catapult.Api.Controllers
             }                
 
             await _projectMemberService.UpdateProjectMemberRole(projectId, projectMember.UserId, projectMember.ProjectMemberRoleId);
+
+            _logger.LogResponse("Member {memberId} in project {projectId} updated", memberId, projectId);
 
             return Ok();
         }
@@ -211,7 +202,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.ProjectMaintainerAccess)]
         public async Task<IActionResult> RemoveProjectMember(int projectId, int memberId)
         {
-            _logger.LogInformation("Removing member {memberId} in project {projectId}", memberId, projectId);
+            _logger.LogRequest("Removing member {memberId} in project {projectId}", memberId, projectId);
 
             try
             {
@@ -224,8 +215,12 @@ namespace Polyrific.Catapult.Api.Controllers
                     if (!User.IsInRole(UserRole.Administrator))
                         currentUserId = User.GetUserId();
 
+                    _logger.LogResponse("Member {memberId} in project {projectId} removed", memberId, projectId);
+
                     await _projectMemberService.RemoveProjectMember(projectId, member.UserId, currentUserId);
                 }
+
+                _logger.LogResponse("Member {memberId} in project {projectId} is not found", memberId, projectId);
 
                 return NoContent();
             }
@@ -240,10 +235,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleEngineAccess)]
         public async Task<IActionResult> GetProjectMembersForEngine(int projectId)
         {
-            _logger.LogInformation("Getting members in project {projectId} for engine", projectId);
+            _logger.LogRequest("Getting members in project {projectId} for engine", projectId);
 
             var projects = await _projectMemberService.GetProjectMembers(projectId, includeUser: true);
             var results = _mapper.Map<List<ProjectMemberDto>>(projects);
+
+            _logger.LogResponse("Members in project {projectId} retrieved. Response body: {@results}", projectId, results);
 
             return Ok(results);
         }

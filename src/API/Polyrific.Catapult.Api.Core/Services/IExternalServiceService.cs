@@ -17,9 +17,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="typeId">Id of the external service type</param>
         /// <param name="configString">Configuration string of the external service</param>
         /// <param name="userId">Id of the user</param>
+        /// <param name="isGlobal">Is the external service can be access globally?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new external service</returns>
-        Task<int> AddExternalService(string name, string description, int typeId, string configString, int userId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddExternalService(string name, string description, int typeId, string configString, int userId, bool isGlobal, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get the list of external services related to current user

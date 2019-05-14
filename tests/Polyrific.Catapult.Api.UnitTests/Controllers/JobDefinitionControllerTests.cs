@@ -58,7 +58,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateJobDefinition_ReturnsCreatedJobDefinition()
         {
             _jobDefinitionService
-                .Setup(s => s.AddJobDefinition(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddJobDefinition(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
 
             var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
@@ -72,6 +72,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
             var okActionResult = Assert.IsType<CreatedAtRouteResult>(result);
             var returnValue = Assert.IsType<JobDefinitionDto>(okActionResult.Value);
             Assert.Equal(1, returnValue.Id);
+        }
+
+        [Fact]
+        public async void SetJobDefinitionAsDefault_ReturnsSuccess()
+        {
+            _jobDefinitionService.Setup(s => s.SetJobDefinitionAsDefault(It.IsAny<int>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+
+            var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
+
+            var result = await controller.SetJobDefinitionAsDefault(1, 1);
+
+            Assert.IsType<OkResult>(result);
         }
 
         [Fact]
@@ -217,7 +229,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void GetJobTaskDefinitions_ReturnsJobTaskDefinitionList()
         {
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<JobTaskDefinition>
                 {
                     new JobTaskDefinition
@@ -299,7 +311,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void UpdateJobTaskOrder_ReturnsSuccess()
         {
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new List<JobTaskDefinition>
                 {
                     new JobTaskDefinition

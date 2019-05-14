@@ -27,6 +27,11 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         public bool IsDeletion { get; set; }
 
         /// <summary>
+        /// Is the job definition is a default job in the project?
+        /// </summary>
+        public bool IsDefault { get; set; }
+
+        /// <summary>
         /// Name of the data model
         /// </summary>
         public List<JobTaskDefinitionDto> Tasks { get; set; }

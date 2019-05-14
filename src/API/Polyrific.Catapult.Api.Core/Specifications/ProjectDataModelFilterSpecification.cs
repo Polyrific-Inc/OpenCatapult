@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         /// </summary>
         /// <param name="projectId">The project id</param>
         public ProjectDataModelFilterSpecification(int projectId)
-            : base(m => m.ProjectId == projectId)
+            : base(m => m.ProjectId == projectId, m => m.Name)
         {
             ProjectId = projectId;
         }

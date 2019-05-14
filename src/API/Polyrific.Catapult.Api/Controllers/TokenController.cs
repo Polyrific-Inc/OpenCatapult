@@ -43,11 +43,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> RequestToken(RequestTokenDto dto)
         {
-            _logger.LogInformation("Requesting user token for user {Email}", dto?.UserName);
+            _logger.LogRequest("Requesting user token for user {UserName}", dto?.UserName);
 
             if (!await _userService.ValidateUserPassword(dto.UserName, dto.Password))
             {
-                _logger.LogWarning("Username or password is invalid");
+                _logger.LogWarning("Username or password is invalid. Username: {UserName}", dto?.UserName);
                 return BadRequest("Username or password is invalid");
             }                
 
@@ -67,6 +67,8 @@ namespace Polyrific.Catapult.Api.Controllers
             var token = AuthorizationToken.GenerateToken(user.Id, user.UserName, user.FirstName, user.LastName, 
                 userRole, userProjects, tokenKey, tokenIssuer, tokenAudience);
 
+            _logger.LogResponse("Token for user {UserName} retrieved", dto?.UserName);
+
             return Ok(token);
         }
 
@@ -78,7 +80,9 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> RefreshToken()
         {
-            var userId = int.Parse(User.Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value);
+            var userId = User.GetUserId();
+            _logger.LogRequest("Refreshing user token for user {userId}", userId);
+
             var user = await _userService.GetUserById(userId);
             if (!user.IsActive)
             {
@@ -95,6 +99,8 @@ namespace Polyrific.Catapult.Api.Controllers
             var token = AuthorizationToken.GenerateToken(user.Id, user.UserName, user.FirstName, user.LastName,
                 userRole, userProjects, tokenKey, tokenIssuer, tokenAudience);
 
+            _logger.LogRequest("Refreshed token for user {userId} retrieved", userId);
+
             return Ok(token);
         }
 
@@ -108,7 +114,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> RequestEngineToken(int engineId, RequestEngineTokenDto dto)
         {
-            _logger.LogInformation("Requesting token for engine {engineId}. Request body: {@dto}", engineId, dto);
+            _logger.LogRequest("Requesting token for engine {engineId}. Request body: {@dto}", engineId, dto);
 
             var engine = await _catapultEngineService.GetCatapultEngine(engineId);
             if (!engine.IsActive)
@@ -123,6 +129,8 @@ namespace Polyrific.Catapult.Api.Controllers
             var tokenAudience = _configuration["Security:Tokens:Audience"];
 
             var token = AuthorizationToken.GenerateEngineToken(engine.Name, engineRole, tokenKey, tokenIssuer, tokenAudience, dto?.Expires);
+
+            _logger.LogRequest("Token for engine {engineId} retrieved", engineId);
 
             return Ok(token);
         }

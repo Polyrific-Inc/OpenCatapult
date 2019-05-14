@@ -38,11 +38,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServices()
         {
-            _logger.LogInformation("Getting external services");
+            _logger.LogRequest("Getting external services");
 
             var currentUserId = User.GetUserId();
             var externalServices = await _externalServiceService.GetExternalServices(currentUserId);
             var results = _mapper.Map<List<ExternalServiceDto>>(externalServices);
+
+            _logger.LogResponse("External services retrieved. Response body: {@results}", results);
 
             return Ok(results);
         }
@@ -56,10 +58,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalService(int serviceId)
         {
-            _logger.LogInformation("Getting external service {serviceId}", serviceId);
+            _logger.LogRequest("Getting external service {serviceId}", serviceId);
 
             var externalService = await _externalServiceService.GetExternalService(serviceId);
             var result = _mapper.Map<ExternalServiceDto>(externalService);
+
+            _logger.LogResponse("External service {serviceId} retrieved. Response body: {@result}", serviceId, result);
+
             return Ok(result);
         }
 
@@ -72,10 +77,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalService(string serviceName)
         {
-            _logger.LogInformation("Getting external service {serviceName}", serviceName);
+            _logger.LogRequest("Getting external service {serviceName}", serviceName);
 
             var externalService = await _externalServiceService.GetExternalServiceByName(serviceName);
             var result = _mapper.Map<ExternalServiceDto>(externalService);
+
+            _logger.LogResponse("External service {serviceName} retrieved. Response body: {@result}", serviceName, result);
+
             return Ok(result);
         }
 
@@ -94,9 +102,10 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 Name = dto.Name,
                 Description = dto.Description,
-                ExternalServiceTypeId = dto.ExternalServiceTypeId
+                ExternalServiceTypeId = dto.ExternalServiceTypeId,
+                IsGlobal = dto.IsGlobal
             };
-            _logger.LogInformation("Creating external service. Request body: {@requestBodyToLog}", requestBodyToLog);
+            _logger.LogRequest("Creating external service. Request body: {@requestBodyToLog}", requestBodyToLog);
 
             try
             {
@@ -106,10 +115,13 @@ namespace Polyrific.Catapult.Api.Controllers
                     dto.Description,
                     dto.ExternalServiceTypeId,
                     JsonConvert.SerializeObject(dto.Config),
-                    currentUserId);
+                    currentUserId,
+                    dto.IsGlobal);
 
                 var externalService = await _externalServiceService.GetExternalService(serviceId);
                 var result = _mapper.Map<ExternalServiceDto>(externalService);
+
+                _logger.LogResponse("External service created. Response body: {@result}", result);
 
                 return CreatedAtRoute("GetExternalServiceById", new
                 {
@@ -139,11 +151,13 @@ namespace Polyrific.Catapult.Api.Controllers
                 Description = dto.Description
             };
 
-            _logger.LogInformation("Updating external service {serviceId}. Request body: {@requestBodyToLog}", serviceId, requestBodyToLog);
+            _logger.LogRequest("Updating external service {serviceId}. Request body: {@requestBodyToLog}", serviceId, requestBodyToLog);
 
             var updatedService = _mapper.Map<ExternalService>(dto);
             updatedService.Id = serviceId;
             await _externalServiceService.UpdateExternalService(updatedService);
+
+            _logger.LogResponse("External service {serviceId} updated", serviceId);
 
             return Ok();
         }
@@ -157,9 +171,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteExternalService(int serviceId)
         {
-            _logger.LogInformation("Deleting external service {serviceId}", serviceId);
+            _logger.LogRequest("Deleting external service {serviceId}", serviceId);
 
             await _externalServiceService.DeleteExternalService(serviceId);
+
+            _logger.LogResponse("External service {serviceId} deleted", serviceId);
 
             return NoContent();
         }

@@ -9,7 +9,7 @@ namespace Polyrific.Catapult.Api.Data.Identity
     {
         public DateTime? LastSeen { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
 
         public string Version { get; set; }
 

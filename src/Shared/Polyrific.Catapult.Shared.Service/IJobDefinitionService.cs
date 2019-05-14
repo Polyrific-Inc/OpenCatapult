@@ -56,6 +56,14 @@ namespace Polyrific.Catapult.Shared.Service
         Task UpdateJobDefinition(int projectId, int jobId, UpdateJobDefinitionDto dto);
 
         /// <summary>
+        /// Set a job definition as default
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="jobId">Id of the job definition</param>
+        /// <returns></returns>
+        Task SetJobDefinitionAsDefault(int projectId, int jobId);
+
+        /// <summary>
         /// Delete job definition
         /// </summary>
         /// <param name="projectId">Id of the project</param>

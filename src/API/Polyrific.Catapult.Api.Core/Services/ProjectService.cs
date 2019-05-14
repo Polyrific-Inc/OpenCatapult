@@ -70,13 +70,13 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new DuplicateProjectException(newProjectName);
 
             var projectByIdSpec = new ProjectFilterSpecification(sourceProjectId);
-            projectByIdSpec.IncludeStrings.Add("Models.Properties");
+            projectByIdSpec.IncludeStrings.Add("Models.Properties.RelatedProjectDataModel");
             projectByIdSpec.IncludeStrings.Add("Jobs.Tasks");
             projectByIdSpec.IncludeStrings.Add("Members");
             var sourceProject = await _projectRepository.GetSingleBySpec(projectByIdSpec, cancellationToken);
             if (sourceProject == null)
                 throw new ProjectNotFoundException(sourceProjectId);
-
+                        
             var newProject = new Project
             {
                 Name = newProjectName,
@@ -87,20 +87,27 @@ namespace Polyrific.Catapult.Api.Core.Services
                     Name = m.Name,
                     Description = m.Description,
                     Label = m.Label,
+                    DatabaseTableName = m.DatabaseTableName,
                     Properties = m.Properties?.Select(p => new ProjectDataModelProperty
                     {
                         Name = p.Name,
                         Label = p.Label,
                         DataType = p.DataType,
                         ControlType = p.ControlType,
-                        RelatedProjectDataModelId = p.RelatedProjectDataModelId,
                         RelationalType = p.RelationalType,
+                        RelatedProjectDataModelName = p.RelatedProjectDataModel?.Name,
                         IsRequired = p.IsRequired,
+                        IsManaged = p.IsManaged,
+                        IsKey = p.IsKey,
+                        DatabaseColumnName = p.DatabaseColumnName,
+                        Sequence = p.Sequence,
                         Created = DateTime.UtcNow
                     }).ToList(),
                     Created = DateTime.UtcNow
                 }).ToList()
             };
+
+            var propertiesWithRelational = newProject.Models.SelectMany(m => m.Properties).Where(p => !string.IsNullOrEmpty(p.RelatedProjectDataModelName)).ToList();
 
             if (includeJobDefinitions)
             {
@@ -143,6 +150,16 @@ namespace Polyrific.Catapult.Api.Core.Services
             }
 
             var newProjectId = await _projectRepository.Create(newProject, cancellationToken);
+
+            // map the relational property from RelatedProjectDataModelName
+            if (propertiesWithRelational != null)
+            {
+                foreach (var property in propertiesWithRelational)
+                {
+                    property.RelatedProjectDataModelId = newProject.Models.FirstOrDefault(m => m.Name == property.RelatedProjectDataModelName)?.Id;
+                    await _projectDataModelPropertyRepository.Update(property);
+                }
+            }
 
             return newProject;
         }
@@ -196,11 +213,13 @@ namespace Polyrific.Catapult.Api.Core.Services
                 {
                     model.Created = DateTime.UtcNow;
 
+                    int sequence = 1;
                     if (model.Properties != null)
                     {
                         foreach (var property in model.Properties)
                         {
                             property.Created = DateTime.UtcNow;
+                            property.Sequence = sequence++;
                         }
                     }
                 }
@@ -226,9 +245,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                         int sequence = 1;
                         foreach (var task in job.Tasks)
                         {
+                            await _jobDefinitionService.EncryptSecretAdditionalConfig(task, cancellationToken);
                             task.Created = DateTime.UtcNow;
                             task.Sequence = sequence++;
-                            await _jobDefinitionService.ValidateJobTaskDefinition(job, task);
                         }
                     }
                 }

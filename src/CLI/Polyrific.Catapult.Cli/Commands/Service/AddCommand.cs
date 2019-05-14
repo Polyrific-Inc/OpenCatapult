@@ -39,6 +39,9 @@ namespace Polyrific.Catapult.Cli.Commands.Service
         [Option("-d|--description <DESCRIPTION>", "Description of the external service", CommandOptionType.SingleValue)]
         public string Description { get; set; }
 
+        [Option("-g|--global", "Indicates whether the external service can be accessed globally?", CommandOptionType.NoValue)]
+        public bool Global { get; set; }
+
         [Option("-prop|--property <KEY>:<PROPERTY>", "Property of the external service", CommandOptionType.MultipleValue)]
         public (string, string)[] Property { get; set; }
 
@@ -106,6 +109,7 @@ namespace Polyrific.Catapult.Cli.Commands.Service
                         Name = Name,
                         Description = Description,
                         ExternalServiceTypeId = serviceType.Id,
+                        IsGlobal = Global,
                         Config = config
                     }).Result;
 

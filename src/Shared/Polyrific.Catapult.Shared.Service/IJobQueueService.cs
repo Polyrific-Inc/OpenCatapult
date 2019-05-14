@@ -41,6 +41,14 @@ namespace Polyrific.Catapult.Shared.Service
         Task<JobDto> CreateJobQueue(int projectId, NewJobDto newJobQueue);
 
         /// <summary>
+        /// Add the default job definition to queue
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="newJobQueue">Job details</param>
+        /// <returns></returns>
+        Task<JobDto> CreateDefaultJobQueue(int projectId, NewJobDto newJobQueue);
+
+        /// <summary>
         /// Cancel a job in queue
         /// </summary>
         /// <param name="projectId">Id of the project</param>
@@ -90,9 +98,8 @@ namespace Polyrific.Catapult.Shared.Service
         /// <summary>
         /// Send the notification to project member once the engine processing is done
         /// </summary>
-        /// <param name="projectId">Id of the project</param>
         /// <param name="queueId">Id of the queue</param>
         /// <returns></returns>
-        Task SendNotification(int projectId, int queueId);
+        Task SendNotification(int queueId);
     }
 }

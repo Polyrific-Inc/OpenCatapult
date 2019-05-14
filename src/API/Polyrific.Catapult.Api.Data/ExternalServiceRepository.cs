@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public ExternalServiceRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public ExternalServiceRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

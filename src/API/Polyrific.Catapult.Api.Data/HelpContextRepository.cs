@@ -20,6 +20,11 @@ namespace Polyrific.Catapult.Api.Data
             _textWriter = textWriter;
         }
 
+        public HelpContextRepository(CatapultSqliteDbContext dbContext, ITextWriter textWriter) : base(dbContext)
+        {
+            _textWriter = textWriter;
+        }
+
         public override async Task<IEnumerable<HelpContext>> GetBySpec(ISpecification<HelpContext> spec, CancellationToken cancellationToken = default)
         {
             var result = await base.GetBySpec(spec, cancellationToken);

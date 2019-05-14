@@ -12,7 +12,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public int ExcludedPropertyId { get; set; }
 
         public ProjectDataModelPropertyFilterSpecification(int projectDataModelId)
-            : base(m => m.ProjectDataModelId == projectDataModelId)
+            : base(m => m.ProjectDataModelId == projectDataModelId, m => m.Sequence)
         {
             ProjectDataModelId = projectDataModelId;
         }

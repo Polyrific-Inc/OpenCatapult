@@ -51,13 +51,13 @@ namespace Polyrific.Catapult.Api
             var localTextWriter = new LocalTextWriter(baseUrl);
             services.AddSingleton<ITextWriter>(localTextWriter);
 
-            services.RegisterDbContext(Configuration.GetConnectionString("DefaultConnection"));
+            services.RegisterDbContext(Configuration.GetConnectionString("DefaultConnection"), Configuration["DatabaseProvider"]);
 
             services.RegisterRepositories();
             services.RegisterServices();
             services.RegisterSecretVault(Configuration["Security:Vault:Provider"]);
             
-            services.AddAppIdentity();
+            services.AddAppIdentity(Configuration["DatabaseProvider"]);
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opt =>

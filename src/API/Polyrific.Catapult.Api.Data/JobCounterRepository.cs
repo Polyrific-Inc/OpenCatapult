@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public JobCounterRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public JobCounterRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

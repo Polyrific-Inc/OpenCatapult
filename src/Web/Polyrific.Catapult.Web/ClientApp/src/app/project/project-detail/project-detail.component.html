@@ -1,0 +1,31 @@
+<div class="project-header">
+    <button mat-raised-button color="primary" routerLink="/project/new"
+      *appHasAccess="authorizePolicy.UserRoleBasicAccess">New Project</button>
+</div>
+
+<app-loading-spinner *ngIf="loading"></app-loading-spinner>
+
+<mat-card *ngIf="!loading">
+  <mat-card-header fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-between center">
+    <mat-card-title>{{project?.displayName || project?.name}}</mat-card-title>
+    <div class="action-buttons">
+        <button mat-raised-button (click)="onExportClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Export</button>
+        <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
+        <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
+        <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
+        <button mat-raised-button (click)="onQueueJobClick()" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Queue Job</button>
+    </div>
+  </mat-card-header>
+  <mat-card-content>
+      <nav mat-tab-nav-bar flex>
+          <a mat-tab-link routerLink="info" routerLinkActive #rlaInfo="routerLinkActive" [active]="rlaInfo.isActive">Info</a>
+          <a mat-tab-link routerLink="data-model"  routerLinkActive #rlaModel="routerLinkActive" [active]="rlaModel.isActive">Data Models</a>
+          <a mat-tab-link routerLink="job-definition" routerLinkActive #rlaJob="routerLinkActive" [active]="rlaJob.isActive"
+            *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
+          <a mat-tab-link routerLink="job-queue" routerLinkActive #rlaQueue="routerLinkActive" [active]="rlaQueue.isActive"
+            *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
+          <a mat-tab-link routerLink="member" routerLinkActive #rlaMember="routerLinkActive" [active]="rlaMember.isActive">Members</a>
+      </nav>
+      <router-outlet></router-outlet>
+  </mat-card-content>
+</mat-card>

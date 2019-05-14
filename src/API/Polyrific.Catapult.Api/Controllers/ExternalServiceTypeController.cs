@@ -34,10 +34,12 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServiceTypes(bool includeProperties = false)
         {
-            _logger.LogInformation("Getting external service types. Includes properties: {includeProperties}", includeProperties);
+            _logger.LogRequest("Getting external service types. Includes properties: {includeProperties}", includeProperties);
 
             var externalServiceTypes = await _externalServiceTypeService.GetExternalServiceTypes(includeProperties);
             var results = _mapper.Map<List<ExternalServiceTypeDto>>(externalServiceTypes);
+
+            _logger.LogResponse("External service types retrieved. Response body: {@results}", results);
 
             return Ok(results);
         }
@@ -51,10 +53,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServiceType(int serviceTypeId)
         {
-            _logger.LogInformation("Getting external service type {serviceTypeId}", serviceTypeId);
+            _logger.LogRequest("Getting external service type {serviceTypeId}", serviceTypeId);
 
             var externalServiceType = await _externalServiceTypeService.GetExternalServiceType(serviceTypeId);
             var result = _mapper.Map<ExternalServiceTypeDto>(externalServiceType);
+
+            _logger.LogResponse("External service {serviceTypeId} retrieved. Response body: {@result}", serviceTypeId, result);
+
             return Ok(result);
         }
 
@@ -67,10 +72,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [Authorize]
         public async Task<IActionResult> GetExternalServiceType(string serviceTypeName)
         {
-            _logger.LogInformation("Getting external service type {serviceTypeName}", serviceTypeName);
+            _logger.LogRequest("Getting external service type {serviceTypeName}", serviceTypeName);
 
             var externalServiceType = await _externalServiceTypeService.GetExternalServiceTypeByName(serviceTypeName);
             var result = _mapper.Map<ExternalServiceTypeDto>(externalServiceType);
+
+            _logger.LogResponse("External service {serviceTypeName} retrieved. Response body: {@result}", serviceTypeName, result);
+
             return Ok(result);
         }
     }

@@ -14,12 +14,12 @@ If you have run the build script for engine, the plugin folder should be availab
 
 Let's create a folder where our task provider shall be published into. Since it's a generator provider, it should be under `GeneratorProvider` folder:
 ```
-.\plublish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular
+.\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular
 ```
 
 Now get the absolute path to this folder, then open a new shell, and go to our task provider source code project folder . Run the following command to publish our source code into the plugin folder:
 ```sh
-dotnet publish --output "absolute path to .\plublish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular"
+dotnet publish --output "absolute path to .\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular"
 ```
 
 ### Register the engine in the CLI

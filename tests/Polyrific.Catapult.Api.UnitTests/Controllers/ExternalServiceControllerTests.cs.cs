@@ -113,7 +113,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void CreateExternalService_ReturnsCreatedExternalService()
         {
             _externalServiceService
-                .Setup(s => s.AddExternalService(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<CancellationToken>()))
+                .Setup(s => s.AddExternalService(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
             _externalServiceService.Setup(s => s.GetExternalService(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>

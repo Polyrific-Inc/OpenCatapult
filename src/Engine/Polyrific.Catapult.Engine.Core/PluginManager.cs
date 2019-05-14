@@ -127,27 +127,29 @@ namespace Polyrific.Catapult.Engine.Core
         public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginStartFile, string pluginArgs, string securedPluginArgs = null)
         {
             var result = new Dictionary<string, object>();
-
-            pluginArgs = pluginArgs.Replace("\"", "\\\"");
-
+            
             var isExeFile = pluginStartFile.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
 
             var fileName = "dotnet";
             if (isExeFile)
                 fileName = pluginStartFile;
+            
+            var temporaryFile = SaveArgumentFile(fileName, pluginArgs);
 
-            var arguments = $"\"{pluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
+            var argumentFile = $"--file \"{temporaryFile}\"";
+            argumentFile = $"{argumentFile} {(Debugger.IsAttached ? "--attach" : "")}";
+
             var securedArguments = $"\"\"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
             if (!isExeFile)
             {
-                arguments = $"\"{pluginStartFile}\" " + arguments;
+                argumentFile = $"\"{pluginStartFile}\" " + argumentFile;
                 securedArguments = $"\"{pluginStartFile}\" " + securedArguments;
             }
 
             var startInfo = new ProcessStartInfo()
             {
                 FileName = fileName,
-                Arguments = arguments,
+                Arguments = argumentFile,
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -192,6 +194,8 @@ namespace Polyrific.Catapult.Engine.Core
                 }
             }
 
+            File.Delete(temporaryFile);
+
             return result;
         }
 
@@ -222,6 +226,16 @@ namespace Polyrific.Catapult.Engine.Core
                         break;
                 }
             }
+        }
+
+        private string SaveArgumentFile(string pluginFile, string arguments)
+        {
+            var directory = Path.GetDirectoryName(pluginFile);
+            var tempFile = Path.Combine(directory, "temp.json");
+
+            File.WriteAllText(tempFile, arguments);
+
+            return tempFile;
         }
     }
 }

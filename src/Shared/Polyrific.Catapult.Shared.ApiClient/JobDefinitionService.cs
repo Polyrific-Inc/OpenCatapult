@@ -110,5 +110,12 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             await Api.Put(path, dto);
         }
+
+        public async Task SetJobDefinitionAsDefault(int projectId, int jobId)
+        {
+            var path = $"project/{projectId}/job/{jobId}/default";
+
+            await Api.Post<object>(path, null);
+        }
     }
 }

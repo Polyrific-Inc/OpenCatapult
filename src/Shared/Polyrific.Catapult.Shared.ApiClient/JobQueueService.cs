@@ -34,6 +34,13 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Post<NewJobDto, JobDto>(path, newJobQueue);
         }
 
+        public async Task<JobDto> CreateDefaultJobQueue(int projectId, NewJobDto newJobQueue)
+        {
+            var path = $"project/{projectId}/queue/default";
+
+            return await Api.Post<NewJobDto, JobDto>(path, newJobQueue);
+        }
+
         public async Task<string> GetJobLogs(int projectId, int queueId)
         {
             var path = $"project/{projectId}/queue/{queueId}/logs";
@@ -68,9 +75,9 @@ namespace Polyrific.Catapult.Shared.ApiClient
             return await Api.Get<List<JobTaskStatusDto>>(path);
         }
 
-        public async Task SendNotification(int projectId, int queueId)
+        public async Task SendNotification(int queueId)
         {
-            var path = $"project/{projectId}/queue/{queueId}/send-notification";
+            var path = $"queue/{queueId}/send-notification";
 
             await Api.Post<object>(path, queueId);
         }

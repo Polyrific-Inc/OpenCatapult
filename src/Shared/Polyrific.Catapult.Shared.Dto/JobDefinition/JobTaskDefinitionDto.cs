@@ -45,5 +45,15 @@ namespace Polyrific.Catapult.Shared.Dto.JobDefinition
         /// Sequence of the job task definition
         /// </summary>
         public int? Sequence { get; set; }
+
+        /// <summary>
+        /// Is the job task definition valid?
+        /// </summary>
+        public bool? Valid { get; set; }
+
+        /// <summary>
+        /// Validation error message
+        /// </summary>
+        public string ValidationError { get; set; }
     }
 }

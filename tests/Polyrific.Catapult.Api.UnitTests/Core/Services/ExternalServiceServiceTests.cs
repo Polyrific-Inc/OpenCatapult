@@ -81,7 +81,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddExternalService_ValidItem()
         {
             var externalServiceService = new ExternalServiceService(_externalServiceRepository.Object, _secretVault.Object);
-            int newId = await externalServiceService.AddExternalService("vstsBuild", null, 1, "config", 1);
+            int newId = await externalServiceService.AddExternalService("vstsBuild", null, 1, "config", 1, false);
 
             Assert.True(newId > 1);
             Assert.True(_data.Count > 1);
@@ -92,7 +92,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddExternalService_InvalidProject()
         {
             var externalServiceService = new ExternalServiceService(_externalServiceRepository.Object, _secretVault.Object);
-            var exception = Record.ExceptionAsync(() => externalServiceService.AddExternalService("Github-Default", null, 1, "config", 1));
+            var exception = Record.ExceptionAsync(() => externalServiceService.AddExternalService("Github-Default", null, 1, "config", 1, false));
 
             Assert.IsType<DuplicateExternalServiceException>(exception?.Result);
         }

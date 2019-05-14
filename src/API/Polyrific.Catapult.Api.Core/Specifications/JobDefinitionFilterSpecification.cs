@@ -12,16 +12,21 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         public int ExcludedJobDefinitionId { get; set; }
         public int[] JobDefinitionIds { get; set; }
         public bool? IsDeletion { get; set; }
+        public bool? IsDefault { get; set; }
 
         /// <summary>
         /// Filter the job definition by project
         /// </summary>
         /// <param name="projectId">The project id</param>
-        public JobDefinitionFilterSpecification(int projectId, bool? isDeletion = null)
-            : base(m => m.ProjectId == projectId && (isDeletion == null || m.IsDeletion == isDeletion))
+        /// <param name="isDeletion">Is deletion job?</param>
+        /// <param name="isDefault">Is default job?</param>
+        public JobDefinitionFilterSpecification(int projectId, bool? isDeletion = null, bool? isDefault = null)
+            : base(m => m.ProjectId == projectId && (isDeletion == null || m.IsDeletion == isDeletion) &&
+                (isDefault == null || m.IsDefault == isDefault))
         {
             ProjectId = projectId;
             IsDeletion = isDeletion;
+            IsDefault = isDefault;
         }
 
         /// <summary>

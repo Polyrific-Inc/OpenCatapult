@@ -10,5 +10,9 @@ namespace Polyrific.Catapult.Api.Data
         public CatapultEngineProfileRepository(CatapultDbContext dbContext) : base(dbContext)
         {
         }
+
+        public CatapultEngineProfileRepository(CatapultSqliteDbContext dbContext) : base(dbContext)
+        {
+        }
     }
 }

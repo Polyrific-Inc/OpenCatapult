@@ -30,6 +30,10 @@ namespace Polyrific.Catapult.Cli.Commands.Account
 
         [Option("-ln|--lastname <LASTNAME>", "Last name of the user", CommandOptionType.SingleValue)]
         public string LastName { get; set; }
+                
+        [Option("-r|--role <ROLE>", "Role of user", CommandOptionType.SingleValue)]
+        [AllowedValues(UserRole.Administrator, UserRole.Basic, UserRole.Guest, IgnoreCase = true)]
+        public string Role { get; set; }
 
         public override string Execute()
         {
@@ -43,7 +47,8 @@ namespace Polyrific.Catapult.Cli.Commands.Account
             {
                 Email = Email,
                 FirstName = FirstName,
-                LastName = LastName
+                LastName = LastName,
+                RoleName = Role
             };
 
             var externalAccountIds = new Dictionary<string, string>();

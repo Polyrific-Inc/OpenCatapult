@@ -14,10 +14,11 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="projectId">Id of the project</param>
         /// <param name="name">Name of the job definition</param>
+        /// <param name="isDefault">Is the job definition is a default job in the project?</param>
         /// <param name="isDeletion">Is the job definition for resource deletion?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added job definition</returns>
-        Task<int> AddJobDefinition(int projectId, string name, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddJobDefinition(int projectId, string name, bool isDefault, bool isDeletion, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Rename a job definition
@@ -27,6 +28,22 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task RenameJobDefinition(int id, string newName, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Set a job definition as the default in project
+        /// </summary>
+        /// <param name="id">Id of the job definition</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task SetJobDefinitionAsDefault(int id, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get a default job definition in project
+        /// </summary>
+        /// <param name="projectId">Id of the project</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<JobDefinition> GetDefaultJobDefinition(int projectId, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Delete a job definition
@@ -124,9 +141,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Get list of job task definitions for a job definition
         /// </summary>
         /// <param name="jobDefinitionId">Id of the job definition</param>
+        /// <param name="validate">Do validation?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of job task definitions</returns>
-        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a job task definition by id
@@ -150,9 +168,18 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="jobDefinition">The job definition object</param>
         /// <param name="jobTaskDefinition">The job task definition object</param>
+        /// <param name="encryptConfig">Encrypt additional config?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
+        Task ValidateJobTaskDefinition(JobDefinition jobDefinition, JobTaskDefinition jobTaskDefinition, bool encryptConfig = true, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Encrypt all secret additional config in a task
+        /// </summary>
+        /// <param name="jobTaskDefinition">The job task definition object</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task EncryptSecretAdditionalConfig(JobTaskDefinition jobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Decrypt the secret additional configs to plain text

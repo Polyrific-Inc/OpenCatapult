@@ -45,5 +45,10 @@ namespace Polyrific.Catapult.Api.Core.Entities
         /// Properties of the data model
         /// </summary>
         public virtual ICollection<ProjectDataModelProperty> Properties { get; set; }
+
+        /// <summary>
+        /// Name of the database table
+        /// </summary>
+        public string DatabaseTableName { get; set; }
     }
 }

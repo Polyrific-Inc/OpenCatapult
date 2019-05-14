@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Api.Core.Specifications
         }
 
         public ExternalServiceFilterSpecification(int userId)
-            : base(m => m.UserId == userId)
+            : base(m => m.UserId == userId || m.IsGlobal)
         {
             UserId = userId;
         }

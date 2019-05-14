@@ -37,20 +37,23 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            _logger.LogDebug("Checking versions");
+            _logger.LogRequest("Checking versions");
 
             var assembly = Assembly.GetExecutingAssembly();
             var apiVersion = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
 
             var engines = await _engineService.GetCatapultEngines(EngineStatus.All);
             var providers = await _providerService.GetTaskProviders();
-                        
-            return Ok(new VersionDto
+            var result = new VersionDto
             {
                 ApiVersion = apiVersion,
                 Engines = _mapper.Map<List<CatapultEngineDto>>(engines),
                 TaskProviders = _mapper.Map<List<TaskProviderDto>>(providers)
-            });
+            };
+
+            _logger.LogResponse("Versions retrieved. Response body: {@result}", result);
+
+            return Ok(result);
         }
     }
 }

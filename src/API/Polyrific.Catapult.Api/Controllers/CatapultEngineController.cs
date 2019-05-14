@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("Register")]
         public async Task<IActionResult> RegisterEngine(RegisterCatapultEngineDto dto)
         {
-            _logger.LogInformation("Registering engine. Request body: {@dto}", dto);
+            _logger.LogRequest("Registering engine. Request body: {@dto}", dto);
 
             int catapultEngineId = 0;
 
@@ -54,11 +54,15 @@ namespace Polyrific.Catapult.Api.Controllers
                     await _catapultEngineService.ConfirmRegistration(catapultEngineId, token);
                 }
 
-                return Ok(new CatapultEngineDto
+                var result = new CatapultEngineDto
                 {
                     Id = catapultEngineId,
                     Name = dto.Name
-                });
+                };
+
+                _logger.LogResponse("Engine registered. Response body: {@result}", result);
+
+                return Ok(result);
             }
             catch (DuplicateCatapultEngineException nex)
             {
@@ -82,9 +86,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> ConfirmRegistration(int engineId, string token)
         {
-            _logger.LogInformation("Confirming engine {engineId} registration", engineId);
+            _logger.LogRequest("Confirming engine {engineId} registration", engineId);
 
             await _catapultEngineService.ConfirmRegistration(engineId, token);
+
+            _logger.LogResponse("Engine {engineId} registration confirmed", engineId);
 
             return Ok("Engine confirmed.");
         }
@@ -97,9 +103,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("{engineId}/Suspend")]
         public async Task<IActionResult> Suspend(int engineId)
         {
-            _logger.LogInformation("Suspending engine {engineId}", engineId);
+            _logger.LogRequest("Suspending engine {engineId}", engineId);
 
             await _catapultEngineService.Suspend(engineId);
+
+            _logger.LogResponse("Engine {engineId} suspended", engineId);
 
             return Ok("Engine suspended.");
         }
@@ -112,9 +120,11 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpPost("{engineId}/Activate")]
         public async Task<IActionResult> Reactivate(int engineId)
         {
-            _logger.LogInformation("Reactivating engine {engineId}", engineId);
+            _logger.LogRequest("Reactivating engine {engineId}", engineId);
 
             await _catapultEngineService.Reactivate(engineId);
+
+            _logger.LogResponse("Engine {engineId} reactivated", engineId);
 
             return Ok("Engine reactivated.");
         }
@@ -126,11 +136,13 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCatapultEngines(string status)
         {
-            _logger.LogInformation("Getting engines with status = {status}", status);
+            _logger.LogRequest("Getting engines with status = {status}", status);
 
             var catapultEngines = await _catapultEngineService.GetCatapultEngines(status);
 
             var results = _mapper.Map<List<CatapultEngineDto>>(catapultEngines);
+
+            _logger.LogResponse("Engines retrieved. Response body: {@results}", results);
 
             return Ok(results);
         }
@@ -143,13 +155,15 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpGet("name/{engineName}")]
         public async Task<IActionResult> GetCatapultEngineByName(string engineName)
         {
-            _logger.LogInformation("Getting engine {engineName}", engineName);
+            _logger.LogRequest("Getting engine {engineName}", engineName);
 
             var catapultEngine = await _catapultEngineService.GetCatapultEngine(engineName);
 
-            var results = _mapper.Map<CatapultEngineDto>(catapultEngine);
+            var result = _mapper.Map<CatapultEngineDto>(catapultEngine);
 
-            return Ok(results);
+            _logger.LogResponse("Engine {engineName} retrieved. Response body: {@result}", engineName, result);
+
+            return Ok(result);
         }
 
         /// <summary>
@@ -160,7 +174,7 @@ namespace Polyrific.Catapult.Api.Controllers
         [HttpDelete("{engineId}")]
         public async Task<IActionResult> RemoveCatapultEngine(int engineId)
         {
-            _logger.LogInformation("Removing engine {engineId}", engineId);
+            _logger.LogRequest("Removing engine {engineId}", engineId);
 
             try
             {
@@ -171,6 +185,8 @@ namespace Polyrific.Catapult.Api.Controllers
                 _logger.LogWarning(uex, "Catapult engine deletion failed");
                 return BadRequest(uex.GetExceptionMessageList());
             }
+
+            _logger.LogResponse("Engine {engineId} removed", engineId);
 
             return NoContent();
         }

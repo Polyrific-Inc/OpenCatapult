@@ -202,8 +202,37 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.Equal("Failed to update job definition Default. Make sure the project and job definition names are correct.", resultMessage);
-        }          
-  
+        }
+
+        [Fact]
+        public void SetDefault_Execute_ReturnsSuccessMessage()
+        {
+            _jobDefinitionService.Setup(j => j.SetJobDefinitionAsDefault(It.IsAny<int>(), It.IsAny<int>())).Returns(Task.CompletedTask);
+            var command = new SetDefaultCommand(_console, LoggerMock.GetLogger<SetDefaultCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 1",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Job definition Default has been set to default", resultMessage);
+        }
+
+        [Fact]
+        public void SetDefault_Execute_ReturnsNotFoundMessage()
+        {
+            var command = new SetDefaultCommand(_console, LoggerMock.GetLogger<SetDefaultCommand>().Object, _projectService.Object, _jobDefinitionService.Object)
+            {
+                Project = "Project 2",
+                Name = "Default"
+            };
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("Failed to set job definition Default as default. Make sure the project and job definition names are correct.", resultMessage);
+        }
+
         [Fact]
         public void JobGet_Execute_ReturnsSuccessMessage()
         {

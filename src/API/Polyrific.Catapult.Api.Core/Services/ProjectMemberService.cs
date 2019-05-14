@@ -16,13 +16,13 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IProjectMemberRepository _projectMemberRepository;
         private readonly IProjectRepository _projectRepository;
-        private readonly IUserRepository _userRepository;
+        private readonly IUserService _userService;
 
-        public ProjectMemberService(IProjectMemberRepository projectMemberRepository, IProjectRepository projectRepository, IUserRepository userRepository)
+        public ProjectMemberService(IProjectMemberRepository projectMemberRepository, IProjectRepository projectRepository, IUserService userService)
         {
             _projectMemberRepository = projectMemberRepository;
             _projectRepository = projectRepository;
-            _userRepository = userRepository;
+            _userService = userService;
         }
 
         public async Task<int> AddProjectMember(int projectId, int userId, int roleId, CancellationToken cancellationToken = default(CancellationToken))
@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new ProjectNotFoundException(projectId);
             }
 
-            var user = await _userRepository.GetById(userId, cancellationToken);
+            var user = await _userService.GetUserById(userId, cancellationToken);
             if (user == null)
             {
                 throw new UserNotFoundException(userId);
@@ -55,10 +55,9 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _projectMemberRepository.Create(newProjectMember, cancellationToken);
         }
 
-        public async Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, string password, int roleId, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<(int newProjectMemberId, int newUserId)> AddProjectMember(int projectId, string email, string firstName, string lastName, Dictionary<string, string> externalAccountIds, int roleId, string webUrl, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
-            (int newProjectMemberId, int newUserId) = (0, 0);
 
             var project = await _projectRepository.GetById(projectId, cancellationToken);
             if (project == null)
@@ -66,19 +65,18 @@ namespace Polyrific.Catapult.Api.Core.Services
                 throw new ProjectNotFoundException(projectId);
             }
 
-            var user = await _userRepository.GetUser(email, cancellationToken);
+            var user = await _userService.GetUser(email, cancellationToken);
             if (user != null)
             {
                 throw new DuplicateUserEmailException(email);
             }
 
-            var newUser = new User { Email = email, UserName = email, FirstName = firstName, LastName = lastName, ExternalAccountIds = externalAccountIds };
-            newUserId = await _userRepository.Create(newUser, password, cancellationToken);
+            var newUser = await _userService.CreateUser(email, firstName, lastName, null, externalAccountIds, await _userService.GeneratePassword(), webUrl, cancellationToken);
 
-            var newProjectMember = new ProjectMember { ProjectId = projectId, ProjectMemberRoleId = roleId, UserId = newUserId };
-            newProjectMemberId = await _projectMemberRepository.Create(newProjectMember, cancellationToken);
+            var newProjectMember = new ProjectMember { ProjectId = projectId, ProjectMemberRoleId = roleId, UserId = newUser.Id };
+            var newProjectMemberId = await _projectMemberRepository.Create(newProjectMember, cancellationToken);
 
-            return (newProjectMemberId, newUserId);
+            return (newProjectMemberId, newUser.Id);
         }
 
         public async Task<List<ProjectMember>> GetProjectMembers(int projectId, int roleId = 0, bool includeUser = false, CancellationToken cancellationToken = default(CancellationToken))
@@ -91,7 +89,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             if (includeUser)
             {
-                var users = await _userRepository.GetUsersByIds(projectMembers.Select(p => p.UserId).ToArray());
+                var users = await _userService.GetUsersByIds(projectMembers.Select(p => p.UserId).ToArray());
 
                 foreach (var projectMember in projectMembers)
                     projectMember.User = users.FirstOrDefault(u => u.Id == projectMember.UserId);

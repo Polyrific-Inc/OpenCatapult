@@ -19,7 +19,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         private readonly List<ProjectMember> _data;
         private readonly Mock<IProjectMemberRepository> _projectMemberRepository;
         private readonly Mock<IProjectRepository> _projectRepository;
-        private readonly Mock<IUserRepository> _userRepository;
+        private readonly Mock<IUserService> _userService;
 
         public ProjectMemberServiceTests()
         {
@@ -87,21 +87,24 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _projectRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) => id == 1 ? new Project() { Id = id } : null);
 
-            _userRepository = new Mock<IUserRepository>();
-            _userRepository.Setup(r => r.GetById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            _userService = new Mock<IUserService>();
+            _userService.Setup(r => r.GetUserById(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((int id, CancellationToken cancellationToken) =>
                     (new List<int> {1, 2}).Contains(id) ? new User() {Id = id} : null);
-            _userRepository.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
+            _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) =>
                     userData.FirstOrDefault(u => u.UserName.ToLower() == email.ToLower()));
-            _userRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(2);
+            _userService.Setup(r => r.CreateUser(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, string>>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new User
+                {
+                    Id = 2
+                });
         }
 
         [Fact]
         public async void AddProjectMember_ValidItem()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var id = await projectMemberService.AddProjectMember(1, 2, 1);
 
             Assert.True(_data.Count > 1);
@@ -111,7 +114,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddProjectMember_DuplicateItem()
         {            
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var id = await projectMemberService.AddProjectMember(1, 1, 2);
 
             var member = _data.First(d => d.ProjectId == 1 && d.UserId == 1);
@@ -124,7 +127,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddProjectMember_InvalidProject()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(2, 2, 1));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -133,7 +136,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddProjectMember_InvalidUser()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, 3, 1));
 
             Assert.IsType<UserNotFoundException>(exception?.Result);
@@ -142,8 +145,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void AddProjectMember_NewUser()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
-            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", null, "password", 1);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
+            var (memberId, userId) = await projectMemberService.AddProjectMember(1, "user@example.com", "New", "User", null, 1, "http://web");
 
             Assert.True(_data.Count > 1);
             Assert.True(memberId > 1);
@@ -153,7 +156,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddProjectMember_NewUserInvalidProject()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(2, 2, 1));
 
             Assert.IsType<ProjectNotFoundException>(exception?.Result);
@@ -162,8 +165,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddProjectMember_DuplicateEmail()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
-            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", null, "password", 1));
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
+            var exception = Record.ExceptionAsync(() => projectMemberService.AddProjectMember(1, "test@test.com", "New", "User", null, 1, "http://web"));
 
             Assert.IsType<DuplicateUserEmailException>(exception?.Result);
         }
@@ -171,7 +174,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectMembers_ReturnItems()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var members = await projectMemberService.GetProjectMembers(1);
 
             Assert.NotEmpty(members);
@@ -180,7 +183,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectMembers_ReturnEmpty()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var members = await projectMemberService.GetProjectMembers(2);
 
             Assert.Empty(members);
@@ -189,7 +192,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void RemoveProjectMember_ValidItem()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             await projectMemberService.RemoveProjectMember(1, 1, 1);
 
             Assert.Empty(_data);
@@ -198,7 +201,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void RemoveProjectMember_RemoveProjectOwnerException()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var exception = Record.ExceptionAsync(() => projectMemberService.RemoveProjectMember(1, 1, 2));
 
             Assert.IsType<RemoveProjectOwnerException>(exception?.Result);
@@ -207,7 +210,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void UpdateProjectMemberRole_ValidItem()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             await projectMemberService.UpdateProjectMemberRole(1, 1, 2);
 
             var member = _data.First(d => d.ProjectId == 1 && d.UserId == 1);
@@ -218,7 +221,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectMemberById_ReturnItem()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var projectMember = await projectMemberService.GetProjectMemberById(1);
 
             Assert.NotNull(projectMember);
@@ -228,7 +231,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public async void GetProjectMemberById_ReturnNull()
         {
-            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userRepository.Object);
+            var projectMemberService = new ProjectMemberService(_projectMemberRepository.Object, _projectRepository.Object, _userService.Object);
             var projectMember = await projectMemberService.GetProjectMemberById(2);
 
             Assert.Null(projectMember);

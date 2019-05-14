@@ -38,7 +38,14 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                 {
                     Id = 1,
                     Name = "Project-A",
-                    Status = ProjectStatusFilterType.Active
+                    Status = ProjectStatusFilterType.Active,
+                    Models = new List<ProjectDataModel>
+                    {
+                        new ProjectDataModel
+                        {
+                            Properties = new List<ProjectDataModelProperty>()
+                        }
+                    }
                 }
             };
 

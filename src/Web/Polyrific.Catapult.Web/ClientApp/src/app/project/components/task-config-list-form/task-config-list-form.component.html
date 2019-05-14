@@ -1,0 +1,6 @@
+
+<mat-horizontal-stepper [linear]="false">
+  <mat-step *ngFor="let task of tasks">
+    <app-task-config-form [task]="task" [skipValidation]="true" (formReady)="onConfigFormChanged($event)"></app-task-config-form>
+  </mat-step>
+</mat-horizontal-stepper>
