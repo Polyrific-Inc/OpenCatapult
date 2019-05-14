@@ -6657,7 +6657,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -6859,7 +6859,7 @@
               <boolProp name="CounterConfig.per_user">false</boolProp>
             </CounterConfig>
             <hashTree/>
-            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by email" enabled="true">
+            <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get  user by user name" enabled="true">
               <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
                 <collectionProp name="Arguments.arguments"/>
               </elementProp>
@@ -6867,7 +6867,7 @@
               <stringProp name="HTTPSampler.port"></stringProp>
               <stringProp name="HTTPSampler.protocol"></stringProp>
               <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-              <stringProp name="HTTPSampler.path">/Account/email/${__V(email_${counter})}</stringProp>
+              <stringProp name="HTTPSampler.path">/Account/name/${__V(email_${counter})}</stringProp>
               <stringProp name="HTTPSampler.method">GET</stringProp>
               <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
               <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -6936,7 +6936,7 @@
               <hashTree/>
             </hashTree>
           </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="All scenarios for Member" enabled="true">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="All scenarios for Contributor &amp;Member" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
             <stringProp name="LoopController.loops">2</stringProp>
           </LoopController>
@@ -6957,7 +6957,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -7490,7 +7490,7 @@
               <hashTree/>
             </hashTree>
           </hashTree>
-          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="All scenarios for Maintainer" enabled="true">
+          <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="All scenarios for Owner &amp; Maintainer" enabled="true">
             <boolProp name="LoopController.continue_forever">true</boolProp>
             <stringProp name="LoopController.loops">2</stringProp>
           </LoopController>
@@ -7511,7 +7511,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
@@ -8071,7 +8071,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -8200,7 +8200,7 @@
                 <elementProp name="" elementType="HTTPArgument">
                   <boolProp name="HTTPArgument.always_encode">false</boolProp>
                   <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${defaultUsername}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${defaultUsername}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                   <stringProp name="Argument.metadata">=</stringProp>
@@ -8373,7 +8373,7 @@
               <hashTree/>
               <JSONPathAssertion guiclass="JSONPathAssertionGui" testclass="JSONPathAssertion" testname="JSON Assertion" enabled="true">
                 <stringProp name="JSON_PATH">$.length()</stringProp>
-                <stringProp name="EXPECTED_VALUE">1</stringProp>
+                <stringProp name="EXPECTED_VALUE">^[1-9][0-9]*$</stringProp>
                 <boolProp name="JSONVALIDATION">true</boolProp>
                 <boolProp name="EXPECT_NULL">false</boolProp>
                 <boolProp name="INVERT">false</boolProp>
@@ -8568,7 +8568,7 @@
                   <elementProp name="" elementType="HTTPArgument">
                     <boolProp name="HTTPArgument.always_encode">false</boolProp>
                     <stringProp name="Argument.value">{&#xd;
-  &quot;email&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
+  &quot;userName&quot;: &quot;${__V(email_${counter})}&quot;,&#xd;
   &quot;password&quot;: &quot;${defaultPassword}&quot;&#xd;
 }</stringProp>
                     <stringProp name="Argument.metadata">=</stringProp>
