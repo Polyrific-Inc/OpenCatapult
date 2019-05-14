@@ -669,7 +669,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                         column: x => x.RelatedProjectDataModelId,
                         principalTable: "ProjectDataModels",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
