@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 
 @Injectable()
 export class UtilityService {
@@ -24,5 +25,26 @@ export class UtilityService {
     }
 
     return dictionary;
+  }
+
+  markControlsAsTouched(group: FormGroup | FormArray, touched?: boolean): void {
+    if (touched == null) {
+      touched = true;
+    }
+
+    Object.keys(group.controls).forEach(field => {
+        const control = group.get(field);
+
+        if (control instanceof FormGroup || control instanceof FormArray) {
+            this.markControlsAsTouched(control, touched);
+        } else {
+          if (touched) {
+            control.markAsTouched({ onlySelf: true });
+          } else {
+
+            control.markAsUntouched({ onlySelf: true });
+          }
+        }
+    });
   }
 }

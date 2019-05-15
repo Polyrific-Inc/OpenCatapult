@@ -9,6 +9,7 @@ import { MatInputModule, MatCheckboxModule, MatProgressBarModule, MatDialogModul
 import { CoreModule } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { DataModelPropertyFormComponent } from '../data-model-property-form/data-model-property-form.component';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('DataModelPropertyInfoDialogComponent', () => {
   let component: DataModelPropertyInfoDialogComponent;
@@ -29,7 +30,8 @@ describe('DataModelPropertyInfoDialogComponent', () => {
         CoreModule,
         MatCheckboxModule,
         MatSelectModule,
-        MatDividerModule
+        MatDividerModule,
+        SharedModule.forRoot()
       ],
       providers: [
         SnackbarService,

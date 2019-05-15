@@ -4,6 +4,7 @@ import { JobDefinitionService, JobDefinitionDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA, MatCheckboxChange } from '@angular/material';
 import { NewModelDialogData } from '@app/project/data-model/components/data-model-new-dialog/data-model-new-dialog.component';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 export interface NewJobDefinitionDialogData {
   projectId: number;
@@ -26,6 +27,7 @@ export class JobDefinitionNewDialogComponent implements OnInit {
     private fb: FormBuilder,
     private jobDefinitionService: JobDefinitionService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     public dialogRef: MatDialogRef<JobDefinitionNewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewModelDialogData
     ) {
@@ -55,6 +57,8 @@ export class JobDefinitionNewDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.jobDefinitionForm);
     }
   }
 

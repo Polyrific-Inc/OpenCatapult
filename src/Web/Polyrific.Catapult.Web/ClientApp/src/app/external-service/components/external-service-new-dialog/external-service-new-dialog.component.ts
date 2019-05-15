@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormArray } from '@angular/forms';
+import { FormGroup, FormArray, AbstractControl } from '@angular/forms';
 import { ExternalServiceService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef } from '@angular/material';
 import { GenericService } from '@app/external-service/services/generic.service';
 import { ExternalServiceFormOutput } from '../external-service-form/external-service-form.component';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 @Component({
   selector: 'app-external-service-new-dialog',
@@ -19,6 +20,7 @@ export class ExternalServiceNewDialogComponent implements OnInit {
   constructor (
     private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     private genericService: GenericService,
     public dialogRef: MatDialogRef<ExternalServiceNewDialogComponent>
     ) {
@@ -46,6 +48,9 @@ export class ExternalServiceNewDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.externalServiceForm);
+      this.utilityService.markControlsAsTouched(this.genericConfigForm);
     }
   }
 

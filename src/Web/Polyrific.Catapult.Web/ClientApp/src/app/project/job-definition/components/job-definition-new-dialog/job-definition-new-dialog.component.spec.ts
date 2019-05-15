@@ -9,6 +9,7 @@ import { MatInputModule, MatCheckboxModule, MatProgressBarModule, MatDialogModul
   MatSnackBarModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { CoreModule } from '@app/core';
 import { SnackbarService } from '@app/shared';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('JobDefinitionNewDialogComponent', () => {
   let component: JobDefinitionNewDialogComponent;
@@ -26,7 +27,8 @@ describe('JobDefinitionNewDialogComponent', () => {
         MatProgressBarModule,
         MatDialogModule,
         MatSnackBarModule,
-        CoreModule
+        CoreModule,
+        SharedModule.forRoot()
       ],
       providers: [
         SnackbarService,

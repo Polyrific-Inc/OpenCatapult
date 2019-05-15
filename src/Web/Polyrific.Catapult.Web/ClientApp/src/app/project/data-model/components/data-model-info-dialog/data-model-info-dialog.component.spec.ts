@@ -9,6 +9,7 @@ import { DataModelFormComponent } from '../data-model-form/data-model-form.compo
 import { CoreModule } from '@app/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { SnackbarService } from '@app/shared';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('DataModelInfoDialogComponent', () => {
   let component: DataModelInfoDialogComponent;
@@ -26,7 +27,8 @@ describe('DataModelInfoDialogComponent', () => {
         MatProgressBarModule,
         MatDialogModule,
         MatSnackBarModule,
-        CoreModule
+        CoreModule,
+        SharedModule.forRoot()
       ],
       providers: [
         SnackbarService,

@@ -5,6 +5,7 @@ import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { ExternalServiceFormOutput } from '../external-service-form/external-service-form.component';
 import { GenericService } from '@app/external-service/services/generic.service';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 @Component({
   selector: 'app-external-service-info-dialog',
@@ -24,6 +25,7 @@ export class ExternalServiceInfoDialogComponent implements OnInit {
     private fb: FormBuilder,
     private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     private genericService: GenericService,
     public dialogRef: MatDialogRef<ExternalServiceInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public externalService: ExternalServiceDto
@@ -60,6 +62,9 @@ export class ExternalServiceInfoDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.externalServiceForm);
+      this.utilityService.markControlsAsTouched(this.genericConfigForm);
     }
   }
 
@@ -69,6 +74,8 @@ export class ExternalServiceInfoDialogComponent implements OnInit {
   }
 
   onCancelClick() {
+    this.utilityService.markControlsAsTouched(this.externalServiceForm, false);
+    this.utilityService.markControlsAsTouched(this.genericConfigForm, false);
     this.editing = false;
     this.genericService.patchFormValue(this.externalServiceForm, this.genericConfigForm, this.externalServiceWithProp);
     this.genericConfigForm.disable();
