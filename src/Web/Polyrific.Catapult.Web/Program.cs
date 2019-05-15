@@ -7,6 +7,7 @@ using System.Linq;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Polyrific.Catapult.Web
 {
@@ -18,24 +19,52 @@ namespace Polyrific.Catapult.Web
 
             var webhost = CreateWebHostBuilder(args.Where(a => a != "--service").ToArray(), isService).Build();
 
-            if (isService)
+            try
             {
-                webhost.RunAsCustomService();
-            }
-            else
-            {
-                Console.Title = "OpenCatapult Web";
-                Console.WriteLine($"Process ID: {Process.GetCurrentProcess().Id}.");
+                if (isService)
+                {
+                    var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
+                    var basePath = Path.GetDirectoryName(pathToExe);
+                    Directory.SetCurrentDirectory(basePath);
 
-                webhost.Run();
+                    Log.Logger = new LoggerConfiguration()
+                        .WriteTo.EventLog("Catapult-Web", manageEventSource: true)
+                        .CreateLogger();
+
+                    Log.Information("OpenCatapult Web is starting as Windows Service. Process ID: {@pid}.", Process.GetCurrentProcess().Id);
+
+                    webhost.RunAsCustomService();
+                }
+                else
+                {
+                    Log.Logger = new LoggerConfiguration()
+                        .ReadFrom.Configuration(GetConfiguration(isService))
+                        .CreateLogger();
+
+                    Log.Information("Starting OpenCatapult Web host..");
+
+                    Console.Title = "OpenCatapult Web";
+                    Console.WriteLine($"Process ID: {Process.GetCurrentProcess().Id}.");
+
+                    webhost.Run();
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "OpenCatapult Web host crashed unexpectedly.");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
             }
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args, bool isService) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseConfiguration(GetConfiguration(isService));
-        
+                .UseConfiguration(GetConfiguration(isService))
+                .UseSerilog();
+
         public static IConfiguration GetConfiguration(bool isService) {
             var basePath = Directory.GetCurrentDirectory();
             if (isService)
