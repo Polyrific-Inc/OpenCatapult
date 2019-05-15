@@ -1,3 +1,5 @@
+// Copyright (c) Polyrific, Inc 2019. All rights reserved.
+
 using System.ServiceProcess;
 using Microsoft.AspNetCore.Hosting;
 

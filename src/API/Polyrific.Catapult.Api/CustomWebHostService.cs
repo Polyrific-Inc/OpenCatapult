@@ -1,3 +1,5 @@
+// Copyright (c) Polyrific, Inc 2019. All rights reserved.
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.WindowsServices;
 using Microsoft.Extensions.DependencyInjection;
