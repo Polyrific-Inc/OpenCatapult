@@ -296,7 +296,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         [Fact]
         public async void UpdateJobTaskDefinition_ReturnsSuccess()
         {
-            _jobDefinitionService.Setup(s => s.UpdateJobTaskDefinition(It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            _jobDefinitionService.Setup(s => s.UpdateJobTaskDefinition(It.IsAny<JobTaskDefinition>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
 
@@ -326,7 +326,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
                     }
                 });
 
-            _jobDefinitionService.Setup(s => s.UpdateJobTaskDefinition(It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
+            _jobDefinitionService.Setup(s => s.UpdateJobTaskDefinition(It.IsAny<JobTaskDefinition>(), It.IsAny<bool>(), It.IsAny<CancellationToken>())).Returns(Task.CompletedTask);
 
             var controller = new JobDefinitionController(_jobDefinitionService.Object, _mapper, _logger.Object);
 

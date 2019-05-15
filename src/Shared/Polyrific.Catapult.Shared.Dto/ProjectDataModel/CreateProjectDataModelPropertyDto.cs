@@ -48,5 +48,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         /// Is the property managed in the UI?
         /// </summary>
         public bool? IsManaged { get; set; }
+
+        /// <summary>
+        /// Sequence of the property
+        /// </summary>
+        public int? Sequence { get; set; }
     }
 }

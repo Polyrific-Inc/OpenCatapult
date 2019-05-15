@@ -116,9 +116,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// Update a job task definition
         /// </summary>
         /// <param name="editedJobTaskDefinition">Edited job task definition</param>
+        /// <param name="validate">Do task validation</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task UpdateJobTaskDefinition(JobTaskDefinition editedJobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken));
+        Task UpdateJobTaskDefinition(JobTaskDefinition editedJobTaskDefinition, bool validate = true, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update job task configuration

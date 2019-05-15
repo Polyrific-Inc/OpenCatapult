@@ -387,7 +387,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public async void AddDataModelProperty_ValidItem()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
-            int newId = await projectDataModelService.AddDataModelProperty(1, "Price", "Price", "int", "input-text", false, null, null, null);
+            int newId = await projectDataModelService.AddDataModelProperty(1, "Price", "Price", "int", "input-text", false, null, null, null, null);
 
             Assert.True(newId > 1);
             Assert.True(_dataProperty.Count > 1);
@@ -397,7 +397,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddDataModelProperty_DuplicateItem()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
-            var exception = Record.ExceptionAsync(() => projectDataModelService.AddDataModelProperty(1, "Name", "Name", "string", "input-text", true, null, null, null));
+            var exception = Record.ExceptionAsync(() => projectDataModelService.AddDataModelProperty(1, "Name", "Name", "string", "input-text", true, null, null, null, null));
 
             Assert.IsType<DuplicateProjectDataModelPropertyException>(exception?.Result);
         }
@@ -406,7 +406,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         public void AddDataModelProperty_InvalidDataModel()
         {
             var projectDataModelService = new ProjectDataModelService(_dataModelRepository.Object, _propertyRepository.Object, _projectRepository.Object);
-            var exception = Record.ExceptionAsync(() => projectDataModelService.AddDataModelProperty(2, "Price", "Price", "int", "input-text", false, null, null, null));
+            var exception = Record.ExceptionAsync(() => projectDataModelService.AddDataModelProperty(2, "Price", "Price", "int", "input-text", false, null, null, null, null));
 
             Assert.IsType<ProjectDataModelNotFoundException>(exception?.Result);
         }

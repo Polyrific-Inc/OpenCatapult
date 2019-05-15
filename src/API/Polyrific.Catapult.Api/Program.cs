@@ -13,19 +13,21 @@ namespace Polyrific.Catapult.Api
 {
     public class Program
     {
+        private static bool _isService;
+
         public static void Main(string[] args)
         {
-            var isService = args.Contains("--service");
+            _isService = args.Contains("--service");
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(GetConfiguration(isService))
+                .ReadFrom.Configuration(GetConfiguration(_isService))
                 .CreateLogger();
 
             try
             {
-                var webhost = CreateWebHostBuilder(args.Where(a => a != "--service").ToArray(), isService).Build();
+                var webhost = CreateWebHostBuilder(args.Where(a => a != "--service").ToArray()).Build();
 
-                if (isService)
+                if (_isService)
                 {
                     webhost.RunAsCustomService();
                 } 
@@ -47,12 +49,12 @@ namespace Polyrific.Catapult.Api
             }
         }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args, bool isService) =>
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseConfiguration(GetConfiguration(isService))
+                .UseConfiguration(GetConfiguration(_isService))
                 .UseSerilog();
-        
+
         public static IConfiguration GetConfiguration(bool isService) {
             var basePath = Directory.GetCurrentDirectory();
             if (isService)

@@ -255,7 +255,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             return await _jobTaskDefinitionRepository.CreateRange(jobTaskDefinitions, cancellationToken);
         }
 
-        public async Task UpdateJobTaskDefinition(JobTaskDefinition editedJobTaskDefinition, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task UpdateJobTaskDefinition(JobTaskDefinition editedJobTaskDefinition, bool validate = true, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -272,7 +272,8 @@ namespace Polyrific.Catapult.Api.Core.Services
                 jobTaskDefinition.AdditionalConfigString = editedJobTaskDefinition.AdditionalConfigString;
                 jobTaskDefinition.Sequence = editedJobTaskDefinition.Sequence;
                 
-                await ValidateJobTaskDefinition(jobTaskDefinition.JobDefinition, jobTaskDefinition, encryptConfig: true, cancellationToken);
+                if (validate)
+                    await ValidateJobTaskDefinition(jobTaskDefinition.JobDefinition, jobTaskDefinition, encryptConfig: true, cancellationToken);
 
                 await _jobTaskDefinitionRepository.Update(jobTaskDefinition, cancellationToken);
             }
