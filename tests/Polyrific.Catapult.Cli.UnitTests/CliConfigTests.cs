@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
             if (configFileExists)
                 Assert.Equal(_configs["ApiUrl"], config.ApiUrl);
             else
-                Assert.Equal("https://localhost", config.ApiUrl);
+                Assert.Equal("https://localhost:44305", config.ApiUrl);
         }
 
         [Fact]
@@ -85,7 +85,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
             if (configName == "ApiUrl")
             {
                 var value = config.GetValue(configName);
-                Assert.Equal("https://localhost", value);
+                Assert.Equal("https://localhost:44305", value);
             }
             else
             {
@@ -107,7 +107,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
             var value = config.GetValueOrDefault(configName, "DefaultValue");
 
             if (configName == "ApiUrl")
-                Assert.Equal("https://localhost", value);
+                Assert.Equal("https://localhost:44305", value);
             else
                 Assert.Equal("DefaultValue", value);
         }
@@ -139,7 +139,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
 
             if (configName == "ApiUrl")
             {
-                Assert.Equal("https://localhost", config.ApiUrl);
+                Assert.Equal("https://localhost:44305", config.ApiUrl);
             }
             else
             {
@@ -156,7 +156,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
 
             await CliConfig.InitConfigFile(reset, _logger.Object);
 
-            var expected = reset ? "https://localhost" : "https://localhost/test";
+            var expected = reset ? "https://localhost:44305" : "https://localhost/test";
             var obj = JObject.Parse(await File.ReadAllTextAsync(CliConfigFile));
             var loadedConfigs = obj["CliConfig"].ToObject<Dictionary<string, string>>();
 
@@ -171,7 +171,7 @@ namespace Polyrific.Catapult.Cli.UnitTests
 
             var config = new CliConfig(_logger.Object);
 
-            Assert.Equal("https://localhost", config.ApiUrl);
+            Assert.Equal("https://localhost:44305", config.ApiUrl);
             Assert.Equal(TimeSpan.Parse("00:01:00"), config.ApiRequestTimeout);
             Assert.Equal("Polyrific/Catapult", config.AppDataFolderPath);
         }
