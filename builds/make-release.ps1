@@ -119,14 +119,25 @@ foreach ($p in $plugins) {
 }
 
 if ($noCompress) {
+
+    $pluginsFolder = Join-Path $publishOuterPath "/plugins"
+    Move-Item "$pluginsFolder" -Destination "$enginePublishPath"
+
     Write-Host "6. Copying additional files" -ForegroundColor Yellow
 
     $certs = Join-Path $rootPath "/tools/certs"
     $dest = Join-Path $publishOuterPath "/certs"
     Copy-Item "$certs" -Destination "$dest" -Recurse
 
-    $scripts = Join-Path $rootPath "/tools/scripts/*"
-    Copy-Item "$scripts" -Destination "$publishOuterPath"
+    $runScripts = Join-Path $rootPath "/tools/scripts/run*"
+    Copy-Item "$runScripts" -Destination "$publishOuterPath"
+
+    $efDll = Join-Path $rootPath "/tools/ef.dll"
+    $dest = Join-Path $publishOuterPath "/tools"
+    if (!(Test-Path $dest)) {
+        New-Item $dest -ItemType Directory | Out-Null
+    }
+    Copy-Item "$efDll" -Destination "$dest"
 
     Write-Host "Done." -ForegroundColor Green
     Write-Host ""
