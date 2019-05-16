@@ -13,9 +13,12 @@ namespace Polyrific.Catapult.Shared.Common
         public static async Task<string> ReadAllTextAsync(string path)
         {
             string text;
-            using (var reader = File.OpenText(path))
+            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
             {
-                text = await reader.ReadToEndAsync();
+                using (var reader = new StreamReader(fileStream))
+                {
+                    text = await reader.ReadToEndAsync();
+                }
             }
 
             return text;
@@ -33,11 +36,14 @@ namespace Polyrific.Catapult.Shared.Common
 
         public static async Task AppendAllTextAsync(string path, string content)
         {
-            using (var writer = File.AppendText(path))
+            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
             {
-                await writer.WriteAsync(content);
+                using (var writer = new StreamWriter(fileStream))
+                {
+                    await writer.WriteAsync(content);
 
-                await writer.FlushAsync();
+                    await writer.FlushAsync();
+                }
             }
         }
     }

@@ -205,7 +205,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         {
             _projectDataModelService
                 .Setup(s => s.AddDataModelProperty(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), 
-                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<CancellationToken>()))
+                    It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<int>(), It.IsAny<string>(), It.IsAny<bool?>(), It.IsAny<int?>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(1);
 
             _projectDataModelService.Setup(s => s.GetProjectDataModelPropertyByName(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))

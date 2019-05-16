@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { DataModelService, DataModelPropertyDto, DataModelDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 export interface DataModelPropertyViewModel extends DataModelPropertyDto {
   projectId: number;
@@ -26,6 +27,7 @@ export class DataModelPropertyInfoDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dataModelService: DataModelService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     public dialogRef: MatDialogRef<DataModelPropertyInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataModelProperty: DataModelPropertyViewModel
     ) {
@@ -59,6 +61,8 @@ export class DataModelPropertyInfoDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.dataModelPropertyForm);
     }
   }
 
@@ -67,6 +71,7 @@ export class DataModelPropertyInfoDialogComponent implements OnInit {
   }
 
   onCancelClick() {
+    this.utilityService.markControlsAsTouched(this.dataModelPropertyForm, false);
     this.editing = false;
   }
 

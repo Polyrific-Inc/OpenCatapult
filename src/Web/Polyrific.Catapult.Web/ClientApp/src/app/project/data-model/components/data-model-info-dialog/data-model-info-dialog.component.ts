@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { DataModelService, DataModelDto } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 @Component({
   selector: 'app-data-model-info-dialog',
@@ -20,6 +21,7 @@ export class DataModelInfoDialogComponent implements OnInit {
     private fb: FormBuilder,
     private dataModelService: DataModelService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     public dialogRef: MatDialogRef<DataModelInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public dataModel: DataModelDto
     ) {
@@ -51,6 +53,8 @@ export class DataModelInfoDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.dataModelForm);
     }
   }
 
@@ -59,6 +63,7 @@ export class DataModelInfoDialogComponent implements OnInit {
   }
 
   onCancelClick() {
+    this.utilityService.markControlsAsTouched(this.dataModelForm, false);
     this.editing = false;
   }
 

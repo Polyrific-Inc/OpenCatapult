@@ -27,7 +27,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             _projectRepository = projectRepository;
         }
 
-        public async Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, int? sequence, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -55,6 +55,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                 IsRequired = isRequired,
                 IsManaged = isManaged
             };
+
+            if (sequence == null)
+                newDataModelProperty.Sequence = _dataModelPropertyRepository.GetMaxPropertySequence(dataModelId) + 1;
 
             return await _dataModelPropertyRepository.Create(newDataModelProperty, cancellationToken);
         }
@@ -210,7 +213,7 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             foreach (var dataModel in dataModels)
             {
-                dataModel.Properties = dataModel.Properties.OrderBy(p => p.Sequence).ToList();
+                dataModel.Properties = dataModel.Properties?.OrderBy(p => p.Sequence).ToList();
             }
 
             return dataModels;

@@ -260,7 +260,8 @@ namespace Polyrific.Catapult.Api.Controllers
                     newProperty.IsRequired,
                     newProperty.RelatedProjectDataModelId,
                     newProperty.RelationalType,
-                    newProperty.IsManaged);
+                    newProperty.IsManaged,
+                    newProperty.Sequence);
 
                 var property = await _projectDataModelService.GetProjectDataModelPropertyByName(modelId, newProperty.Name);
                 var result = _mapper.Map<ProjectDataModelPropertyDto>(property);

@@ -226,7 +226,7 @@ namespace Polyrific.Catapult.Api.Controllers
             {
                 var job = jobs.FirstOrDefault(j => j.Id == jobOrder.Key);
                 job.Sequence = jobOrder.Value;
-                await _jobDefinitionService.UpdateJobTaskDefinition(job);
+                await _jobDefinitionService.UpdateJobTaskDefinition(job, validate: false);
             }
 
             _logger.LogResponse("Task order for job definition {jobId} in project {projectId} updated", jobId, projectId);

@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { JobDefinitionService, JobTaskDefinitionDto, ExternalServiceService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 export interface NewJobDefinitionDialogData {
   projectId: number;
@@ -25,6 +26,7 @@ export class JobTaskDefinitionNewDialogComponent implements OnInit {
     private jobDefinitionService: JobDefinitionService,
     private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     public dialogRef: MatDialogRef<JobTaskDefinitionNewDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: NewJobDefinitionDialogData
     ) {
@@ -52,6 +54,8 @@ export class JobTaskDefinitionNewDialogComponent implements OnInit {
               this.snackbar.open(err);
               this.loading = false;
             });
+    } else {
+      this.utilityService.markControlsAsTouched(this.jobTaskDefinitionForm);
     }
   }
 

@@ -9,6 +9,7 @@ import { MatInputModule, MatCheckboxModule, MatProgressBarModule,
   MatDialogModule, MatSnackBarModule, MatDialogRef, MAT_DIALOG_DATA, MatSelectModule, MatDividerModule } from '@angular/material';
 import { CoreModule } from '@app/core';
 import { SnackbarService } from '@app/shared';
+import { SharedModule } from '@app/shared/shared.module';
 
 describe('DataModelPropertyNewDialogComponent', () => {
   let component: DataModelPropertyNewDialogComponent;
@@ -28,7 +29,8 @@ describe('DataModelPropertyNewDialogComponent', () => {
         MatSnackBarModule,
         CoreModule,
         MatSelectModule,
-        MatDividerModule
+        MatDividerModule,
+        SharedModule.forRoot()
       ],
       providers: [
         SnackbarService,

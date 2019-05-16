@@ -188,7 +188,7 @@ namespace Polyrific.Catapult.Engine.Core
         {
             var configs = new Dictionary<string, string>
             {
-                {ApiUrlKey, "https://localhost"},
+                {ApiUrlKey, "https://localhost:44305"},
                 {ApiRequestTimeoutKey, "00:01:00"},
                 {AuthorizationTokenKey, ""},
                 {JobCheckingIntervalKey, "30"},

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { JobDefinitionService, JobTaskDefinitionDto, ExternalServiceService } from '@app/core';
 import { SnackbarService } from '@app/shared';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { UtilityService } from '@app/shared/services/utility.service';
 
 export interface JobTaskDefinitionViewModel extends JobTaskDefinitionDto {
   projectId: number;
@@ -28,6 +29,7 @@ export class JobTaskDefinitionInfoDialogComponent implements OnInit {
     private jobDefinitionService: JobDefinitionService,
     private externalServiceService: ExternalServiceService,
     private snackbar: SnackbarService,
+    private utilityService: UtilityService,
     public dialogRef: MatDialogRef<JobTaskDefinitionInfoDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public jobTaskDefinition: JobTaskDefinitionViewModel
     ) {
@@ -63,10 +65,14 @@ export class JobTaskDefinitionInfoDialogComponent implements OnInit {
   }
 
   onEditClick() {
+    this.utilityService.markControlsAsTouched(this.jobTaskDefinitionForm);
+    this.utilityService.markControlsAsTouched(this.jobTaskDefinitionInfoForm);
     this.editing = true;
   }
 
   onCancelClick() {
+    this.utilityService.markControlsAsTouched(this.jobTaskDefinitionForm, false);
+    this.utilityService.markControlsAsTouched(this.jobTaskDefinitionInfoForm, false);
     this.editing = false;
   }
 }

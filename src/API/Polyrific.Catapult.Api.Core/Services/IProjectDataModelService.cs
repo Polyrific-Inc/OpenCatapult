@@ -85,9 +85,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// <param name="relatedDataModelId">Id of the related data model</param>
         /// <param name="relationalType">Type of the relation with the related data model</param>
         /// <param name="isManaged">Is the model managed in the UI?</param>
+        /// <param name="sequence">Sequence of the data model property</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Id of the new added data model property</returns>
-        Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, CancellationToken cancellationToken = default(CancellationToken));
+        Task<int> AddDataModelProperty(int dataModelId, string name, string label, string dataType, string controlType, bool isRequired, int? relatedDataModelId, string relationalType, bool? isManaged, int? sequence, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Update a property
