@@ -1,5 +1,5 @@
 <div class="project-header">
-    <button mat-raised-button color="primary" routerLink="/project/new"
+    <button mat-raised-button color="primary" routerLink="/project/new" appHelpElement="Project" subSection="Create Project"
       *appHasAccess="authorizePolicy.UserRoleBasicAccess">New Project</button>
 </div>
 
@@ -13,18 +13,18 @@
         <button mat-raised-button color="primary" routerLink="clone" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Clone</button>
         <button mat-raised-button color="accent" (click)="onArchiveClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Archive</button>
         <button mat-raised-button color="warn" (click)="onDeleteClick()" *appHasAccess="authorizePolicy.ProjectOwnerAccess">Delete</button>
-        <button mat-raised-button (click)="onQueueJobClick()" *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Queue Job</button>
+        <button mat-raised-button (click)="onQueueJobClick()" *appHasAccess="authorizePolicy.ProjectMaintainerAccess" appHelpElement="JobDefinition" subSection="Job Queue">Queue Job</button>
     </div>
   </mat-card-header>
   <mat-card-content>
       <nav mat-tab-nav-bar flex>
           <a mat-tab-link routerLink="info" routerLinkActive #rlaInfo="routerLinkActive" [active]="rlaInfo.isActive">Info</a>
-          <a mat-tab-link routerLink="data-model"  routerLinkActive #rlaModel="routerLinkActive" [active]="rlaModel.isActive">Data Models</a>
-          <a mat-tab-link routerLink="job-definition" routerLinkActive #rlaJob="routerLinkActive" [active]="rlaJob.isActive"
+          <a mat-tab-link routerLink="data-model"  routerLinkActive #rlaModel="routerLinkActive" [active]="rlaModel.isActive" appHelpElement="ProjectModel">Data Models</a>
+          <a mat-tab-link routerLink="job-definition" routerLinkActive #rlaJob="routerLinkActive" [active]="rlaJob.isActive" appHelpElement="JobDefinition"
             *appHasAccess="authorizePolicy.ProjectContributorAccess">Job Definitions</a>
-          <a mat-tab-link routerLink="job-queue" routerLinkActive #rlaQueue="routerLinkActive" [active]="rlaQueue.isActive"
+          <a mat-tab-link routerLink="job-queue" routerLinkActive #rlaQueue="routerLinkActive" [active]="rlaQueue.isActive" appHelpElement="JobQueue"
             *appHasAccess="authorizePolicy.ProjectMaintainerAccess">Job Queues</a>
-          <a mat-tab-link routerLink="member" routerLinkActive #rlaMember="routerLinkActive" [active]="rlaMember.isActive">Members</a>
+          <a mat-tab-link routerLink="member" routerLinkActive #rlaMember="routerLinkActive" [active]="rlaMember.isActive" appHelpElement="ProjectMember">Members</a>
       </nav>
       <router-outlet></router-outlet>
   </mat-card-content>

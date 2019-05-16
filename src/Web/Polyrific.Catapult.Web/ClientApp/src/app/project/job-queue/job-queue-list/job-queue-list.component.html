@@ -30,11 +30,11 @@
     <th mat-header-cell *matHeaderCellDef> </th>
     <td mat-cell *matCellDef="let element" class="action-buttons">
         <button mat-icon-button routerLink="../../{{element.id}}"
-          matTooltip="Info">
+          matTooltip="Info" appHelpElement="JobQueue" subSection="Detail">
           <mat-icon>info</mat-icon>
         </button>
         <button mat-icon-button routerLink="../../{{element.id}}/logs"
-          matTooltip="View Logs">
+          matTooltip="View Logs" appHelpElement="JobQueue" subSection="Logs">
           <mat-icon>description</mat-icon>
         </button>
     </td>

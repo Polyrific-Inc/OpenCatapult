@@ -3,10 +3,10 @@
       <a mat-button routerLink="../list/{{currentJobQueueTab}}">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h4>Job Queue</h4>
+      <h4 appHelpElement="JobQueue" subSection="Detail">Job Queue</h4>
   </div>
   <div class="action-buttons">
-    <button mat-raised-button routerLink="logs">View Logs</button>
+    <button mat-raised-button routerLink="logs" appHelpElement="JobQueue" subSection="Logs">View Logs</button>
     <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
     <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
 
