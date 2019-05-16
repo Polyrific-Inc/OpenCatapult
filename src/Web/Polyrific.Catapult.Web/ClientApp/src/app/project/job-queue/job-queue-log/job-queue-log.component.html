@@ -1,9 +1,9 @@
 <div class="margin10" fxLayout="row" fxLayoutAlign="space-between center">
   <div fxLayout="row"  fxLayoutAlign="flex-start center">
-      <a mat-button routerLink="../">
+      <a mat-button routerLink="../" appHelpElement="JobQueue" subSection="Detail">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h4>Job Queue Log</h4>
+      <h4 appHelpElement="JobQueue" subSection="Logs">Job Queue Log</h4>
   </div>
   <div class="action-buttons">
     <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>

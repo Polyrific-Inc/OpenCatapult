@@ -49,7 +49,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef> </th>
           <td mat-cell *matCellDef="let element" class="item-buttons">
-            <button mat-icon-button (click)="onTokenClick(element)" matTooltip="Generate token" *ngIf="statusFilter.value === 'active'">
+            <button mat-icon-button (click)="onTokenClick(element)" matTooltip="Generate token" *ngIf="statusFilter.value === 'active'" appHelpElement="Engine" subSection="Engine Token">
               <mat-icon>vpn_key</mat-icon>
             </button>
             <button mat-icon-button (click)="onSuspendClick(element)" matTooltip="Suspend" *ngIf="statusFilter.value === 'active'">

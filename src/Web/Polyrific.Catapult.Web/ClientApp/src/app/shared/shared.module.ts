@@ -24,6 +24,7 @@ import { LoadingSpinnerComponent } from './components/loading-spinner/loading-sp
 import { ExternalAccountFormComponent } from './components/external-account-form/external-account-form.component';
 import { UtilityService } from './services/utility.service';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
+import { HelpElementDirective } from './directives/help-element.directive';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { MessageDialogComponent } from './components/message-dialog/message-dial
     DeleteRepositoryConfigFormComponent,
     LoadingSpinnerComponent,
     ExternalAccountFormComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    HelpElementDirective
   ],
   imports: [
     CommonModule,
@@ -77,6 +79,7 @@ import { MessageDialogComponent } from './components/message-dialog/message-dial
     ConfirmationWithInputDialogComponent,
     ConfirmationDialogComponent,
     HasAccessDirective,
+    HelpElementDirective,
     DeleteRepositoryConfigFormComponent,
     LoadingSpinnerComponent,
     ExternalAccountFormComponent,
