@@ -1,5 +1,7 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+#Requires -RunAsAdministrator
+
 param(
     [string]$configuration = "Release",
     [string]$connString = "",
@@ -19,12 +21,14 @@ $env:ASPNETCORE_ENVIRONMENT = $environment
 
 # define paths
 $rootPath = Split-Path $PSScriptRoot
-$appSettingsPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/appsettings.json"
-$appSettingsEnvPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/appsettings.$environment.json"
 $apiCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api/Polyrific.Catapult.Api.csproj"
 $apiPublishPath = Join-Path $rootPath "/publish/api"
 $apiDll = Join-Path $apiPublishPath "/ocapi.dll"
-$dataCsprojPath = Join-Path $rootPath "/src/API/Polyrific.Catapult.Api.Data/Polyrific.Catapult.Api.Data.csproj"
+$appSettingsPath = Join-Path $apiPublishPath "/appsettings.json"
+$appSettingsEnvPath = Join-Path $apiPublishPath "/appsettings.$environment.json"
+
+$cerPath = Join-Path $rootPath "/tools/certs/opencatapultlocal.cer"
+$pfxPath = Join-Path $rootPath "/tools/certs/opencatapultlocal.pfx"
 
 $defaultMsSqlConnectionString = "Server=localhost;Database=opencatapult.db;User ID=sa;Password=password;"
 $defaultSqliteDbFile = "opencatapult.db"
@@ -33,6 +37,23 @@ $appSettingsEnvContent = [PSCustomObject]@{
     DatabaseProvider = "sqlite"
     ConnectionStrings = [PSCustomObject]@{
         DefaultConnection = ""
+    }
+}
+
+if (!$noBuild) {
+    if (!(Test-Path $apiPublishPath)) {
+        New-Item -Path $apiPublishPath -ItemType directory | Out-Null
+    }
+
+    # publish API
+    Write-Output "Publishing API..."
+    Write-Output "dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath"
+    $result = dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error -Message "[ERROR] $result"
+        break
+    } else {
+        Copy-Item $pfxPath -Destination $apiPublishPath
     }
 }
 
@@ -93,10 +114,6 @@ if (!$noBuild) {
         Write-Output "Database Provider has been updated"
     }
 
-    if (!(Test-Path $apiPublishPath)) {
-        New-Item -Path $apiPublishPath -ItemType directory | Out-Null
-    }
-
     $success = $false;
     while (!$success) {
         $currentConnString = $appSettingsEnvContent.ConnectionStrings.DefaultConnection
@@ -130,15 +147,19 @@ if (!$noBuild) {
         }
 
         # apply migration
+        Write-Output "Applying migration..."
+
         $dbcontext = "CatapultDbContext"
         if ($dbProvider -eq "sqlite") {
             $dbcontext = "CatapultSqliteDbContext"
         }
+        $efDll = Join-Path $rootPath "/tools/ef.dll"
 
-        Write-Output "Applying migration..."
-        Write-Output "dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath --context $dbcontext"
-
-        $result = dotnet ef database update --startup-project $apiCsprojPath --project $dataCsprojPath --context $dbcontext
+        Set-Location $apiPublishPath
+        
+        Write-Output "dotnet exec --depsfile `"ocapi.deps.json`" --runtimeconfig `"ocapi.runtimeconfig.json`" `"$efDll`" database update --assembly `"Polyrific.Catapult.Api.Data.dll`" --startup-assembly `"ocapi.dll`" --verbose --context $dbcontext"
+        
+        $result = dotnet exec --depsfile "ocapi.deps.json" --runtimeconfig "ocapi.runtimeconfig.json" "$efDll" database update --assembly "Polyrific.Catapult.Api.Data.dll" --startup-assembly "ocapi.dll" --verbose --context $dbcontext
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message "[ERROR] $result"
             Write-Host "Error occured while trying to migrate database. Do you want to retry entering another connection string? (y/n)" -ForegroundColor Yellow
@@ -158,23 +179,8 @@ if (!$noBuild) {
         break;
     }
 
-    # check for dev cert
-    $certCheck = dotnet dev-certs https --check --verbose
-    if ($certCheck -eq "No valid certificate found."){
-        Write-Output "dotnet dev-certs https --trust"
-        dotnet dev-certs https --trust
-    } else {
-        Write-Output $certCheck
-    }
-
-    # publish API
-    Write-Output "Publishing API..."
-    Write-Output "dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath"
-    $result = dotnet publish $apiCsprojPath -c $configuration -o $apiPublishPath
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error -Message "[ERROR] $result"
-        break
-    }
+    # import dev cert
+    certutil -addstore -f -enterprise -v root "$cerPath" 
 }
 
 # run the API

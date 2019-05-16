@@ -13,6 +13,7 @@ $rootPath = Split-Path $PSScriptRoot
 $webCsprojPath = Join-Path $rootPath "/src/Web/Polyrific.Catapult.Web/Polyrific.Catapult.Web.csproj"
 $webPublishPath = Join-Path $rootPath "/publish/web"
 $webDll = Join-Path $webPublishPath "/ocweb.dll"
+$pfxPath = Join-Path $rootPath "/tools/certs/opencatapultlocal.pfx"
 
 if (!(Test-Path $webPublishPath)) {
 	New-Item -Path $webPublishPath -ItemType directory | Out-Null
@@ -25,6 +26,8 @@ $result = dotnet publish $webCsprojPath -c $configuration -o $webPublishPath
 if ($LASTEXITCODE -ne 0) {
 	Write-Error -Message "[ERROR] $result"
 	break
+} else {
+    Copy-Item $pfxPath -Destination $webPublishPath
 }
 
 Write-Output "Running Web..."

@@ -1,4 +1,7 @@
 # Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
+#Requires -RunAsAdministrator
+
 param(
     [string]$configuration = "Release",
     [string]$connString = "",
@@ -156,6 +159,8 @@ if ($noPrompt) {
 }
 $args += " -noRun"
 Invoke-BuildScript "build-api.ps1" $args
+
+Set-Location $opencatapultRootPath
 
 $args = "-configuration " + $configuration
 $args += " -url " + $https
