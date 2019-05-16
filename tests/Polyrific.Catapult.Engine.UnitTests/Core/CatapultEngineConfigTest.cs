@@ -53,7 +53,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             if (configFileExists)
                 Assert.Equal(_configs["ApiUrl"], config.ApiUrl);
             else
-                Assert.Equal("https://localhost", config.ApiUrl);
+                Assert.Equal("https://localhost:44305", config.ApiUrl);
         }
 
         [Fact]
@@ -86,7 +86,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             if (configName == "ApiUrl")
             {
                 var value = config.GetValue(configName);
-                Assert.Equal("https://localhost", value);
+                Assert.Equal("https://localhost:44305", value);
             }
             else
             {
@@ -108,7 +108,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             var value = config.GetValueOrDefault(configName, "DefaultValue");
 
             if (configName == "ApiUrl")
-                Assert.Equal("https://localhost", value);
+                Assert.Equal("https://localhost:44305", value);
             else
                 Assert.Equal("DefaultValue", value);
         }
@@ -140,7 +140,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             if (configName == "ApiUrl")
             {
-                Assert.Equal("https://localhost", config.ApiUrl);
+                Assert.Equal("https://localhost:44305", config.ApiUrl);
             }
             else
             {
@@ -157,7 +157,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             
             await CatapultEngineConfig.InitConfigFile(reset, _logger.Object);
             
-            var expected = reset ? "https://localhost" : "https://localhost/test";
+            var expected = reset ? "https://localhost:44305" : "https://localhost/test";
             var obj = JObject.Parse(await File.ReadAllTextAsync(EngineConfigFile));
             var loadedConfigs = obj["EngineConfig"].ToObject<Dictionary<string, string>>();
             
@@ -172,7 +172,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             var config = new CatapultEngineConfig(_logger.Object);
 
-            Assert.Equal("https://localhost", config.ApiUrl);
+            Assert.Equal("https://localhost:44305", config.ApiUrl);
             Assert.Equal(TimeSpan.Parse("00:01:00"), config.ApiRequestTimeout);
             Assert.Equal("", config.AuthorizationToken);
             Assert.Equal(30, config.JobCheckingInterval);
