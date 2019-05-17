@@ -157,6 +157,15 @@ export class JobDefinitionComponent implements OnInit {
                   this.router.navigateByUrl('/service?newService=true');
                 }
               });
+            } else if (err.includes('There is already a running job')) {
+              // Stay on the page
+              this.dialog.open(MessageDialogComponent, {
+                data: {
+                  title: 'Queue Job Failed',
+                  // tslint:disable-next-line: max-line-length
+                  message: `There is already a running job in the project. Please wait for it to complete before queueing a new job.`
+                }
+              });
             } else {
               this.onTaskExpanded(jobDefinition);
               this.dialog.open(MessageDialogComponent, {

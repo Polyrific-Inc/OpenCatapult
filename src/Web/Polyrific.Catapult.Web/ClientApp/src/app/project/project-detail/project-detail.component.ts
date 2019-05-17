@@ -173,8 +173,16 @@ export class ProjectDetailComponent implements OnInit {
               this.dialog.open(MessageDialogComponent, {
                 data: {
                   title: 'Queue Job Failed',
-                  // tslint:disable-next-line: max-line-length
                   message: `Project ${this.project.name} does not have a default job definition`
+                }
+              });
+            } else if (err.includes('There is already a running job')) {
+              // Stay on the page
+              this.dialog.open(MessageDialogComponent, {
+                data: {
+                  title: 'Queue Job Failed',
+                  // tslint:disable-next-line: max-line-length
+                  message: `There is already a running job in the project. Please wait for it to complete before queueing a new job.`
                 }
               });
             } else {
