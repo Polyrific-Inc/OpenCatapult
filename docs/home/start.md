@@ -2,193 +2,57 @@
 
 This document will guide you to get started with `OpenCatapult`.
 
-## Setup from release library
+The easiest way to get started and use `OpenCatapult` is by utilizing the released package. At the moment it is only available for Windows x64 platform. We have been planning to release the package for other platforms (Linux or Mac) as well in the future.
 
-[coming soon]
+If you want to try `OpenCatapult` in the platforms other than Windows now, you could always build it yourself from the source code which you can get from our [GitHub](https://github.com/Polyrific-Inc/OpenCatapult) repository. This [guide](../dev-guides/build-code.md) might be useful if you want to do it.
 
-## Build from source code
+## Prerequisites
 
-### Pre-requisites
+`OpenCatapult` requires **.NET Core 2.2 runtime** installed on your machine. If you don't have it, please get the installer from the [.NET download page](https://dotnet.microsoft.com/download). Please note that you just need the runtime, not the full SDK.
 
-- Git (https://git-scm.com/)
-- .Net Core 2.1 SDK (https://dotnet.microsoft.com/download/dotnet-core/2.1)
-  - `OpenCatapult` requires the LTS version as minimum requirement (which is SDK 2.1.500)
-- SQL Server 2017 (https://www.microsoft.com/en-us/sql-server/sql-server-2017)
-  - If you want to use local instance, you can use the free `Express` or `Developer` edition
-  - You can alo use remote instance (e.g. Azure SQL)
-- Node JS v8.9 or higher (https://nodejs.org)
-  - This is required by the Web UI. You can skip this if you go all CLI.
-- [Optional] Code editor, e.g. Visual Studio Code (https://code.visualstudio.com/)
+After installing the .NET Core runtime, please make sure it is correctly installed on your machine by typing this command in a Command Prompt:
 
-### Get the source code
-
-Clone `OpenCatapult` source code from the repository:
-
-```sh
-git clone https://github.com/Polyrific-Inc/OpenCatapult.git
+```
+dotnet --info
 ```
 
-Go to the root folder:
+If you get something like the screenshot below, it means you are good to go.
 
-```sh
-cd OpenCatapult
-```
+![dotnet info](../img/dotnet_info.jpg)
 
-From this point you have two options: build the source code using PowerShell scripts, or build manually.
+## Get the released package
 
-### Option 1: Build using PowerShell scripts
+Please go to [OpenCatapult release website](https://releases.opencatapult.net) and download the latest package available in the `All Components` box. As of this writing, the latest package is `opencatapult-v1.0.0-beta4-win-x64.zip`.
 
-> *Pro tips*: did you know that you can install PowerShell in Mac and Linux? Please check this out: <https://docs.microsoft.com/en-us/powershell/scripting/overview>
+## Run the components
 
-When running the scripts, you might get execution policy error. In most of the time it can be fixed by setting the execution policy to `RemoteSigned`:
+Please follow these steps to run the `OpenCatapult` components:
+1. Extract the released package into a location on your machine, e.g. `C:\OpenCatapult`
+2. Open a Command Prompt with elevated permission (press Windows key > type "cmd" > select "Run as administrator")
 
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned
-```
+![Command Prompt Admin](../img/cmd_admin.jpg)
 
-Please check the following [article](https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-6) for more details about execution policies.
+3. In the Command Prompt, go to the extracted location, e.g. type "cd C:\OpenCatapult"
 
-#### One script to rule them all
+![Command Prompt CD](../img/cmd_cd.jpg)
 
-You will need to build the API, Engine, and UI (either CLI or Web) to run `OpenCatapult`. In production scenario, the components are typically installed in separated machines. However, in the development scenario, we will run them all in your local machine. We have prepared a script to help you run the components easier. Run this command in PowerShell:
+4. In the extracted location, type "run". It will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
 
-```powershell
-.\builds\build-all.ps1
-``` 
+![Run API](../img/run_ocapi.jpg)
+![Run Web](../img/run_ocweb.jpg)
 
-> Note that running this script will run all 4 of the components. If you want to skip CLI or Web, you can add the `-noCli` or `-noWeb` option. For example if you want to go all CLI, use the following command instead: `.\builds\build-all.ps1 -noWeb`
+5. Open your browser, and go to `https://localhost:44300` to open the `OpenCatapult` Web UI
 
-The script will ask you to input the connection string for the API in the OpenCatapult API PowerShell window. It will also automatically open new PowerShell windows for other components. The default connection string is:
+![Browse Web](../img/browser_web.jpg)
 
-```powershell
-"Server=localhost;Database=polyrific.catapult.db;User ID=sa;Password=samprod;"
-```
-Please enter the overriden value without quotation marks.
+6. In the login page, enter "`admin@opencatapult.net`" as the UserName, and "`opencatapult`" as the Password. If you are able to login, it means the components have been setup correctly.
 
-> Please don't close the first powershell window since it is being used to run the API, which is being used by Engine, CLI, and Web. To learn more about how opencatapult components relate to each other, please check the following [article](./intro.md#the-components).
-
-If you want to build the API, Engine, CLI, or Web one by one, for example if you want to install them in separate machines, you can run the script for each of the component individually. Please find more details about them in the [Build Scripts](../dev-guides/build-scripts.md) section.
-
-
-### Option 2: Build from source code manually
-
-If for any reasons you cannot run the PowerShell scripts, you can always build the source code manually. Please go to the [Manually Build The Components](../dev-guides/manual-build.md) section, and go back here when finished.
-
-
-## Create your first project
-
-> *Note*: The tutorial below is using the opencatapult CLI. If you want to create the project using Web UI, please follow this [link](../user-guides/create-first-project-web.md)
-
-OpenCatapult allows you to define [task providers](../task-providers/task-provider.md) for all types of applications and devOps resources. We have pre-loaded OpenCatapult with an example [code generator provider](../task-providers/generator-provider.md) based on a .NET Core MVC template which will deploy directly to your local machine at this location: `.\publish\engine\working`.
-
-To get started, open up a PowerShell window that will be used as your CLI shell and enter the following from within your OpenCatapult folder:
-
-```sh
-cd .\publish\cli\
-```
-
-### Login
-
-When you previously applied migrations to initiate the database, a default user was created. You can use this user to login. When you're prompted to enter the password, the default password is `opencatapult`.
-
-```sh
-dotnet occli.dll login --user admin@opencatapult.net
-```
-
-We strongly advise you to change the default password (or just remove the default user), especially when you deploy the API into public environment:
-
-```sh
-dotnet occli.dll account password update
-```
-
-### Register and Start the Engine
-
-We need to register Engine so it can communicate with the API without problem. It involves step to register the Engine via CLI, and enter the generated token back in the Engine itself. If you have multiple Engine instances, you need to do this procedure on each of them.
-
-Activate the CLI shell, and enter this command:
-
-```sh
-dotnet occli.dll engine register --name Engine001
-```
-
-After the Engine is registered, let's generate a token for it, and copy the generated token:
-
-```sh
-dotnet occli.dll engine token --name Engine001
-```
-
-Activate the Engine shell, go to the engine's published folder, and set the `AuthorizationToken` config with the copied generated token:
-
-```sh
-cd .\publish\engine\
-dotnet ocengine.dll config set --name AuthorizationToken --value [the-generated-token]
-```
-
-Let's start the Engine:
-
-```sh
-dotnet ocengine.dll start
-```
-
-You can find more details about these procedure at [Manage engine registration](../user-guides/engine-registration.md)
-
-### Create sample project
-
-And now, you're good to go to create a project. We will use `sample` template, which will give you some pre-defined models, and a job definition with a single `Generate` task. The task uses a built-in generator provider called `Polyrific.Catapult.TaskProviders.AspNetCoreMvc`, which will generate a starter ASP.NET Core MVC application.
-
-Activate the CLI shell, and enter this command:
-
-```sh
-dotnet occli.dll project create --name first-project --client Polyrific --template sample
-```
-
-During the process you will be prompted to enter `Admin Email`. Please fill it with your email.
-
-After the project is created you can check the created elements in it. For example you might want to check the created data models:
-
-```sh
-dotnet occli.dll model list -p first-project
-```
-
-### Queue the job
-
-As explained in [introduction](./intro.md#the-circle-of-magic), the automation logics happens in the engine. We define what the engine shall do in what we call [job](../user-guides/job-definitions.md). A job can contain many tasks as needed by our development, build, and deployment pipeline. When we want to ask the engine to run a job, we add it into the [queue](../user-guides/job-queues.md), and any active engine will pick it up and execute it.
-
-The project that you've just created contains a `Default` job definition with a `Generate` task in it.
-
-```sh
-dotnet occli.dll job get -n Default -p first-project
-```
-
-Let's add the job to the queue so Engine can pick and execute it.
-
-```sh
-dotnet occli.dll queue add -j Default -p first-project
-```
-
- The above command will print the created queue in the CLI. You should check out the `Id` since this will be used to get the log or queue status. If this is your first time adding queue, the `Id` should be 1.
- 
-![Queue add](../img/queue-add.JPG)
-
-You can monitor the live progress by using the `queue log` command and passing the queue `Id`:
-
-```sh
-dotnet occli.dll queue log -n 1 -p first-project
-```
-
-The final status of the process can be checked by this command:
-
-```sh
-dotnet occli.dll queue get -n 1 -p first-project
-```
-
-It will tell you the status of each task execution, whether it's Success or Failed, along with the error remarks if any.
+![Welcome](../img/welcome.jpg)
 
 ## Next steps
 
-After creating your first project, you can:
+As you have the `OpenCatapult` setup on your machine, you can start to explore more about it.
 
-- [add models to the project](../user-guides/data-models.md)
-- [explore what else you can do with the project](../user-guides/user-guides.md)
-- [create another project by using Sample-DevOps project template](../user-guides/sample-project.md)
-- check references of [API](../api/api.md), [Engine](../engine/engine.md), [CLI](../cli/cli.md)
+- [create your first project](../user-guides/create-first-project-web.md)
+- [try CLI (Command Line Interface)](../user-guides/data-models.md)
+- [build from source code](../dev-guides/build-code.md)

@@ -22,6 +22,7 @@
   * [Sample Devops project template](user-guides/sample-project.md)
   * [Create your first project using Web UI](user-guides/create-first-project-web.md)
 * [Developer Guide](dev-guides/dev-guides.md)
+  * [Build The Source Code](dev-guides/build-code.md)
   * [Build Scripts](dev-guides/build-scripts.md)
   * [Manual Build](dev-guides/manual-build.md)
   * [Project template](dev-guides/project-template.md)
