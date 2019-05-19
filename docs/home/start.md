@@ -27,25 +27,26 @@ Please go to [OpenCatapult release website](https://releases.opencatapult.net) a
 ## Run the components
 
 Please follow these steps to run the `OpenCatapult` components:
-1. Extract the released package into a location on your machine, e.g. `C:\OpenCatapult`
-2. Open a Command Prompt with elevated permission (press Windows key > type "cmd" > select "Run as administrator")
+
+1) Extract the released package into a location on your machine, e.g. `C:\OpenCatapult`
+2) Open a Command Prompt with elevated permission (press Windows key > type "cmd" > select "Run as administrator")
 
 ![Command Prompt Admin](../img/cmd_admin.jpg)
 
-3. In the Command Prompt, go to the extracted location, e.g. type "cd C:\OpenCatapult"
+3) In the Command Prompt, go to the extracted location, e.g. type "cd C:\OpenCatapult"
 
 ![Command Prompt CD](../img/cmd_cd.jpg)
 
-4. In the extracted location, type "run". It will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
+4) In the extracted location, type "run". It will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
 
 ![Run API](../img/run_ocapi.jpg)
 ![Run Web](../img/run_ocweb.jpg)
 
-5. Open your browser, and go to `https://localhost:44300` to open the `OpenCatapult` Web UI
+5) Open your browser, and go to `https://localhost:44300` to open the `OpenCatapult` Web UI
 
 ![Browse Web](../img/browser_web.jpg)
 
-6. In the login page, enter "`admin@opencatapult.net`" as the UserName, and "`opencatapult`" as the Password. If you are able to login, it means the components have been setup correctly.
+6) In the login page, enter "`admin@opencatapult.net`" as the UserName, and "`opencatapult`" as the Password. If you are able to login, it means the components have been setup correctly.
 
 ![Welcome](../img/welcome.jpg)
 
