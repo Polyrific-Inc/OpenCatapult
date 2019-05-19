@@ -29,6 +29,7 @@ Please go to [OpenCatapult release website](https://releases.opencatapult.net) a
 Please follow these steps to run the `OpenCatapult` components:
 
 1) Extract the released package into a location on your machine, e.g. `C:\OpenCatapult`
+
 2) Open a Command Prompt with elevated permission (press Windows key > type "cmd" > select "Run as administrator")
 
 ![Command Prompt Admin](../img/cmd_admin.jpg)
