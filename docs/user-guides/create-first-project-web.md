@@ -90,7 +90,7 @@ In the `Job Queues` tab, you can see the job is being queued. You can monitor th
 The final status of the process can be checked in the job queue details. Either click the `info` button in the queue, or click `back` from the log page.
 
 
-![Job Queue Status](../img/job-queue-status-ui.JPG)
+![Job Queue Status](../img/job-queue-status-ui.jpg)
 
 
 It will tell you the status of each task execution, whether it's Success or Failed, along with the error remarks if any.
