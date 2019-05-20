@@ -7,6 +7,8 @@
 
 @ECHO OFF
 
+cd %~dp0
+
 SET runapi=0
 SET runcli=0
 SET runengine=0

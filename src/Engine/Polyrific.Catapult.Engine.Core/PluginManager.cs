@@ -104,13 +104,21 @@ namespace Polyrific.Catapult.Engine.Core
                                 var instance = (TaskProvider)info.CreateInstance(type, false, BindingFlags.ExactBinding, null, new object[] { new string[0] }, null, null);
                                 if (instance != null)
                                 {
+                                    var startFile = file;
+
+                                    // if .dll, check if .exe file exists
+                                    if (file.EndsWith(".dll") && files.Contains(file.Replace(".dll", ".exe")))
+                                    {
+                                        startFile = file.Replace(".dll", ".exe");
+                                    }
+
                                     if (!_plugins.ContainsKey(instance.Type))
                                         _plugins.Add(instance.Type,
                                             new List<PluginItem>
-                                                {new PluginItem(instance.Name, file, instance.RequiredServices)});
+                                                {new PluginItem(instance.Name, startFile, instance.RequiredServices)});
                                     else
                                         _plugins[instance.Type]
-                                            .Add(new PluginItem(instance.Name, file, instance.RequiredServices));
+                                            .Add(new PluginItem(instance.Name, startFile, instance.RequiredServices));
                                 }
                             }
                         }

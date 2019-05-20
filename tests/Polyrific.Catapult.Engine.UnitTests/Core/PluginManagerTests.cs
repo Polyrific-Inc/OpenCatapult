@@ -104,7 +104,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.dll"), newPlugin.StartFilePath);
         }
 
-        [Fact]
+        [SkipOnNonWindowsFact]
         public async void RefreshPlugin_Exe_PluginLoaded()
         {
             var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.2");
@@ -120,7 +120,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             _engineConfig.SetupGet(e => e.PluginsLocation).Returns(publishLocation);
 
-            await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation, "net461");
+            await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation, "win-x64");
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
             pluginManager.RefreshPlugins();
 
@@ -181,20 +181,20 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         }
 
         #region Private methods
-        private async Task GenerateTestPlugin(string pluginName, string pluginType, string outputLocation, string publishLocation, string framework = null)
+        private async Task GenerateTestPlugin(string pluginName, string pluginType, string outputLocation, string publishLocation, string runtime = null)
         {
             var projectFile = Path.Combine(outputLocation, $"{pluginName}.csproj");
-            var newProjectArgs = $"new console -n {pluginName} -o \"{outputLocation}\"";
-
-            if (!string.IsNullOrEmpty(framework))
-                newProjectArgs += $" --target-framework-override {framework}";
             
-            await Execute("dotnet", newProjectArgs);
+            await Execute("dotnet", $"new console -n {pluginName} -o \"{outputLocation}\"");
             var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.TaskProviders.Core.dll");
             AddDllReference(projectFile, pluginCoreDll);
             WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
 
-            await Execute("dotnet", $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release");
+            var publishArgs = $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release";
+            if (!string.IsNullOrEmpty(runtime))
+                publishArgs += $" --runtime {runtime} --self-contained false";
+
+            await Execute("dotnet", publishArgs);
         }
 
         private void WriteDummyPlugin(string programFile, string pluginName, string pluginType)

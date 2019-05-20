@@ -110,7 +110,7 @@ namespace Polyrific.Catapult.Engine.Core
                         }
 
                         // main process
-                        _logger.LogInformation("[Queue {Code}] Running {jobTask.Type} task", job.Code, jobTask.Type);
+                        _logger.LogInformation("[Queue {Code}] Running {Type} task", job.Code, jobTask.Type);
 
                         System.Console.WriteLine($"Invoking \"{jobTask.Type}\" task.");
                         result = await taskObj.RunMainTask(outputValues);
