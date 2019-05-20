@@ -1,67 +1,91 @@
 # Create your first project using Web UI
 
-Let's open the web browser, and type the opencatapult web UI address. If you follow how to build the Web UI in the [Quick Start](../home/start.md), it should be https://localhost:44300
+Let's open the web browser, and go to the `OpenCatapult` Web UI address. If you followed the [Quick Start](../home/start.md), it should be https://localhost:44300.
 
 ## Login
 
-You would be prompted to login. Please use the user `admin@opencatapult.net` and password: `opencatapult`
+If you haven't logged in, please login first by using "`admin@opencatapult.net`" as the username and "`opencatapult`" as the password.
 
-![Login Page](../img/login.JPG)
+![Login Page](../img/login.jpg)
 
-We strongly advise you to change the default password (or just remove the default user), especially when you deploy the API into public environment. You can change it in the https://localhost:44300/user-profile
+We strongly advise you to change the default password (or just remove the default user), especially when you deploy the API into public environment. You can change the password via User Profile page later.
 
 ## Register and Start the Engine
 
-We need to register Engine so it can communicate with the API without problem. It involves step to register the Engine via CLI, and enter the generated token back in the Engine itself. If you have multiple Engine instances, you need to do this procedure on each of them.
+Registering the Engine is not required to create a project actually. It is needed later when we want to queue a job in the project. However, we recommend to do it as part of the setting up `OpenCatapult` for the first time.
 
-Go to the menu `Engines`, and click `Register New Engine`. Enter the engine name `Engine001`, and click Save.
+Registering the Engine involves two main steps:
 
-![Register Engine](../img/engine-ui.JPG)
+1. Register it via Web UI, and generate an access token
+2. Enter the generated access token in the Engine config
 
-After the Engine is registered, let's generate a token for it. Please click the key icon in the engine record, and click `Generate`. Please copy the token by clicking the copy icon.
+If you have multiple Engine instances, you need to repeat the steps for each of them.
+
+In the Web UI, select `Engines` from the top navigation menu, and click `Register New Engine` button. You can name your Engine with whatever you want, e.g. `Engine001`.
+
+![Register Engine](../img/engine-ui.jpg)
+
+After saving the new Engine, let's generate an access token for it. Please click the key icon in the engine record to open the Engine Token form.
+
+![Engine Record](../img/engine-record.jpg)
+
+In the Engine Token form, click `Generate` button. Please copy the token by clicking the copy icon.
 
 ![Engine Token](../img/engine-token-ui.JPG)
 
-Activate the Engine shell, go to the engine's published folder, and set the `AuthorizationToken` config with the copied generated token:
+Activate the Engine shell (if you followed the [Quick Start](../home/start.md) it should have been opened for you). Type the following command to enter the access token into the Engine config:
 
 ```sh
-cd .\publish\engine\
-dotnet ocengine.dll config set --name AuthorizationToken --value [the-generated-token]
+ocengine config set --name AuthorizationToken --value [the-generated-token]
 ```
 
-Let's start the Engine:
+![Set Engine Token](../img/engine-config-token.jpg)
+
+After setting the access token, let's start the Engine by typing the following command:
 
 ```sh
-dotnet ocengine.dll start
+ocengine start
 ```
+
+![Engine Start](../img/engine-start.jpg)
 
 You can find more details about these procedure at [Manage engine registration](../user-guides/engine-registration.md)
 
 ## Create sample project
 
-And now, you're good to go to create a project. We will use `sample` template, which will give you some pre-defined models, and a job definition with a single `Generate` task. The task uses a built-in generator provider called `Polyrific.Catapult.TaskProviders.AspNetCoreMvc`, which will generate a starter ASP.NET Core MVC application.
+And now, you're good to go to create a project. We will use `sample` project template, which will give you some pre-defined models, and a job definition with a single `Generate` task. The task uses a built-in generator provider called `Polyrific.Catapult.TaskProviders.AspNetCoreMvc`, which will generate a starter ASP.NET Core MVC application.
 
-Head up to the new project page, by clicking the `New Project` button at the left hand side of the project Page. Fill the form as below, and click save.
+Select `Projects` from the main navigation menu, and click the `New Project` button to open the new project form.
 
-![Create Project](../img/create-project-ui.JPG)
+![New Project](../img/new-project-button.jpg)
 
-You have created a new project! Let's generate the code for our project!
+In the new project form, enter the details of the new project.
+
+![Create Project](../img/create-project-ui.jpg)
+
+At the bottom of the form you will also find the "Default" job that will be created because you select the `sample` project template. In the "Generate" task, please enter your email which will be used as the Admin user in the generated application later.
+
+![Admin Email](../img/admin-email.jpg)
+
+After saving the form, you have completed the process of creating your first project. You can explore the project and see the pre-populated Data Models and the default Job Definition.
+
+![Your first project](../img/first-project.jpg)
+
+The next step is to make `OpenCatapult` actually generate your application by queueing the default Job Definition. Let's go!
 
 ## Queue the job
 
-As explained in [introduction](./intro.md#the-circle-of-magic), the automation logics happens in the engine. We define what the engine shall do in what we call [job](../user-guides/job-definitions.md). A job can contain many tasks as needed by our development, build, and deployment pipeline. When we want to ask the engine to run a job, we add it into the [queue](../user-guides/job-queues.md), and any active engine will pick it up and execute it.
+As explained in the [Introduction](./intro.md#the-circle-of-magic) of this docs, the automation logics happens in the Engine. We define what the Engine should do in a [Job Definition](../user-guides/job-definitions.md). A job can contain one or more tasks as needed by our development process and deployment pipeline. When we want to ask the Engine to run a job, we add it into a [queue](../user-guides/job-queues.md), and any active Engine will automatically pick it up and execute it.
 
-The project that you've just created contains a `Default` job definition with a `Generate` task in it. Let's add the job to the queue so Engine can pick and execute it.
+The project that you've just created contains a `Default` Job Definition with a single `Generate` Task in it. You can put the job in the queue by clicking the project's `Queue job` button. Click `Yes` on the confirmation dialog.
 
-Go to the `Job Definitions` tab, and click the play button of the `Default` job definition
+![Queue job button](../img/queue-job-button.jpg)
 
-![Job Definition](../img/queue-job.JPG)
+In the `Job Queues` tab, you can see the job is being queued. You can monitor the live progress of the job queue, by clicking the log icon
 
-You can monitor the live progress of the job queue, by clicking the log icon
+![Job Queue](../img/job-queue-ui.jpg)
 
-![Job Queue](../img/job-queue-ui.JPG)
-
-![Job Queue Log](../img/job-queue-log-ui.JPG)
+![Job Queue Log](../img/job-queue-log-ui.jpg)
 
 The final status of the process can be checked in the job queue details. Either click the `info` button in the queue, or click `back` from the log page.
 
