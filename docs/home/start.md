@@ -34,7 +34,10 @@ Please follow these steps to run the `OpenCatapult` components:
 
 2) Open the location in Windows Explorer
 
-3) Right click the "`run.bat`" file, and select "`Run as administrator`".
+3) Right click the "`run.bat`" file, and select "`Run as administrator`". Click "Yes" on the confirmation dialog
+
+![Run as administrator](../img/run-admin.jpg)
+![User Access Control Confirmation](../img/uac-confirm.jpg)
 
 4) Notice that it will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
 
