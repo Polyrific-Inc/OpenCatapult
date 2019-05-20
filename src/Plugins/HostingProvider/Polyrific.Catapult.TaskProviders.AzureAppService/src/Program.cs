@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Polyrific.Catapult.TaskProviders.AzureAppService.Helpers;
 using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.TaskProviders.AzureAppService
@@ -30,6 +31,12 @@ namespace Polyrific.Catapult.TaskProviders.AzureAppService
 
         public override async Task<(string hostLocation, Dictionary<string, string> outputValues, string errorMessage)> Deploy()
         {
+            var (outputVersion, err) = await CommandHelper.Execute("dotnet", "--list-sdks");
+            if (string.IsNullOrWhiteSpace(outputVersion) || !string.IsNullOrEmpty(err))
+            {
+                return (null, null, $"Task Provider {TaskProviderName} require dotnet sdk to be installed");
+            }
+
             if (_azure == null)
                 _azure = new AzureAutomation(GetAzureAppServiceConfig(AdditionalConfigs), _azureUtils, _deployUtils, Logger);
 

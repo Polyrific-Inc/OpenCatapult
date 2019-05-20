@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectMember;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.TaskProviders.Core
 {
@@ -59,106 +61,114 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             var result = new Dictionary<string, object>();
 
-            if (PullTaskConfig != null)
+            try
             {
-                switch (ProcessToExecute)
+                if (PullTaskConfig != null)
                 {
-                    case "pre":
-                        var error = await BeforePull();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    case "main":
-                        (string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage) = await Pull();
-                        result.Add("repositoryLocation", repositoryLocation);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
-                    case "post":
-                        error = await AfterPull();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    default:
-                        await BeforePull();
-                        (repositoryLocation, outputValues, errorMessage) = await Pull();
-                        await AfterPull();
+                    switch (ProcessToExecute)
+                    {
+                        case "pre":
+                            var error = await BeforePull();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        case "main":
+                            (string repositoryLocation, Dictionary<string, string> outputValues, string errorMessage) = await Pull();
+                            result.Add("repositoryLocation", repositoryLocation);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                        case "post":
+                            error = await AfterPull();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        default:
+                            await BeforePull();
+                            (repositoryLocation, outputValues, errorMessage) = await Pull();
+                            await AfterPull();
 
-                        result.Add("repositoryLocation", repositoryLocation);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
+                            result.Add("repositoryLocation", repositoryLocation);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                    }
+                }
+                else if (PushTaskConfig != null)
+                {
+                    switch (ProcessToExecute)
+                    {
+                        case "pre":
+                            var error = await BeforePush();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        case "main":
+                            (string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
+                            result.Add("remoteUrl", remoteUrl);
+                            result.Add("pullRequestUrl", pullRequestUrl);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                        case "post":
+                            error = await AfterPush();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        default:
+                            await BeforePush();
+                            (remoteUrl, pullRequestUrl, outputValues, errorMessage) = await Push();
+                            await AfterPush();
+
+                            result.Add("remoteUrl", remoteUrl);
+                            result.Add("pullRequestUrl", pullRequestUrl);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                    }
+                }
+                else if (MergeTaskConfig != null && !string.IsNullOrEmpty(PrNumber))
+                {
+                    switch (ProcessToExecute)
+                    {
+                        case "pre":
+                            var error = await BeforeMerge();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        case "main":
+                            (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Merge();
+                            result.Add("remoteUrl", remoteUrl);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                        case "post":
+                            error = await AfterMerge();
+                            if (!string.IsNullOrEmpty(error))
+                                result.Add("errorMessage", error);
+                            break;
+                        default:
+                            await BeforeMerge();
+                            (remoteUrl, outputValues, errorMessage) = await Merge();
+                            await AfterMerge();
+
+                            result.Add("remoteUrl", remoteUrl);
+                            result.Add("outputValues", outputValues);
+                            result.Add("errorMessage", errorMessage);
+                            break;
+                    }
+                }
+                else if (DeleteTaskConfig != null)
+                {
+                    var error = await DeleteRepository();
+                    if (!string.IsNullOrEmpty(error))
+                        result.Add("errorMessage", error);
                 }
             }
-            else if (PushTaskConfig != null)
+            catch (Exception ex)
             {
-                switch (ProcessToExecute)
-                {
-                    case "pre":
-                        var error = await BeforePush();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    case "main":
-                        (string remoteUrl, string pullRequestUrl, Dictionary<string, string> outputValues, string errorMessage) = await Push();
-                        result.Add("remoteUrl", remoteUrl);
-                        result.Add("pullRequestUrl", pullRequestUrl);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
-                    case "post":
-                        error = await AfterPush();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    default:
-                        await BeforePush();
-                        (remoteUrl, pullRequestUrl, outputValues, errorMessage) = await Push();
-                        await AfterPush();
-
-                        result.Add("remoteUrl", remoteUrl);
-                        result.Add("pullRequestUrl", pullRequestUrl);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
-                }
-            }
-            else if (MergeTaskConfig != null && !string.IsNullOrEmpty(PrNumber))
-            {
-                switch (ProcessToExecute)
-                {
-                    case "pre":
-                        var error = await BeforeMerge();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    case "main":
-                        (string remoteUrl, Dictionary<string, string> outputValues, string errorMessage) = await Merge();
-                        result.Add("remoteUrl", remoteUrl);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
-                    case "post":
-                        error = await AfterMerge();
-                        if (!string.IsNullOrEmpty(error))
-                            result.Add("errorMessage", error);
-                        break;
-                    default:
-                        await BeforeMerge();
-                        (remoteUrl, outputValues, errorMessage) = await Merge();
-                        await AfterMerge();
-
-                        result.Add("remoteUrl", remoteUrl);
-                        result.Add("outputValues", outputValues);
-                        result.Add("errorMessage", errorMessage);
-                        break;
-                }
-            }
-            else if (DeleteTaskConfig != null)
-            {
-                var error = await DeleteRepository();
-                if (!string.IsNullOrEmpty(error))
-                    result.Add("errorMessage", error);
+                Logger.LogError(ex, ex.Message);
+                result.Add("errorMessage", ex.Message);
             }
 
             return JsonConvert.SerializeObject(result);

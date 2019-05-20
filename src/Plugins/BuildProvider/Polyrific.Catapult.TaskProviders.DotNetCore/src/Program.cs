@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
+using Polyrific.Catapult.TaskProviders.DotNetCore.Helpers;
 
 namespace Polyrific.Catapult.TaskProviders.DotNetCore
 {
@@ -21,6 +22,12 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCore
         
         public override async Task<(string outputArtifact, Dictionary<string, string> outputValues, string errorMessage)> Build()
         {
+            var (outputVersion, err) = await CommandHelper.Execute("dotnet", "--list-sdks");
+            if (string.IsNullOrWhiteSpace(outputVersion) || !string.IsNullOrEmpty(err))
+            {
+                return (null, null, $"Task Provider {TaskProviderName} require dotnet sdk to be installed");
+            }
+
             var csprojLocation = Path.Combine(Config.SourceLocation ?? Config.WorkingLocation, ProjectName, $"{ProjectName}.csproj");
             if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("CsprojLocation") && !string.IsNullOrEmpty(AdditionalConfigs["CsprojLocation"]))
                 csprojLocation = AdditionalConfigs["CsprojLocation"];

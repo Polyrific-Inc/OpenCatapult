@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.ProjectDataModel;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.TaskProviders.Core
 {
@@ -47,34 +49,43 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             var result = new Dictionary<string, object>();
 
-            switch (ProcessToExecute)
+            try
             {
-                case "pre":
-                    var error = await BeforeGenerate();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                case "main":
-                    (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Generate();
-                    result.Add("outputLocation", outputLocation);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
-                case "post":
-                    error = await AfterGenerate();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                default:
-                    await BeforeGenerate();
-                    (outputLocation, outputValues, errorMessage) = await Generate();
-                    await AfterGenerate();
+                switch (ProcessToExecute)
+                {
+                    case "pre":
+                        var error = await BeforeGenerate();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    case "main":
+                        (string outputLocation, Dictionary<string, string> outputValues, string errorMessage) = await Generate();
+                        result.Add("outputLocation", outputLocation);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                    case "post":
+                        error = await AfterGenerate();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    default:
+                        await BeforeGenerate();
+                        (outputLocation, outputValues, errorMessage) = await Generate();
+                        await AfterGenerate();
 
-                    result.Add("outputLocation", outputLocation);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
+                        result.Add("outputLocation", outputLocation);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                }
             }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                result.Add("errorMessage", ex.Message);
+            }
+            
 
             return JsonConvert.SerializeObject(result);
         }

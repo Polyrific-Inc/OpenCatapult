@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
 using Polyrific.Catapult.Shared.Dto.Constants;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace Polyrific.Catapult.TaskProviders.Core
 {
@@ -43,35 +45,43 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             var result = new Dictionary<string, object>();
 
-            switch (ProcessToExecute)
+            try
             {
-                case "pre":
-                    var error = await BeforePublishArtifact();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                case "main":
-                    (string storageLocation, Dictionary<string, string> outputValues, string errorMessage) = await PublishArtifact();
-                    result.Add("storageLocation", storageLocation);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
-                case "post":
-                    error = await AfterPublishArtifact();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                default:
-                    await BeforePublishArtifact();
-                    (storageLocation, outputValues, errorMessage) = await PublishArtifact();
-                    await AfterPublishArtifact();
+                switch (ProcessToExecute)
+                {
+                    case "pre":
+                        var error = await BeforePublishArtifact();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    case "main":
+                        (string storageLocation, Dictionary<string, string> outputValues, string errorMessage) = await PublishArtifact();
+                        result.Add("storageLocation", storageLocation);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                    case "post":
+                        error = await AfterPublishArtifact();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    default:
+                        await BeforePublishArtifact();
+                        (storageLocation, outputValues, errorMessage) = await PublishArtifact();
+                        await AfterPublishArtifact();
 
-                    result.Add("storageLocation", storageLocation);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
+                        result.Add("storageLocation", storageLocation);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                }
             }
-
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                result.Add("errorMessage", ex.Message);
+            }
+            
             return JsonConvert.SerializeObject(result);
         }
 

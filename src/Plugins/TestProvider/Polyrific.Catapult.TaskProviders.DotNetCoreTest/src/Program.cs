@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
+using Polyrific.Catapult.TaskProviders.DotNetCoreTest.Helpers;
 
 namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest
 {
@@ -21,6 +22,12 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCoreTest
         
         public override async Task<(string testResultLocation, Dictionary<string, string> outputValues, string errorMessage)> Test()
         {
+            var (outputVersion, err, exitCode) = await CommandHelper.Execute("dotnet", "--list-sdks");
+            if (string.IsNullOrWhiteSpace(outputVersion) || !string.IsNullOrEmpty(err))
+            {
+                return (null, null, $"Task Provider {TaskProviderName} require dotnet sdk to be installed");
+            }
+
             var testLocation = Config.TestLocation ?? string.Empty;
             if (!Path.IsPathRooted(testLocation))
                 testLocation = Path.Combine(Config.WorkingLocation, testLocation);

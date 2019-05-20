@@ -2,6 +2,8 @@
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers;
 using Polyrific.Catapult.TaskProviders.Core;
 
 namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
@@ -18,6 +20,12 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
         
         public override async Task<(string outputLocation, Dictionary<string, string> outputValues, string errorMessage)> Generate()
         {
+            var installedSdk = await CommandHelper.RunDotnet("--list-sdks");
+            if (string.IsNullOrWhiteSpace(installedSdk) || !installedSdk.Contains("2.2."))
+            {
+                return (null, null, $"Task Provider {TaskProviderName} require minimum dotnet sdk 2.2 to be installed");
+            }
+
             AdditionalConfigs.TryGetValue("AdminEmail", out var adminEmail);
 
             Config.OutputLocation = Config.OutputLocation ?? Config.WorkingLocation;

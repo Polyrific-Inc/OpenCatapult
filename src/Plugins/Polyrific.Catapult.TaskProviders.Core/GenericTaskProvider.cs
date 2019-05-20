@@ -1,7 +1,9 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.TaskProviders.Core.Configs;
@@ -39,32 +41,40 @@ namespace Polyrific.Catapult.TaskProviders.Core
         {
             var result = new Dictionary<string, object>();
 
-            switch (ProcessToExecute)
+            try
             {
-                case "pre":
-                    var error = await BeforeGenericExecution();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                case "main":
-                    (string successMessage, var outputValues, string errorMessage) = await GenericExecution();
-                    result.Add("successMessage", successMessage);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
-                case "post":
-                    error = await AfterGenericExecution();
-                    if (!string.IsNullOrEmpty(error))
-                        result.Add("errorMessage", error);
-                    break;
-                default:
-                    await BeforeGenericExecution();
-                    (successMessage, outputValues, errorMessage) = await GenericExecution();
-                    await AfterGenericExecution();
-                    result.Add("successMessage", successMessage);
-                    result.Add("outputValues", outputValues);
-                    result.Add("errorMessage", errorMessage);
-                    break;
+                switch (ProcessToExecute)
+                {
+                    case "pre":
+                        var error = await BeforeGenericExecution();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    case "main":
+                        (string successMessage, var outputValues, string errorMessage) = await GenericExecution();
+                        result.Add("successMessage", successMessage);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                    case "post":
+                        error = await AfterGenericExecution();
+                        if (!string.IsNullOrEmpty(error))
+                            result.Add("errorMessage", error);
+                        break;
+                    default:
+                        await BeforeGenericExecution();
+                        (successMessage, outputValues, errorMessage) = await GenericExecution();
+                        await AfterGenericExecution();
+                        result.Add("successMessage", successMessage);
+                        result.Add("outputValues", outputValues);
+                        result.Add("errorMessage", errorMessage);
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, ex.Message);
+                result.Add("errorMessage", ex.Message);
             }
 
             return JsonConvert.SerializeObject(result);
