@@ -4,13 +4,15 @@ This document will guide you to get started with `OpenCatapult`.
 
 The easiest way to get started and use `OpenCatapult` is by utilizing the released package. At the moment it is only available for Windows x64 platform. We have been planning to release the package for other platforms (Linux or Mac) as well in the future.
 
-If you want to try `OpenCatapult` in the platforms other than Windows now, you could always build it yourself from the source code which you can get from our [GitHub](https://github.com/Polyrific-Inc/OpenCatapult) repository. This [guide](../dev-guides/build-code.md) might be useful if you want to do it.
+If you want to try `OpenCatapult` in the platforms other than Windows now, you could always build it yourself from the source code which you can get from our [GitHub repository](https://github.com/Polyrific-Inc/OpenCatapult). This [guide](../dev-guides/build-code.md) might be useful if you want to do it.
 
 ## Prerequisites
 
-`OpenCatapult` requires **.NET Core 2.2 runtime** installed on your machine. If you don't have it, please get the installer from the [.NET download page](https://dotnet.microsoft.com/download). Please note that you just need the runtime, not the full SDK.
+The main `OpenCatapult` components require **.NET Core 2.2 runtime** installed on your machine. However, in this tutorial you will also need **.NET Core 2.2 SDK** because you will generate an ASP.NET Core MVC application later by using some `.NET CLI` commands.
 
-After installing the .NET Core runtime, please make sure it is correctly installed on your machine by typing this command in a Command Prompt:
+If you don't have the SDK, please get the installer from the [.NET download page](https://dotnet.microsoft.com/download). Please note that installing SDK will also include the runtime, so you don't have to install them twice.
+
+After installing .NET Core, please make sure it is correctly installed on your machine by typing this command in a Command Prompt:
 
 ```
 dotnet --info
@@ -22,7 +24,7 @@ If you get something like the screenshot below, it means you are good to go.
 
 ## Get the released package
 
-Please go to [OpenCatapult release website](https://releases.opencatapult.net) and download the latest package available in the `All Components` box. As of this writing, the latest package is `opencatapult-v1.0.0-beta4-win-x64.zip`.
+Please go to [OpenCatapult release website](https://releases.opencatapult.net) and download the latest package available in the `All Components` box. As of this writing, the latest package is `opencatapult-v1.0.0-beta4.1-win-x64.zip`.
 
 ## Run the components
 
@@ -30,15 +32,11 @@ Please follow these steps to run the `OpenCatapult` components:
 
 1) Extract the released package into a location on your machine, e.g. `C:\OpenCatapult`
 
-2) Open a Command Prompt with elevated permission (press Windows key > type "cmd" > select "Run as administrator")
+2) Open the location in Windows Explorer
 
-![Command Prompt Admin](../img/cmd_admin.jpg)
+3) Right click the "`run.bat`" file, and select "`Run as administrator`".
 
-3) In the Command Prompt, go to the extracted location, e.g. type "cd C:\OpenCatapult"
-
-![Command Prompt CD](../img/cmd_cd.jpg)
-
-4) In the extracted location, type "run". It will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
+4) Notice that it will open four new Command Prompt windows for each of the `OpenCatapult` component: API, Engine, CLI, and Web UI. Wait a minute for the process to complete, and find the windows for API and Web components and make sure they show as per screenshot below:
 
 ![Run API](../img/run_ocapi.jpg)
 ![Run Web](../img/run_ocweb.jpg)
