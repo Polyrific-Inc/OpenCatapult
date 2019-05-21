@@ -4,7 +4,7 @@ description:  'A Deploy database task provider for running the migration script 
 thumbnail-url: '/assets/img/task-provider/efcore.png'
 type: 'DatabaseProvider'
 author: 'Polyrific'
-version: '1.0.0-beta4'
+version: '1.0.0-rc'
 tags: 'Database Deploy, Entity Framework Core, DotNet Core, Microsoft'
 additional-configs:
   - name: StartupProjectName

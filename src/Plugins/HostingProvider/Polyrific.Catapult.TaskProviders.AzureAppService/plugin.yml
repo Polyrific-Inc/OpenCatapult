@@ -4,7 +4,7 @@ description: 'A deploy task provider for deploying an application to azure app s
 thumbnail-url: '/assets/img/task-provider/azureappservice.png'
 type: 'HostingProvider'
 author: 'Polyrific'
-version: '1.0.0-beta4'
+version: '1.0.0-rc'
 tags: 'Deploy, Azure, Azure App Service, Microsoft, Web, Hosting, Cloud, PaaS'
 required-services:
   - Azure

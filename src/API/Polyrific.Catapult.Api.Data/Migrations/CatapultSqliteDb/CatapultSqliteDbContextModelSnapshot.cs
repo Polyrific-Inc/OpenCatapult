@@ -1079,7 +1079,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             Name = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc",
                             ThumbnailUrl = "/assets/img/task-provider/aspnetcore.png",
                             Type = "GeneratorProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1093,7 +1093,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             RequiredServicesString = "GitHub",
                             ThumbnailUrl = "/assets/img/task-provider/github.png",
                             Type = "RepositoryProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1106,7 +1106,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             Name = "Polyrific.Catapult.TaskProviders.DotNetCore",
                             ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png",
                             Type = "BuildProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1119,7 +1119,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             Name = "Polyrific.Catapult.TaskProviders.DotNetCoreTest",
                             ThumbnailUrl = "/assets/img/task-provider/dotnetcore.png",
                             Type = "TestProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1132,7 +1132,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             Name = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore",
                             ThumbnailUrl = "/assets/img/task-provider/efcore.png",
                             Type = "DatabaseProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1146,7 +1146,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             RequiredServicesString = "Azure",
                             ThumbnailUrl = "/assets/img/task-provider/azureappservice.png",
                             Type = "HostingProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         },
                         new
                         {
@@ -1159,7 +1159,7 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                             Name = "Polyrific.Catapult.TaskProviders.GenericCommand",
                             ThumbnailUrl = "/assets/img/task-provider/generic.png",
                             Type = "GenericTaskProvider",
-                            Version = "1.0.0-beta4"
+                            Version = "1.0.0-rc"
                         });
                 });
 

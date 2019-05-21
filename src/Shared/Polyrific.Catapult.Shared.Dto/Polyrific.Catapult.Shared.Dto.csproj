@@ -5,7 +5,7 @@
     <RootNamespace>Polyrific.Catapult.Shared.Dto</RootNamespace>
     <PackageId>Polyrific.Catapult.Shared.Dto</PackageId>
     <Description>Shared library for Polyrific Catapult Data Transfer Object (DTO)</Description>
-    <Version>1.0.0-beta4</Version>
+    <Version>1.0.0-rc</Version>
     <Authors>frandi-polyrific</Authors>
     <Company>Polyrific, Inc</Company>
     <PackageTags>catapult;dto;catapult dto</PackageTags>

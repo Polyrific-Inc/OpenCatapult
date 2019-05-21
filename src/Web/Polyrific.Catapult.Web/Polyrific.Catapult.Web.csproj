@@ -6,6 +6,18 @@
     <TypeScriptToolsVersion>Latest</TypeScriptToolsVersion>
     <IsPackable>false</IsPackable>
     <AssemblyName>ocweb</AssemblyName>
+	<PackageId>Polyrific.Catapult.Web</PackageId>
+    <Version>1.0.0-rc</Version>
+    <Authors>Polyrific</Authors>
+    <Company>Polyrific, Inc</Company>
+    <Product>OpenCatapult</Product>
+    <Description>OpenCatapult - Web</Description>
+    <Copyright>Copyright (c) Polyrific, Inc 2018. All rights reserved</Copyright>
+    <PackageLicenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://opencatapult.net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>Catapult, OpenCatapult, tools, devops, Web, UI</PackageTags>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
 
