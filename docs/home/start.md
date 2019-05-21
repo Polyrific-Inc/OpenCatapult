@@ -57,5 +57,5 @@ Please follow these steps to run the `OpenCatapult` components:
 As you have the `OpenCatapult` setup on your machine, you can start to explore more about it.
 
 - [create your first project](../user-guides/create-first-project-web.md)
-- [try CLI (Command Line Interface)](../user-guides/data-models.md)
+- [try CLI to manage projects](../user-guides/projects.md)
 - [build from source code](../dev-guides/build-code.md)

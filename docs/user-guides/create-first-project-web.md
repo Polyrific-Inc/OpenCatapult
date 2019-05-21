@@ -6,7 +6,7 @@ Let's open the web browser, and go to the `OpenCatapult` Web UI address. If you 
 
 If you haven't logged in, please login first by using "`admin@opencatapult.net`" as the username and "`opencatapult`" as the password.
 
-![Login Page](../img/login.jpg)
+![Login Page](../img/login.JPG)
 
 We strongly advise you to change the default password (or just remove the default user), especially when you deploy the API into public environment. You can change the password via User Profile page later.
 
@@ -23,7 +23,7 @@ If you have multiple Engine instances, you need to repeat the steps for each of 
 
 In the Web UI, select `Engines` from the top navigation menu, and click `Register New Engine` button. You can name your Engine with whatever you want, e.g. `Engine001`.
 
-![Register Engine](../img/engine-ui.jpg)
+![Register Engine](../img/engine-ui.JPG)
 
 After saving the new Engine, let's generate an access token for it. Please click the key icon in the engine record to open the Engine Token form.
 
@@ -61,7 +61,7 @@ Select `Projects` from the main navigation menu, and click the `New Project` but
 
 In the new project form, enter the details of the new project.
 
-![Create Project](../img/create-project-ui.jpg)
+![Create Project](../img/create-project-ui.JPG)
 
 At the bottom of the form you will also find the "Default" job that will be created because you select the `sample` project template. In the "Generate" task, please enter your email which will be used as the Admin user in the generated application later.
 
@@ -83,14 +83,14 @@ The project that you've just created contains a `Default` Job Definition with a 
 
 In the `Job Queues` tab, you can see the job is being queued. You can monitor the live progress of the job queue, by clicking the log icon
 
-![Job Queue](../img/job-queue-ui.jpg)
+![Job Queue](../img/job-queue-ui.JPG)
 
-![Job Queue Log](../img/job-queue-log-ui.jpg)
+![Job Queue Log](../img/job-queue-log-ui.JPG)
 
 The final status of the process can be checked in the job queue details. Either click the `info` button in the queue, or click `back` from the log page.
 
 
-![Job Queue Status](../img/job-queue-status-ui.jpg)
+![Job Queue Status](../img/job-queue-status-ui.JPG)
 
 
 It will tell you the status of each task execution, whether it's Success or Failed, along with the error remarks if any.
