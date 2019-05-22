@@ -46,7 +46,7 @@ namespace Polyrific.Catapult.Engine.Core
 
         public const string WorkingLocationKey = "WorkingLocation";
         public string WorkingLocation => GetConfigValue(WorkingLocationKey, Path.Combine(AppContext.BaseDirectory, "working"));
-        
+
         public Dictionary<string, string> Configs => _configs;
 
         public async Task Load()
@@ -66,7 +66,7 @@ namespace Polyrific.Catapult.Engine.Core
         public async Task Save()
         {
             _logger.LogInformation("Saving configs into config file..");
-            await FileHelper.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = _configs}));
+            await FileHelper.WriteAllTextAsync(EngineConfigFile, JsonConvert.SerializeObject(new { EngineConfig = _configs }));
         }
 
         public string GetValue(string configName)
@@ -179,7 +179,7 @@ namespace Polyrific.Catapult.Engine.Core
             else
                 _configs.Add(key, value.ToString());
         }
-        
+
         /// <summary>
         /// Get engine config default values
         /// </summary>
