@@ -5,28 +5,28 @@ In this tutorial, we shall show you how to install the task provider we have cre
 ## Manual Instalation
 There're two steps to install the task provider manually
 
-### Copy the published binary to the plugin folder
+### Copy the published binary to the task providers folder
 
-If you have run the build script for engine, the plugin folder should be available in
+If you have run the build script for engine, the task providers folder should be available in
 ```
-.\publish\engine\plugins
+.\publish\engine\taskproviders
 ```
 
 Let's create a folder where our task provider shall be published into. Since it's a generator provider, it should be under `GeneratorProvider` folder:
 ```
-.\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular
+.\publish\engine\taskproviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular
 ```
 
-Now get the absolute path to this folder, then open a new shell, and go to our task provider source code project folder . Run the following command to publish our source code into the plugin folder:
+Now get the absolute path to this folder, then open a new shell, and go to our task provider source code project folder . Run the following command to publish our source code into the task provider folder:
 ```sh
-dotnet publish --output "absolute path to .\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular"
+dotnet publish --output "absolute path to .\publish\engine\taskproviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.Angular"
 ```
 
 ### Register the engine in the CLI
 
-Remember earlier we created a `plugin.yml` file? Now is the time to use it. Open the opencatapult cli shell, login, then run this command:
+Remember earlier we created a `taskprovider.yml` file? Now is the time to use it. Open the opencatapult cli shell, login, then run this command:
 ```sh
-dotnet occli.dll provider register --file "absolute path to Polyrific.Catapult.TaskProviders.Angular\plugin.yml"
+dotnet occli.dll provider register --file "absolute path to Polyrific.Catapult.TaskProviders.Angular\taskprovider.yml"
 ```
 
 And that's it, you can now create a generate task using the provider:

@@ -4,14 +4,14 @@ Aside from the built-in catapult provider in each job task definition, you can i
 
 ## Install Task Provider
 
-To install a task provider, use the `provider register` command, and specify the path to `plugin.yml` file:
+To install a task provider, use the `provider register` command, and specify the path to `taskprovider.yml` file:
 ```sh
-dotnet occli.dll provider register --file d:\MyPlugin\plugin.yml
+dotnet occli.dll provider register --file d:\MyTaskProvider\taskprovider.yml
 ```
 
 ## Remove Task Provider
 
 To uninstall the task provider, use the name of the task provider as the parameter:
 ```sh
-dotnet occli.dll provider remove --name MyPlugin 
+dotnet occli.dll provider remove --name MyTaskProvider 
 ```

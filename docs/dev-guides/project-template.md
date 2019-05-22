@@ -21,7 +21,7 @@ jobs:
     tasks:
       - name: [name of the job task]
         type: [Build | Clone | Deploy | DeployDb | Generate | Merge | Push | PublishArtifact | Test]
-        provider: [name of the provider plugin]
+        provider: [name of the task provider]
         configs:
           [any additional configs which are required by the provider, e.g:]
           GitHubExternalService: [name of the GitHub external service]

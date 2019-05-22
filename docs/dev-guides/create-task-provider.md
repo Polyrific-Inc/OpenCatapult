@@ -22,7 +22,7 @@ Go into your project folder:
 cd Polyrific.Catapult.TaskProviders.Angular
 ```
 
-Next, you'd need to add the plugin core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.TaskProviders.Core/)
+Next, you'd need to add the task provider core library that is available on [nuget](https://www.nuget.org/packages/Polyrific.Catapult.TaskProviders.Core/)
 ```sh
 dotnet add package Polyrific.Catapult.TaskProviders.Core --version 1.0.0-beta2-*
 ```
@@ -38,8 +38,8 @@ Open the project using visual studio code:
 code .
 ```
 
-### Add plugin.yml
-Create a new file inside the project folder named `plugin.yml`. This is the metadata of our task provider. It describe the name of the task provider, the additional configs that can be passed, and any [external services](../user-guides/external-services.md) that it requires.
+### Add taskprovider.yml
+Create a new file inside the project folder named `taskprovider.yml`. This is the metadata of our task provider. It describe the name of the task provider, the additional configs that can be passed, and any [external services](../user-guides/external-services.md) that it requires.
 ```yml
 name: 'Polyrific.Catapult.TaskProviders.Angular'
 type: 'GeneratorProvider'
@@ -81,7 +81,7 @@ The `Polyrific.Catapult.TaskProviders.Angular.csproj` file should like this:
 ```
 
 ### Implement the task provider base class
-Let's head up to `Program.cs`. The first thing to do is to inherit one of the task provider base class. Since we're going to create a code generator provider, we should inherit from `CodeGeneratorProvider`. Then we'd need to implement the base constructor and abstract method `Generate`. We'd also need to override the `Name` property, and return the name of our task provider as stated in [plugin.yml](./create-task-provider.md#add-plugin.yml).
+Let's head up to `Program.cs`. The first thing to do is to inherit one of the task provider base class. Since we're going to create a code generator provider, we should inherit from `CodeGeneratorProvider`. Then we'd need to implement the base constructor and abstract method `Generate`. We'd also need to override the `Name` property, and return the name of our task provider as stated in [taskprovider.yml](./create-task-provider.md#add-taskprovider.yml).
 
 ```csharp
 using System;

@@ -27,12 +27,12 @@ Register a task provider
 
 Usage: 
 ```sh
-dotnet occli.dll provider register --file [path to plugin.yml file]
+dotnet occli.dll provider register --file [path to taskprovider.yml file]
 ``` 
 
 | Option | Alias | Description | Allowed Values | DefaultValue | Mandatory |
 | --- | --- | --- | --- | --- | --- |
-| --file | -f | Path to the `plugin.yml` file ||| Yes |
+| --file | -f | Path to the `taskprovider.yml` file ||| Yes |
 
 # Remove
 Remove a task provider

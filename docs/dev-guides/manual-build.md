@@ -69,12 +69,12 @@ While configuring the Engine environment, let's publish the built-in Task Provid
 While this is optional, if you are not sure that you will need them, we recommend to just build them all. FYI, each of these Task Providers will be required if you create a project with `sample-devops` template later.
 
 ```sh
-dotnet publish .\src\Plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj -c Release -o ..\..\..\..\publish\engine\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc
-dotnet publish .\src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj -c Release -o ..\..\..\..\publish\engine\plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService
-dotnet publish .\src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj -c Release -o ..\..\..\..\publish\engine\plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore
-dotnet publish .\src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj -c Release -o ..\..\..\..\publish\engine\plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest
-dotnet publish .\src\Plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj -c Release -o ..\..\..\..\publish\engine\plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore
-dotnet publish .\src\Plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\src\Polyrific.Catapult.TaskProviders.GitHub.csproj -c Release -o ..\..\..\..\publish\engine\plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub
+dotnet publish .\src\TaskProviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc
+dotnet publish .\src\TaskProviders\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService
+dotnet publish .\src\TaskProviders\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore
+dotnet publish .\src\TaskProviders\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest
+dotnet publish .\src\TaskProviders\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore
+dotnet publish .\src\TaskProviders\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\src\Polyrific.Catapult.TaskProviders.GitHub.csproj -c Release -o ..\..\..\..\publish\engine\taskproviders\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub
 ```
 
 > Note: There is one more steps required before being able to start the Engine, which is to enter the authorization token. But we will do it later after registering the Engine via CLI.
