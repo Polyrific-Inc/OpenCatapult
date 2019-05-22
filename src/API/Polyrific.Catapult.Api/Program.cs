@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Polyrific.Catapult.Api.Infrastructure;
+using Serilog;
 
 namespace Polyrific.Catapult.Api
 {
@@ -63,16 +64,19 @@ namespace Polyrific.Catapult.Api
                 basePath = Path.GetDirectoryName(pathToExe);
             }
 
-            var config = new ConfigurationBuilder()
+            var builder = new ConfigurationBuilder()
                     .SetBasePath(basePath)
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddJsonFile("notificationconfig.json", optional: false, reloadOnChange: true)
                     .AddJsonFile(
                         $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
                         optional: true)
-                    .AddEnvironmentVariables()
-                    .Build();
-            
+                    .AddEnvironmentVariables();
+
+            var config = builder.Build();
+            builder.AddDbConfiguration(config);
+
+
             return config;
         }
     }
