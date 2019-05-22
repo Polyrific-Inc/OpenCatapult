@@ -19,20 +19,20 @@ namespace Polyrific.Catapult.Engine.Core
     {
         private readonly JobTaskService _jobTaskService;
         private readonly IJobQueueService _jobQueueService;
-        private readonly IPluginManager _pluginManager;
+        private readonly ITaskProviderManager _taskProviderManager;
         private readonly ILogger _logger;
 
-        public TaskRunner(JobTaskService jobTaskService, IJobQueueService jobQueueService, IPluginManager pluginManager, ILogger<TaskRunner> logger)
+        public TaskRunner(JobTaskService jobTaskService, IJobQueueService jobQueueService, ITaskProviderManager taskProviderManager, ILogger<TaskRunner> logger)
         {
             _jobTaskService = jobTaskService;
             _jobQueueService = jobQueueService;
-            _pluginManager = pluginManager;
+            _taskProviderManager = taskProviderManager;
             _logger = logger;
         }
 
-        public async Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, JobDto job, List<JobTaskDefinitionDto> jobTasks, string pluginsLocation, string workingLocation)
+        public async Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, JobDto job, List<JobTaskDefinitionDto> jobTasks, string taskProvidersLocation, string workingLocation)
         {
-            _pluginManager.RefreshPlugins();
+            _taskProviderManager.RefreshTaskProviders();
 
             // update the status to processing so the clients can start listening for logs
             job.Status = JobStatus.Processing;

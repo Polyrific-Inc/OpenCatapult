@@ -33,7 +33,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
         private readonly JobTaskService _jobTaskService;
         private readonly Mock<IJobQueueService> _jobQueueService;
         private readonly List<JobTaskDefinitionDto> _data;
-        private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ITaskProviderManager> _taskProviderManager;
 
         public TaskRunnerTests()
         {
@@ -106,7 +106,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
                 _pushTask.Object, _testTask.Object, _deleteRepositoryTask.Object, _deleteHostingTask.Object, _customTask.Object);
 
             _jobQueueService = new Mock<IJobQueueService>();
-            _pluginManager = new Mock<IPluginManager>();
+            _taskProviderManager = new Mock<ITaskProviderManager>();
         }
 
         [Fact]
@@ -117,8 +117,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -148,8 +148,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _deleteRepositoryTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deleteHostingTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1", IsDeletion = true }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1", IsDeletion = true }, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -166,8 +166,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.False(results[1].IsSuccess);
@@ -184,8 +184,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -202,8 +202,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _buildTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
             _deployTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, ""));
 
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, new JobDto { Id = 1, Code = "20180817.1" }, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);
@@ -248,8 +248,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             _pushTask.Setup(t => t.RunMainTask(It.IsAny<Dictionary<string, string>>())).ReturnsAsync(new TaskRunnerResult(true, "", true));
 
             var job = new JobDto { Id = 1, Code = "20180817.1" };
-            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _pluginManager.Object, _logger.Object);
-            var results = await runner.Run(1, job, _data, Path.Combine(AppContext.BaseDirectory, "plugins"), "working");
+            var runner = new TaskRunner(_jobTaskService, _jobQueueService.Object, _taskProviderManager.Object, _logger.Object);
+            var results = await runner.Run(1, job, _data, Path.Combine(AppContext.BaseDirectory, "taskProviders"), "working");
 
             Assert.Equal(_data.Count, results.Count);
             Assert.True(results[1].IsSuccess);

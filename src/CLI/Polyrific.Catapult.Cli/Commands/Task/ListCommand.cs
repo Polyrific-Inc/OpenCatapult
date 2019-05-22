@@ -15,14 +15,14 @@ namespace Polyrific.Catapult.Cli.Commands.Task
     {
         private readonly IProjectService _projectService;
         private readonly IJobDefinitionService _jobDefinitionService;
-        private readonly IProviderService _pluginService;
+        private readonly IProviderService _taskProviderService;
 
         public ListCommand(IConsole console, ILogger<ListCommand> logger,
-            IProjectService projectService, IJobDefinitionService jobDefinitionService, IProviderService pluginService) : base(console, logger)
+            IProjectService projectService, IJobDefinitionService jobDefinitionService, IProviderService taskProviderService) : base(console, logger)
         {
             _projectService = projectService;
             _jobDefinitionService = jobDefinitionService;
-            _pluginService = pluginService;
+            _taskProviderService = taskProviderService;
         }
 
         [Required]
@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Cli.Commands.Task
                     var secretConfig = new List<string>();
                     foreach (var task in tasks)
                     {
-                        var configs = _pluginService.GetProviderAdditionalConfigByProviderName(task.Provider).Result;
+                        var configs = _taskProviderService.GetProviderAdditionalConfigByProviderName(task.Provider).Result;
                         secretConfig.AddRange(configs.Where(c => c.IsSecret).Select(c => c.Name));
                     }
 

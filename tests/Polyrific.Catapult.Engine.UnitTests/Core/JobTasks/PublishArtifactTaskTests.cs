@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
         private readonly Mock<IProviderService> _providerService;
-        private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ITaskProviderManager> _taskProviderManager;
 
         public PublishArtifactTaskTests()
         {
@@ -32,10 +32,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
 
-            _pluginManager = new Mock<IPluginManager>();
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager = new Mock<ITaskProviderManager>();
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeStorageProvider", "path/to/FakeStorageProvider.dll", new string[] { })
+                new TaskProviderItem("FakeStorageProvider", "path/to/FakeStorageProvider.dll", new string[] { })
             });
 
             _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
@@ -70,15 +70,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"storageLocation", "c:\\test"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeStorageProvider";
 
@@ -92,15 +92,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", "error-message"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeStorageProvider";
 
@@ -115,7 +115,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
             
-            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistStorageProvider";
 
@@ -128,14 +128,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_AdditionalConfigSecured()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"storageLocation", "c:\\test"}
                 });
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeStorageProvider", "path/to/FakeStorageProvider.dll", new string[] { "GitHub" })
+                new TaskProviderItem("FakeStorageProvider", "path/to/FakeStorageProvider.dll", new string[] { "GitHub" })
             });
             _externalServiceService.Setup(p => p.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => new ExternalServiceDto
             {
@@ -151,7 +151,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new PublishArtifactTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeStorageProvider";
             task.AdditionalConfigs = new Dictionary<string, string>

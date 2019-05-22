@@ -24,10 +24,10 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// <param name="externalServiceTypeService">Instance of <see cref="IExternalServiceTypeService"/></param>
         /// <param name="IProviderService">Instance of <see cref="IProviderService"/></param>
         /// <param name="dataModelService">Instance of <see cref="IProjectDataModelService"/></param>
-        /// <param name="pluginManager">Instance of <see cref="IPluginManager"/></param>
+        /// <param name="taskProviderManager">Instance of <see cref="ITaskProviderManager"/></param>
         /// <param name="logger">Logger</param>
-        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IProjectDataModelService dataModelService, IPluginManager pluginManager, ILogger<GenerateTask> logger) 
-            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
+        public GenerateTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IProjectDataModelService dataModelService, ITaskProviderManager taskProviderManager, ILogger<GenerateTask> logger) 
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, taskProviderManager, logger)
         {
             _dataModelService = dataModelService;
         }
@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         private List<ProjectDataModelDto> _dataModels;
         protected List<ProjectDataModelDto> DataModels => _dataModels ?? (_dataModels = _dataModelService.GetProjectDataModels(ProjectId, true).Result);
 
-        public List<PluginItem> GeneratorProviders => PluginManager.GetPlugins(TaskProviderType.GeneratorProvider);
+        public List<TaskProviderItem> GeneratorProviders => TaskProviderManager.GetTaskProviders(TaskProviderType.GeneratorProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("pre");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage"))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PreProcessMustSucceed);
             
@@ -64,7 +64,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("main");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
@@ -95,7 +95,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("post");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage"))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PostProcessMustSucceed);
 

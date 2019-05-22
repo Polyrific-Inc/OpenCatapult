@@ -15,13 +15,13 @@ namespace Polyrific.Catapult.Engine.Core
         /// <param name="projectId">Id of the project</param>
         /// <param name="job">Job queue</param>
         /// <param name="jobTask">Job tasks to run</param>
-        /// <param name="pluginsLocation">Location of the plugins folder</param>
+        /// <param name="taskProvidersLocation">Location of the taskproviders folder</param>
         /// <param name="workingLocation">Location of the working directory</param>
         /// <returns></returns>
         Task<Dictionary<int, TaskRunnerResult>> Run(int projectId, 
             JobDto job, 
             List<JobTaskDefinitionDto> jobTask,
-            string pluginsLocation, 
+            string taskProvidersLocation, 
             string workingLocation);
     }
 }

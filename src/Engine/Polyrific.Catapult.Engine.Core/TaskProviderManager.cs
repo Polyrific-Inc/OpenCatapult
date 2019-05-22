@@ -14,70 +14,70 @@ using Polyrific.Catapult.Shared.Common;
 
 namespace Polyrific.Catapult.Engine.Core
 {
-    public class PluginManager : IPluginManager
+    public class TaskProviderManager : ITaskProviderManager
     {
-        private Dictionary<string, List<PluginItem>> _plugins;
+        private Dictionary<string, List<TaskProviderItem>> _taskProviders;
 
-        private readonly IPluginProcess _pluginProcess;
+        private readonly ITaskProviderProcess _taskProviderProcess;
 
         private readonly ILogger _logger;
 
         public List<string> TaskProviderLocations { get; }
 
-        public PluginManager(Dictionary<string, List<PluginItem>> plugins, ICatapultEngineConfig engineConfig, IPluginProcess pluginProcess, ILogger<PluginManager> logger)
+        public TaskProviderManager(Dictionary<string, List<TaskProviderItem>> taskProviders, ICatapultEngineConfig engineConfig, ITaskProviderProcess taskProviderProcess, ILogger<TaskProviderManager> logger)
         {
-            _plugins = plugins;
+            _taskProviders = taskProviders;
 
             TaskProviderLocations = new List<string>()
             {
                 engineConfig.TaskProvidersLocation
             };
 
-            _pluginProcess = pluginProcess;
+            _taskProviderProcess = taskProviderProcess;
 
             _logger = logger;
         }
 
-        public PluginManager(ICatapultEngineConfig engineConfig, IPluginProcess pluginProcess, ILogger<PluginManager> logger)
+        public TaskProviderManager(ICatapultEngineConfig engineConfig, ITaskProviderProcess taskProviderProcess, ILogger<TaskProviderManager> logger)
         {
             TaskProviderLocations = new List<string>()
             {
                 engineConfig.TaskProvidersLocation
             };
 
-            _pluginProcess = pluginProcess;
+            _taskProviderProcess = taskProviderProcess;
 
             _logger = logger;
         }
         
-        public void AddPluginLocation(string location)
+        public void AddTaskProviderLocation(string location)
         {
             TaskProviderLocations.Add(location);
         }
 
-        public PluginItem GetPlugin(string providerType, string name)
+        public TaskProviderItem GetTaskProvider(string providerType, string name)
         {
-            if (_plugins != null && _plugins.ContainsKey(providerType))
+            if (_taskProviders != null && _taskProviders.ContainsKey(providerType))
             {
-                return _plugins[providerType].FirstOrDefault(p => p.Name == name);
+                return _taskProviders[providerType].FirstOrDefault(p => p.Name == name);
             }
 
             return null;
         }
 
-        public List<PluginItem> GetPlugins(string providerType)
+        public List<TaskProviderItem> GetTaskProviders(string providerType)
         {
-            if (_plugins != null && _plugins.ContainsKey(providerType))
+            if (_taskProviders != null && _taskProviders.ContainsKey(providerType))
             {
-                return _plugins[providerType];
+                return _taskProviders[providerType];
             }
 
-            return new List<PluginItem>();
+            return new List<TaskProviderItem>();
         }
 
-        public void RefreshPlugins()
+        public void RefreshTaskProviders()
         {
-            _plugins = new Dictionary<string, List<PluginItem>>();
+            _taskProviders = new Dictionary<string, List<TaskProviderItem>>();
 
             foreach (var location in TaskProviderLocations)
             {
@@ -112,13 +112,13 @@ namespace Polyrific.Catapult.Engine.Core
                                         startFile = file.Replace(".dll", ".exe");
                                     }
 
-                                    if (!_plugins.ContainsKey(instance.Type))
-                                        _plugins.Add(instance.Type,
-                                            new List<PluginItem>
-                                                {new PluginItem(instance.Name, startFile, instance.RequiredServices)});
+                                    if (!_taskProviders.ContainsKey(instance.Type))
+                                        _taskProviders.Add(instance.Type,
+                                            new List<TaskProviderItem>
+                                                {new TaskProviderItem(instance.Name, startFile, instance.RequiredServices)});
                                     else
-                                        _plugins[instance.Type]
-                                            .Add(new PluginItem(instance.Name, startFile, instance.RequiredServices));
+                                        _taskProviders[instance.Type]
+                                            .Add(new TaskProviderItem(instance.Name, startFile, instance.RequiredServices));
                                 }
                             }
                         }
@@ -126,32 +126,32 @@ namespace Polyrific.Catapult.Engine.Core
                     catch (BadImageFormatException)
                     {
                         // skip loading file if this happen
-                        _logger.LogDebug("Failed loading {file} as plugin file.", file);
+                        _logger.LogDebug("Failed loading {file} as task provider file.", file);
                     }
                 }
             }
         }
 
-        public async Task<Dictionary<string, object>> InvokeTaskProvider(string pluginStartFile, string pluginArgs, string securedPluginArgs = null)
+        public async Task<Dictionary<string, object>> InvokeTaskProvider(string taskProviderStartFile, string taskProviderArgs, string securedTaskProviderArgs = null)
         {
             var result = new Dictionary<string, object>();
             
-            var isExeFile = pluginStartFile.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
+            var isExeFile = taskProviderStartFile.EndsWith(".exe", StringComparison.InvariantCultureIgnoreCase);
 
             var fileName = "dotnet";
             if (isExeFile)
-                fileName = pluginStartFile;
+                fileName = taskProviderStartFile;
             
-            var temporaryFile = SaveArgumentFile(fileName, pluginArgs);
+            var temporaryFile = SaveArgumentFile(fileName, taskProviderArgs);
 
             var argumentFile = $"--file \"{temporaryFile}\"";
             argumentFile = $"{argumentFile} {(Debugger.IsAttached ? "--attach" : "")}";
 
-            var securedArguments = $"\"\"{securedPluginArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
+            var securedArguments = $"\"\"{securedTaskProviderArgs}\" {(Debugger.IsAttached ? "--attach" : "")}";
             if (!isExeFile)
             {
-                argumentFile = $"\"{pluginStartFile}\" " + argumentFile;
-                securedArguments = $"\"{pluginStartFile}\" " + securedArguments;
+                argumentFile = $"\"{taskProviderStartFile}\" " + argumentFile;
+                securedArguments = $"\"{taskProviderStartFile}\" " + securedArguments;
             }
 
             var startInfo = new ProcessStartInfo()
@@ -164,16 +164,16 @@ namespace Polyrific.Catapult.Engine.Core
                 RedirectStandardError = true
             };
 
-            using (var process = _pluginProcess.Start(startInfo))
+            using (var process = _taskProviderProcess.Start(startInfo))
             {
                 if (process != null)
                 {
-                    if (!string.IsNullOrEmpty(securedPluginArgs))
+                    if (!string.IsNullOrEmpty(securedTaskProviderArgs))
                     {
-                        _logger.LogDebug($"[PluginManager] Command: {fileName} {securedArguments}");
+                        _logger.LogDebug($"[TaskProviderManager] Command: {fileName} {securedArguments}");
                     }                        
 
-                    var reader = _pluginProcess.GetStandardOutput(process);
+                    var reader = _taskProviderProcess.GetStandardOutput(process);
                     while (!reader.EndOfStream)
                     {
                         var line = await reader.ReadLineAsync();
@@ -194,7 +194,7 @@ namespace Polyrific.Catapult.Engine.Core
                         }
                     }
 
-                    var error = await _pluginProcess.GetStandardError(process)?.ReadToEndAsync();
+                    var error = await _taskProviderProcess.GetStandardError(process)?.ReadToEndAsync();
                     if (!string.IsNullOrEmpty(error))
                     {
                         result["errorMessage"] = error;
@@ -236,9 +236,9 @@ namespace Polyrific.Catapult.Engine.Core
             }
         }
 
-        private string SaveArgumentFile(string pluginFile, string arguments)
+        private string SaveArgumentFile(string taskProviderFile, string arguments)
         {
-            var directory = Path.GetDirectoryName(pluginFile);
+            var directory = Path.GetDirectoryName(taskProviderFile);
             var tempFile = Path.Combine(directory, "temp.json");
 
             File.WriteAllText(tempFile, arguments);

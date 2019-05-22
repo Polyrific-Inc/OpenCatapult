@@ -68,8 +68,8 @@ namespace Polyrific.Catapult.Engine
 
             services.AddOptions();
 
-            services.AddSingleton<IPluginProcess, PluginProcess>();
-            services.AddSingleton<IPluginManager, PluginManager>();
+            services.AddSingleton<ITaskProviderProcess, TaskProviderProcess>();
+            services.AddSingleton<ITaskProviderManager, TaskProviderManager>();
         }
 
         private static void ConfigureApplication(CommandLineApplication app, IServiceProvider serviceProvider)

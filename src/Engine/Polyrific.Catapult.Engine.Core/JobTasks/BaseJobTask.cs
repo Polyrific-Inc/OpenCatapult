@@ -23,11 +23,11 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         /// Instantiate job task
         /// </summary>
         /// <param name="projectService">Instance of <see cref="IProjectService"/></param>
-        /// <param name="pluginManager"></param>
+        /// <param name="taskProviderManager"></param>
         /// <param name="logger"></param>
         /// <param name="externalServiceService"></param>
         protected BaseJobTask(IProjectService projectService, IExternalServiceService externalServiceService, 
-            IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger logger)
+            IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, ITaskProviderManager taskProviderManager, ILogger logger)
         {
             _projectService = projectService;
 
@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             _externalServiceTypeService = externalServiceTypeService;
             _providerService = providerService;
 
-            PluginManager = pluginManager;
+            TaskProviderManager = taskProviderManager;
             Logger = logger;
         }
 
@@ -60,9 +60,9 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         public string Provider { get; set; }
 
         /// <summary>
-        /// Plugin Manager
+        /// Task provider Manager
         /// </summary>
-        protected IPluginManager PluginManager { get; set; }
+        protected ITaskProviderManager TaskProviderManager { get; set; }
 
         /// <summary>
         /// Logger
@@ -181,8 +181,8 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
                 var externalServiceTypes = await _externalServiceTypeService.GetExternalServiceTypes(true);
                 SecretAdditionalConfigs = externalServiceTypes.SelectMany(s => s.ExternalServiceProperties).Where(p => p.IsSecret).Select(p => p.Name).ToList();
 
-                var pluginAdditionalConfigs = await _providerService.GetProviderAdditionalConfigByProviderName(Provider);
-                SecretAdditionalConfigs.AddRange(pluginAdditionalConfigs.Where(c => c.IsSecret).Select(c => c.Name));   
+                var providerAdditionalConfigs = await _providerService.GetProviderAdditionalConfigByProviderName(Provider);
+                SecretAdditionalConfigs.AddRange(providerAdditionalConfigs.Where(c => c.IsSecret).Select(c => c.Name));   
             }
 
             foreach (var serviceType in serviceNames)

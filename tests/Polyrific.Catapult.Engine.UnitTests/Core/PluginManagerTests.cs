@@ -13,74 +13,74 @@ using Xunit;
 
 namespace Polyrific.Catapult.Engine.UnitTests.Core
 {
-    public class PluginManagerTests
+    public class TaskProviderManagerTests
     {
         private readonly Mock<ICatapultEngineConfig> _engineConfig;
-        private readonly Mock<IPluginProcess> _pluginProcess;
-        private readonly Mock<ILogger<PluginManager>> _logger;
-        private readonly Dictionary<string, List<PluginItem>> _plugins;
+        private readonly Mock<ITaskProviderProcess> _taskProviderProcess;
+        private readonly Mock<ILogger<TaskProviderManager>> _logger;
+        private readonly Dictionary<string, List<TaskProviderItem>> _taskProviders;
 
-        public PluginManagerTests()
+        public TaskProviderManagerTests()
         {
             _engineConfig = new Mock<ICatapultEngineConfig>();
-            _logger = new Mock<ILogger<PluginManager>>();
+            _logger = new Mock<ILogger<TaskProviderManager>>();
 
-            _plugins = new Dictionary<string, List<PluginItem>>
+            _taskProviders = new Dictionary<string, List<TaskProviderItem>>
             {
-                {"FakeProvider", new List<PluginItem> { new PluginItem("fake-plugin", "path/to/fake-plugin.dll", new string[]{}) }}
+                {"FakeProvider", new List<TaskProviderItem> { new TaskProviderItem("fake-taskProvider", "path/to/fake-taskProvider.dll", new string[]{}) }}
             };
 
-            _pluginProcess = new Mock<IPluginProcess>();
+            _taskProviderProcess = new Mock<ITaskProviderProcess>();
         }
 
         [Fact]
-        public void AddPluginLocation_Success()
+        public void AddTaskProviderLocation_Success()
         {
-            var pluginManager = new PluginManager(_engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            pluginManager.AddPluginLocation("path/to/new/location");
+            var taskProviderManager = new TaskProviderManager(_engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            taskProviderManager.AddTaskProviderLocation("path/to/new/location");
 
-            Assert.Contains("path/to/new/location", pluginManager.TaskProviderLocations);
+            Assert.Contains("path/to/new/location", taskProviderManager.TaskProviderLocations);
         }
 
         [Fact]
-        public void GetPlugin_ReturnsPluginItem()
+        public void GetTaskProvider_ReturnsTaskProviderItem()
         {
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var item = pluginManager.GetPlugin("FakeProvider", "fake-plugin");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var item = taskProviderManager.GetTaskProvider("FakeProvider", "fake-taskProvider");
 
             Assert.NotNull(item);
-            Assert.Equal("fake-plugin", item.Name);
+            Assert.Equal("fake-taskProvider", item.Name);
         }
 
         [Fact]
-        public void GetPlugin_ReturnsNull()
+        public void GetTaskProvider_ReturnsNull()
         {
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var item = pluginManager.GetPlugin("NotExistProvider", "not-exist-plugin");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var item = taskProviderManager.GetTaskProvider("NotExistProvider", "not-exist-taskProvider");
 
             Assert.Null(item);
         }
 
         [Fact]
-        public void GetPlugins_ReturnsPluginItems()
+        public void GetTaskProviders_ReturnsTaskProviderItems()
         {
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var items = pluginManager.GetPlugins("FakeProvider");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var items = taskProviderManager.GetTaskProviders("FakeProvider");
 
             Assert.NotEmpty(items);
         }
 
         [Fact]
-        public void GetPlugins_ReturnsEmpty()
+        public void GetTaskProviders_ReturnsEmpty()
         {
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var items = pluginManager.GetPlugins("NotExistProvider");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var items = taskProviderManager.GetTaskProviders("NotExistProvider");
 
             Assert.Empty(items);
         }
 
         [Fact]
-        public async void RefreshPlugin_PluginLoaded()
+        public async void RefreshTaskProvider_TaskProviderLoaded()
         {
             var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.1");
 
@@ -89,23 +89,23 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             Directory.CreateDirectory(workingLocation);
 
-            var pluginName = "Polyrific.Catapult.Plugins.TestPlugin";
-            var pluginType = "TestPlugin";
+            var taskProviderName = "Polyrific.Catapult.TaskProviders.TestTaskProvider";
+            var taskProviderType = "TestTaskProvider";
             var publishLocation = Path.Combine(workingLocation, "publish");
             
             _engineConfig.SetupGet(e => e.TaskProvidersLocation).Returns(publishLocation);
 
-            await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation);
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            pluginManager.RefreshPlugins();
+            await GenerateTestTaskProvider(taskProviderName, taskProviderType, workingLocation, publishLocation);
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            taskProviderManager.RefreshTaskProviders();
 
-            var newPlugin = pluginManager.GetPlugin(pluginType, pluginName);
-            Assert.NotNull(newPlugin);
-            Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.dll"), newPlugin.StartFilePath);
+            var newTaskProvider = taskProviderManager.GetTaskProvider(taskProviderType, taskProviderName);
+            Assert.NotNull(newTaskProvider);
+            Assert.Equal(Path.Combine(publishLocation, $"{taskProviderName}.dll"), newTaskProvider.StartFilePath);
         }
 
         [SkipOnNonWindowsFact]
-        public async void RefreshPlugin_Exe_PluginLoaded()
+        public async void RefreshTaskProvider_Exe_TaskProviderLoaded()
         {
             var workingLocation = Path.Combine(AppContext.BaseDirectory, "working", "20180817.2");
 
@@ -114,81 +114,81 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
 
             Directory.CreateDirectory(workingLocation);
 
-            var pluginName = "Polyrific.Catapult.Plugins.TestPlugin";
-            var pluginType = "TestPlugin";
+            var taskProviderName = "Polyrific.Catapult.TaskProviders.TestTaskProvider";
+            var taskProviderType = "TestTaskProvider";
             var publishLocation = Path.Combine(workingLocation, "publish");
 
             _engineConfig.SetupGet(e => e.TaskProvidersLocation).Returns(publishLocation);
 
-            await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation, "win-x64");
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            pluginManager.RefreshPlugins();
+            await GenerateTestTaskProvider(taskProviderName, taskProviderType, workingLocation, publishLocation, "win-x64");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            taskProviderManager.RefreshTaskProviders();
 
-            var newPlugin = pluginManager.GetPlugin(pluginType, pluginName);
-            Assert.NotNull(newPlugin);
-            Assert.Equal(Path.Combine(publishLocation, $"{pluginName}.exe"), newPlugin.StartFilePath);
+            var newTaskProvider = taskProviderManager.GetTaskProvider(taskProviderType, taskProviderName);
+            Assert.NotNull(newTaskProvider);
+            Assert.Equal(Path.Combine(publishLocation, $"{taskProviderName}.exe"), newTaskProvider.StartFilePath);
         }
 
         [Fact]
         public async void InvokeTaskProvider_Success()
         {
-            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
+            _taskProviderProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
             {
                 StartInfo = startInfo
             });
-            _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("[OUTPUT] {\"output\":\"success\"}\n[LOG][Information]Logged"))));
-            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
 
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var result = await pluginManager.InvokeTaskProvider("path/to/plugin.dll", "plugin args");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var result = await taskProviderManager.InvokeTaskProvider("path/to/taskProvider.dll", "taskProvider args");
             Assert.Equal("success", result["output"]);
         }
 
         [Fact]
         public async void InvokeTaskProvider_Exe_Success()
         {
-            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
+            _taskProviderProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
             {
                 StartInfo = startInfo
             });
-            _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("[OUTPUT] {\"output\":\"success\"}\n[LOG][Information]Logged"))));
-            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
 
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var result = await pluginManager.InvokeTaskProvider(Path.Combine(AppContext.BaseDirectory, "plugin.exe"), "plugin args");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var result = await taskProviderManager.InvokeTaskProvider(Path.Combine(AppContext.BaseDirectory, "taskProvider.exe"), "taskProvider args");
             Assert.Equal("success", result["output"]);
         }
 
         [Fact]
         public async void InvokeTaskProvider_Error()
         {
-            _pluginProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
+            _taskProviderProcess.Setup(p => p.Start(It.IsAny<ProcessStartInfo>())).Returns((ProcessStartInfo startInfo) => new Process
             {
                 StartInfo = startInfo
             });
-            _pluginProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardOutput(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes(""))));
-            _pluginProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
+            _taskProviderProcess.Setup(p => p.GetStandardError(It.IsAny<Process>()))
                 .Returns(new StreamReader(new MemoryStream(Encoding.UTF8.GetBytes("test error"))));
 
-            var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
-            var result = await pluginManager.InvokeTaskProvider("path/to/plugin.dll", "plugin args");
+            var taskProviderManager = new TaskProviderManager(_taskProviders, _engineConfig.Object, _taskProviderProcess.Object, _logger.Object);
+            var result = await taskProviderManager.InvokeTaskProvider("path/to/taskProvider.dll", "taskProvider args");
             Assert.Equal("test error", result["errorMessage"]);
         }
 
         #region Private methods
-        private async Task GenerateTestPlugin(string pluginName, string pluginType, string outputLocation, string publishLocation, string runtime = null)
+        private async Task GenerateTestTaskProvider(string taskProviderName, string taskProviderType, string outputLocation, string publishLocation, string runtime = null)
         {
-            var projectFile = Path.Combine(outputLocation, $"{pluginName}.csproj");
+            var projectFile = Path.Combine(outputLocation, $"{taskProviderName}.csproj");
             
-            await Execute("dotnet", $"new console -n {pluginName} -o \"{outputLocation}\"");
-            var pluginCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.TaskProviders.Core.dll");
-            AddDllReference(projectFile, pluginCoreDll);
-            WriteDummyPlugin(Path.Combine(outputLocation, "Program.cs"), pluginName, pluginType);
+            await Execute("dotnet", $"new console -n {taskProviderName} -o \"{outputLocation}\"");
+            var taskProviderCoreDll = Path.Combine(AppContext.BaseDirectory, "Polyrific.Catapult.TaskProviders.Core.dll");
+            AddDllReference(projectFile, taskProviderCoreDll);
+            WriteDummyTaskProvider(Path.Combine(outputLocation, "Program.cs"), taskProviderName, taskProviderType);
 
             var publishArgs = $"publish \"{projectFile}\" --output \"{publishLocation}\" --configuration release";
             if (!string.IsNullOrEmpty(runtime))
@@ -197,20 +197,20 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             await Execute("dotnet", publishArgs);
         }
 
-        private void WriteDummyPlugin(string programFile, string pluginName, string pluginType)
+        private void WriteDummyTaskProvider(string programFile, string taskProviderName, string taskProviderType)
         {
             var sb = new StringBuilder();
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using Polyrific.Catapult.TaskProviders.Core;");
             sb.AppendLine("");
-            sb.AppendLine($"namespace {pluginName}");
+            sb.AppendLine($"namespace {taskProviderName}");
             sb.AppendLine("{");
             sb.AppendLine("    public class Program : TaskProvider");
             sb.AppendLine("    {");
-            sb.AppendLine($"        private const string TaskProviderName = \"{pluginName}\";");
+            sb.AppendLine($"        private const string TaskProviderName = \"{taskProviderName}\";");
             sb.AppendLine($"        public override string Name => TaskProviderName;");
             sb.AppendLine("");
-            sb.AppendLine($"        public override string Type => \"{pluginType}\";");
+            sb.AppendLine($"        public override string Type => \"{taskProviderType}\";");
             sb.AppendLine("");
             sb.AppendLine("        public Program(string[] args) : base(args)");
             sb.AppendLine("        {");

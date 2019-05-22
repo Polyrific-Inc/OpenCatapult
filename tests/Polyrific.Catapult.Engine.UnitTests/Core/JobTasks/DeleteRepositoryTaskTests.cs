@@ -20,7 +20,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
         private readonly Mock<IProviderService> _providerService;
-        private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ITaskProviderManager> _taskProviderManager;
         private readonly Mock<ILogger<DeleteRepositoryTask>> _logger;
 
         public DeleteRepositoryTaskTests()
@@ -31,10 +31,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
 
             _externalServiceService = new Mock<IExternalServiceService>();
 
-            _pluginManager = new Mock<IPluginManager>();
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager = new Mock<ITaskProviderManager>();
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { })
+                new TaskProviderItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { })
             });
 
             _logger = new Mock<ILogger<DeleteRepositoryTask>>();
@@ -71,8 +71,8 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", ""}
                 });
@@ -82,7 +82,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 {"Repository", "https://github.com/test/test"}
             };
 
-            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -95,15 +95,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", "error-message"}
                 });
 
             var config = new Dictionary<string, string>();
 
-            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
 
@@ -118,7 +118,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistRepositoryProvider";
 
@@ -131,14 +131,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_AdditionalConfigSecured()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", ""}
                 });
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { "GitHub" })
+                new TaskProviderItem("FakeCodeRepositoryProvider", "path/to/FakeCodeRepositoryProvider.dll", new string[] { "GitHub" })
             });
             _externalServiceService.Setup(p => p.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => new ExternalServiceDto
             {
@@ -155,7 +155,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteRepositoryTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeCodeRepositoryProvider";
             task.AdditionalConfigs = new Dictionary<string, string>

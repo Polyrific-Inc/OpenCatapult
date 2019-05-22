@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
         private readonly Mock<IProviderService> _providerService;
-        private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ITaskProviderManager> _taskProviderManager;
 
         public BuildTaskTests()
         {
@@ -32,10 +32,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
 
-            _pluginManager = new Mock<IPluginManager>();
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager = new Mock<ITaskProviderManager>();
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeBuildProvider", "path/to/FakeBuildProvider.dll", new string[] { })
+                new TaskProviderItem("FakeBuildProvider", "path/to/FakeBuildProvider.dll", new string[] { })
             });
 
             _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
@@ -70,15 +70,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"outputArtifact", "c:\\test"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
@@ -92,15 +92,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", "error-message"}
                 });
 
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
 
@@ -116,7 +116,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
             
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistBuildProvider";
 
@@ -129,14 +129,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_AdditionalConfigSecured()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretPluginArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretTaskProviderArgs) => new Dictionary<string, object>
                 {
                     {"outputArtifact", "c:\\test"}
                 });
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeBuildProvider", "path/to/FakeBuildProvider.dll", new string[] { "GitHub" })
+                new TaskProviderItem("FakeBuildProvider", "path/to/FakeBuildProvider.dll", new string[] { "GitHub" })
             });
             _externalServiceService.Setup(p => p.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => new ExternalServiceDto
             {
@@ -152,7 +152,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new BuildTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeBuildProvider";
             task.AdditionalConfigs = new Dictionary<string, string>

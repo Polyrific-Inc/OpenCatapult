@@ -14,14 +14,14 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
     public class DeployTask : BaseJobTask<DeployTaskConfig>, IDeployTask
     {
         /// <inheritdoc />
-        public DeployTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, IPluginManager pluginManager, ILogger<DeployTask> logger)
-            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
+        public DeployTask(IProjectService projectService, IExternalServiceService externalServiceService, IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, ITaskProviderManager taskProviderManager, ILogger<DeployTask> logger)
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, taskProviderManager, logger)
         {
         }
 
         public override string Type => JobTaskDefinitionType.Deploy;
 
-        public List<PluginItem> HostingProviders => PluginManager.GetPlugins(TaskProviderType.HostingProvider);
+        public List<TaskProviderItem> HostingProviders => TaskProviderManager.GetTaskProviders(TaskProviderType.HostingProvider);
 
         public override async Task<TaskRunnerResult> RunPreprocessingTask()
         {
@@ -32,7 +32,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("pre");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage"))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PreProcessMustSucceed);
             
@@ -48,7 +48,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("main");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 
@@ -79,7 +79,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString("post");
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage"))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), TaskConfig.PostProcessMustSucceed);
             

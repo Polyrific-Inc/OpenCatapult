@@ -1,5 +1,5 @@
 # Introduction
-This project is generated using OpenCatapult's built-in code generator provider. It uses ASP NET Core MVC as the Web Framework and Entity Framework Core as the ORM. Please find more info in the [docs](https://docs.opencatapult.net/references/task-provider/generator-provider#polyrific-catapult-plugins-aspnetcoremvc).
+This project is generated using OpenCatapult's built-in code generator provider. It uses ASP NET Core MVC as the Web Framework and Entity Framework Core as the ORM. Please find more info in the [docs](https://docs.opencatapult.net/references/task-provider/generator-provider#polyrific-catapult-taskproviders-aspnetcoremvc).
 
 _**Note:** The content of this `Readme.md` file can be safely modified to fit your project requirements._
 

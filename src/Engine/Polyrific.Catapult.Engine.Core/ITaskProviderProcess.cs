@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Polyrific.Catapult.Engine.Core
 {
-    public interface IPluginProcess
+    public interface ITaskProviderProcess
     {
         Process Start(ProcessStartInfo startInfo);
         StreamReader GetStandardOutput(Process process);

@@ -17,14 +17,14 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
         public DeleteRepositoryTask(
             IProjectService projectService, IExternalServiceService externalServiceService, 
             IExternalServiceTypeService externalServiceTypeService, IProviderService providerService, 
-            IPluginManager pluginManager, ILogger<DeleteRepositoryTask> logger)
-            : base(projectService, externalServiceService, externalServiceTypeService, providerService, pluginManager, logger)
+            ITaskProviderManager taskProviderManager, ILogger<DeleteRepositoryTask> logger)
+            : base(projectService, externalServiceService, externalServiceTypeService, providerService, taskProviderManager, logger)
         {
         }
 
         public override string Type => JobTaskDefinitionType.DeleteRepository;
 
-        public List<PluginItem> CodeRepositoryProviders => PluginManager.GetPlugins(TaskProviderType.RepositoryProvider);
+        public List<TaskProviderItem> CodeRepositoryProviders => TaskProviderManager.GetTaskProviders(TaskProviderType.RepositoryProvider);
         
         public override async Task<TaskRunnerResult> RunMainTask(Dictionary<string, string> previousTasksOutputValues)
         {
@@ -35,7 +35,7 @@ namespace Polyrific.Catapult.Engine.Core.JobTasks
             await LoadRequiredServicesToAdditionalConfigs(provider.RequiredServices);
 
             var arg = GetArgString();
-            var result = await PluginManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
+            var result = await TaskProviderManager.InvokeTaskProvider(provider.StartFilePath, arg.argString, arg.securedArgString);
             if (result.ContainsKey("errorMessage") && !string.IsNullOrEmpty(result["errorMessage"].ToString()))
                 return new TaskRunnerResult(result["errorMessage"].ToString(), !TaskConfig.ContinueWhenError);
 

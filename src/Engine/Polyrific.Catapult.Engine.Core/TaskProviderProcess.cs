@@ -5,7 +5,7 @@ using System.IO;
 
 namespace Polyrific.Catapult.Engine.Core
 {
-    public class PluginProcess : IPluginProcess
+    public class TaskProviderProcess : ITaskProviderProcess
     {
         public StreamReader GetStandardError(Process process)
         {

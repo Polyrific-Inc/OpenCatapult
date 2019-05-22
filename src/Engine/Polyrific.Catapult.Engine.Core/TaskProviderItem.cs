@@ -2,14 +2,14 @@
 
 namespace Polyrific.Catapult.Engine.Core
 {
-    public class PluginItem
+    public class TaskProviderItem
     {
-        public PluginItem()
+        public TaskProviderItem()
         {
             
         }
 
-        public PluginItem(string name, string startFilePath, string[] requiredServices)
+        public TaskProviderItem(string name, string startFilePath, string[] requiredServices)
         {
             Name = name;
             StartFilePath = startFilePath;
@@ -17,12 +17,12 @@ namespace Polyrific.Catapult.Engine.Core
         }
 
         /// <summary>
-        /// Name of the plugin
+        /// Name of the task provider
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Path location to the plugin start file (.exe or .dll)
+        /// Path location to the task provider start file (.exe or .dll)
         /// </summary>
         public string StartFilePath { get; set; }
 

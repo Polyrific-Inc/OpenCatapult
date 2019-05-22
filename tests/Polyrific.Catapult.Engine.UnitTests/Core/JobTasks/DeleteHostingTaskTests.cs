@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         private readonly Mock<IExternalServiceService> _externalServiceService;
         private readonly Mock<IExternalServiceTypeService> _externalServiceTypeService;
         private readonly Mock<IProviderService> _providerService;
-        private readonly Mock<IPluginManager> _pluginManager;
+        private readonly Mock<ITaskProviderManager> _taskProviderManager;
 
         public DeleteHostingTaskTests()
         {
@@ -32,10 +32,10 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
             _projectService.Setup(s => s.GetProject(It.IsAny<int>()))
                 .ReturnsAsync((int id) => new ProjectDto { Id = id, Name = $"Project {id}" });
 
-            _pluginManager = new Mock<IPluginManager>();
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager = new Mock<ITaskProviderManager>();
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeHostingProvider", "path/to/FakeHostingProvider.dll", new string[] { })
+                new TaskProviderItem("FakeHostingProvider", "path/to/FakeHostingProvider.dll", new string[] { })
             });
 
             _externalServiceTypeService = new Mock<IExternalServiceTypeService>();
@@ -70,15 +70,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Success()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretProviderArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretProviderArgs) => new Dictionary<string, object>
                 {
                     {"deletedHostLocation", "https://test.azurewebsites.net"}
                 });
 
             var config = new Dictionary<string, string>();
 
-            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
 
@@ -92,15 +92,15 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_Failed()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretProviderArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretProviderArgs) => new Dictionary<string, object>
                 {
                     {"errorMessage", "error-message"}
                 });
 
             var config = new Dictionary<string, string>();
 
-            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
 
@@ -115,7 +115,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         {
             var config = new Dictionary<string, string>();
 
-            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "NotExistHostingProvider";
 
@@ -128,14 +128,14 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
         [Fact]
         public async void RunMainTask_AdditionalConfigSecured()
         {
-            _pluginManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .ReturnsAsync((string pluginDll, string pluginArgs, string secretProviderArgs) => new Dictionary<string, object>
+            _taskProviderManager.Setup(p => p.InvokeTaskProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync((string taskProviderDll, string taskProviderArgs, string secretProviderArgs) => new Dictionary<string, object>
                 {
                     {"deletedHostLocation", "https://test.azurewebsites.net"}
                 });
-            _pluginManager.Setup(p => p.GetPlugins(It.IsAny<string>())).Returns(new List<PluginItem>
+            _taskProviderManager.Setup(p => p.GetTaskProviders(It.IsAny<string>())).Returns(new List<TaskProviderItem>
             {
-                new PluginItem("FakeHostingProvider", "path/to/FakeHostingProvider.dll", new string[] { "GitHub" })
+                new TaskProviderItem("FakeHostingProvider", "path/to/FakeHostingProvider.dll", new string[] { "GitHub" })
             });
             _externalServiceService.Setup(p => p.GetExternalServiceByName(It.IsAny<string>())).ReturnsAsync((string name) => new ExternalServiceDto
             {
@@ -151,7 +151,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core.JobTasks
                 { "GitHubExternalService", "github-test" }
             };
 
-            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _pluginManager.Object, _logger.Object);
+            var task = new DeleteHostingTask(_projectService.Object, _externalServiceService.Object, _externalServiceTypeService.Object, _providerService.Object, _taskProviderManager.Object, _logger.Object);
             task.SetConfig(config, "working");
             task.Provider = "FakeHostingProvider";
             task.AdditionalConfigs = new Dictionary<string, string>
