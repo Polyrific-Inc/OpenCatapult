@@ -10,7 +10,7 @@ namespace Polyrific.Catapult.Engine.Core
         /// <summary>
         /// Plugin locations
         /// </summary>
-        List<string> PluginLocations { get; }
+        List<string> TaskProviderLocations { get; }
 
         /// <summary>
         /// Add new location of the plugin

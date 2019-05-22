@@ -19,22 +19,22 @@ if (!$noOpenShell) {
 
 if (!$noBuild) {
 
-    $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
-    $aspNetCoreMvcPublishPath = Join-Path $enginePublishPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
-    $azureAppServiceCsprojPath = Join-Path $rootPath "/src/Plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService/src/Polyrific.Catapult.TaskProviders.AzureAppService.csproj"
-    $azureAppServicePublishPath = Join-Path $enginePublishPath "/plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService"
-    $dotNetCoreCsprojPath = Join-Path $rootPath "/src/Plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore/src/Polyrific.Catapult.TaskProviders.DotNetCore.csproj"
-    $dotNetCorePublishPath = Join-Path $enginePublishPath "/plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
-    $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"
-    $dotNetCoreTestPublishPath = Join-Path $enginePublishPath "/plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
-    $entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
-    $entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
-    $gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
-    $gitHubPublishPath = Join-Path $enginePublishPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
-    $genericCommandCsprojPath = Join-Path $rootPath "/src/Plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
-    $genericCommandPublishPath = Join-Path $enginePublishPath "/plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
+    $aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/TaskProviders/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
+    $aspNetCoreMvcPublishPath = Join-Path $enginePublishPath "/taskproviders/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
+    $azureAppServiceCsprojPath = Join-Path $rootPath "/src/TaskProviders/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService/src/Polyrific.Catapult.TaskProviders.AzureAppService.csproj"
+    $azureAppServicePublishPath = Join-Path $enginePublishPath "/taskproviders/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService"
+    $dotNetCoreCsprojPath = Join-Path $rootPath "/src/TaskProviders/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore/src/Polyrific.Catapult.TaskProviders.DotNetCore.csproj"
+    $dotNetCorePublishPath = Join-Path $enginePublishPath "/taskproviders/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
+    $dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/TaskProviders/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"
+    $dotNetCoreTestPublishPath = Join-Path $enginePublishPath "/taskproviders/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
+    $entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/TaskProviders/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
+    $entityFrameworkCorePublishPath = Join-Path $enginePublishPath "/taskproviders/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
+    $gitHubCsprojPath = Join-Path $rootPath "/src/TaskProviders/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
+    $gitHubPublishPath = Join-Path $enginePublishPath "/taskproviders/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
+    $genericCommandCsprojPath = Join-Path $rootPath "/src/TaskProviders/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
+    $genericCommandPublishPath = Join-Path $enginePublishPath "/taskproviders/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
 
-    $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
+    $taskProviders = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
     [System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),
     [System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
     [System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
@@ -62,11 +62,11 @@ if (!$noBuild) {
         }
     }
 
-    # publish plugins
-    Write-Output "Publishing plugins..."
-    foreach ($p in $plugins) {
-        "dotnet publish {0} -c {1} -o {2}" -f $p.Item1, $configuration, $p.Item2
-        $result = dotnet publish $p.Item1 -c $configuration -o $p.Item2
+    # publish task providers
+    Write-Output "Publishing task providers..."
+    foreach ($tp in $taskProviders) {
+        "dotnet publish {0} -c {1} -o {2}" -f $tp.Item1, $configuration, $tp.Item2
+        $result = dotnet publish $tp.Item1 -c $configuration -o $tp.Item2
         if ($LASTEXITCODE -ne 0) {
             Write-Error -Message "[ERROR] $result"
             break

@@ -38,7 +38,7 @@ function Publish-Component {
         $compressDestPath = "$publishPath-v$version-$runtime.zip"
 
         if ($isTaskProvider) {
-            $compressSrcPath = Join-Path $publishOuterPath "/plugins/*"
+            $compressSrcPath = Join-Path $publishOuterPath "/taskproviders/*"
             $taskProviderName = Split-Path $publishPath -Leaf
             $compressDestPath = Join-Path $publishOuterPath "$taskProviderName-v$version-$runtime.zip"
         }
@@ -50,7 +50,7 @@ function Publish-Component {
         $removeItemPath = $publishPath
 
         if ($isTaskProvider) {
-            $removeItemPath = Join-Path $publishOuterPath "/plugins"
+            $removeItemPath = Join-Path $publishOuterPath "/taskproviders"
         }
 
         Remove-Item -Path $removeItemPath -Recurse -Force
@@ -90,22 +90,22 @@ Write-Host ""
 
 Write-Host "5. Processing Task Provider components" -ForegroundColor Yellow
 
-$aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/Plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
-$aspNetCoreMvcPublishPath = Join-Path $publishOuterPath "/plugins/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
-$azureAppServiceCsprojPath = Join-Path $rootPath "/src/Plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService/src/Polyrific.Catapult.TaskProviders.AzureAppService.csproj"
-$azureAppServicePublishPath = Join-Path $publishOuterPath "/plugins/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService"
-$dotNetCoreCsprojPath = Join-Path $rootPath "/src/Plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore/src/Polyrific.Catapult.TaskProviders.DotNetCore.csproj"
-$dotNetCorePublishPath = Join-Path $publishOuterPath "/plugins/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
-$dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/Plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"
-$dotNetCoreTestPublishPath = Join-Path $publishOuterPath "/plugins/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
-$entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/Plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
-$entityFrameworkCorePublishPath = Join-Path $publishOuterPath "/plugins/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
-$genericCommandCsprojPath = Join-Path $rootPath "/src/Plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
-$genericCommandPublishPath = Join-Path $publishOuterPath "/plugins/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
-$gitHubCsprojPath = Join-Path $rootPath "/src/Plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
-$gitHubPublishPath = Join-Path $publishOuterPath "/plugins/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
+$aspNetCoreMvcCsprojPath = Join-Path $rootPath "/src/TaskProviders/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc/src/Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj"
+$aspNetCoreMvcPublishPath = Join-Path $publishOuterPath "/taskproviders/GeneratorProvider/Polyrific.Catapult.TaskProviders.AspNetCoreMvc"
+$azureAppServiceCsprojPath = Join-Path $rootPath "/src/TaskProviders/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService/src/Polyrific.Catapult.TaskProviders.AzureAppService.csproj"
+$azureAppServicePublishPath = Join-Path $publishOuterPath "/taskproviders/HostingProvider/Polyrific.Catapult.TaskProviders.AzureAppService"
+$dotNetCoreCsprojPath = Join-Path $rootPath "/src/TaskProviders/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore/src/Polyrific.Catapult.TaskProviders.DotNetCore.csproj"
+$dotNetCorePublishPath = Join-Path $publishOuterPath "/taskproviders/BuildProvider/Polyrific.Catapult.TaskProviders.DotNetCore"
+$dotNetCoreTestCsprojPath = Join-Path $rootPath "/src/TaskProviders/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest/src/Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj"
+$dotNetCoreTestPublishPath = Join-Path $publishOuterPath "/taskproviders/TestProvider/Polyrific.Catapult.TaskProviders.DotNetCoreTest"
+$entityFrameworkCoreCsprojPath = Join-Path $rootPath "/src/TaskProviders/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore/src/Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj"
+$entityFrameworkCorePublishPath = Join-Path $publishOuterPath "/taskproviders/DatabaseProvider/Polyrific.Catapult.TaskProviders.EntityFrameworkCore"
+$genericCommandCsprojPath = Join-Path $rootPath "/src/TaskProviders/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand/src/Polyrific.Catapult.TaskProviders.GenericCommand.csproj"
+$genericCommandPublishPath = Join-Path $publishOuterPath "/taskproviders/GenericTaskProvider/Polyrific.Catapult.TaskProviders.GenericCommand"
+$gitHubCsprojPath = Join-Path $rootPath "/src/TaskProviders/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub/src/Polyrific.Catapult.TaskProviders.GitHub.csproj"
+$gitHubPublishPath = Join-Path $publishOuterPath "/taskproviders/RepositoryProvider/Polyrific.Catapult.TaskProviders.GitHub"
 
-$plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
+$taskProviders = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublishPath),
 [System.Tuple]::Create($azureAppServiceCsprojPath, $azureAppServicePublishPath),
 [System.Tuple]::Create($dotNetCoreCsprojPath, $dotNetCorePublishPath),
 [System.Tuple]::Create($dotNetCoreTestCsprojPath, $dotNetCoreTestPublishPath),
@@ -113,15 +113,15 @@ $plugins = [System.Tuple]::Create($aspNetCoreMvcCsprojPath, $aspNetCoreMvcPublis
 [System.Tuple]::Create($genericCommandCsprojPath, $genericCommandPublishPath),
 [System.Tuple]::Create($gitHubCsprojPath, $gitHubPublishPath)
 
-foreach ($p in $plugins) {
-    Publish-Component $p.Item1 $p.Item2 $true
+foreach ($tp in $taskProviders) {
+    Publish-Component $tp.Item1 $tp.Item2 $true
     Write-Host ""
 }
 
 if ($noCompress) {
 
-    $pluginsFolder = Join-Path $publishOuterPath "/plugins"
-    Move-Item "$pluginsFolder" -Destination "$enginePublishPath"
+    $taskprovidersFolder = Join-Path $publishOuterPath "/taskproviders"
+    Move-Item "$taskprovidersFolder" -Destination "$enginePublishPath"
 
     Write-Host "6. Copying additional files" -ForegroundColor Yellow
 

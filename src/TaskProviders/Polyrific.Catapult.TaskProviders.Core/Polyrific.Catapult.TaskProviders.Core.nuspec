@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Polyrific.Catapult.TaskProviders.Core</id>
-    <version>1.0.0-rc</version>
+    <version>1.0.0-rc.1</version>
     <title>Polyrific.Catapult.TaskProviders.Core</title>
     <authors>frandi-polyrific</authors>
     <owners>frandi-polyrific</owners>

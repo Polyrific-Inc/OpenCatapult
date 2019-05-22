@@ -29,9 +29,9 @@ namespace Polyrific.Catapult.Engine.Core
         int JobCheckingInterval { get; }
 
         /// <summary>
-        /// Location of the plugins folder
+        /// Location of the taskproviders folder
         /// </summary>
-        string PluginsLocation { get; }
+        string TaskProvidersLocation { get; }
 
         /// <summary>
         /// Location of working directory when engine executing job tasks

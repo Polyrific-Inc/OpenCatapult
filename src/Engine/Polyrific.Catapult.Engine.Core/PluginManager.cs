@@ -22,15 +22,15 @@ namespace Polyrific.Catapult.Engine.Core
 
         private readonly ILogger _logger;
 
-        public List<string> PluginLocations { get; }
+        public List<string> TaskProviderLocations { get; }
 
         public PluginManager(Dictionary<string, List<PluginItem>> plugins, ICatapultEngineConfig engineConfig, IPluginProcess pluginProcess, ILogger<PluginManager> logger)
         {
             _plugins = plugins;
 
-            PluginLocations = new List<string>()
+            TaskProviderLocations = new List<string>()
             {
-                engineConfig.PluginsLocation
+                engineConfig.TaskProvidersLocation
             };
 
             _pluginProcess = pluginProcess;
@@ -40,9 +40,9 @@ namespace Polyrific.Catapult.Engine.Core
 
         public PluginManager(ICatapultEngineConfig engineConfig, IPluginProcess pluginProcess, ILogger<PluginManager> logger)
         {
-            PluginLocations = new List<string>()
+            TaskProviderLocations = new List<string>()
             {
-                engineConfig.PluginsLocation
+                engineConfig.TaskProvidersLocation
             };
 
             _pluginProcess = pluginProcess;
@@ -52,7 +52,7 @@ namespace Polyrific.Catapult.Engine.Core
         
         public void AddPluginLocation(string location)
         {
-            PluginLocations.Add(location);
+            TaskProviderLocations.Add(location);
         }
 
         public PluginItem GetPlugin(string providerType, string name)
@@ -79,7 +79,7 @@ namespace Polyrific.Catapult.Engine.Core
         {
             _plugins = new Dictionary<string, List<PluginItem>>();
 
-            foreach (var location in PluginLocations)
+            foreach (var location in TaskProviderLocations)
             {
                 var files = new List<string>();
                 

@@ -59,7 +59,7 @@ namespace Polyrific.Catapult.Engine.Core
                     var jobTasks = await _jobDefinitionService.GetJobTaskDefinitions(jobQueue.ProjectId, jobQueue.JobDefinitionId ?? 0);
 
                     var workingLocation = Path.Combine(_engineConfig.WorkingLocation, jobQueue.Code);
-                    var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.PluginsLocation, workingLocation);
+                    var result = await _taskRunner.Run(jobQueue.ProjectId, jobQueue, jobTasks, _engineConfig.TaskProvidersLocation, workingLocation);
 
                     if (result.Values.Any(t => t.IsSuccess && t.StopTheProcess))
                         jobQueue.Status = JobStatus.Pending;

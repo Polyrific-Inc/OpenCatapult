@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26124.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Engine", "src\Engine\Polyrific.Catapult.Engine\Polyrific.Catapult.Engine.csproj", "{419C1CF8-24AC-44F8-8709-773F1EB15930}"
 EndProject
@@ -28,7 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{531811D2-AA96-456D-B1FA-B2820DF16D63}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "taskproviders", "taskproviders", "{531811D2-AA96-456D-B1FA-B2820DF16D63}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GeneratorProvider", "GeneratorProvider", "{461C9CCD-4254-445C-AE7F-A2EF116D4AF1}"
 EndProject
@@ -46,39 +46,39 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StorageProvider", "StorageP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.Engine.SignalRLogger", "src\Engine\Polyrific.Catapult.Engine.SignalRLogger\Polyrific.Catapult.Engine.SignalRLogger.csproj", "{D65FD9E2-D564-4684-9A05-353BF7F1612B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.Core", "src\Plugins\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.Core", "src\TaskProviders\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj", "{2FACCDDC-0A7B-4E3E-B268-A593C8388C6C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc", "src\Plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj", "{11811214-D216-4D09-B361-EE938FA9F8D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc", "src\TaskProviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\src\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.csproj", "{11811214-D216-4D09-B361-EE938FA9F8D6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore", "src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj", "{D3645509-455D-4733-8F3B-7C7ADA180DEF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore", "src\TaskProviders\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\src\Polyrific.Catapult.TaskProviders.DotNetCore.csproj", "{D3645509-455D-4733-8F3B-7C7ADA180DEF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GitHub", "src\Plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\src\Polyrific.Catapult.TaskProviders.GitHub.csproj", "{8186D079-1637-4DCE-A3A6-118CA1B8256B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GitHub", "src\TaskProviders\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\src\Polyrific.Catapult.TaskProviders.GitHub.csproj", "{8186D079-1637-4DCE-A3A6-118CA1B8256B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService", "src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj", "{4565991D-28E4-47C1-BCF1-EB6379BA4E2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService", "src\TaskProviders\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\src\Polyrific.Catapult.TaskProviders.AzureAppService.csproj", "{4565991D-28E4-47C1-BCF1-EB6379BA4E2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore", "src\Plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj", "{8DDDC97F-EE3D-4C15-8C79-312EDEA8BC74}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore", "src\TaskProviders\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\src\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.csproj", "{8DDDC97F-EE3D-4C15-8C79-312EDEA8BC74}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest", "src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj", "{788858A8-F67B-4A65-A452-C53C3D3B45FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest", "src\TaskProviders\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\src\Polyrific.Catapult.TaskProviders.DotNetCoreTest.csproj", "{788858A8-F67B-4A65-A452-C53C3D3B45FB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugins", "plugins", "{4E071EF4-E175-40AC-BE21-07CD6A3E3ECA}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "taskproviders", "taskproviders", "{4E071EF4-E175-40AC-BE21-07CD6A3E3ECA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests", "src\Plugins\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\tests\Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests.csproj", "{950E5F7D-AF1C-4331-9A4C-D3B7341D8284}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests", "src\TaskProviders\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\tests\Polyrific.Catapult.TaskProviders.DotNetCore.UnitTests.csproj", "{950E5F7D-AF1C-4331-9A4C-D3B7341D8284}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore.UnitTests", "src\Plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\tests\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.UnitTests.csproj", "{8799784F-8EED-4A24-BD39-4E0CC3C1659A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.EntityFrameworkCore.UnitTests", "src\TaskProviders\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\tests\Polyrific.Catapult.TaskProviders.EntityFrameworkCore.UnitTests.csproj", "{8799784F-8EED-4A24-BD39-4E0CC3C1659A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests", "src\Plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\tests\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests.csproj", "{D8F27509-7A0D-42F4-B40D-C43AC32F4D8E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests", "src\TaskProviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\tests\Polyrific.Catapult.TaskProviders.AspNetCoreMvc.UnitTests.csproj", "{D8F27509-7A0D-42F4-B40D-C43AC32F4D8E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests", "src\Plugins\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\tests\Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests.csproj", "{30069801-C8AE-48DB-850E-10703DEF80CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests", "src\TaskProviders\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\tests\Polyrific.Catapult.TaskProviders.AzureAppService.UnitTests.csproj", "{30069801-C8AE-48DB-850E-10703DEF80CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GitHub.UnitTests", "src\Plugins\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\tests\Polyrific.Catapult.TaskProviders.GitHub.UnitTests.csproj", "{73A389BE-FDD1-4E0C-90FA-8AAC1BAD01ED}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GitHub.UnitTests", "src\TaskProviders\RepositoryProvider\Polyrific.Catapult.TaskProviders.GitHub\tests\Polyrific.Catapult.TaskProviders.GitHub.UnitTests.csproj", "{73A389BE-FDD1-4E0C-90FA-8AAC1BAD01ED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests", "src\Plugins\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\tests\Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests.csproj", "{7883B10F-C23D-4045-B0D1-160EBE06FEE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests", "src\TaskProviders\TestProvider\Polyrific.Catapult.TaskProviders.DotNetCoreTest\tests\Polyrific.Catapult.TaskProviders.DotNetCoreTest.UnitTests.csproj", "{7883B10F-C23D-4045-B0D1-160EBE06FEE4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GenericTaskProvider", "GenericTaskProvider", "{D1366660-366B-4D93-A8B1-B8A47D18BDF2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GenericCommand", "src\Plugins\GenericTaskProvider\Polyrific.Catapult.TaskProviders.GenericCommand\src\Polyrific.Catapult.TaskProviders.GenericCommand.csproj", "{481F2824-7F79-4BCF-8C1A-3456CBC79601}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GenericCommand", "src\TaskProviders\GenericTaskProvider\Polyrific.Catapult.TaskProviders.GenericCommand\src\Polyrific.Catapult.TaskProviders.GenericCommand.csproj", "{481F2824-7F79-4BCF-8C1A-3456CBC79601}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests", "src\Plugins\GenericTaskProvider\Polyrific.Catapult.TaskProviders.GenericCommand\tests\Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests.csproj", "{41A1371D-5061-4E0E-86C2-8FD826A9EF5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests", "src\TaskProviders\GenericTaskProvider\Polyrific.Catapult.TaskProviders.GenericCommand\tests\Polyrific.Catapult.TaskProviders.GenericCommand.UnitTests.csproj", "{41A1371D-5061-4E0E-86C2-8FD826A9EF5F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -41,8 +41,8 @@ namespace Polyrific.Catapult.Engine.Core
         public const string JobCheckingIntervalKey = "JobCheckingInterval";
         public int JobCheckingInterval => GetConfigIntegerValue(JobCheckingIntervalKey, 30);
 
-        public const string PluginsLocationKey = "PluginsLocation";
-        public string PluginsLocation => GetConfigValue(PluginsLocationKey, Path.Combine(AppContext.BaseDirectory, "plugins"));
+        public const string TaskProvidersLocationKey = "TaskProvidersLocation";
+        public string TaskProvidersLocation => GetConfigValue(TaskProvidersLocationKey, Path.Combine(AppContext.BaseDirectory, "taskproviders"));
 
         public const string WorkingLocationKey = "WorkingLocation";
         public string WorkingLocation => GetConfigValue(WorkingLocationKey, Path.Combine(AppContext.BaseDirectory, "working"));
@@ -192,7 +192,7 @@ namespace Polyrific.Catapult.Engine.Core
                 {ApiRequestTimeoutKey, "00:01:00"},
                 {AuthorizationTokenKey, ""},
                 {JobCheckingIntervalKey, "30"},
-                {PluginsLocationKey, Path.Combine(AppContext.BaseDirectory, "plugins")},
+                {TaskProvidersLocationKey, Path.Combine(AppContext.BaseDirectory, "taskproviders")},
                 {WorkingLocationKey, Path.Combine(AppContext.BaseDirectory, "working")}
             };
 

@@ -4,15 +4,15 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
       <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <LangVersion>7.1</LangVersion>
+      <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\DatabaseProvider\Polyrific.Catapult.TaskProviders.EntityFrameworkCore\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\taskproviders\HostingProvider\Polyrific.Catapult.TaskProviders.AzureAppService\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
+      <PackageReference Include="Microsoft.Azure.Management.Fluent" Version="1.21.0" />
     </ItemGroup>
 
     <ItemGroup>

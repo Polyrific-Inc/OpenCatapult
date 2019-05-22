@@ -39,7 +39,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             var pluginManager = new PluginManager(_engineConfig.Object, _pluginProcess.Object, _logger.Object);
             pluginManager.AddPluginLocation("path/to/new/location");
 
-            Assert.Contains("path/to/new/location", pluginManager.PluginLocations);
+            Assert.Contains("path/to/new/location", pluginManager.TaskProviderLocations);
         }
 
         [Fact]
@@ -93,7 +93,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             var pluginType = "TestPlugin";
             var publishLocation = Path.Combine(workingLocation, "publish");
             
-            _engineConfig.SetupGet(e => e.PluginsLocation).Returns(publishLocation);
+            _engineConfig.SetupGet(e => e.TaskProvidersLocation).Returns(publishLocation);
 
             await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation);
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);
@@ -118,7 +118,7 @@ namespace Polyrific.Catapult.Engine.UnitTests.Core
             var pluginType = "TestPlugin";
             var publishLocation = Path.Combine(workingLocation, "publish");
 
-            _engineConfig.SetupGet(e => e.PluginsLocation).Returns(publishLocation);
+            _engineConfig.SetupGet(e => e.TaskProvidersLocation).Returns(publishLocation);
 
             await GenerateTestPlugin(pluginName, pluginType, workingLocation, publishLocation, "win-x64");
             var pluginManager = new PluginManager(_plugins, _engineConfig.Object, _pluginProcess.Object, _logger.Object);

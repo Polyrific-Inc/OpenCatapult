@@ -8,7 +8,7 @@
   </PropertyGroup>
 
     <PropertyGroup>
-        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\plugins\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\</OutputPath>
+        <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\taskproviders\GeneratorProvider\Polyrific.Catapult.TaskProviders.AspNetCoreMvc\</OutputPath>
     </PropertyGroup>
 
     <ItemGroup>
