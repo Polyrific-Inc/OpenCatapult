@@ -3,11 +3,13 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.ApplicationSetting;
 
 namespace Polyrific.Catapult.Api.Controllers
@@ -41,6 +43,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// </summary>
         /// <returns>List of application settings</returns>
         [HttpGet]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> GetApplicationSettings()
         {
             _logger.LogRequest("Getting all application settings");
@@ -76,6 +79,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="dto"></param>
         /// <returns></returns>
         [HttpPut]
+        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
         public async Task<IActionResult> UpdateApplicationSetting(UpdateApplicationSettingDto dto)
         {
             _logger.LogRequest("Updating application setting. Request body: {@dto}", dto);
