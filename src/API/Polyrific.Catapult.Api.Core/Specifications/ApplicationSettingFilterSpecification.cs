@@ -6,8 +6,8 @@ namespace Polyrific.Catapult.Api.Core.Specifications
 {
     public class ApplicationSettingFilterSpecification : BaseSpecification<ApplicationSetting>
     {
-        public ApplicationSettingFilterSpecification()
-            : base(m => true)
+        public ApplicationSettingFilterSpecification(string key = null)
+            : base(m => key == null || m.Key == key)
         {
         }
     }

@@ -80,6 +80,7 @@ namespace Polyrific.Catapult.Api.Data
             modelBuilder.ApplyConfiguration(new TaskProviderTagConfig());
             modelBuilder.ApplyConfiguration(new HelpContextConfig());
             modelBuilder.ApplyConfiguration(new ExternalAccountTypeConfig());
+            modelBuilder.ApplyConfiguration(new ApplicationSettingConfig());
         }
     }
 }

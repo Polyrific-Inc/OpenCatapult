@@ -12,11 +12,11 @@ namespace Polyrific.Catapult.Api.Core.Services
 {
     public class ApplicationSettingService : IApplicationSettingService
     {
-        private readonly IApplicationSettingRepository _ApplicationSettingRepository;
+        private readonly IApplicationSettingRepository _applicationSettingRepository;
 
-        public ApplicationSettingService(IApplicationSettingRepository ApplicationSettingRepository)
+        public ApplicationSettingService(IApplicationSettingRepository applicationSettingRepository)
         {
-            _ApplicationSettingRepository = ApplicationSettingRepository;
+            _applicationSettingRepository = applicationSettingRepository;
         }
 
         public async Task<List<ApplicationSetting>> GetApplicationSettings(CancellationToken cancellationToken = default)
@@ -24,9 +24,24 @@ namespace Polyrific.Catapult.Api.Core.Services
             cancellationToken.ThrowIfCancellationRequested();
 
             var spec = new ApplicationSettingFilterSpecification();
-            var result = await _ApplicationSettingRepository.GetBySpec(spec);
+            var result = await _applicationSettingRepository.GetBySpec(spec, cancellationToken);
 
             return result.ToList();
+        }
+
+        public async Task UpdateApplicationSettings(Dictionary<string, string> applicationSettings, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            foreach (var applicationSetting in applicationSettings)
+            {
+
+                var spec = new ApplicationSettingFilterSpecification(applicationSetting.Key);
+                var result = await _applicationSettingRepository.GetSingleBySpec(spec);
+                result.Value = applicationSetting.Value;
+
+                await _applicationSettingRepository.Update(result, cancellationToken);
+            }
         }
     }
 }

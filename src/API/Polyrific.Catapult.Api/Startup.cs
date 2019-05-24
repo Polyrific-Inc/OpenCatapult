@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 using AutoMapper;
@@ -16,7 +15,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Hubs;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Api.Infrastructure;
@@ -48,6 +49,9 @@ namespace Polyrific.Catapult.Api
             services.AddSingleton(Configuration);
 
             string baseUrl = _hostingEnvironment.IsDevelopment() ? Path.Combine(_hostingEnvironment.ContentRootPath, "bin") : _hostingEnvironment.WebRootPath;
+            services.Configure<ApplicationSettingValue>(Configuration);
+            services.AddScoped(sp => sp.GetService<IOptionsSnapshot<ApplicationSettingValue>>().Value);
+            
             var localTextWriter = new LocalTextWriter(baseUrl);
             services.AddSingleton<ITextWriter>(localTextWriter);
 

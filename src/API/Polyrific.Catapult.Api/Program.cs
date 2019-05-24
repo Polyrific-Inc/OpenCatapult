@@ -21,7 +21,7 @@ namespace Polyrific.Catapult.Api
             _isService = args.Contains("--service");
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(GetConfiguration(_isService))
+                .ReadFrom.Configuration(GetConfiguration())
                 .CreateLogger();
 
             try
@@ -53,31 +53,35 @@ namespace Polyrific.Catapult.Api
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .UseConfiguration(GetConfiguration(_isService))
+                .UseConfiguration(GetConfiguration())
+                .ConfigureAppConfiguration(AddDbConfiguration)
                 .UseSerilog();
 
-        public static IConfiguration GetConfiguration(bool isService) {
+        public static IConfiguration GetConfiguration() {
             var basePath = Directory.GetCurrentDirectory();
-            if (isService)
+            if (_isService)
             {
                 var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
                 basePath = Path.GetDirectoryName(pathToExe);
             }
 
-            var builder = new ConfigurationBuilder()
+            var config = new ConfigurationBuilder()
                     .SetBasePath(basePath)
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                     .AddJsonFile("notificationconfig.json", optional: false, reloadOnChange: true)
                     .AddJsonFile(
                         $"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json",
                         optional: true)
-                    .AddEnvironmentVariables();
-
-            var config = builder.Build();
-            builder.AddDbConfiguration(config);
-
+                    .AddEnvironmentVariables()
+                    .Build();
 
             return config;
+        }
+
+        public static void AddDbConfiguration(WebHostBuilderContext context, IConfigurationBuilder builder)
+        {
+            builder.AddDbConfiguration(context.Configuration);
+            builder.Build();
         }
     }
 }

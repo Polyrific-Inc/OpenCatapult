@@ -24,6 +24,7 @@ namespace Polyrific.Catapult.Api
             services.AddTransient<IManagedFileService, ManagedFileService>();
             services.AddTransient<IHelpContextService, HelpContextService>();
             services.AddTransient<IExternalAccountTypeService, ExternalAccountTypeService>();
+            services.AddTransient<IApplicationSettingService, ApplicationSettingService>();
         }
     }
 }

@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Polyrific.Catapult.Api.Data;
 
 namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
 {
     [DbContext(typeof(CatapultSqliteDbContext))]
-    partial class CatapultSqliteDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190523031317_DynamicConfiguration")]
+    partial class DynamicConfiguration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
