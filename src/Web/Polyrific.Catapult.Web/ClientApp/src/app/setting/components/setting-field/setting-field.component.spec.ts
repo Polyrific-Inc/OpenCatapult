@@ -4,6 +4,7 @@ import { SettingFieldComponent } from './setting-field.component';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { MatInputModule, MatButtonModule, MatSelectModule, MatCheckboxModule } from '@angular/material';
 import { SharedModule } from '@app/shared/shared.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SettingFieldComponent', () => {
   let component: SettingFieldComponent;
@@ -13,6 +14,7 @@ describe('SettingFieldComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ SettingFieldComponent ],
       imports: [
+        BrowserAnimationsModule,
         ReactiveFormsModule,
         MatInputModule,
         MatButtonModule,
