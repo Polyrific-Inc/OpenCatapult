@@ -24,6 +24,7 @@ import { TextHelperService } from './services/text-helper.service';
 import { ManagedFileService } from './services/managed-file.service';
 import { HelpContextService } from './services/help-context.service';
 import { VersionService } from './services/version.service';
+import { ApplicationSettingService } from './services/application-setting.service';
 
 @NgModule({
   declarations: [],
@@ -53,7 +54,8 @@ import { VersionService } from './services/version.service';
     TextHelperService,
     ManagedFileService,
     HelpContextService,
-    VersionService
+    VersionService,
+    ApplicationSettingService
   ]
 })
 export class CoreModule {

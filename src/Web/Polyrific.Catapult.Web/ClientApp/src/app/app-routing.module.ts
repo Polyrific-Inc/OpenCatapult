@@ -46,6 +46,10 @@ const routes: Routes = [
       {
         path: 'version',
         component: VersionComponent
+      },
+      {
+        path: 'setting',
+        loadChildren: './setting/setting.module#SettingModule'
       }
     ]
   },

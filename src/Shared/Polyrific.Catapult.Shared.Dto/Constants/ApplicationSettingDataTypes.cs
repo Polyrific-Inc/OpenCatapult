@@ -6,6 +6,6 @@ namespace Polyrific.Catapult.Shared.Dto.Constants
     {
         public const string Bool = "bool";
         public const string String = "string";
-        public const string Int = "int";
+        public const string Number = "number";
     }
 }

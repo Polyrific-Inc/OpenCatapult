@@ -1,0 +1,24 @@
+<div [formGroup]="form" *ngIf="applicationSetting.allowedValues && applicationSetting.allowedValues.length > 0">
+  <mat-form-field class="full-width-input">
+      <mat-label>{{applicationSetting.label}}</mat-label>
+      <mat-select [formControlName]="applicationSetting.key">
+        <mat-option *ngFor="let allowedValue of applicationSetting.allowedValues" [value]="allowedValue">
+          {{allowedValue}}
+        </mat-option>
+      </mat-select>
+  </mat-form-field>
+
+</div>
+<div [ngSwitch]="applicationSetting.dataType" [formGroup]="form" *ngIf="!applicationSetting.allowedValues || applicationSetting.allowedValues.length == 0">
+    <mat-form-field *ngSwitchCase="'string'" class="full-width-input">
+        <mat-label>{{applicationSetting.label}}</mat-label>
+        <input matInput [formControlName]="applicationSetting.key">
+    </mat-form-field>
+
+    <mat-form-field *ngSwitchCase="'number'" class="full-width-input">
+        <mat-label>{{applicationSetting.label}}</mat-label>
+        <input matInput [formControlName]="applicationSetting.key">
+    </mat-form-field>
+
+    <mat-checkbox *ngSwitchCase="'bool'" [formControlName]="applicationSetting.key">{{applicationSetting.label}}</mat-checkbox>
+</div>
