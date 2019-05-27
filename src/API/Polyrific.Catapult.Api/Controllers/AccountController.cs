@@ -486,5 +486,44 @@ namespace Polyrific.Catapult.Api.Controllers
 
             return Ok(results);
         }
+
+        [HttpGet("two-factor-key")]
+        [Authorize]
+        public async Task<IActionResult> GetTwoFactorAuthKey()
+        {
+            _logger.LogRequest("Getting two factor auth key and QR code");
+
+            var (sharedKey, authUri) = await _userService.GetAuthenticatorKeyAndQrCodeUri(User.GetUserId());
+
+            var dto = new TwoFactorKeyDto
+            {
+                SharedKey = sharedKey,
+                AuthenticatorUri = authUri
+            };
+
+            _logger.LogResponse("Two factor shared key and authenticator uri retrieved");
+
+            return Ok(dto);
+        }
+
+        [HttpPost("verify-two-factor-code")]
+        [Authorize]
+        public async Task<IActionResult> VerifyTwoFactorCode(VerifyTwoFactorCodeDto dto)
+        {
+            _logger.LogRequest("Verify two factor auth code");
+
+            var result = await _userService.VerifyTwoFactorToken(User.GetUserId(), dto.VerificationCode);
+
+            _logger.LogRequest("Two factor auth code verified. Result: {result}", result);
+
+            if (result)
+            {
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("Supplied verification code is invalid");
+            }            
+        }
     }
 }

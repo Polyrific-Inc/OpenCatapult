@@ -47,8 +47,12 @@ export class LoginComponent implements OnInit {
         this.loading = true;
       this.authService.login(this.loginForm.value)
         .subscribe(
-            data => {
-                this.router.navigate([this.returnUrl]);
+            response => {
+                if (response === 'Requires two factor') {
+                  this.router.navigate(['/login-with-2fa'], { queryParams: { returnUrl: this.returnUrl }});
+                } else {
+                  this.router.navigate([this.returnUrl]);
+                }
             },
             (err: HttpErrorResponse) => {
                 if (err.error && typeof err.error === 'string') {

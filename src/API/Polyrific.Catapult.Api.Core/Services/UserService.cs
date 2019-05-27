@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -19,15 +21,21 @@ namespace Polyrific.Catapult.Api.Core.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly INotificationProvider _notificationProvider;
+        private readonly UrlEncoder _urlEncoder;
 
         private static char[] punctuations = "!@#$%^&*()_-+=[{]};:>|./?".ToCharArray();
 
         private static char[] startingChars = new char[] { '<', '&' };
 
-        public UserService(IUserRepository userRepository, INotificationProvider notificationProvider)
+        private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
+
+        public UserService(IUserRepository userRepository, 
+            INotificationProvider notificationProvider,
+            UrlEncoder urlEncoder)
         {
             _userRepository = userRepository;
             _notificationProvider = notificationProvider;
+            _urlEncoder = urlEncoder;
         }
 
         public async Task ConfirmEmail(int userId, string token, CancellationToken cancellationToken = default(CancellationToken))
@@ -249,7 +257,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _userRepository.UpdateAvatar(userId, managedFileId, cancellationToken);
         }
 
-        public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<SignInResult> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             return await _userRepository.ValidateUserPassword(userName, password, cancellationToken);
         }
@@ -260,7 +268,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             {
                 throw new ArgumentException("Length should be betwen 1 and 128");
             }
-            
+
             string password;
             char[] cBuf;
 
@@ -294,6 +302,28 @@ namespace Polyrific.Catapult.Api.Core.Services
             while (IsDangerousString(password, out var index));
 
             return Task.FromResult(password);
+        }
+
+        public async Task<(string sharedKey, string authenticatorUri)> GetAuthenticatorKeyAndQrCodeUri(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userRepository.GetById(userId, cancellationToken);
+            var unformattedKey = await _userRepository.GetAuthenticatorKey(userId, cancellationToken);
+
+            var sharedKey = FormatKey(unformattedKey);
+            var authenticatorUri = GenerateQrCodeUri(user.Email, unformattedKey);
+
+            return (sharedKey, authenticatorUri);
+        }
+
+        public async Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var result = await _userRepository.VerifyTwoFactorToken(userId, verificationCode, cancellationToken);
+
+            return result;
         }
 
         private static bool IsDangerousString(string s, out int matchIndex)
@@ -344,6 +374,37 @@ namespace Polyrific.Catapult.Api.Core.Services
             return Enumerable.Repeat(chars, length)
                           .Select(s => s[random.Next(s.Length)])
                           .ToArray();
+        }
+
+        private string FormatKey(string unformattedKey)
+        {
+            var result = new StringBuilder();
+            int currentPosition = 0;
+            while (currentPosition + 4 < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition, 4)).Append(" ");
+                currentPosition += 4;
+            }
+            if (currentPosition < unformattedKey.Length)
+            {
+                result.Append(unformattedKey.Substring(currentPosition));
+            }
+
+            return result.ToString().ToLowerInvariant();
+        }
+
+        private string GenerateQrCodeUri(string email, string unformattedKey)
+        {
+            return string.Format(
+                AuthenticatorUriFormat,
+                _urlEncoder.Encode("Polyrific.Catapult.Api"),
+                _urlEncoder.Encode(email),
+                unformattedKey);
+        }
+
+        public async Task<User> GetTwoFactorAuthenticationUser()
+        {
+            return await _userRepository.GetTwoFactorAuthenticationUser();
         }
     }
 }

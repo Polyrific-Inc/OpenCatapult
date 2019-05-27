@@ -13,6 +13,7 @@ import { Config, ConfigService } from '../../config/config.service';
 export class AuthService {
   private config: Config;
   private currentUserSubject: BehaviorSubject<User>;
+  private temporaryUser: User;
   public currentUser: Observable<User>;
 
   get isLoggedIn() {
@@ -38,7 +39,12 @@ export class AuthService {
       this.config = this.configService.getConfig();
     }
 
-    return this.http.post(`${this.config.apiUrl}/Token`, { UserName: user.userName, Password: user.password },
+    if (!user.userName && !user.password && this.temporaryUser) {
+      user.userName = this.temporaryUser.userName;
+      user.password = this.temporaryUser.password;
+    }
+
+    return this.http.post(`${this.config.apiUrl}/Token`, user,
     {
       responseType: 'text'
     }).pipe(map(this.storeToken(user)));
@@ -93,8 +99,11 @@ export class AuthService {
 
   private storeToken(user: User) {
     return (token: string) => {
-            // login successful if there's a jwt token in the response
-        if (token) {
+        if (token === 'Requires two factor') {
+          // temporarily store user object for next process
+          this.temporaryUser = user;
+          return token;
+        } else if (token) {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
           user.token = token;
           const decodedToken = this.getDecodedAccessToken(token);
@@ -128,6 +137,7 @@ export class AuthService {
           }
 
           user.password = null;
+          this.temporaryUser = null;
 
           localStorage.setItem('currentUser', JSON.stringify(user));
           this.currentUserSubject.next(user);

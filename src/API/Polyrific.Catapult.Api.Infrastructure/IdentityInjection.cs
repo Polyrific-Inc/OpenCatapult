@@ -22,11 +22,10 @@ namespace Polyrific.Catapult.Api.Infrastructure
 
             if (dbProvider.Equals("sqlite", StringComparison.InvariantCultureIgnoreCase))
             {
-                services.AddIdentityCore<ApplicationUser>(opt =>
+                services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
                     {
                         opt.User.RequireUniqueEmail = true;
                     })
-                    .AddRoles<ApplicationRole>()
                     .AddEntityFrameworkStores<CatapultSqliteDbContext>()
                     .AddDefaultTokenProviders();
             }

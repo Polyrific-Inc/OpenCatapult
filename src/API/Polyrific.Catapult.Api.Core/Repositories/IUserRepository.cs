@@ -59,7 +59,7 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <param name="password">Password of the user</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>Validity status</returns>
-        Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken));
+        Task<SignInResult> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Set user role
@@ -147,5 +147,23 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
         Task UpdateAvatar(int userId, int? managedFileId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get the authenticator key
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<string> GetAuthenticatorKey(int userId, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Verify two factor auth code
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="verificationCode">Authenticator verification code</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default(CancellationToken));
+        Task<User> GetTwoFactorAuthenticationUser();
     }
 }

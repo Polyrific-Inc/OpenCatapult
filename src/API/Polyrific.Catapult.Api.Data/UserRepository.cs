@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,13 +22,19 @@ namespace Polyrific.Catapult.Api.Data
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IRepository<UserProfile> _userProfileRepository;
         private readonly IMapper _mapper;
 
-        public UserRepository(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, IRepository<UserProfile> userProfileRepository, IMapper mapper)
+        public UserRepository(UserManager<ApplicationUser> userManager, 
+            RoleManager<ApplicationRole> roleManager, 
+            SignInManager<ApplicationUser> signInManager, 
+            IRepository<UserProfile> userProfileRepository, 
+            IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
             _userProfileRepository = userProfileRepository;
             _mapper = mapper;
         }
@@ -207,15 +214,27 @@ namespace Polyrific.Catapult.Api.Data
             }
         }
 
-        public async Task<bool> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<Core.Entities.SignInResult> ValidateUserPassword(string userName, string password, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = await _userManager.FindByNameAsync(userName);
             if (user != null && user.EmailConfirmed)
-                return await _userManager.CheckPasswordAsync(user, password);
+            {
+                var result = await _signInManager.PasswordSignInAsync(user, password, false, false);
+                return _mapper.Map<Core.Entities.SignInResult>(result);
+            }
 
-            return false;
+            return new Core.Entities.SignInResult
+            {
+                Succeeded = false
+            };
+        }
+
+        public async Task<User> GetTwoFactorAuthenticationUser()
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            return _mapper.Map<User>(user);
         }
 
         public async Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
@@ -318,6 +337,40 @@ namespace Polyrific.Catapult.Api.Data
             var users = await _userManager.Users.Include(u => u.UserProfile).Where(u => ids.Contains(u.Id)).ToListAsync(cancellationToken);
 
             return _mapper.Map<List<User>>(users);
+        }
+
+        public async Task<string> GetAuthenticatorKey(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            if (string.IsNullOrEmpty(unformattedKey))
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(user);
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(user);
+            }
+
+            return unformattedKey;
+        }
+
+        public async Task ResetAuthenticatorKey(int userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+        }
+
+        public async Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var result = await _userManager.VerifyTwoFactorTokenAsync(user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+
+            if (result)
+                await _userManager.SetTwoFactorEnabledAsync(user, true);
+
+            return result;
         }
     }
 }

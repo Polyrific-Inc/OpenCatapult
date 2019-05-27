@@ -10,6 +10,7 @@ import { ForgotPasswordComponent } from './forgot-password/forgot-password.compo
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { VersionComponent } from './version/version.component';
+import { LoginWithTwofaComponent } from './login-with-twofa/login-with-twofa.component';
 
 const routes: Routes = [
   {
@@ -60,6 +61,16 @@ const routes: Routes = [
       {
         path: '',
         component: LoginComponent
+      }
+    ]
+  },
+  {
+    path: 'login-with-2fa',
+    component: LoginLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: LoginWithTwofaComponent
       }
     ]
   },

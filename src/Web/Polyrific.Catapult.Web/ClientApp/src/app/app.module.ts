@@ -25,6 +25,7 @@ import { HelpContextDialogComponent } from './help-context-dialog/help-context-d
 import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { FooterComponent } from './footer/footer.component';
 import { VersionComponent } from './version/version.component';
+import { LoginWithTwofaComponent } from './login-with-twofa/login-with-twofa.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { VersionComponent } from './version/version.component';
     HelpContextDialogComponent,
     ConfirmEmailComponent,
     FooterComponent,
-    VersionComponent
+    VersionComponent,
+    LoginWithTwofaComponent
   ],
   imports: [
     CoreModule,

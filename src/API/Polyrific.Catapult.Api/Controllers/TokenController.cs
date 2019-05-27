@@ -45,11 +45,32 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogRequest("Requesting user token for user {UserName}", dto?.UserName);
 
-            if (!await _userService.ValidateUserPassword(dto.UserName, dto.Password))
+            var signInResult = await _userService.ValidateUserPassword(dto.UserName, dto.Password);
+            if (!signInResult.Succeeded)
             {
-                _logger.LogWarning("Username or password is invalid. Username: {UserName}", dto?.UserName);
-                return BadRequest("Username or password is invalid");
-            }                
+                if (signInResult.RequiresTwoFactor)
+                {
+                    if (!string.IsNullOrEmpty(dto.AuthenticatorCode))
+                    {
+                        var twoFactorUser = await _userService.GetUser(dto.UserName);
+                        var twoFactorResult = await _userService.VerifyTwoFactorToken(twoFactorUser.Id, dto.AuthenticatorCode);
+
+                        if (!twoFactorResult)
+                        {
+                            return BadRequest("Authenticator Code is not correct");
+                        }
+                    }
+                    else
+                    {
+                        return Accepted("Requires two factor", "Requires two factor");
+                    }                    
+                }
+                else
+                {
+                    _logger.LogWarning("Username or password is invalid. Username: {UserName}", dto?.UserName);
+                    return BadRequest("Username or password is invalid");
+                }
+            }
 
             var user = await _userService.GetUser(dto.UserName);
             if (!user.IsActive)

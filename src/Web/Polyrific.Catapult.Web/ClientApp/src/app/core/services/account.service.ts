@@ -7,6 +7,7 @@ import { UpdateUserDto } from '../models/account/update-user-dto';
 import { UpdatePasswordDto } from '../models/account/update-password-dto';
 import { ResetPasswordDto } from '../models/account/reset-password-dto';
 import { ExternalAccountTypeDto } from '../models/account/external-account-type-dto';
+import { TwoFactorKeyDto } from '../models/account/two-factor-key-dto';
 
 @Injectable()
 export class AccountService {
@@ -67,6 +68,14 @@ export class AccountService {
 
   confirmEmail(userId: number, token: string) {
     return this.api.getString(`account/${userId}/confirm?token=${token}`);
+  }
+
+  getTwoFactorAuthKey() {
+    return this.api.get<TwoFactorKeyDto>('account/two-factor-key');
+  }
+
+  verifyTwoFactorAuthenticatorCode(dto: any) {
+    return this.api.post('account/verify-two-factor-code', dto);
   }
 
 }
