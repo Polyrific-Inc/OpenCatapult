@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LoginWithTwofaComponent } from './login-with-twofa.component';
+import { LoginWithRecoveryCodeComponent } from './login-with-recovery-code.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressBarModule, MatInputModule, MatCardModule, MatIconModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -8,13 +8,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '@app/core/auth/auth.service';
 
-describe('LoginWithTwofaComponent', () => {
-  let component: LoginWithTwofaComponent;
-  let fixture: ComponentFixture<LoginWithTwofaComponent>;
+describe('LoginWithRecoveryCodeComponent', () => {
+  let component: LoginWithRecoveryCodeComponent;
+  let fixture: ComponentFixture<LoginWithRecoveryCodeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LoginWithTwofaComponent ],
+      declarations: [ LoginWithRecoveryCodeComponent ],
       imports: [
         BrowserAnimationsModule,
         MatProgressBarModule,
@@ -31,7 +31,7 @@ describe('LoginWithTwofaComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(LoginWithTwofaComponent);
+    fixture = TestBed.createComponent(LoginWithRecoveryCodeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

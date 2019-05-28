@@ -26,6 +26,7 @@ import { ConfirmEmailComponent } from './confirm-email/confirm-email.component';
 import { FooterComponent } from './footer/footer.component';
 import { VersionComponent } from './version/version.component';
 import { LoginWithTwofaComponent } from './login-with-twofa/login-with-twofa.component';
+import { LoginWithRecoveryCodeComponent } from './login-with-recovery-code/login-with-recovery-code.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { LoginWithTwofaComponent } from './login-with-twofa/login-with-twofa.com
     ConfirmEmailComponent,
     FooterComponent,
     VersionComponent,
-    LoginWithTwofaComponent
+    LoginWithTwofaComponent,
+    LoginWithRecoveryCodeComponent
   ],
   imports: [
     CoreModule,

@@ -52,12 +52,20 @@ namespace Polyrific.Catapult.Api.Controllers
                 {
                     if (!string.IsNullOrEmpty(dto.AuthenticatorCode))
                     {
-                        var twoFactorUser = await _userService.GetUser(dto.UserName);
-                        var twoFactorResult = await _userService.VerifyTwoFactorToken(twoFactorUser.Id, dto.AuthenticatorCode);
+                        var twoFactorResult = await _userService.VerifyTwoFactorToken(dto.UserName, dto.AuthenticatorCode);
 
                         if (!twoFactorResult)
                         {
                             return BadRequest("Authenticator Code is not correct");
+                        }
+                    }
+                    else if (!string.IsNullOrEmpty(dto.RecoveryCode))
+                    {
+                        var recoveryResult = await _userService.RedeemTwoFactorRecoveryCode(dto.UserName, dto.RecoveryCode);
+
+                        if (!recoveryResult)
+                        {
+                            return BadRequest("Recovery Code is not correct");
                         }
                     }
                     else

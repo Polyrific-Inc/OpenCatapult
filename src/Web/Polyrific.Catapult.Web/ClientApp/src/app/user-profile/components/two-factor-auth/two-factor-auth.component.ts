@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AccountService } from '@app/core';
-import { SnackbarService } from '@app/shared';
+import { User2faInfoDto } from '@app/core/models/account/user-2fa-info-dto';
 
 @Component({
   selector: 'app-two-factor-auth',
@@ -9,41 +8,19 @@ import { SnackbarService } from '@app/shared';
   styleUrls: ['./two-factor-auth.component.css']
 })
 export class TwoFactorAuthComponent implements OnInit {
-  form: FormGroup;
-  sharedKey: string;
-  authenticatorUri: string;
+  loading: boolean;
+  user2faInfo: User2faInfoDto;
 
   constructor(
-    private accountService: AccountService,
-    private fb: FormBuilder,
-    private snackbar: SnackbarService) { }
+    private accountService: AccountService) { }
 
   ngOnInit() {
-    this.form = this.fb.group({
-      verificationCode: [null, Validators.required]
-    });
-
-    this.accountService.getTwoFactorAuthKey()
+    this.loading = true;
+    this.accountService.getUser2faInfo()
       .subscribe(data => {
-        this.sharedKey = data.sharedKey;
-        this.authenticatorUri = data.authenticatorUri;
+        this.loading = false;
+        this.user2faInfo = data;
       });
-  }
-
-  isFieldInvalid(controlName: string, errorCode: string) {
-    const control = this.form.get(controlName);
-    return control.invalid && control.errors && control.getError(errorCode);
-  }
-
-  onSubmit() {
-    if (this.form.valid) {
-      this.accountService.verifyTwoFactorAuthenticatorCode(this.form.value)
-        .subscribe(() => {
-          this.snackbar.open('verified');
-        }, (err) => {
-          this.snackbar.open(err);
-        });
-    }
   }
 
 }

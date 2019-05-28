@@ -159,11 +159,51 @@ namespace Polyrific.Catapult.Api.Core.Repositories
         /// <summary>
         /// Verify two factor auth code
         /// </summary>
-        /// <param name="userId">Id of the user</param>
+        /// <param name="userName">Username</param>
         /// <param name="verificationCode">Authenticator verification code</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns></returns>
-        Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default(CancellationToken));
-        Task<User> GetTwoFactorAuthenticationUser();
+        Task<bool> VerifyTwoFactorToken(string userName, string verificationCode, CancellationToken cancellationToken = default(CancellationToken));
+
+        /// <summary>
+        /// Get two factor auth info for the user
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<User2faInfo> GetUser2faInfo(int userId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Generate new two factor recovery codes
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<string[]> GenerateNewTwoFactorRecoveryCodes(int userId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Reset the authenticator key
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task ResetAuthenticatorKey(int userId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Disable the two factor authentication for the user
+        /// </summary>
+        /// <param name="userId">Id of the user</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task DisableTwoFactor(int userId, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Redeem a two factor recovery code
+        /// </summary>
+        /// <param name="userName">Username</param>
+        /// <param name="recoveryCode">Recovery code</param>
+        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
+        /// <returns></returns>
+        Task<bool> RedeemTwoFactorRecoveryCode(string userName, string recoveryCode, CancellationToken cancellationToken = default);
     }
 }

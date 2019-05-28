@@ -40,7 +40,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RequestToken_ReturnsSuccess()
         {
             _userService.Setup(s => s.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync(new Api.Core.Entities.SignInResult()
+                {
+                    Succeeded = true
+                });
             _userService.Setup(s => s.GetUser(It.IsAny<string>(),It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
                 {
@@ -88,7 +91,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RequestToken_ReturnsUserPasswordInvalid()
         {
             _userService.Setup(s => s.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(false);
+                .ReturnsAsync(new Api.Core.Entities.SignInResult()
+                {
+                    Succeeded = false
+                });
                         
             var controller = new TokenController(_userService.Object, _projectService.Object, _catapultEngineService.Object, _configuration.Object, _logger.Object);
 
@@ -107,7 +113,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Controllers
         public async void RequestToken_ReturnsUserIsSuspended()
         {
             _userService.Setup(s => s.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync(new Api.Core.Entities.SignInResult()
+                {
+                    Succeeded = true
+                });
             _userService.Setup(s => s.GetUser(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((string email, CancellationToken cancellationToken) => new User
                 {

@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TwoFactorAuthComponent } from './two-factor-auth.component';
+import { ResetRecoveryTwoFactorComponent } from './reset-recovery-two-factor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -9,14 +9,15 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared/shared.module';
+import { ShowRecoveryTwoFactorComponent } from '../show-recovery-two-factor/show-recovery-two-factor.component';
 
-describe('TwoFactorAuthComponent', () => {
-  let component: TwoFactorAuthComponent;
-  let fixture: ComponentFixture<TwoFactorAuthComponent>;
+describe('ResetRecoveryTwoFactorComponent', () => {
+  let component: ResetRecoveryTwoFactorComponent;
+  let fixture: ComponentFixture<ResetRecoveryTwoFactorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TwoFactorAuthComponent ],
+      declarations: [ ResetRecoveryTwoFactorComponent, ShowRecoveryTwoFactorComponent ],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -34,7 +35,7 @@ describe('TwoFactorAuthComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TwoFactorAuthComponent);
+    fixture = TestBed.createComponent(ResetRecoveryTwoFactorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

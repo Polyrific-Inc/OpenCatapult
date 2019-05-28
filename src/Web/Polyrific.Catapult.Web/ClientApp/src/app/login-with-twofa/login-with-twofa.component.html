@@ -8,7 +8,7 @@
         <mat-icon>vpn_key</mat-icon>
         <p>Your login is protected with an authenticator app. Enter your authenticator code below.</p>
         <mat-form-field class="full-width-input">
-          <input matInput placeholder="Authenticator Code" formControlName="authenticatorCode" required>
+          <input matInput placeholder="Authenticator Code" formControlName="authenticatorCode" required autocomplete="off">
           <mat-error *ngIf="isFieldInvalid('authenticatorCode', 'required')">
             Please enter the authenticator code
           </mat-error>
@@ -17,7 +17,7 @@
         <mat-error *ngIf="error">{{error}}</mat-error>
         <button mat-raised-button color="primary" [disabled]="loading">Login</button>
         <div class="margin10">
-          Don't have access to your authenticator device? <a [routerLink]="['/login-with-recovery']" class="forgot-password-link">You can log in with a recovery code</a>.
+          Don't have access to your authenticator device? <a [routerLink]="['/login-with-recovery-code']" class="forgot-password-link">You can log in with a recovery code</a>.
         </div>
       </form>
     </mat-card-content>

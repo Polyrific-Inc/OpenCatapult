@@ -1,0 +1,22 @@
+<div class="signin-content">
+    <h1>OpenCatapult Web</h1>
+
+    <mat-card>
+      <mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+      <mat-card-content>
+        <form [formGroup]="recoveryForm" (ngSubmit)="onSubmit()">
+          <mat-icon>vpn_key</mat-icon>
+          <p>You have requested to log in with a recovery code.</p>
+          <mat-form-field class="full-width-input">
+            <input matInput placeholder="Recovery Code" formControlName="recoveryCode" required autocomplete="off">
+            <mat-error *ngIf="isFieldInvalid('recoveryCode', 'required')">
+              Please enter the recovery code
+            </mat-error>
+          </mat-form-field>
+
+          <mat-error *ngIf="error">{{error}}</mat-error>
+          <button mat-raised-button color="primary" [disabled]="loading">Login</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>

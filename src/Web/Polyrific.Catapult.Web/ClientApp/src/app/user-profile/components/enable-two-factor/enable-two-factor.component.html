@@ -1,0 +1,43 @@
+<mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+<div *ngIf="!loading && !recoveryCodes">
+
+    <h4>Configure authenticator app</h4>
+    <p>To use an authenticator app go through the following steps:</p>
+        <ol class="list">
+            <li>
+                <p>
+                    Download a two-factor authenticator app like Microsoft Authenticator for
+                    <a href="https://go.microsoft.com/fwlink/?Linkid=825071">Windows Phone</a>,
+                    <a href="https://go.microsoft.com/fwlink/?Linkid=825072">Android</a> and
+                    <a href="https://go.microsoft.com/fwlink/?Linkid=825073">iOS</a> or
+                    Google Authenticator for
+                    <a href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2&amp;hl=en">Android</a> and
+                    <a href="https://itunes.apple.com/us/app/google-authenticator/id388497605?mt=8">iOS</a>.
+                </p>
+            </li>
+            <li>
+                <p>Scan the QR Code or enter this key <kbd class="shared-key">{{sharedKey}}</kbd> into your two factor authenticator app. Spaces and casing do not matter.</p>
+                <qrcode *ngIf="authenticatorUri" [qrdata]="authenticatorUri" [size]="256" [level]="'M'"></qrcode>
+            </li>
+            <li>
+                <p>
+                    Once you have scanned the QR code or input the key above, your two factor authentication app will provide you
+                    with a unique code. Enter the code in the confirmation box below.
+                </p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <form [formGroup]="form" (submit)="onSubmit()">
+                            <mat-form-field class="full-width-input">
+                              <mat-label>Verification Code</mat-label>
+                              <input matInput required
+                                formControlName="verificationCode" autocomplete="off">
+                                <mat-error *ngIf="isFieldInvalid('verificationCode', 'required')">Please inform the old password</mat-error>
+                            </mat-form-field>
+                            <button mat-raised-button color="primary" cdkFocusInitial>Verify</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ol>
+</div>
+<app-show-recovery-two-factor *ngIf="recoveryCodes" [recoveryCodes]="recoveryCodes"></app-show-recovery-two-factor>

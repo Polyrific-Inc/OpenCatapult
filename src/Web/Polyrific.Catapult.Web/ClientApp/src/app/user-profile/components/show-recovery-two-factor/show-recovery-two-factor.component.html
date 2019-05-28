@@ -1,0 +1,11 @@
+<h4>Recovery codes</h4>
+<div>
+  <b>Put these codes in a safe place.</b>
+  <p>If you lose your device and don't have the recovery codes you will lose access to your account.</p>
+</div>
+
+<div>
+    <span *ngFor="let recoveryCode of recoveryCodes; let i = index">
+      <code class="recovery-code">{{recoveryCode}}</code>&nbsp;<br *ngIf="i % 2 === 1">
+    </span>
+</div>

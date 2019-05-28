@@ -231,12 +231,6 @@ namespace Polyrific.Catapult.Api.Data
             };
         }
 
-        public async Task<User> GetTwoFactorAuthenticationUser()
-        {
-            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
-            return _mapper.Map<User>(user);
-        }
-
         public async Task SetUserRole(int userId, string roleName, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -354,17 +348,28 @@ namespace Polyrific.Catapult.Api.Data
             return unformattedKey;
         }
 
-        public async Task ResetAuthenticatorKey(int userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
-            await _userManager.ResetAuthenticatorKeyAsync(user);
-        }
-
-        public async Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default)
+        public async Task ResetAuthenticatorKey(int userId, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             var user = await _userManager.FindByIdAsync(userId.ToString());
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+        }
+
+        public async Task DisableTwoFactor(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            await _userManager.SetTwoFactorEnabledAsync(user, false);
+        }
+
+        public async Task<bool> VerifyTwoFactorToken(string userName, string verificationCode, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByNameAsync(userName);
             var result = await _userManager.VerifyTwoFactorTokenAsync(user, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
 
             if (result)
@@ -372,5 +377,39 @@ namespace Polyrific.Catapult.Api.Data
 
             return result;
         }
+
+        public async Task<bool> RedeemTwoFactorRecoveryCode(string userName, string recoveryCode, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByNameAsync(userName);
+            var result = await _userManager.RedeemTwoFactorRecoveryCodeAsync(user, recoveryCode);
+
+            return result.Succeeded;
+        }
+
+        public async Task<User2faInfo> GetUser2faInfo(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            var result = new User2faInfo();
+            result.Is2faEnabled = await _userManager.GetTwoFactorEnabledAsync(user);
+            result.RecoveryCodesLeft = await _userManager.CountRecoveryCodesAsync(user);
+            result.HasAuthenticator = await _userManager.GetAuthenticatorKeyAsync(user) != null;
+
+            return result;
+        }
+
+        public async Task<string[]> GenerateNewTwoFactorRecoveryCodes(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            return (await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10)).ToArray();
+        }
+
+
     }
 }

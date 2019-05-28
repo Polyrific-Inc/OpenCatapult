@@ -1,0 +1,38 @@
+mat-card, h1 {
+  max-width: 400px;
+  margin: 2em auto;
+  text-align: center;
+}
+
+mat-spinner {
+  text-align: center;
+  margin: 10px auto;
+}
+
+.signin-content {
+  padding-left: 1rem;
+  padding-left: 1rem;
+  padding-top: 60px;
+  height: calc(100% - 124px);
+}
+
+mat-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+mat-error {
+margin-bottom: 10px;
+}
+
+.forgot-password-link {
+color: #337ab7;
+}
+
+@media (max-width: 600px) {
+.signin-content {
+    height: calc(100% - 116px);
+}
+}

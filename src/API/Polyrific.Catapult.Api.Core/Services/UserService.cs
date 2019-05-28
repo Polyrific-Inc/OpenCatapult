@@ -317,13 +317,48 @@ namespace Polyrific.Catapult.Api.Core.Services
             return (sharedKey, authenticatorUri);
         }
 
-        public async Task<bool> VerifyTwoFactorToken(int userId, string verificationCode, CancellationToken cancellationToken = default)
+        public async Task<bool> VerifyTwoFactorToken(string userName, string verificationCode, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var result = await _userRepository.VerifyTwoFactorToken(userId, verificationCode, cancellationToken);
+            var result = await _userRepository.VerifyTwoFactorToken(userName, verificationCode, cancellationToken);
 
             return result;
+        }
+        
+        public async Task<User2faInfo> GetUser2faInfo(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _userRepository.GetUser2faInfo(userId, cancellationToken);
+        }
+
+        public async Task<string[]> GenerateNewTwoFactorRecoveryCodes(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _userRepository.GenerateNewTwoFactorRecoveryCodes(userId, cancellationToken);
+        }
+
+        public async Task ResetAuthenticatorKey(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _userRepository.ResetAuthenticatorKey(userId, cancellationToken);
+        }
+
+        public async Task DisableTwoFactor(int userId, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _userRepository.DisableTwoFactor(userId, cancellationToken);
+        }
+
+        public async Task<bool> RedeemTwoFactorRecoveryCode(string userName, string recoveryCode, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return await _userRepository.RedeemTwoFactorRecoveryCode(userName, recoveryCode, cancellationToken);
         }
 
         private static bool IsDangerousString(string s, out int matchIndex)
@@ -400,11 +435,6 @@ namespace Polyrific.Catapult.Api.Core.Services
                 _urlEncoder.Encode("Polyrific.Catapult.Api"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
-        }
-
-        public async Task<User> GetTwoFactorAuthenticationUser()
-        {
-            return await _userRepository.GetTwoFactorAuthenticationUser();
         }
     }
 }

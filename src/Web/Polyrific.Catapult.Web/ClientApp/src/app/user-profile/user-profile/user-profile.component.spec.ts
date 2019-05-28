@@ -11,6 +11,7 @@ import { UserProfilePasswordComponent } from '../components/user-profile-passwor
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AuthService } from '@app/core/auth/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterTestingModule } from '@angular/router/testing';
 
 describe('UserProfileComponent', () => {
   let component: UserProfileComponent;
@@ -21,6 +22,7 @@ describe('UserProfileComponent', () => {
       declarations: [ UserProfileComponent, UserProfileInfoComponent, UserProfilePasswordComponent ],
       imports: [
         BrowserAnimationsModule,
+        RouterTestingModule,
         HttpClientTestingModule,
         MatTabsModule,
         MatInputModule,

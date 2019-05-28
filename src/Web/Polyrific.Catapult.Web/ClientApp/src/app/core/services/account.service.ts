@@ -8,6 +8,8 @@ import { UpdatePasswordDto } from '../models/account/update-password-dto';
 import { ResetPasswordDto } from '../models/account/reset-password-dto';
 import { ExternalAccountTypeDto } from '../models/account/external-account-type-dto';
 import { TwoFactorKeyDto } from '../models/account/two-factor-key-dto';
+import { User2faInfoDto } from '../models/account/user-2fa-info-dto';
+import { Generate2faRecoveryCodesDto } from '../models/account/generate-2fa-recovery-codes-dto';
 
 @Injectable()
 export class AccountService {
@@ -78,4 +80,19 @@ export class AccountService {
     return this.api.post('account/verify-two-factor-code', dto);
   }
 
+  getUser2faInfo() {
+    return this.api.get<User2faInfoDto>('account/2fa-info');
+  }
+
+  generate2faRecoveryCodes() {
+    return this.api.post<Generate2faRecoveryCodesDto>('account/2fa-recovery');
+  }
+
+  resetAuthenticatorKey() {
+    return this.api.put('account/reset-authenticator');
+  }
+
+  disableTwoFactor() {
+    return this.api.put('account/disable-2fa');
+  }
 }

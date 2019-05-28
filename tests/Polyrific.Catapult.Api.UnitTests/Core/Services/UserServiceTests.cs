@@ -64,7 +64,10 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             _userRepository.Setup(r => r.GenerateConfirmationToken(It.IsAny<int>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync("test");
             _userRepository.Setup(r => r.ValidateUserPassword(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(true);
+                .ReturnsAsync(new Api.Core.Entities.SignInResult()
+                {
+                    Succeeded = true
+                });
             _userRepository.Setup(r => r.Create(It.IsAny<User>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(2).Callback((User entity, CancellationToken cancellationToken) =>
                 {

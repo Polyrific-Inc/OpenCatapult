@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TwoFactorAuthComponent } from './two-factor-auth.component';
+import { ResetTwoFactorComponent } from './reset-two-factor.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
@@ -10,13 +10,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared/shared.module';
 
-describe('TwoFactorAuthComponent', () => {
-  let component: TwoFactorAuthComponent;
-  let fixture: ComponentFixture<TwoFactorAuthComponent>;
+describe('ResetTwoFactorComponent', () => {
+  let component: ResetTwoFactorComponent;
+  let fixture: ComponentFixture<ResetTwoFactorComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TwoFactorAuthComponent ],
+      declarations: [ ResetTwoFactorComponent ],
       imports: [
         BrowserAnimationsModule,
         RouterTestingModule,
@@ -34,7 +34,7 @@ describe('TwoFactorAuthComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TwoFactorAuthComponent);
+    fixture = TestBed.createComponent(ResetTwoFactorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
