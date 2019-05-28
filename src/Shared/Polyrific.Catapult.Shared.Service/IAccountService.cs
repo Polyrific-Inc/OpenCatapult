@@ -123,5 +123,42 @@ namespace Polyrific.Catapult.Shared.Service
         /// </summary>
         /// <returns></returns>
         Task<List<ExternalAccountTypeDto>> GetExternalAccountTypes();
+
+        /// <summary>
+        /// Get the two factor auth key for the current user
+        /// </summary>
+        /// <returns></returns>
+        Task<TwoFactorKeyDto> GetTwoFactorAuthKey();
+
+        /// <summary>
+        /// Verify two factor token
+        /// </summary>
+        /// <param name="dto">The verification code dto</param>
+        /// <returns></returns>
+        Task VerifyTwoFactorAuthenticatorCode(VerifyTwoFactorCodeDto dto);
+
+        /// <summary>
+        /// Get the two factor auth info for the current user
+        /// </summary>
+        /// <returns></returns>
+        Task<User2faInfoDto> GetUser2faInfo();
+
+        /// <summary>
+        /// Generate the new sets of 2fa recovery codes
+        /// </summary>
+        /// <returns></returns>
+        Task<Generate2faRecoveryCodesDto> Generate2faRecoveryCodes();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task ResetAuthenticatorKey();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        Task DisableTwoFactor();
     }
 }

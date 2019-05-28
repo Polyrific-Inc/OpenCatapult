@@ -1,5 +1,8 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -7,11 +10,8 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Services;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Dto.CatapultEngine;
+using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Api.Controllers
 {
@@ -70,7 +70,7 @@ namespace Polyrific.Catapult.Api.Controllers
                     }
                     else
                     {
-                        return Accepted("Requires two factor", "Requires two factor");
+                        return Accepted("/account/token", TokenResponses.RequiresTwoFactor);
                     }                    
                 }
                 else

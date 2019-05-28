@@ -131,5 +131,47 @@ namespace Polyrific.Catapult.Shared.ApiClient
 
             return await Api.Get<List<ExternalAccountTypeDto>>(path);
         }
+
+        public async Task<TwoFactorKeyDto> GetTwoFactorAuthKey()
+        {
+            var path = "account/two-factor-key";
+
+            return await Api.Get<TwoFactorKeyDto>(path);
+        }
+
+        public async Task VerifyTwoFactorAuthenticatorCode(VerifyTwoFactorCodeDto dto)
+        {
+            var path = "account/verify-two-factor-code";
+
+            await Api.Post<object>(path, dto);
+        }
+
+        public async Task<User2faInfoDto> GetUser2faInfo()
+        {
+            var path = "account/2fa-info";
+
+            return await Api.Get<User2faInfoDto>(path);
+        }
+
+        public async Task<Generate2faRecoveryCodesDto> Generate2faRecoveryCodes()
+        {
+            var path = "account/2fa-recovery";
+
+            return await Api.Post<object, Generate2faRecoveryCodesDto>(path, null);
+        }
+
+        public async Task ResetAuthenticatorKey()
+        {
+            var path = "account/reset-authenticator";
+
+            await Api.Put<object>(path, null);
+        }
+
+        public async Task DisableTwoFactor()
+        {
+            var path = "account/disable-2fa";
+
+            await Api.Put<object>(path, null);
+        }
     }
 }

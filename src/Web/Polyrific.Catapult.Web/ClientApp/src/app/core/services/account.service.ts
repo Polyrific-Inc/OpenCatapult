@@ -10,6 +10,7 @@ import { ExternalAccountTypeDto } from '../models/account/external-account-type-
 import { TwoFactorKeyDto } from '../models/account/two-factor-key-dto';
 import { User2faInfoDto } from '../models/account/user-2fa-info-dto';
 import { Generate2faRecoveryCodesDto } from '../models/account/generate-2fa-recovery-codes-dto';
+import { VerifyTwoFactorCodeDto } from '../models/account/verify-two-factor-code-dto';
 
 @Injectable()
 export class AccountService {
@@ -76,7 +77,7 @@ export class AccountService {
     return this.api.get<TwoFactorKeyDto>('account/two-factor-key');
   }
 
-  verifyTwoFactorAuthenticatorCode(dto: any) {
+  verifyTwoFactorAuthenticatorCode(dto: VerifyTwoFactorCodeDto) {
     return this.api.post('account/verify-two-factor-code', dto);
   }
 

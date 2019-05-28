@@ -17,6 +17,7 @@ namespace Polyrific.Catapult.Cli.Commands
     [Subcommand(typeof(UpdateCommand))]
     [Subcommand(typeof(UpdateAvatarCommand))]
     [Subcommand(typeof(PasswordCommand))]
+    [Subcommand(typeof(TwoFactorCommand))]
     [Subcommand(typeof(SetRoleCommand))]
     public class AccountCommand : BaseCommand
     {
