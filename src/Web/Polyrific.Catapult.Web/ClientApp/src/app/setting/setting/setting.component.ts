@@ -28,12 +28,12 @@ export class SettingComponent implements OnInit {
     this.applicationSettingService.getApplicationSettings()
       .subscribe(data => {
         // @ts-ignore
-        this.applicationSettingValue = data.reduce((agg, curr) => {
+        this.applicationSettingValue = this.utilityService.convertStringToBoolean(data.reduce((agg, curr) => {
           agg[curr.key] = curr.value;
           return agg;
-        }, {});
+        }, {}));
 
-        this.form = this.fb.group(this.utilityService.convertStringToBoolean(this.applicationSettingValue));
+        this.form = this.fb.group(this.applicationSettingValue);
         this.form.disable();
         this.applicationSettings = data;
         this.loading = false;
