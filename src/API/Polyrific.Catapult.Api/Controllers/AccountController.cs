@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Entities;
 using Polyrific.Catapult.Api.Core.Exceptions;
 using Polyrific.Catapult.Api.Core.Services;
+using Polyrific.Catapult.Api.Filters;
 using Polyrific.Catapult.Api.Identity;
 using Polyrific.Catapult.Shared.Common;
 using Polyrific.Catapult.Shared.Common.Notification;
@@ -489,6 +490,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpGet("two-factor-key")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> GetTwoFactorAuthKey()
         {
             _logger.LogRequest("Getting two factor auth key and QR code");
@@ -508,6 +510,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpPost("verify-two-factor-code")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> VerifyTwoFactorCode(VerifyTwoFactorCodeDto dto)
         {
             _logger.LogRequest("Verify two factor auth code");
@@ -528,6 +531,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpGet("2fa-info")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> GetUser2faInfo()
         {
             _logger.LogRequest("Getting the 2fa info of the current user");
@@ -542,6 +546,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpPost("2fa-recovery")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> Generate2faRecoveryCodes()
         {
             _logger.LogRequest("Generating the 2fa recovery code for the current user {Name}", User.Identity.Name);
@@ -558,6 +563,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpPut("reset-authenticator")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> ResetAuthenticatorKey()
         {
             _logger.LogRequest("Resetting the 2fa authenticator key for user {Name}", User.Identity.Name);
@@ -571,6 +577,7 @@ namespace Polyrific.Catapult.Api.Controllers
 
         [HttpPut("disable-2fa")]
         [Authorize]
+        [FeatureToggle(ApplicationSettings.EnableTwoFactorAuth)]
         public async Task<IActionResult> DisableTwoFactor()
         {
             _logger.LogRequest("Disabling the 2fa for the current user {Name}", User.Identity.Name);

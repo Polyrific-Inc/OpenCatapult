@@ -1,4 +1,5 @@
-<div class="container">
+<mat-progress-bar mode='indeterminate' *ngIf='loading'></mat-progress-bar>
+<div class="container" *ngIf="!loading">
     <div class="title-desc">
         <h2 appHelpElement="UserProfile">User Profile</h2>
         <span>Current user specific configuration</span>
@@ -10,7 +11,7 @@
         <a mat-tab-link [routerLink]="['password']" routerLinkActive #rlaPassword="routerLinkActive" [active]="rlaPassword.isActive">
           Password
         </a>
-        <a mat-tab-link [routerLink]="['twofactor']" routerLinkActive #rlaTwoFactor="routerLinkActive" [active]="rlaTwoFactor.isActive">
+        <a mat-tab-link *ngIf="twoFactorEnabled" [routerLink]="['twofactor']" routerLinkActive #rlaTwoFactor="routerLinkActive" [active]="rlaTwoFactor.isActive">
           Two Factor Authentication
         </a>
       </nav>
