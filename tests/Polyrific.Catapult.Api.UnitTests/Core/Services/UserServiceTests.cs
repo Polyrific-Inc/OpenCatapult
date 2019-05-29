@@ -293,6 +293,18 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
             }
         }
 
+        [Fact]
+        public async void GetAuthenticatorKeyAndQrCodeUri_ReturnKeyAndUri()
+        {
+            _userRepository.Setup(r => r.GetAuthenticatorKey(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("ABCD1234");
+
+            var UserService = new UserService(_userRepository.Object, _notificationProvider.Object, _urlEncoder);
+            var result = await UserService.GetAuthenticatorKeyAndQrCodeUri(1);
+
+            Assert.Equal("abcd 1234", result.sharedKey);
+            Assert.Equal("otpauth://totp/Polyrific.Catapult.Api:test@test.com?secret=ABCD1234&issuer=Polyrific.Catapult.Api&digits=6", result.authenticatorUri);
+        }
+
         private Mock<UserManager<User>> GetMockUserManager()
         {
             var userStoreMock = new Mock<IUserStore<User>>();

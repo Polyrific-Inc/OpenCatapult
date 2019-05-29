@@ -101,7 +101,6 @@ namespace Polyrific.Catapult.Cli.Commands
         {
             string token = null;
             bool retry = false;
-            bool loginUsingRecovery = false;
             string input;
             do
             {
@@ -123,7 +122,7 @@ namespace Polyrific.Catapult.Cli.Commands
                         retry = Console.GetYesNo("The recovery code is invalid. Retry?", false);
                     }
                 }
-            } while ((retry || string.IsNullOrEmpty(input)) && !loginUsingRecovery);
+            } while ((retry || string.IsNullOrEmpty(input)) && string.IsNullOrEmpty(token));
 
             return token;
         }

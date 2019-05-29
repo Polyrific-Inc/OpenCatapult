@@ -8,6 +8,7 @@ using Moq;
 using Polyrific.Catapult.Cli.Commands;
 using Polyrific.Catapult.Cli.Commands.Account;
 using Polyrific.Catapult.Cli.Commands.Account.Password;
+using Polyrific.Catapult.Cli.Commands.Account.TwoFactor;
 using Polyrific.Catapult.Cli.UnitTests.Commands.Utilities;
 using Polyrific.Catapult.Shared.Dto.Constants;
 using Polyrific.Catapult.Shared.Dto.User;
@@ -272,6 +273,76 @@ namespace Polyrific.Catapult.Cli.UnitTests.Commands
             var resultMessage = command.Execute();
 
             Assert.StartsWith("Found 1 user(s):", resultMessage);
+        }
+
+        [Fact]
+        public void AccountTwoFactorDisable_Execute_ReturnsSuccessMessage()
+        {
+            _accountService.Setup(s => s.DisableTwoFactor()).Returns(Task.CompletedTask);
+
+            var console = new TestConsole(_output, "y");
+            var command = new DisableCommand(console, LoggerMock.GetLogger<DisableCommand>().Object, _accountService.Object);
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("2fa has been disabled", resultMessage);
+        }
+
+        [Fact]
+        public void AccountTwoFactorEnable_Execute_ReturnsSuccessMessage()
+        {
+            _accountService.Setup(s => s.GetTwoFactorAuthKey()).ReturnsAsync(new TwoFactorKeyDto
+            {
+                SharedKey = "testKey"
+            });
+            _accountService.Setup(s => s.GetUser2faInfo()).ReturnsAsync(new User2faInfoDto());
+            _accountService.Setup(s => s.VerifyTwoFactorAuthenticatorCode(It.IsAny<VerifyTwoFactorCodeDto>())).Returns(Task.CompletedTask);
+            _accountService.Setup(s => s.Generate2faRecoveryCodes()).ReturnsAsync(new Generate2faRecoveryCodesDto
+            {
+                RecoveryCodes = new string[1]
+                {
+                    "test"
+                }
+            });
+
+            var console = new TestConsole(_output, "123");
+            var command = new EnableCommand(console, LoggerMock.GetLogger<EnableCommand>().Object, _accountService.Object);
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("The 2fa has been enabled for the current user", resultMessage);
+        }
+
+        [Fact]
+        public void AccountTwoFactorResetAuthenticator_Execute_ReturnsSuccessMessage()
+        {
+            _accountService.Setup(s => s.ResetAuthenticatorKey()).Returns(Task.CompletedTask);
+
+            var console = new TestConsole(_output, "y");
+            var command = new ResetAuthenticatorCommand(console, LoggerMock.GetLogger<ResetAuthenticatorCommand>().Object, _accountService.Object);
+
+            var resultMessage = command.Execute();
+
+            Assert.Equal("2FA authenticator has been reset", resultMessage);
+        }
+
+        [Fact]
+        public void AccountTwoFactorResetRecovery_Execute_ReturnsSuccessMessage()
+        {
+            _accountService.Setup(s => s.Generate2faRecoveryCodes()).ReturnsAsync(new Generate2faRecoveryCodesDto
+            {
+                RecoveryCodes = new string[1]
+                {
+                    "test"
+                }
+            });
+
+            var console = new TestConsole(_output, "y");
+            var command = new ResetRecoveryCommand(console, LoggerMock.GetLogger<ResetRecoveryCommand>().Object, _accountService.Object);
+
+            var resultMessage = command.Execute();
+
+            Assert.StartsWith("2FA recovery code has been reset", resultMessage);
         }
     }
 }

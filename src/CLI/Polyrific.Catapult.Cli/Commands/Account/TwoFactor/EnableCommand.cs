@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -72,6 +74,8 @@ namespace Polyrific.Catapult.Cli.Commands.Account.TwoFactor
                         sb.AppendLine(recoveryCode);
                     }
                 }
+
+                message = sb.ToString();
 
                 Logger.LogInformation("The 2fa has been enabled for the current user");
             }

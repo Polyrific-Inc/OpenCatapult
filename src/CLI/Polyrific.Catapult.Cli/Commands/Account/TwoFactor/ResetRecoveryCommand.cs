@@ -3,6 +3,7 @@
 using System.Text;
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
+using Polyrific.Catapult.Cli.Extensions;
 using Polyrific.Catapult.Shared.Service;
 
 namespace Polyrific.Catapult.Cli.Commands.Account.TwoFactor
@@ -12,6 +13,9 @@ namespace Polyrific.Catapult.Cli.Commands.Account.TwoFactor
     {
         private readonly IAccountService _accountService;
 
+        [Option("-ac|--autoconfirm", "Execute the command without the need of confirmation prompt", CommandOptionType.NoValue)]
+        public bool AutoConfirm { get; set; }
+
         public ResetRecoveryCommand(IConsole console, ILogger<ResetRecoveryCommand> logger, IAccountService accountService) : base(console, logger)
         {
             _accountService = accountService;
@@ -19,6 +23,9 @@ namespace Polyrific.Catapult.Cli.Commands.Account.TwoFactor
 
         public override string Execute()
         {
+            if (!(AutoConfirm || Console.GetYesNo($"Are you sure you want to reset the two factor recovery code?", false)))
+                return string.Empty;
+
             Console.WriteLine($"Trying to reset 2FA recovery code for current user...");
 
             string message;

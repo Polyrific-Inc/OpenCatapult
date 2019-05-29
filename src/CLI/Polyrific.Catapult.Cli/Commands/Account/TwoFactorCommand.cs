@@ -2,14 +2,15 @@
 
 using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.Logging;
-using Polyrific.Catapult.Cli.Commands.Account.Password;
+using Polyrific.Catapult.Cli.Commands.Account.TwoFactor;
 
 namespace Polyrific.Catapult.Cli.Commands.Account
 {
     [Command("twofactor", Description = "Two factor authentication related command")]
-    [Subcommand(typeof(Password.UpdateCommand))]
-    [Subcommand(typeof(ResetTokenCommand))]
-    [Subcommand(typeof(ResetCommand))]
+    [Subcommand(typeof(DisableCommand))]
+    [Subcommand(typeof(EnableCommand))]
+    [Subcommand(typeof(ResetAuthenticatorCommand))]
+    [Subcommand(typeof(ResetRecoveryCommand))]
     public class TwoFactorCommand : BaseCommand
     {
         public TwoFactorCommand(IConsole console, ILogger<TwoFactorCommand> logger) : base(console, logger)
