@@ -13,7 +13,7 @@ With `OpenCatapult`, you can:
 * create a working application in record time
 * have highly customized application templates that are tailored to your specific development patterns
 * still use your existing tools to build and deploy the application
-* make changes to your application without quickly and easily
+* make changes to your application quickly and easily
 * contribute for any improvement you want to see in `OpenCatapult` because it is open source
 
 ## The Circle of Magic
