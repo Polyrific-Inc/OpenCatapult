@@ -100,3 +100,7 @@ The final status of the process can be checked in the job queue details. Either 
 It will tell you the status of each task execution, whether it's Success or Failed, along with the error remarks if any.
 
 And that is it. You can go ahead and check the generated code. The folder location is provided in the task status remarks.
+
+![Job Queue Status Remark](../img/job-queue-status-ui-remark.JPG)
+
+If you want to try to run the generated project or learn more about the structure of the generated code, you can follow the guide in [here](../task-providers/generator-provider.md#running-the-generated-code)
