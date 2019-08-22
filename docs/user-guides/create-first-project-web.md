@@ -33,7 +33,11 @@ In the Engine Token form, click `Generate` button. Please copy the token by clic
 
 ![Engine Token](../img/engine-token-ui.JPG)
 
-Activate the Engine shell (if you followed the [Quick Start](../home/start.md) it should have been opened for you). Type the following command to enter the access token into the Engine config:
+Activate the Engine shell. You can use `OpenCatapult Manager` for this:
+
+![Start Engine](../img/ocmanager_startengine.png)
+
+Type the following command to enter the access token into the Engine config:
 
 ```sh
 ocengine config set --name AuthorizationToken --value [the-generated-token]
