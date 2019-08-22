@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.Api.Core.Security;
 using Polyrific.Catapult.Shared.Common.Interface;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,13 +14,15 @@ namespace Polyrific.Catapult.Api.SecretVault
     {
         private readonly IDataProtector _protector;
         private readonly ITextWriter _textWriter;
+        private readonly ILogger _logger;
 
         private const string FolderName = "ExternalService";
 
-        public SecretVault(IDataProtectionProvider provider, ITextWriter textWriter)
+        public SecretVault(IDataProtectionProvider provider, ITextWriter textWriter, ILogger<SecretVault> logger)
         {
             _protector = provider.CreateProtector("Catapult.LocalSecretVault");
             _textWriter = textWriter;
+            _logger = logger;
         }
 
         public async Task Add(string name, string value, CancellationToken cancellationToken = default(CancellationToken))
@@ -57,7 +61,15 @@ namespace Polyrific.Catapult.Api.SecretVault
 
         public Task<string> Decrypt(string encryptedValue, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Task.FromResult(_protector.Unprotect(encryptedValue));
+            try
+            {
+                return Task.FromResult(_protector.Unprotect(encryptedValue));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, ex.Message);
+                return Task.FromResult<string>(null);
+            }            
         }
     }
 }
