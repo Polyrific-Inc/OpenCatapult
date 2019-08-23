@@ -5,14 +5,16 @@
       "ResetPassword": "SmtpEmail",
       "ResetPasswordWeb": "SmtpEmail",
       "JobQueueCompleted": "SmtpEmail",
-      "ProjectDeleted": "SmtpEmail"
+      "ProjectDeleted": "SmtpEmail",
+      "ProjectResourceDeleted": "SmtpEmail"
     },
     "NotificationSubject": {
       "RegistrationCompleted": "Catapult - Please confirm your account",
       "ResetPassword": "Catapult - Reset password token",
       "ResetPasswordWeb": "Catapult - Reset password token",
       "JobQueueCompleted": "Catapult - Your queued job has been completed",
-      "ProjectDeleted": "Catapult - Your project has been deleted"
+      "ProjectDeleted": "Catapult - Your project has been deleted",
+      "ProjectResourceDeleted": "Catapult - Your project resources has been deleted"
     }
   }
 }

@@ -308,12 +308,28 @@ namespace Polyrific.Catapult.Api.Core.Services
 
             var users = await _userRepository.GetUsersByIds(jobQueue.Project.Members.Select(m => m.UserId).ToArray());
 
-            var jobQueueWebUrl = $"{webUrl}/project/{jobQueue.ProjectId}/job-queue/{jobQueueId}";
-            await _notificationProvider.SendNotification(new SendNotificationRequest
+            var jobDefinition = await _jobDefinitionService.GetJobDefinitionById(jobQueue.JobDefinitionId.GetValueOrDefault());
+
+            if (jobDefinition?.IsDeletion ?? false && jobQueue.Status == JobStatus.Completed)
             {
-                MessageType = NotificationConfig.JobQueueCompleted,
-                Emails = users.Select(u => u.Email).Distinct().ToList()
-            }, new Dictionary<string, string>
+                await _notificationProvider.SendNotification(new SendNotificationRequest
+                {
+                    MessageType = NotificationConfig.ProjectResourceDeleted,
+                    Emails = users.Select(u => u.Email).Distinct().ToList()
+                }, new Dictionary<string, string>
+                    {
+                        {MessageParameter.ProjectName, jobQueue.Project.Name},
+                        {MessageParameter.JobTaskStatus, GenerateJobTaskStatusNotificationMessage(jobQueue.JobTasksStatus)}
+                    });
+            }
+            else
+            {
+                var jobQueueWebUrl = $"{webUrl}/project/{jobQueue.ProjectId}/job-queue/{jobQueueId}";
+                await _notificationProvider.SendNotification(new SendNotificationRequest
+                {
+                    MessageType = NotificationConfig.JobQueueCompleted,
+                    Emails = users.Select(u => u.Email).Distinct().ToList()
+                }, new Dictionary<string, string>
                     {
                         {MessageParameter.JobCode, jobQueue.Code},
                         {MessageParameter.JobDefinitionName, jobQueue.JobDefinitionName},
@@ -323,6 +339,7 @@ namespace Polyrific.Catapult.Api.Core.Services
                         {MessageParameter.WebUrl, jobQueueWebUrl},
                         {MessageParameter.JobTaskStatus, GenerateJobTaskStatusNotificationMessage(jobQueue.JobTasksStatus)}
                     });
+            }
         }
 
         private string GenerateJobTaskStatusNotificationMessage(string jobTaskStatus)
