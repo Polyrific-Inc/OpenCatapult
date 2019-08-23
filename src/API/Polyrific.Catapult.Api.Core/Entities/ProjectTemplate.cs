@@ -39,6 +39,7 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Name { get; set; }
         public List<JobTaskDefinitionTemplate> Tasks { get; set; }
         public bool IsDeletion { get; set; }
+        public bool IsDefault { get; set; }
     }
 
     internal class JobTaskDefinitionTemplate
