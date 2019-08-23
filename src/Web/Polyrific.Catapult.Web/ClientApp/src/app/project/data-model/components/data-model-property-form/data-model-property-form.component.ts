@@ -87,10 +87,6 @@ export class DataModelPropertyFormComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.dataModelProperty && !changes.dataModelProperty.firstChange) {
-      this.dataModelPropertyForm.patchValue(this.dataModelProperty);
-    }
-
     if (changes.disableForm && !changes.disableForm.firstChange) {
       if (this.disableForm) {
         this.dataModelPropertyForm.patchValue(this.dataModelProperty);

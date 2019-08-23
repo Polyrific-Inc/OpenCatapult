@@ -35,6 +35,7 @@
 
   <mat-form-field class="full-width-input">
     <mat-select #relatedDataModelControl placeholder="Related Data Model" formControlName="relatedProjectDataModelId" (selectionChange)="onRelatedDataModelChanged($event)">
+      <mat-option [value]="''"></mat-option>
       <mat-option *ngFor="let relatedDataModel of relatedDataModels" [value]="relatedDataModel.id">
         {{relatedDataModel.name}}
       </mat-option>
@@ -43,6 +44,7 @@
 
   <mat-form-field class="full-width-input">
     <mat-select #relationalTypeControl placeholder="Relational Type" formControlName="relationalType" (selectionChange)="onRelationalTypeChanged($event)">
+      <mat-option [value]="''"></mat-option>
       <mat-option *ngFor="let relationalType of propertyRelationalTypes" [value]="relationalType[0]">
         {{relationalType[1]}}
       </mat-option>
