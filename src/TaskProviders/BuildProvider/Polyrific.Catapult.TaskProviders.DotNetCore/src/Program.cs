@@ -47,7 +47,7 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCore
                 artifactLocation = Path.Combine(Config.WorkingLocation, artifactLocation);
 
             if (_builder == null)
-                _builder = new Builder();
+                _builder = new Builder(Logger);
 
             var error = await _builder.Build(csprojLocation, buildOutputLocation, buildConfiguration);
             if (!string.IsNullOrEmpty(error))

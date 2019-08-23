@@ -4,12 +4,20 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Polyrific.Catapult.TaskProviders.DotNetCore.Helpers;
 
 namespace Polyrific.Catapult.TaskProviders.DotNetCore
 {
     public class Builder : IBuilder
     {
+        private readonly ILogger _logger;
+
+        public Builder(ILogger logger)
+        {
+            _logger = logger;
+        }
+
         public async Task<string> Build(string csprojLocation, string buildOutputLocation, string configuration = "Debug")
         {
             if (!Directory.Exists(buildOutputLocation))
@@ -62,7 +70,7 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCore
 
         private async Task<string> RunDotnet(string args)
         {
-            var result = await CommandHelper.Execute("dotnet", args);
+            var result = await CommandHelper.Execute("dotnet", args, _logger);
 
             return result.error;
         }
