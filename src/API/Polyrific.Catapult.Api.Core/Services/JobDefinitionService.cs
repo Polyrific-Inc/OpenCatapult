@@ -306,7 +306,7 @@ namespace Polyrific.Catapult.Api.Core.Services
             await _jobTaskDefinitionRepository.Delete(id, cancellationToken);
         }
 
-        public async Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, bool decrypt = false, CancellationToken cancellationToken = default(CancellationToken))
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -328,6 +328,9 @@ namespace Polyrific.Catapult.Api.Core.Services
                         task.ValidationError = ex.Message;
                     }
                 }
+
+                if (decrypt)
+                    await DecryptSecretAdditionalConfigs(task);
             }                
 
             return tasks;

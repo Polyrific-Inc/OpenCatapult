@@ -220,13 +220,12 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogRequest("Updating tasks order for job {jobId} in project {projectId}. Request body: {@dto}", jobId, projectId, dto);
 
-            var tasks = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
+            var tasks = await _jobDefinitionService.GetJobTaskDefinitions(jobId, decrypt: true);
 
             foreach (var taskOrder in dto.TaskOrders)
             {
                 var task = tasks.FirstOrDefault(j => j.Id == taskOrder.Key);
                 task.Sequence = taskOrder.Value;
-                await _jobDefinitionService.DecryptSecretAdditionalConfigs(task);
                 await _jobDefinitionService.UpdateJobTaskDefinition(task, validate: false);
             }
 
@@ -477,9 +476,7 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogRequest("Getting job task definitions in job {jobId}", jobId);
 
-            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId, validate);
-            foreach (var task in jobTaskDefinitions)
-                await _jobDefinitionService.DecryptSecretAdditionalConfigs(task);
+            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId, validate, decrypt: true);
 
             var results = _mapper.Map<List<JobTaskDefinitionDto>>(jobTaskDefinitions);
 

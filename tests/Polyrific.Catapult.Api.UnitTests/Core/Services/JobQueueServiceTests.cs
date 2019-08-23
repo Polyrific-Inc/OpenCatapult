@@ -123,8 +123,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                         Id = id,
                         Name = "Default"
                     });
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, bool validate, CancellationToken token) =>
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, bool validate, bool decrypt, CancellationToken token) =>
                     new List<JobTaskDefinition>
                     {
                         new JobTaskDefinition

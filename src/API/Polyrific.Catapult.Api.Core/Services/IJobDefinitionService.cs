@@ -143,9 +143,10 @@ namespace Polyrific.Catapult.Api.Core.Services
         /// </summary>
         /// <param name="jobDefinitionId">Id of the job definition</param>
         /// <param name="validate">Do validation?</param>
+        /// <param name="decrypt">Do config decryption?</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled</param>
         /// <returns>List of job task definitions</returns>
-        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, CancellationToken cancellationToken = default(CancellationToken));
+        Task<List<JobTaskDefinition>> GetJobTaskDefinitions(int jobDefinitionId, bool validate = false, bool decrypt = false, CancellationToken cancellationToken = default(CancellationToken));
 
         /// <summary>
         /// Get a job task definition by id
