@@ -11,6 +11,10 @@
         <OutputPath>..\..\..\..\Engine\Polyrific.Catapult.Engine\bin\$(Configuration)\taskproviders\BuildProvider\Polyrific.Catapult.TaskProviders.DotNetCore\</OutputPath>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Humanizer.Core" Version="2.6.2" />
+    </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\..\Polyrific.Catapult.TaskProviders.Core\Polyrific.Catapult.TaskProviders.Core.csproj" />
   </ItemGroup>

@@ -12,6 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Humanizer.Core" Version="2.6.2" />
       <PackageReference Include="System.Data.SqlClient" Version="4.6.0" />
     </ItemGroup>
 
