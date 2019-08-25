@@ -51,7 +51,7 @@ export class JobQueueDetailComponent implements OnInit {
       this.currentJobQueueTab = 'pending';
 
       const mergeJob = jobQueue.jobTasksStatus.find(x => x.status === JobTaskStatus.Pending);
-      if (mergeJob.taskName === JobTaskDefinitionType.Merge) {
+      if (mergeJob && mergeJob.taskName === JobTaskDefinitionType.Merge) {
         this.restartButtonText = 'Merge & Resume';
       }
     } else if (this.jobQueue.status === JobStatus.Queued || this.jobQueue.status === JobStatus.Processing) {

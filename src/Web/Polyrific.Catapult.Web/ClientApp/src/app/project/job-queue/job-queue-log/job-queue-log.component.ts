@@ -61,7 +61,7 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
     this.restartButtonText = 'Restart';
     if (this.jobQueue.status === JobStatus.Pending) {
       const mergeJob = jobQueue.jobTasksStatus.find(x => x.status === JobTaskStatus.Pending);
-      if (mergeJob.taskName === JobTaskDefinitionType.Merge) {
+      if (mergeJob && mergeJob.taskName === JobTaskDefinitionType.Merge) {
         this.restartButtonText = 'Merge & Resume';
       }
     }
