@@ -9,12 +9,12 @@
       "ProjectResourceDeleted": "SmtpEmail"
     },
     "NotificationSubject": {
-      "RegistrationCompleted": "Catapult - Please confirm your account",
-      "ResetPassword": "Catapult - Reset password token",
-      "ResetPasswordWeb": "Catapult - Reset password token",
-      "JobQueueCompleted": "Catapult - Your queued job has been completed",
-      "ProjectDeleted": "Catapult - Your project has been deleted",
-      "ProjectResourceDeleted": "Catapult - Your project resources has been deleted"
+      "RegistrationCompleted": "OpenCatapult - Please confirm your account",
+      "ResetPassword": "OpenCatapult - Reset password token",
+      "ResetPasswordWeb": "OpenCatapult - Reset password token",
+      "JobQueueCompleted": "OpenCatapult - Your queued job has been completed",
+      "ProjectDeleted": "OpenCatapult - Your project has been deleted",
+      "ProjectResourceDeleted": "OpenCatapult - Your project resources has been deleted"
     }
   }
 }
