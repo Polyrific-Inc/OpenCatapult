@@ -325,7 +325,9 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 };
 
                 var repository = await GetGitHubRepository(projectName, repositoryOwner);
+                var currentUser = await client.User.Current();
 
+                bool createTeam = false;
                 if (repository == null)
                 {
                     _logger.LogInformation($"Creating repository {repositoryOwner}/{projectName}...");
@@ -333,8 +335,6 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                     {
                         Private = isPrivateRepository
                     };
-
-                    var currentUser = await client.User.Current();
 
                     if (repositoryOwner.Equals(currentUser.Login, StringComparison.InvariantCultureIgnoreCase))
                     {
@@ -349,15 +349,35 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 {
                     _logger.LogInformation($"Repository {repositoryOwner}/{projectName} is already exists");
                 }
-
-                if (members != null)
+                
+                if (repositoryOwner.Equals(currentUser.Login, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    var currentMembers = await client.Repository.Collaborator.GetAll(repository.Id);
-                    var newMembers = members.Where(m => !currentMembers.Any(u => u.Login.ToLower() == m.ToLower())).ToList();
+                    createTeam = false;
+                }
+                else
+                {
+                    createTeam = isPrivateRepository;
+                }
 
-                    foreach (var member in newMembers)
+                if (members != null && members.Any())
+                {
+                    if (createTeam)
                     {
-                        await client.Repository.Collaborator.Add(repository.Id, member);                       
+                        // create new team
+                        var teamName = $"Team of {projectName}";
+                        var team = await GetOrCreateTeam(repositoryOwner, projectName, teamName);
+
+                        foreach (var member in members)
+                        {
+                            await client.Organization.Team.AddOrEditMembership(team.Id, member.Trim(), new UpdateTeamMembership(TeamRole.Member));
+                        }
+                    }
+                    else
+                    {
+                        foreach (var member in members)
+                        {
+                            await client.Repository.Collaborator.Add(repository.Id, member, new CollaboratorRequest(Permission.Push));
+                        }
                     }
                 }                
 
@@ -460,6 +480,41 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Get team in an organization or create new one if it doesn't exist
+        /// </summary>
+        /// <param name="organization">Organization name</param>
+        /// <param name="name">Team name</param>
+        /// <returns></returns>
+        private async Task<Octokit.Team> GetOrCreateTeam(string organization, string projectName, string name)
+        {
+            var client = new GitHubClient(new ProductHeaderValue(projectName))
+            {
+                Credentials = _gitHubCredential
+            };
+            var allTeam = await client.Organization.Team.GetAll(organization);
+            var team = allTeam.FirstOrDefault(t => t.Name == name);
+            if (team == null)
+            {
+                _logger.LogInformation($"Creating new team {name} in Repository {organization}/{projectName}");
+                var newTeam = new NewTeam(name)
+                {
+                    Permission = Permission.Push
+                };
+
+                var endpoint = ApiUrls.OrganizationTeams(organization);
+                var apiConnection = new ApiConnection(client.Connection);
+                team = await client.Organization.Team.Create(organization, newTeam);
+
+                await client.Organization.Team.AddRepository(team.Id, organization, projectName);
+            } else if (!(await client.Organization.Team.IsRepositoryManagedByTeam(team.Id, organization, projectName)))
+            {
+                await client.Organization.Team.AddRepository(team.Id, organization, projectName);
+            }
+
+            return team;
         }
     }
 }
