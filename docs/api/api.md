@@ -13,14 +13,14 @@ The following sections explain the details for each endpoints:
 - [Health](health.md)
 - [Job Definition](job-definition.md)
 - [Job Queue](job-queue.md)
-- [Project](Project.md)
+- [Project](project.md)
 - [Project Data Model](project-data-model.md)
 - [Project Member](project-member.md)
 - [Provider](provider.md)
 - [Token](token.md)
 - [Version](version.md)
 
-Note: In most of the time, users don't need to access the API endpoints directly. They can interact with them via [CLI](../cli.cli.md).
+Note: In general usage, users don't need to access the API endpoints directly. They are meant to be accessed by the other `OpenCatapult` components. The endpoint list is maintained here for developer reference only.
 
 ## Endpoint Authorization
 Each endpoint is defined with certain access authorization. Following are the authorizations available in the API:
