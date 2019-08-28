@@ -58,5 +58,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         /// Is the property managed in the UI?
         /// </summary>
         public bool? IsManaged { get; set; }
+
+        /// <summary>
+        /// Name of the database column if it's different from property name
+        /// </summary>
+        public string DatabaseColumnName { get; set; }
     }
 }

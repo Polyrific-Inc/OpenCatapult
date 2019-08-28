@@ -42,6 +42,11 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         public string SelectKey { get; set; }
 
         /// <summary>
+        /// Name of the database table if it's different from model name
+        /// </summary>
+        public string DatabaseTableName { get; set; }
+
+        /// <summary>
         /// Properties of the data model
         /// </summary>
         public List<ProjectDataModelPropertyDto> Properties { get; set; }
