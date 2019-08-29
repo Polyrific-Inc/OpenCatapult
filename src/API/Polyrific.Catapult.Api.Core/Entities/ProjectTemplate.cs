@@ -19,6 +19,7 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string Description { get; set; }
         public bool? IsManaged { get; set; }
         public string SelectKey { get; set; }
+        public string DatabaseTableName { get; set; }
         public List<ProjectDataModelPropertyTemplate> Properties { get; set; }
     }
 
@@ -32,6 +33,7 @@ namespace Polyrific.Catapult.Api.Core.Entities
         public string RelationalType { get; set; }
         public bool IsRequired { get; set; }
         public bool? IsManaged { get; set; }
+        public string DatabaseColumnName { get; set; }
     }
 
     internal class JobDefinitionTemplate
