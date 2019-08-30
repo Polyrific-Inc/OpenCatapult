@@ -33,6 +33,10 @@ export class AuthService {
       return this.currentUserSubject.value;
   }
 
+  public get isAdmin() {
+    return this.currentUserValue.role == Role.Administrator;
+  }
+
   login(user: User) {
     if (!this.config) {
       this.config = this.configService.getConfig();
