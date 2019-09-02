@@ -376,7 +376,9 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                     {
                         foreach (var member in members)
                         {
-                            await client.Repository.Collaborator.Add(repository.Id, member, new CollaboratorRequest(Permission.Push));
+                            // repository owner cannot be a collaborator
+                            if (!repositoryOwner.Equals(member, StringComparison.InvariantCultureIgnoreCase))
+                                await client.Repository.Collaborator.Add(repository.Id, member, new CollaboratorRequest(Permission.Push));
                         }
                     }
                 }                
