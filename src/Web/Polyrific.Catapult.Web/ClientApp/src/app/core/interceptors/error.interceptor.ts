@@ -4,11 +4,10 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
-import { Router } from '@angular/router';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService, private router: Router) { }
+    constructor(private authService: AuthService) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
@@ -19,7 +18,7 @@ export class ErrorInterceptor implements HttpInterceptor {
                   location.reload();
                 break;
               case 403:
-                this.router.navigateByUrl('/unauthorized').finally(() => location.reload());
+                location.href = '/unauthorized';
                 break;
             }
             return throwError(err);
