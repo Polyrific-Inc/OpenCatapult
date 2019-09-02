@@ -73,7 +73,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 _gitAutomation = new GitAutomation(repoConfig, _gitHubUtils, Logger);
 
             string baseBranch = PushTaskConfig.PullRequestTargetBranch ?? DefaultBaseBranch;
-            string workingBranch = PushTaskConfig.Branch ?? (PushTaskConfig.CreatePullRequest ? DefaultWorkingBranch : DefaultBaseBranch);
+            string workingBranch = PushTaskConfig.Branch ?? (PushTaskConfig.CreatePullRequest ? GetWorkingBranchName() : DefaultBaseBranch);
 
             var error = await _gitAutomation.CreateRepositoryIfNotExists();
             if (!string.IsNullOrEmpty(error))
@@ -181,6 +181,12 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 return error;
 
             return "";
+        }
+
+        private static string GetWorkingBranchName()
+        {
+            var tick = DateTime.Now.Ticks;
+            return $"{DefaultWorkingBranch}-{tick}";
         }
     }
 }
