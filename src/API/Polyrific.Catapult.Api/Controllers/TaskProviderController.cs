@@ -37,7 +37,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetTaskProviders()
         {
             _logger.LogRequest("Getting task providers");
@@ -57,7 +57,7 @@ namespace Polyrific.Catapult.Api.Controllers
         /// <param name="taskProviderType">Type of the taskProvider</param>
         /// <returns></returns>
         [HttpGet("type/{taskProviderType}")]
-        [Authorize(Policy = AuthorizePolicy.UserRoleAdminAccess)]
+        [Authorize(Policy = AuthorizePolicy.UserRoleBasicAccess)]
         public async Task<IActionResult> GetTaskProvidersByType(string taskProviderType)
         {
             _logger.LogRequest("Getting task providers for type {taskProviderType}", taskProviderType);

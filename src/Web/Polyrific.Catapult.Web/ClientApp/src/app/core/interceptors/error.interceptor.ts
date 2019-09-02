@@ -4,19 +4,24 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { AuthService } from '../auth/auth.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-    constructor(private authService: AuthService) { }
+    constructor(private authService: AuthService, private router: Router) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).pipe(catchError(err => {
-            if ([401, 403].indexOf(err.status) !== -1) {
-                // auto logout if 401 Unauthorized or 403 Forbidden response returned from api
-                this.authService.logout();
-                location.reload();
+            switch (err.status) {
+              case 401:
+                  // auto logout if 401 Unauthorized
+                  this.authService.logout();
+                  location.reload();
+                break;
+              case 403:
+                this.router.navigateByUrl('/unauthorized').finally(() => location.reload());
+                break;
             }
-
             return throwError(err);
         }));
     }
