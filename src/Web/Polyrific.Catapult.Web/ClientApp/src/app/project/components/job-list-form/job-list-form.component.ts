@@ -10,19 +10,12 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 export class JobListFormComponent implements OnInit {
 
   @Input() jobDefinitions: CreateJobDefinitionDto[];
-  @Output() formReady = new EventEmitter<FormArray>();
-  jobsForm = this.fb.array([]);
-
+  filteredJobDefinitions: CreateJobDefinitionDto[];
   constructor(private fb: FormBuilder) {
-
   }
 
   ngOnInit() {
-    this.formReady.emit(this.jobsForm);
-  }
-
-  onJobFormReady(form: FormGroup) {
-    this.jobsForm.push(form);
+    this.filteredJobDefinitions = this.jobDefinitions.filter(x => !x.isDeletion);
   }
 
 }

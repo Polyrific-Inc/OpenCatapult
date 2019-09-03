@@ -1,0 +1,8 @@
+<mat-list>
+  <mat-list-item *ngFor="let property of properties">
+    <div fxLayout="row" fxLayoutAlign="space-between center" class="property-item">
+      <div>{{property.name}} <span class="property-type">({{property.dataType || property.relatedProjectDataModelName + ' model'}} - {{property.isRequired ? 'required' : 'optional'}})</span></div>
+    </div>
+    <mat-divider></mat-divider>
+  </mat-list-item>
+</mat-list>

@@ -1,8 +1,19 @@
 <mat-tab-group>
-  <mat-tab *ngFor="let jobDefinition of jobDefinitions">
+  <mat-tab *ngFor="let jobDefinition of filteredJobDefinitions">
     <ng-template mat-tab-label>
       Job: {{jobDefinition.name}}
     </ng-template>
-    <app-job-config-form [job]="jobDefinition" (formReady)="onJobFormReady($event)"></app-job-config-form>
+    <mat-list>
+      <mat-list-item *ngFor="let task of jobDefinition.tasks; let i = index" cdkDrag>
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="task-item">
+          <div fxLayout="row" fxLayoutAlign="flex-start center">
+              {{i + 1}}. {{task.name}}
+              <span class="task-provider">({{task.provider}})</span>
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-list>
+
   </mat-tab>
 </mat-tab-group>
