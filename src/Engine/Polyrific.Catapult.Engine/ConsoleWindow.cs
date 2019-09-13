@@ -5,6 +5,8 @@ namespace Polyrific.Catapult.Engine
 {
     public static class ConsoleWindow
     {
+        // Do not create this class in OS other than Windows
+#if Windows
         private static class NativeFunctions
         {
             public enum StdHandle : int
@@ -43,9 +45,12 @@ namespace Polyrific.Catapult.Engine
             [DllImport("kernel32.dll", SetLastError = true)]
             public static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
         }
+#endif
 
         public static void QuickEditMode(bool enable)
         {
+            // Make this an empty method when it's not windows OS
+#if Windows
             //QuickEdit lets the user select text in the console window with the mouse, to copy to the windows clipboard.
             //But selecting text stops the console process (e.g. unzipping). This may not be always wanted.
             IntPtr consoleHandle = NativeFunctions.GetStdHandle((int)NativeFunctions.StdHandle.STD_INPUT_HANDLE);
@@ -60,6 +65,7 @@ namespace Polyrific.Catapult.Engine
             consoleMode |= ((uint)NativeFunctions.ConsoleMode.ENABLE_EXTENDED_FLAGS);
 
             NativeFunctions.SetConsoleMode(consoleHandle, consoleMode);
+#endif
         }
     }
 }
