@@ -96,5 +96,10 @@ namespace Polyrific.Catapult.Shared.Dto.JobQueue
         /// The date time of the job created
         /// </summary>
         public DateTime Created { get; set; }
+
+        /// <summary>
+        /// The date time of the job updated
+        /// </summary>
+        public DateTime? Updated { get; set; }
     }
 }

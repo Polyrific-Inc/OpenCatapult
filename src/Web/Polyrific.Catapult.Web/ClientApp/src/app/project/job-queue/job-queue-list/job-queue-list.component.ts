@@ -16,7 +16,7 @@ export class JobQueueListComponent implements OnInit, OnDestroy {
   dataSource: MatTableDataSource<JobQueueDto>;
   routerSubscription: Subscription;
 
-  displayedColumns: string[] = ['jobDefinitionName', 'status', 'created', 'actions'];
+  displayedColumns: string[] = ['jobDefinitionName', 'status', 'created', 'updated', 'actions'];
 
   @ViewChild(MatSort) set matSort(ms: MatSort) {
     this.sort = ms;

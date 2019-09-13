@@ -16,5 +16,6 @@ export interface JobQueueDto {
   jobTasksStatus: JobTaskStatusDto[];
   outputValues: { [key: string]: string };
   created: Date;
+  updated: Date;
   remarks: string;
 }
