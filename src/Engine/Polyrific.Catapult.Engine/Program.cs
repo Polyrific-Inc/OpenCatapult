@@ -17,6 +17,8 @@ namespace Polyrific.Catapult.Engine
     {
         public static async Task<int> Main(string[] args)
         {
+            ConsoleWindow.QuickEditMode(enable: false);
+
             await CatapultEngineConfig.InitConfigFile();
             
             var configuration = new ConfigurationBuilder()
