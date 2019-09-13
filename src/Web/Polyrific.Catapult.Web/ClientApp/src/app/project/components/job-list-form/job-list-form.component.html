@@ -7,8 +7,10 @@
       <mat-list-item *ngFor="let task of jobDefinition.tasks; let i = index" cdkDrag>
         <div fxLayout="row" fxLayoutAlign="space-between center" class="task-item">
           <div fxLayout="row" fxLayoutAlign="flex-start center">
+            <div>
               {{i + 1}}. {{task.name}}
               <span class="task-provider">({{task.provider}})</span>
+            </div>
           </div>
         </div>
         <mat-divider></mat-divider>
