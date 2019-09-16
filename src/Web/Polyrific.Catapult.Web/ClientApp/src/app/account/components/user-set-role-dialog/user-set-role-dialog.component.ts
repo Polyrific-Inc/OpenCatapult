@@ -29,7 +29,11 @@ export class UserSetRoleDialogComponent implements OnInit {
     }
 
   ngOnInit() {
-    this.userRoleForm.patchValue(this.user);
+    this.userRoleForm = this.fb.group({
+      id : this.user.id,
+      userName : this.user.userName,
+      roleName : this.user.role
+    });
   }
 
   onSubmit() {
