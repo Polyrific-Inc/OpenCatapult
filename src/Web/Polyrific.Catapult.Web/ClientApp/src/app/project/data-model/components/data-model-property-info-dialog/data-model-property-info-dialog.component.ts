@@ -17,9 +17,10 @@ export interface DataModelPropertyViewModel extends DataModelPropertyDto {
   styleUrls: ['./data-model-property-info-dialog.component.css']
 })
 export class DataModelPropertyInfoDialogComponent implements OnInit {
-  dataModelPropertyForm: FormGroup = this.fb.group({
+  dataModelPropertyInfoForm: FormGroup = this.fb.group({
     id: [{value: null, disabled: true}]
   });
+  dataModelPropertyForm: FormGroup;
   editing: boolean;
   loading: boolean;
 
@@ -37,11 +38,9 @@ export class DataModelPropertyInfoDialogComponent implements OnInit {
   }
 
   onFormReady(form: FormGroup) {
-    this.dataModelPropertyForm = this.fb.group({
-      ...this.dataModelPropertyForm.controls,
-      ...form.controls
-    });
+    this.dataModelPropertyForm = form;
     this.dataModelPropertyForm.patchValue(this.dataModelProperty);
+    this.dataModelPropertyInfoForm.patchValue(this.dataModelProperty);
   }
 
   onSubmit() {

@@ -2,18 +2,18 @@
 
 ## What is `OpenCatapult`
 
-`OpenCatapult` is an enterprise digital developer. It helps developers to significantly decrease application development time through intelligent automation.
+`OpenCatapult` is the world's first digital developer. It helps developers to significantly decrease application development time through intelligent automation.
 
-`Catapult` was originally created and used internally by folks in [Polyrific](https://polyrific.com), and it has proved to be an essential tool in the success of delivering many [critical projects](https://polyrific.com/past-projects) in a relatively shorter time. However in the spirit of spreading the benefits into larger community, since October 2018, it transforms into `OpenCatapult` which is released as open source project.
+`Catapult` was originally created and used internally by folks in [Polyrific](https://polyrific.com), and it has proved to be an essential tool in the success of delivering many [critical projects](https://polyrific.com/past-projects) in record time. In late 2018, Team Polyrific decided to make `Catapult` open source so it is now `OpenCatapult`. We hope you find it as useful as we have!
 
 ## Why `OpenCatapult`
 
 With `OpenCatapult`, you can:
 
-* get an initial working application in relatively short time
-* have highly customized application template which is unique to your requirement only
+* create a working application in record time
+* have highly customized application templates that are tailored to your specific development patterns
 * still use your existing tools to build and deploy the application
-* make changes to your application without pain
+* make changes to your application quickly and easily
 * contribute for any improvement you want to see in `OpenCatapult` because it is open source
 
 ## The Circle of Magic

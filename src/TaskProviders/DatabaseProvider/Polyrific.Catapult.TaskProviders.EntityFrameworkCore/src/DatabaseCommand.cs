@@ -75,14 +75,14 @@ namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
             }
 
             string pathToDotnet = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dotnet", "sdk");
-            var latestDotnet = Directory.Exists(pathToDotnet) ? Directory.EnumerateDirectories(pathToDotnet, "2.1*").LastOrDefault() : null;
+            var latestDotnet = Directory.Exists(pathToDotnet) ? Directory.EnumerateDirectories(pathToDotnet, "2.2*").LastOrDefault() : null;
 
             if (latestDotnet != null)
             {
                 // option 2
                 dotnetEfFolder = Path.Combine(latestDotnet, "DotnetTools", "dotnet-ef");
                 latestEf = Directory.Exists(dotnetEfFolder) ? Directory.EnumerateDirectories(dotnetEfFolder).LastOrDefault() : null;
-                pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.1\\any\\tools\\netcoreapp2.0\\any", "ef.dll") : null;
+                pathToEf = latestEf != null ? Path.Combine(latestEf, "tools\\netcoreapp2.2\\any\\tools\\netcoreapp2.0\\any", "ef.dll") : null;
 
                 if (pathToEf != null && File.Exists(pathToEf))
                 {

@@ -19,6 +19,11 @@
     <RepositoryUrl>https://github.com/Polyrific-Inc/OpenCatapult</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>Catapult, OpenCatapult, tools, devops, engine</PackageTags>
+    <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsWindows)'=='true'">
+    <DefineConstants>Windows</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>

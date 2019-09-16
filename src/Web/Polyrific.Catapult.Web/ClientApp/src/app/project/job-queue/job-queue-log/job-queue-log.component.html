@@ -7,7 +7,7 @@
   </div>
   <div class="action-buttons">
     <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
+    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">{{restartButtonText || 'Restart'}}</button>
   </div>
 </div>
 

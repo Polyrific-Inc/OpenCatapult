@@ -7,6 +7,7 @@ import { AccountService, ManagedFileService, HelpContextDto } from '@app/core';
 import { HelpContextService } from '@app/core/services/help-context.service';
 import { HelpContextDialogComponent } from '@app/help-context-dialog/help-context-dialog.component';
 import { DOCUMENT } from '@angular/common';
+import { AlertBoxService } from '@app/shared/services/alert-box.service';
 
 interface HelpContextViewModel extends HelpContextDto {
   element: Element;
@@ -32,6 +33,7 @@ export class HeaderComponent implements OnInit {
       private managedFileService: ManagedFileService,
       private helpContextService: HelpContextService,
       private renderer: Renderer2,
+      private alertBoxService: AlertBoxService,
       @Inject(DOCUMENT) private document: Document
     ) { }
 
@@ -57,6 +59,15 @@ export class HeaderComponent implements OnInit {
             this.avatarImage = this.managedFileService.getImageUrl(data.avatarFileId);
           }
         });
+
+        if (this.authService.isAdmin){
+          this.accountService.getUserByUserName('admin@opencatapult.net')
+            .subscribe(defaultUser => {
+              if (defaultUser && defaultUser.isActive){
+                this.alertBoxService.setMessage('Default user should be used for first time setup only. It is recommended to deactivate it once an admin user is created.', 'warning');
+              }
+            });
+        }
       }
     });
   }

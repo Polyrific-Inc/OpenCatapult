@@ -123,8 +123,8 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                         Id = id,
                         Name = "Default"
                     });
-            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync((int id, bool validate, CancellationToken token) =>
+            _jobDefinitionService.Setup(s => s.GetJobTaskDefinitions(It.IsAny<int>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((int id, bool validate, bool decrypt, CancellationToken token) =>
                     new List<JobTaskDefinition>
                     {
                         new JobTaskDefinition
@@ -133,7 +133,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
                             JobDefinitionId = id
                         }
                     });
-            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
         }
 
@@ -176,7 +176,7 @@ namespace Polyrific.Catapult.Api.UnitTests.Core.Services
         [Fact]
         public void AddJobQueue_TaskValidationException()
         {
-            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+            _jobDefinitionService.Setup(s => s.ValidateJobTaskDefinition(It.IsAny<JobDefinition>(), It.IsAny<JobTaskDefinition>(), It.IsAny<CancellationToken>()))
                 .Throws(new ExternalServiceNotFoundException("GitHub"));
 
             var jobQueueService = new JobQueueService(_jobQueueRepository.Object, _projectRepository.Object, _userRepository.Object, _jobCounterService.Object, _jobDefinitionService.Object, _textWriter.Object, _notificationProvider.Object);

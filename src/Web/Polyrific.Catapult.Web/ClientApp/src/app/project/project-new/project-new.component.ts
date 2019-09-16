@@ -67,6 +67,10 @@ export class ProjectNewComponent implements OnInit {
         newProject.members = this.projectTemplate.members;
       }
 
+      if (this.projectTemplate != null && this.projectTemplate.jobs) {
+        newProject.jobs = this.projectTemplate.jobs;
+      }
+
       this.projectService.createProject(newProject)
         .subscribe(
             (data: ProjectDto) => {
@@ -134,9 +138,5 @@ export class ProjectNewComponent implements OnInit {
       };
       fileReader.readAsText(event.target.files[0]);
     }
-  }
-
-  onJobsFormReady(form: FormArray) {
-    this.projectForm.setControl('jobs', form);
   }
 }

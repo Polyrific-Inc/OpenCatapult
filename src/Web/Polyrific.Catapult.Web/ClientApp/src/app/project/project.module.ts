@@ -21,7 +21,8 @@ import { ProjectErrorComponent } from './project-error/project-error.component';
 import { ProjectResolverService } from './services/project-resolver.service';
 import { ProjectDeletingComponent } from './project-deleting/project-deleting.component';
 import { JobListFormComponent } from './components/job-list-form/job-list-form.component';
-import { TaskConfigListFormComponent, JobConfigFormComponent } from '@app/shared';
+import { DataModelComponent } from './components/data-model/data-model.component';
+import { DataModelPropertyComponent } from './components/data-model-property/data-model-property.component';
 
 @NgModule({
   declarations: [ProjectComponent,
@@ -35,8 +36,8 @@ import { TaskConfigListFormComponent, JobConfigFormComponent } from '@app/shared
     ProjectErrorComponent,
     ProjectDeletingComponent,
     JobListFormComponent,
-    TaskConfigListFormComponent,
-    JobConfigFormComponent
+    DataModelComponent,
+    DataModelPropertyComponent
   ],
   imports: [
     CommonModule,

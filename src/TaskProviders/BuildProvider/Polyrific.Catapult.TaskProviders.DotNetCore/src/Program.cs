@@ -28,7 +28,9 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCore
                 return (null, null, $"Task Provider {TaskProviderName} require dotnet sdk to be installed");
             }
 
-            var csprojLocation = Path.Combine(Config.SourceLocation ?? Config.WorkingLocation, ProjectName, $"{ProjectName}.csproj");
+            var normalizedProjectName = TextHelper.GetNormalizedName(ProjectName);
+
+            var csprojLocation = Path.Combine(Config.SourceLocation ?? Config.WorkingLocation, normalizedProjectName, $"{normalizedProjectName}.csproj");
             if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("CsprojLocation") && !string.IsNullOrEmpty(AdditionalConfigs["CsprojLocation"]))
                 csprojLocation = AdditionalConfigs["CsprojLocation"];
             if (!Path.IsPathRooted(csprojLocation))
@@ -47,7 +49,7 @@ namespace Polyrific.Catapult.TaskProviders.DotNetCore
                 artifactLocation = Path.Combine(Config.WorkingLocation, artifactLocation);
 
             if (_builder == null)
-                _builder = new Builder();
+                _builder = new Builder(Logger);
 
             var error = await _builder.Build(csprojLocation, buildOutputLocation, buildConfiguration);
             if (!string.IsNullOrEmpty(error))

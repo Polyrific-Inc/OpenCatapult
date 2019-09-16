@@ -149,7 +149,7 @@ Write-Host "Publishing API..."
 $args = "-configuration " + $configuration
 $args += " -environment " + $environment
 if ($connString) {
-    $args += "-connString " + $connString
+    $args += " -connString " + $connString
 }
 if ($dbProvider) {
     $args += " -dbProvider " + $dbProvider

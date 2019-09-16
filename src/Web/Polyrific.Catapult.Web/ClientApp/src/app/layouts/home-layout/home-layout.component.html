@@ -1,4 +1,5 @@
 <app-header [sidenav]="sidenav"></app-header>
+<alert-box></alert-box>
 <mat-sidenav-container class="layout-container">
   <mat-sidenav #sidenav fxLayout="column">
     <div fxLayout="column">
@@ -6,7 +7,7 @@
       <button mat-button (click)="sidenav.toggle()" routerLink="/project">Projects</button>
       <button mat-button (click)="sidenav.toggle()" routerLink="/service">External Services</button>
       <button mat-button (click)="sidenav.toggle()" routerLink="/engine" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Engines</button>
-      <button mat-button (click)="sidenav.toggle()" routerLink="/provider" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Providers</button>
+      <button mat-button (click)="sidenav.toggle()" routerLink="/provider" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Task Providers</button>
       <button mat-button (click)="sidenav.toggle()" routerLink="/user" *appHasAccess="authorizePolicyEnum.UserRoleAdminAccess">Users</button>
     </div>
   </mat-sidenav>

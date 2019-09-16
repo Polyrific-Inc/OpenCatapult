@@ -36,8 +36,25 @@
           <label for="input-file-id" class="mat-raised-button">Choose File</label>
           <span class="custom-file">{{customTemplateFile}}</span>
       </div>
+      <mat-accordion class="headers-align">
+        <mat-expansion-panel *ngIf="projectTemplate && projectTemplate.jobs">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span>Job Definitions</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-job-list-form [jobDefinitions]="projectTemplate.jobs"></app-job-list-form>
+        </mat-expansion-panel>
 
-      <app-job-list-form *ngIf="projectTemplate && projectTemplate.jobs" [jobDefinitions]="projectTemplate.jobs" (formReady)="onJobsFormReady($event)"></app-job-list-form>
+        <mat-expansion-panel *ngIf="projectTemplate && projectTemplate.models">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              <span>Data Models</span>
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+          <app-data-model [dataModels]="projectTemplate.models"></app-data-model>
+        </mat-expansion-panel>
+      </mat-accordion>
 
       <div class="margin30"></div>
       <button mat-raised-button color="primary" [disabled]="loading">Save</button>

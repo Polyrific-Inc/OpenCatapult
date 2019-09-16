@@ -22,6 +22,8 @@ namespace Polyrific.Catapult.Shared.Common.Notification
 
         public const string ProjectDeleted = "ProjectDeleted";
 
+        public const string ProjectResourceDeleted = "ProjectResourceDeleted";
+
         public Dictionary<string, string> NotificationProviders { get; set; }
 
         public Dictionary<string, string> NotificationSubject { get; set; }

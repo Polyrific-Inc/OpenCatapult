@@ -9,6 +9,7 @@ using Polyrific.Catapult.Engine.Core.JobLogger;
 using Polyrific.Catapult.Engine.Infrastructure;
 using Serilog;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Engine
@@ -17,6 +18,11 @@ namespace Polyrific.Catapult.Engine
     {
         public static async Task<int> Main(string[] args)
         {
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                ConsoleWindow.QuickEditMode(enable: false);
+            }
+
             await CatapultEngineConfig.InitConfigFile();
             
             var configuration = new ConfigurationBuilder()

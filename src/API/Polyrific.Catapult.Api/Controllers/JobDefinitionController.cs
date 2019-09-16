@@ -220,13 +220,13 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogRequest("Updating tasks order for job {jobId} in project {projectId}. Request body: {@dto}", jobId, projectId, dto);
 
-            var jobs = await _jobDefinitionService.GetJobTaskDefinitions(jobId);
+            var tasks = await _jobDefinitionService.GetJobTaskDefinitions(jobId, decrypt: true);
 
-            foreach (var jobOrder in dto.TaskOrders)
+            foreach (var taskOrder in dto.TaskOrders)
             {
-                var job = jobs.FirstOrDefault(j => j.Id == jobOrder.Key);
-                job.Sequence = jobOrder.Value;
-                await _jobDefinitionService.UpdateJobTaskDefinition(job, validate: false);
+                var task = tasks.FirstOrDefault(j => j.Id == taskOrder.Key);
+                task.Sequence = taskOrder.Value;
+                await _jobDefinitionService.UpdateJobTaskDefinition(task, validate: false);
             }
 
             _logger.LogResponse("Task order for job definition {jobId} in project {projectId} updated", jobId, projectId);
@@ -476,7 +476,8 @@ namespace Polyrific.Catapult.Api.Controllers
         {
             _logger.LogRequest("Getting job task definitions in job {jobId}", jobId);
 
-            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId, validate);
+            var jobTaskDefinitions = await _jobDefinitionService.GetJobTaskDefinitions(jobId, validate, decrypt: true);
+
             var results = _mapper.Map<List<JobTaskDefinitionDto>>(jobTaskDefinitions);
 
             _logger.LogResponse("Job task definitions in job {jobId} retrieved. Response body: {@results}", jobId, results);

@@ -8,7 +8,7 @@
   <div class="action-buttons">
     <button mat-raised-button routerLink="logs" appHelpElement="JobQueue" subSection="Logs">View Logs</button>
     <button mat-raised-button color="accent" (click)="onCancelClick()" *ngIf="allowCancel">Cancel</button>
-    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">Restart</button>
+    <button mat-raised-button color="primary" (click)="onRestartClick()" *ngIf="allowRestart">{{restartButtonText || 'Restart'}}</button>
 
     <button mat-raised-button (click)="getJobQueue()" *ngIf="allowRefresh">
       <mat-icon>refresh</mat-icon>

@@ -4,14 +4,16 @@ import { ProjectNewComponent } from './project-new.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatProgressBarModule, MatInputModule, MatSnackBarModule, MatOptionModule,
-  MatSelectModule, MatIconModule, MatTooltipModule, MatStepperModule, MatTabsModule } from '@angular/material';
+  MatSelectModule, MatIconModule, MatTooltipModule, MatStepperModule, MatTabsModule,
+  MatExpansionModule, MatDividerModule, MatListModule } from '@angular/material';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CoreModule } from '@app/core';
 import { SharedModule } from '@app/shared/shared.module';
 import { ProjectInfoFormComponent } from '../components/project-info-form/project-info-form.component';
 import { JobListFormComponent } from '../components/job-list-form/job-list-form.component';
-import { JobConfigFormComponent, TaskConfigListFormComponent } from '@app/shared';
+import { DataModelComponent } from '../components/data-model/data-model.component';
+import { DataModelPropertyComponent } from '../components/data-model-property/data-model-property.component';
 
 describe('ProjectNewComponent', () => {
   let component: ProjectNewComponent;
@@ -23,8 +25,8 @@ describe('ProjectNewComponent', () => {
         ProjectNewComponent,
         ProjectInfoFormComponent,
         JobListFormComponent,
-        JobConfigFormComponent,
-        TaskConfigListFormComponent
+        DataModelComponent,
+        DataModelPropertyComponent
       ],
       imports: [
         BrowserAnimationsModule,
@@ -41,7 +43,10 @@ describe('ProjectNewComponent', () => {
         MatIconModule,
         MatTooltipModule,
         MatStepperModule,
-        MatTabsModule
+        MatTabsModule,
+        MatExpansionModule,
+        MatDividerModule,
+        MatListModule
       ]
     })
     .compileComponents();

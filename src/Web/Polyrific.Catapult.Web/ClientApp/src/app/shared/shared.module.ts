@@ -25,6 +25,8 @@ import { ExternalAccountFormComponent } from './components/external-account-form
 import { UtilityService } from './services/utility.service';
 import { MessageDialogComponent } from './components/message-dialog/message-dialog.component';
 import { HelpElementDirective } from './directives/help-element.directive';
+import { AlertBoxComponent } from './components/alert-box/alert-box.component';
+import { AlertBoxService } from './services/alert-box.service';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import { HelpElementDirective } from './directives/help-element.directive';
     LoadingSpinnerComponent,
     ExternalAccountFormComponent,
     MessageDialogComponent,
-    HelpElementDirective
+    HelpElementDirective,
+    AlertBoxComponent
   ],
   imports: [
     CommonModule,
@@ -83,7 +86,8 @@ import { HelpElementDirective } from './directives/help-element.directive';
     DeleteRepositoryConfigFormComponent,
     LoadingSpinnerComponent,
     ExternalAccountFormComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    AlertBoxComponent
   ],
   entryComponents: [
     ConfirmationWithInputDialogComponent,
@@ -97,7 +101,8 @@ export class SharedModule {
       ngModule: SharedModule,
       providers: [
         SnackbarService,
-        UtilityService
+        UtilityService,
+        AlertBoxService
       ]
     };
   }

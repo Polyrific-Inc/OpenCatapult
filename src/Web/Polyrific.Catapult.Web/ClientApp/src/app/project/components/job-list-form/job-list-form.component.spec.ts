@@ -2,8 +2,6 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { JobListFormComponent } from './job-list-form.component';
 import {
-  JobConfigFormComponent,
-  TaskConfigListFormComponent,
   TaskConfigFormComponent,
   PullTaskConfigFormComponent,
   GenerateTaskConfigFormComponent,
@@ -16,7 +14,8 @@ import {
   AdditionalConfigFieldComponent,
   AdditionalConfigFormComponent,
   DeleteRepositoryConfigFormComponent } from '@app/shared';
-import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule, MatStepperModule, MatTabsModule } from '@angular/material';
+import { MatExpansionModule, MatInputModule, MatCheckboxModule, MatSelectModule, MatStepperModule,
+  MatTabsModule, MatDividerModule, MatListModule } from '@angular/material';
 import { ReactiveFormsModule } from '@angular/forms';
 
 describe('JobListFormComponent', () => {
@@ -27,8 +26,6 @@ describe('JobListFormComponent', () => {
     TestBed.configureTestingModule({
       declarations: [
         JobListFormComponent,
-        JobConfigFormComponent,
-        TaskConfigListFormComponent,
         TaskConfigFormComponent,
         PullTaskConfigFormComponent,
         GenerateTaskConfigFormComponent,
@@ -49,7 +46,9 @@ describe('JobListFormComponent', () => {
         MatCheckboxModule,
         MatSelectModule,
         MatStepperModule,
-        MatTabsModule
+        MatTabsModule,
+        MatDividerModule,
+        MatListModule
       ]
     })
     .compileComponents();
@@ -58,6 +57,7 @@ describe('JobListFormComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(JobListFormComponent);
     component = fixture.componentInstance;
+    component.jobDefinitions = [];
     fixture.detectChanges();
   });
 

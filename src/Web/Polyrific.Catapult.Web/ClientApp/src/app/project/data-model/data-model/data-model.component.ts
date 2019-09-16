@@ -9,6 +9,7 @@ import { DataModelPropertyNewDialogComponent } from '../components/data-model-pr
 
 interface DataModelViewModel extends DataModelDto {
   selected: boolean;
+  expanded: boolean;
 }
 
 @Component({
@@ -36,10 +37,11 @@ export class DataModelComponent implements OnInit {
 
   getDataModels() {
     this.loading = true;
-    this.dataModelService.getDataModels(this.projectId, true)
+    this.dataModelService.getDataModels(this.projectId, false)
       .subscribe(data => {
         this.dataModels = data.map(item => ({
           selected: false,
+          expanded: false,
           ...item
         }));
         this.loading = false;
@@ -112,6 +114,13 @@ export class DataModelComponent implements OnInit {
           });
       }
     });
+  }
+
+  onModelExpanded(model: DataModelViewModel) {
+    if (!model.expanded) {
+      this.getDataModelProperty(model);
+      model.expanded = true;
+    }
   }
 
   onModelInfoClick(model: DataModelDto) {

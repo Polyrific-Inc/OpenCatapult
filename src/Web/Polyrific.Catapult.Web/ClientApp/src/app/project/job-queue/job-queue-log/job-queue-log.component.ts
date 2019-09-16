@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { JobQueueDto, JobQueueService } from '@app/core';
+import { JobQueueDto, JobQueueService, JobTaskStatus, JobTaskDefinitionType } from '@app/core';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { JobLogDto } from '@app/core/models/job-queue/job-log-dto';
@@ -23,6 +23,7 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
   logReceived: boolean;
   allowRestart: boolean;
   allowCancel: boolean;
+  restartButtonText: string;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
@@ -55,6 +56,14 @@ export class JobQueueLogComponent implements OnInit, OnDestroy {
 
     if (!this.listened && (jobQueue.status === JobStatus.Queued || jobQueue.status === JobStatus.Processing)) {
       this.listenQueueLog();
+    }
+
+    this.restartButtonText = 'Restart';
+    if (this.jobQueue.status === JobStatus.Pending) {
+      const mergeJob = jobQueue.jobTasksStatus.find(x => x.status === JobTaskStatus.Pending);
+      if (mergeJob && mergeJob.taskName === JobTaskDefinitionType.Merge) {
+        this.restartButtonText = 'Merge & Resume';
+      }
     }
   }
 

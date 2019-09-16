@@ -1,0 +1,10 @@
+<mat-accordion class="headers-align">
+  <mat-expansion-panel *ngFor="let dataModel of dataModels">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <span>{{dataModel.name}}</span>
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+    <app-data-model-property [properties]="dataModel.properties"></app-data-model-property>
+  </mat-expansion-panel>
+</mat-accordion>

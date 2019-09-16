@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { JobQueueService, JobQueueDto, JobStatus } from '@app/core';
+import { JobQueueService, JobQueueDto, JobStatus, JobTaskStatus, JobTaskDefinitionType } from '@app/core';
 import { SnackbarService, ConfirmationDialogComponent } from '@app/shared';
 import { MatDialog } from '@angular/material';
 import { JobQueueCancelDialogComponent } from '../components/job-queue-cancel-dialog/job-queue-cancel-dialog.component';
@@ -18,6 +18,7 @@ export class JobQueueDetailComponent implements OnInit {
   allowCancel: boolean;
   allowRefresh: boolean;
   currentJobQueueTab: string;
+  restartButtonText: string;
   constructor(
     private route: ActivatedRoute,
     private jobQueueService: JobQueueService,
@@ -45,8 +46,14 @@ export class JobQueueDetailComponent implements OnInit {
     this.allowCancel = jobQueue.status === JobStatus.Processing || jobQueue.status === JobStatus.Pending;
     this.allowRefresh = jobQueue.status !== JobStatus.Completed;
 
+    this.restartButtonText = 'Restart';
     if (this.jobQueue.status === JobStatus.Pending) {
       this.currentJobQueueTab = 'pending';
+
+      const mergeJob = jobQueue.jobTasksStatus.find(x => x.status === JobTaskStatus.Pending);
+      if (mergeJob && mergeJob.taskName === JobTaskDefinitionType.Merge) {
+        this.restartButtonText = 'Merge & Resume';
+      }
     } else if (this.jobQueue.status === JobStatus.Queued || this.jobQueue.status === JobStatus.Processing) {
       this.currentJobQueueTab = 'current';
     } else {

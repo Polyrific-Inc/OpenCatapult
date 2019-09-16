@@ -28,5 +28,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         /// The property name used as the key for select control
         /// </summary>
         public string SelectKey { get; set; }
+
+        /// <summary>
+        /// Name of the database table if it's different from model name
+        /// </summary>
+        public string DatabaseTableName { get; set; }
     }
 }

@@ -53,5 +53,10 @@ namespace Polyrific.Catapult.Shared.Dto.ProjectDataModel
         /// Sequence of the property
         /// </summary>
         public int? Sequence { get; set; }
+
+        /// <summary>
+        /// Name of the database column if it's different from property name
+        /// </summary>
+        public string DatabaseColumnName { get; set; }
     }
 }

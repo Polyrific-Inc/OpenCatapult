@@ -1,7 +1,5 @@
 /* Components */
 export * from './components/task-config-form/task-config-form.component';
-export * from '../project/components/task-config-list-form/task-config-list-form.component';
-export * from '../project/components/job-config-form/job-config-form.component';
 export * from './components/confirmation-with-input-dialog/confirmation-with-input-dialog.component';
 export * from './components/confirmation-dialog/confirmation-dialog.component';
 export * from './components/loading-spinner/loading-spinner.component';

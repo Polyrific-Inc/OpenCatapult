@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Polyrific.Catapult.TaskProviders.Core;
+using Polyrific.Catapult.TaskProviders.EntityFrameworkCore.Helpers;
 
 namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
 {
@@ -26,7 +27,8 @@ namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
         
         public override async Task<(string databaseLocation, Dictionary<string, string> outputValues, string errorMessage)> DeployDatabase()
         {
-            var startupProjectName = ProjectName;
+            var normalizedProjectName = TextHelper.GetNormalizedName(ProjectName);
+            var startupProjectName = normalizedProjectName;
             if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("StartupProjectName") && !string.IsNullOrEmpty(AdditionalConfigs["StartupProjectName"]))
                 startupProjectName = AdditionalConfigs["StartupProjectName"];
             startupProjectName = $"{startupProjectName}.dll";
@@ -37,7 +39,7 @@ namespace Polyrific.Catapult.TaskProviders.EntityFrameworkCore
             if (!Path.IsPathRooted(startupProjectPath))
                 startupProjectPath = Path.Combine(Config.WorkingLocation, startupProjectPath);
 
-            var dataProjectName = $"{ProjectName}.Data";
+            var dataProjectName = $"{normalizedProjectName}.Data";
             if (AdditionalConfigs != null && AdditionalConfigs.ContainsKey("DatabaseProjectName") && !string.IsNullOrEmpty(AdditionalConfigs["DatabaseProjectName"]))
                 dataProjectName = AdditionalConfigs["DatabaseProjectName"];
             dataProjectName = $"{dataProjectName}.dll";
