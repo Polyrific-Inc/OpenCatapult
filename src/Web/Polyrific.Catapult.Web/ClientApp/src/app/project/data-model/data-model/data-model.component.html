@@ -12,7 +12,8 @@
 </div>
 <app-loading-spinner *ngIf="loading"></app-loading-spinner>
 <mat-accordion class="headers-align" *ngIf="!loading">
-  <mat-expansion-panel *ngFor="let dataModel of dataModels">
+  <mat-expansion-panel *ngFor="let dataModel of dataModels" [expanded]="dataModel.expanded"
+  (afterExpand)="onModelExpanded(dataModel)">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-checkbox class="model-checkbox" [(ngModel)]="dataModel.selected" (click)="$event.stopPropagation();" *appHasAccess="authorizePolicy.ProjectContributorAccess"></mat-checkbox>
