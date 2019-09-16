@@ -154,7 +154,8 @@ export class ProjectDetailComponent implements OnInit {
           originUrl: window.location.origin,
           jobDefinitionId: null
         }).subscribe(() => {
-          this.router.navigate([`project/${this.project.id}/job-queue`, { dummyData: (new Date).getTime()}]);
+          this.router.navigate([`project/${this.project.id}/job-queue`, { dummyData: (new Date).getTime()}]).then(() =>
+            this.router.navigate([`project/${this.project.id}/job-queue`]));
         },
           err => {
             if (err.includes('have invalid task(s): External service') && err.includes('is not found')) {
