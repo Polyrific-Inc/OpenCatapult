@@ -91,6 +91,7 @@ namespace Polyrific.Catapult.Shared.Common
                 }
             }
         }
+
         private static StreamWriter AsyncStreamWriter(string path, Encoding encoding, bool append)
         {
             var stream = new FileStream(
