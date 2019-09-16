@@ -1,6 +1,10 @@
 ﻿// Copyright (c) Polyrific, Inc 2018. All rights reserved.
 
+using System;
+using System.Buffers;
 using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Polyrific.Catapult.Shared.Common
@@ -10,6 +14,8 @@ namespace Polyrific.Catapult.Shared.Common
     /// </summary>
     public static class FileHelper
     {
+        internal const int DefaultBufferSize = 4096;
+
         public static async Task<string> ReadAllTextAsync(string path)
         {
             string text;
@@ -34,17 +40,64 @@ namespace Polyrific.Catapult.Shared.Common
             }
         }
 
-        public static async Task AppendAllTextAsync(string path, string content)
+        public static Task AppendAllTextAsync(string path, string contents, CancellationToken cancellationToken = default(CancellationToken))
         {
-            using (var fileStream = new FileStream(path, FileMode.Open, FileAccess.Write, FileShare.ReadWrite))
-            {
-                using (var writer = new StreamWriter(fileStream))
-                {
-                    await writer.WriteAsync(content);
+            var encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+            if (path.Length == 0)
+                throw new ArgumentException("Path is empty", nameof(path));
 
-                    await writer.FlushAsync();
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return Task.FromCanceled(cancellationToken);
+            }
+
+            if (string.IsNullOrEmpty(contents))
+            {
+                // Just to throw exception if there is a problem opening the file.
+                new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.Read).Dispose();
+                return Task.CompletedTask;
+            }
+
+            return InternalWriteAllTextAsync(AsyncStreamWriter(path, encoding, append: true), contents, cancellationToken);
+        }
+
+        private static async Task InternalWriteAllTextAsync(StreamWriter sw, string contents, CancellationToken cancellationToken)
+        {
+            char[] buffer = null;
+            try
+            {
+                buffer = ArrayPool<char>.Shared.Rent(DefaultBufferSize);
+                int count = contents.Length;
+                int index = 0;
+                while (index < count)
+                {
+                    int batchSize = Math.Min(DefaultBufferSize, count - index);
+                    contents.CopyTo(index, buffer, 0, batchSize);
+                    await sw.WriteAsync(buffer, 0, batchSize).ConfigureAwait(false);
+                    index += batchSize;
+                }
+
+                cancellationToken.ThrowIfCancellationRequested();
+                await sw.FlushAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                sw.Dispose();
+                if (buffer != null)
+                {
+                    ArrayPool<char>.Shared.Return(buffer);
                 }
             }
+        }
+        private static StreamWriter AsyncStreamWriter(string path, Encoding encoding, bool append)
+        {
+            var stream = new FileStream(
+                path, append ? FileMode.Append : FileMode.Create, FileAccess.Write, FileShare.Read, DefaultBufferSize,
+                FileOptions.Asynchronous | FileOptions.SequentialScan);
+
+            return new StreamWriter(stream, encoding);
         }
     }
 }
