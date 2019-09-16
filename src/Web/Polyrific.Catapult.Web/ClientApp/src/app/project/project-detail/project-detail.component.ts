@@ -153,7 +153,9 @@ export class ProjectDetailComponent implements OnInit {
           jobType: null,
           originUrl: window.location.origin,
           jobDefinitionId: null
-        }).subscribe(data => this.router.navigateByUrl(`project/${this.project.id}/job-queue`),
+        }).subscribe(() => {
+          this.router.navigate([`project/${this.project.id}/job-queue`, { dummyData: (new Date).getTime()}]);
+        },
           err => {
             if (err.includes('have invalid task(s): External service') && err.includes('is not found')) {
               const addServiceDialogRef = this.dialog.open(ConfirmationDialogComponent, {
