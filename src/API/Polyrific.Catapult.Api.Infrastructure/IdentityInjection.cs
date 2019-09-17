@@ -20,24 +20,18 @@ namespace Polyrific.Catapult.Api.Infrastructure
             if (string.IsNullOrEmpty(dbProvider))
                 dbProvider = "mssql";
 
+            var identityBuilder = services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
+            {
+                opt.User.RequireUniqueEmail = true;
+            }).AddDefaultTokenProviders();
+
             if (dbProvider.Equals("sqlite", StringComparison.InvariantCultureIgnoreCase))
             {
-                services.AddIdentity<ApplicationUser, ApplicationRole>(opt =>
-                    {
-                        opt.User.RequireUniqueEmail = true;
-                    })
-                    .AddEntityFrameworkStores<CatapultSqliteDbContext>()
-                    .AddDefaultTokenProviders();
+                identityBuilder.AddEntityFrameworkStores<CatapultSqliteDbContext>();
             }
             else
             {
-                services.AddIdentityCore<ApplicationUser>(opt =>
-                    {
-                        opt.User.RequireUniqueEmail = true;
-                    })
-                    .AddRoles<ApplicationRole>()
-                    .AddEntityFrameworkStores<CatapultDbContext>()
-                    .AddDefaultTokenProviders();
+                identityBuilder.AddEntityFrameworkStores<CatapultDbContext>();
             }
         }
     }
