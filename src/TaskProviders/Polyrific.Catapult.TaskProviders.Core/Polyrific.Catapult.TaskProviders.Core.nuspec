@@ -4,9 +4,9 @@
     <id>Polyrific.Catapult.TaskProviders.Core</id>
     <version>1.0.0-rc.1</version>
     <title>Polyrific.Catapult.TaskProviders.Core</title>
-    <authors>frandi-polyrific</authors>
-    <owners>frandi-polyrific</owners>
-    <licenseUrl>https://github.com/Polyrific-Inc/OpenCatapult/blob/master/LICENSE</licenseUrl>
+    <authors>Polyrific</authors>
+    <owners>Polyrific</owners>
+    <license type="expression">OSL-3.0</license>
     <projectUrl>https://opencatapult.net</projectUrl>
     <iconUrl>https://opencatapult.net/img/opencatapult-logo.png</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
