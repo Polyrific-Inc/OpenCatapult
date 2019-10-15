@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { environment } from 'environments/environment';
+import { Config, ConfigService } from '@app/config/config.service';
 
 @Component({
   selector: 'app-footer',
@@ -7,12 +8,16 @@ import { environment } from 'environments/environment';
   styleUrls: ['./footer.component.css']
 })
 export class FooterComponent implements OnInit {
-  @Input() showVersionPage: boolean;
-  version: string = environment.version;
+    @Input() showVersionPage: boolean;
+    version: string = environment.version;
+    environmentName: string = 'Unknown';
 
-  constructor() { }
+    constructor(
+        private configService: ConfigService
+    ) { }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+        this.environmentName = this.configService.getConfig().environmentName;
+    }
 
 }
