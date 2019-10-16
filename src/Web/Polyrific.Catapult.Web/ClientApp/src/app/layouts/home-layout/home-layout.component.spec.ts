@@ -13,6 +13,7 @@ import { of } from 'rxjs';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FooterComponent } from '@app/footer/footer.component';
+import { ConfigService } from '@app/config/config.service';
 
 describe('HomeLayoutComponent', () => {
   let component: HomeLayoutComponent;
@@ -42,6 +43,13 @@ describe('HomeLayoutComponent', () => {
             checkRoleAuthorization() {
               return false;
             }
+          }
+        },
+        {
+          provide: ConfigService, useValue: {
+            getConfig: () => ({
+              environmentName: 'test'
+            })
           }
         }
        ]

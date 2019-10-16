@@ -4,6 +4,7 @@ import { LoginLayoutComponent } from './login-layout.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MatProgressBarModule, MatToolbarModule } from '@angular/material';
 import { FooterComponent } from '@app/footer/footer.component';
+import { ConfigService } from '@app/config/config.service';
 
 describe('LoginLayoutComponent', () => {
   let component: LoginLayoutComponent;
@@ -12,7 +13,16 @@ describe('LoginLayoutComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule, MatProgressBarModule, MatToolbarModule ],
-      declarations: [ LoginLayoutComponent, FooterComponent ]
+      declarations: [ LoginLayoutComponent, FooterComponent ],
+      providers: [
+        {
+          provide: ConfigService, useValue: {
+            getConfig: () => ({
+              environmentName: 'test'
+            })
+          }
+        }
+      ]
     })
     .compileComponents();
   }));
