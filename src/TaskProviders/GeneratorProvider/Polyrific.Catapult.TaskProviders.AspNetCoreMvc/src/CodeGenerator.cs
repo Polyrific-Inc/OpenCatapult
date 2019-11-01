@@ -50,7 +50,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
             _coreProjectGenerator = new CoreProjectGenerator(_projectName, _projectHelper, _models, logger);
             _dataProjectGenerator = new DataProjectGenerator(_projectName, _projectHelper, _models, adminEmail, logger);
             _infrastructureProjectGenerator = new InfrastructureProjectGenerator(_projectName, _projectHelper, _models, logger);
-            _mainProjectGenerator = new MainProjectGenerator(_projectName, _projectHelper, _models, logger);
+            _mainProjectGenerator = new MainProjectGenerator(_projectName, _projectHelper, _models, outputLocation, logger);
             _logger = logger;
         }
 
@@ -66,6 +66,9 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
         public async Task<string> InitProjects()
         {
             var sb = new StringBuilder();
+
+            // use global json to set the sdk version
+            CopyGlobalJson();
 
             // add main project first so it set as start up project
             sb.AppendLine(await _mainProjectGenerator.Initialize());
@@ -189,6 +192,17 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc
             }
 
             return models;
+        }
+
+        private void CopyGlobalJson()
+        {
+            var gitignoreFile = Path.Combine(_outputLocation, "global.json");
+
+            if (!File.Exists(gitignoreFile))
+            {
+                var sourceFile = Path.Combine(AssemblyDirectory, "Resources/global.json");
+                File.Copy(sourceFile, gitignoreFile);
+            }
         }
     }
 }

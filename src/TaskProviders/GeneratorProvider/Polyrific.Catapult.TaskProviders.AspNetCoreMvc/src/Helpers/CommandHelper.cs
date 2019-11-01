@@ -10,7 +10,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
 {
     public class CommandHelper
     {
-        public static Task<string> Execute(string fileName, string args, Dictionary<string, string> environmentVariables = null, ILogger logger = null)
+        public static Task<string> Execute(string fileName, string args, Dictionary<string, string> environmentVariables = null, ILogger logger = null, string workingDirectory = null)
         {
             var returnValue = new StringBuilder();
 
@@ -20,7 +20,8 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
                 Arguments = args,
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
-                CreateNoWindow = true
+                CreateNoWindow = true,
+                WorkingDirectory = workingDirectory
             };
 
             if (environmentVariables != null)
@@ -46,9 +47,9 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
             return Task.FromResult(returnValue.ToString());
         }
         
-        public static Task<string> RunDotnet(string args, Dictionary<string, string> environmentVariables = null, ILogger logger = null)
+        public static Task<string> RunDotnet(string args, Dictionary<string, string> environmentVariables = null, ILogger logger = null, string workingDirectory = null)
         {
-            return Execute("dotnet", args, environmentVariables, logger);
+            return Execute("dotnet", args, environmentVariables, logger, workingDirectory);
         }
     }
 }

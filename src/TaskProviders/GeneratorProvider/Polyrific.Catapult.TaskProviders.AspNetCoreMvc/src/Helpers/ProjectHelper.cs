@@ -40,21 +40,21 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
             if (!File.Exists(projectFile))
             {
                 var args = $"new {template} -n {projectName} -o \"{projectFolder}\"";
-                message = await CommandHelper.RunDotnet(args, null, _logger);
+                message = await CommandHelper.RunDotnet(args, null, _logger, workingDirectory: _outputLocation);
                 DeleteFileToProject(projectName, "Class1.cs");
             }
 
             if (projectReferences != null)
                 foreach (var projectReference in projectReferences)
-                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger);
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger, workingDirectory: _outputLocation);
 
             if (packages != null)
                 foreach (var package in packages)
-                    await CommandHelper.RunDotnet($"add \"{projectFile}\" package {package.name} -v {package.version}", null, _logger);
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" package {package.name} -v {package.version}", null, _logger, workingDirectory: _outputLocation);
 
             // add project to solution
             var solutionFile = Path.Combine(_outputLocation, $"{_projectName}.sln");
-            await CommandHelper.RunDotnet($"sln \"{solutionFile}\" add \"{projectFile}\"", null, _logger);
+            await CommandHelper.RunDotnet($"sln \"{solutionFile}\" add \"{projectFile}\"", null, _logger, workingDirectory: _outputLocation);
 
             return message;
         }
@@ -65,7 +65,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.Helpers
 
             if (projectReferences != null)
                 foreach (var projectReference in projectReferences)
-                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger);
+                    await CommandHelper.RunDotnet($"add \"{projectFile}\" reference \"{projectReference}\"", null, _logger, workingDirectory: _outputLocation);
         }
 
         public void AddFileToProject(string projectName, string filePath, string contents, bool overwrite = false, int modelId = 0)

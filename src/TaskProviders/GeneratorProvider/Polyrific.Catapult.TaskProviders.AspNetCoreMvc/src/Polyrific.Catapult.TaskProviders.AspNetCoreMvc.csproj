@@ -13,12 +13,16 @@
 
     <ItemGroup>
       <None Remove="Resources\.gitignore" />
+      <None Remove="Resources\global.json" />
       <None Remove="Resources\Images\logo.png" />
       <None Remove="Resources\README.md" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="Resources\.gitignore">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Resources\global.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
       <Content Include="Resources\Images\logo.png">

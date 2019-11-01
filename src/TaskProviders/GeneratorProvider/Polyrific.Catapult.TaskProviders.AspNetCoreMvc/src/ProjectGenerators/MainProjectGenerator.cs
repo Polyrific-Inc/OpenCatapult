@@ -17,6 +17,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
     internal class MainProjectGenerator
     {
         private string _projectName;
+        private string _outputLocation;
         private readonly ProjectHelper _projectHelper;
         private readonly List<ProjectDataModelDto> _models;
         private readonly ILogger _logger;
@@ -25,11 +26,12 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
 
         private const string _connectionString = "Server=localhost;Database=opencatapult;User ID=sa;Password=samprod;";
 
-        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, ILogger logger)
+        public MainProjectGenerator(string projectName, ProjectHelper projectHelper, List<ProjectDataModelDto> models, string outputLocation, ILogger logger)
         {
             _projectName = projectName;
             _projectHelper = projectHelper;
             _models = models;
+            _outputLocation = outputLocation;
             _logger = logger;
         }
 
@@ -65,7 +67,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             return await CommandHelper.RunDotnet(args, new Dictionary<string, string>
             {
                 { "ConnectionStrings__DefaultConnection", _connectionString }
-            }, _logger);
+            }, _logger, workingDirectory: _outputLocation);
         }
 
         private void AddLogo()
