@@ -3,6 +3,7 @@ client: Polyrific
 models:
   - name: User
     label: User
+    select-key: UserName
     properties:
       - name: UserName
         label: User name
@@ -31,6 +32,7 @@ models:
         is-required: true
   - name: Category
     label: Category
+    select-key: Title
     properties:
       - name: Description
         label: Description
@@ -50,6 +52,7 @@ models:
         is-required: false
   - name: Customer
     label: Customer
+    select-key: Name
     properties:
       - name: Name
         label: Name
@@ -84,6 +87,7 @@ models:
         is-required: false
   - name: Product
     label: Product
+    select-key: Title
     properties:
       - name: Title
         label: Title
@@ -102,6 +106,7 @@ models:
         is-required: false
   - name: Sale
     label: Sale
+    select-key: Title
     properties:
       - name: Description
         label: Description

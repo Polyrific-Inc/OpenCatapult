@@ -260,10 +260,20 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
 
         private void GenerateAdminAutoMapperProfile(ProjectDataModelDto model)
         {
+            var relatedDataModels = new List<ProjectDataModelDto>();
+            foreach (var property in model.Properties)
+            {
+                if (!string.IsNullOrEmpty(property.RelationalType) && !relatedDataModels.Any(x => x.Id == property.RelatedProjectDataModelId))
+                {
+                    relatedDataModels.Add(_models.FirstOrDefault(m => m.Id == property.RelatedProjectDataModelId));
+                }
+            }
+
             var sb = new StringBuilder();
             sb.AppendLine("using AutoMapper;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
             sb.AppendLine($"using {Name}.Areas.Admin.Models;");
+            sb.AppendLine("using System.Linq;");
             sb.AppendLine();
             sb.AppendLine($"namespace {Name}.Areas.Admin.AutoMapperProfiles");
             sb.AppendLine("{");
@@ -271,9 +281,40 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("    {");
             sb.AppendLine($"        public {model.Name}AutoMapperProfile()");
             sb.AppendLine("        {");
-            sb.AppendLine($"            CreateMap<{model.Name}, {model.Name}ViewModel>();");
+            sb.Append($"            CreateMap<{model.Name}, {model.Name}ViewModel>()");
+            foreach (var property in model.Properties)
+            {
+                if (property.RelationalType != PropertyRelationalType.OneToMany)
+                {
+                    continue;
+                }
+
+                var propertyName = property.Name + "Ids";
+
+                sb.AppendLine();
+                sb.Append($"                .ForMember(dest => dest.{propertyName}, opt => opt.MapFrom(src => src.{property.Name}.Select(x => x.Id)))");
+            }
+            sb.Append(";");
+
             sb.AppendLine();
-            sb.AppendLine($"            CreateMap<{model.Name}ViewModel, {model.Name}>();");
+            sb.Append($"            CreateMap<{model.Name}ViewModel, {model.Name}>()");
+            foreach (var property in model.Properties)
+            {
+                if (property.RelationalType != PropertyRelationalType.OneToMany)
+                {
+                    continue;
+                }
+
+                var propertyName = property.Name + "Ids";
+
+                sb.AppendLine();
+                sb.AppendLine($"                .ForMember(dest => dest.{property.Name}, opt => opt.MapFrom(src => src.{propertyName}.Select(x => new {property.RelatedProjectDataModelName}");
+                sb.AppendLine($"                {{");
+                sb.AppendLine($"                    Id = x");
+                sb.Append($"                }})))");
+            }
+            sb.AppendLine(";");
+
             sb.AppendLine("        }");
             sb.AppendLine("    }");
             sb.AppendLine("}");
@@ -345,13 +386,24 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
 
         private void GenerateAdminController(ProjectDataModelDto model)
         {
+            var relatedDataModels = new List<ProjectDataModelDto>(); 
+            foreach (var property in model.Properties)
+            {
+                if (!string.IsNullOrEmpty(property.RelationalType) && !relatedDataModels.Any(x => x.Id == property.RelatedProjectDataModelId))
+                {
+                    relatedDataModels.Add(_models.FirstOrDefault(m => m.Id == property.RelatedProjectDataModelId));
+                }
+            }
+
             var camelModelName = TextHelper.Camelize(model.Name);
             var sb = new StringBuilder();
             sb.AppendLine("using System.Collections.Generic;");
+            sb.AppendLine("using System.Linq;");
             sb.AppendLine("using System.Threading.Tasks;");
             sb.AppendLine("using AutoMapper;");
             sb.AppendLine("using Microsoft.AspNetCore.Authorization;");
             sb.AppendLine("using Microsoft.AspNetCore.Mvc;");
+            sb.AppendLine("using Microsoft.AspNetCore.Mvc.Rendering;");
             sb.AppendLine($"using {Name}.Areas.Admin.Models;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Entities;");
             sb.AppendLine($"using {_projectName}.{CoreProjectGenerator.CoreProject}.Services;");
@@ -364,11 +416,33 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine($"    public class {model.Name}Controller : Controller");
             sb.AppendLine("    {");
             sb.AppendLine($"        private readonly I{model.Name}Service _{camelModelName}Service;");
+            
+            foreach (var relatedDataModel in relatedDataModels)
+            {
+                sb.AppendLine($"        private readonly I{relatedDataModel.Name}Service _{TextHelper.Camelize(relatedDataModel.Name)}Service;");
+            }
+
             sb.AppendLine("        private readonly IMapper _mapper;");
             sb.AppendLine();
-            sb.AppendLine($"        public {model.Name}Controller(I{model.Name}Service {camelModelName}Service, IMapper mapper)");
+            sb.Append($"        public {model.Name}Controller(I{model.Name}Service {camelModelName}Service, IMapper mapper");
+            if (relatedDataModels.Count > 0)
+            {
+                foreach (var relatedDataModel in relatedDataModels)
+                {
+                    sb.Append($", I{relatedDataModel.Name}Service {TextHelper.Camelize(relatedDataModel.Name)}Service");
+                }
+            }
+
+            sb.AppendLine(")");
             sb.AppendLine("        {");
             sb.AppendLine($"            _{camelModelName}Service = {camelModelName}Service;");
+
+            foreach (var relatedDataModel in relatedDataModels)
+            {
+                var relatedCamelModelName = TextHelper.Camelize(relatedDataModel.Name);
+                sb.AppendLine($"            _{relatedCamelModelName}Service = {relatedCamelModelName}Service;");
+            }
+
             sb.AppendLine($"            _mapper = mapper;");
             sb.AppendLine("        }");
             sb.AppendLine();
@@ -379,8 +453,17 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("            return View(models);");
             sb.AppendLine("        }");
             sb.AppendLine();
-            sb.AppendLine("        public IActionResult Create()");
+            sb.AppendLine("        public async Task<IActionResult> Create()");
             sb.AppendLine("        {");
+
+            foreach (var relatedDataModel in relatedDataModels)
+            {
+                var pluralizedRelatedModelName = TextHelper.Pluralize(relatedDataModel.Name);
+                string selectKey = !string.IsNullOrEmpty(relatedDataModel.SelectKey) ? relatedDataModel.SelectKey : "Id";
+                sb.AppendLine($"            var {TextHelper.Camelize(pluralizedRelatedModelName)} = await _{TextHelper.Camelize(relatedDataModel.Name)}Service.Get{pluralizedRelatedModelName}();");
+                sb.AppendLine($"            ViewBag.{pluralizedRelatedModelName} = {TextHelper.Camelize(pluralizedRelatedModelName)}.Select(x => new SelectListItem {{ Value = x.Id.ToString() , Text = x.{selectKey}.ToString() }}).ToList();");
+            }
+
             sb.AppendLine($"            return View(new {model.Name}ViewModel());");
             sb.AppendLine("        }");
             sb.AppendLine();
@@ -403,6 +486,15 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine("        public async Task<IActionResult> Edit(int id)");
             sb.AppendLine("        {");
             sb.AppendLine($"            var data = await _{camelModelName}Service.Get{model.Name}ById(id);");
+            
+            foreach (var relatedDataModel in relatedDataModels)
+            {
+                var pluralizedRelatedModelName = TextHelper.Pluralize(relatedDataModel.Name);
+                string selectKey = !string.IsNullOrEmpty(relatedDataModel.SelectKey) ? relatedDataModel.SelectKey : "Id";
+                sb.AppendLine($"            var {TextHelper.Camelize(pluralizedRelatedModelName)} = await _{TextHelper.Camelize(relatedDataModel.Name)}Service.Get{pluralizedRelatedModelName}();");
+                sb.AppendLine($"            ViewBag.{pluralizedRelatedModelName} = {TextHelper.Camelize(pluralizedRelatedModelName)}.Select(x => new SelectListItem {{ Value = x.Id.ToString() , Text = x.{selectKey}.ToString() }}).ToList();");
+            }
+
             sb.AppendLine($"            var model = _mapper.Map<{model.Name}ViewModel>(data);");
             sb.AppendLine("            return View(model);");
             sb.AppendLine("        }");
@@ -874,28 +966,57 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 sb.AppendLine("    <div class=\"form-group row\">");
                 sb.AppendLine($"        <label asp-for=\"{propertyName}\" class=\"col-form-label col-md-2\"></label>");
                 sb.AppendLine("        <div class=\"col-md-10\">");
-                switch (property.ControlType)
+
+                // TODO: Handle many to many
+                if (!string.IsNullOrEmpty(property.RelationalType) && property.RelationalType != PropertyRelationalType.ManyToMany)
                 {
-                    case PropertyControlType.InputText:
-                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"text\" class=\"form-control\" />");
-                        break;
-                    case PropertyControlType.InputNumber:
-                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"number\" class=\"form-control\" />");
-                        break;
-                    case PropertyControlType.Calendar:
-                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"date\" class=\"form-control\" />");
-                        break;
-                    case PropertyControlType.InputFile:
-                    case PropertyControlType.Image:
-                        sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"file\" class=\"form-control\" />");
-                        break;
-                    case PropertyControlType.Textarea:
-                        sb.AppendLine($"            <textarea asp-for=\"{propertyName}\" class=\"form-control\"></textarea>");
-                        break;
-                    case PropertyControlType.Checkbox:
-                        sb.AppendLine($"            <input type=\"checkbox\" asp-for=\"{propertyName}\" class = \"form-control\" />");
-                        break;
+                    var relatedDataModel = _models.FirstOrDefault(m => m.Id == property.RelatedProjectDataModelId);
+                    var pluralizedRelatedModelName = TextHelper.Pluralize(relatedDataModel.Name);
+                    string selectKey = !string.IsNullOrEmpty(relatedDataModel.SelectKey) ? relatedDataModel.SelectKey : "Id";
+
+                    switch (property.RelationalType)
+                    {
+                        case PropertyRelationalType.OneToOne:
+                            sb.AppendLine($"            <select asp-for=\"{propertyName}\" class=\"form-control\" asp-items=\"ViewBag.{pluralizedRelatedModelName}\">");
+                            sb.AppendLine($"                <option value=\"\"></option>");
+                            sb.AppendLine($"            </select>");
+                            break;
+                        case PropertyRelationalType.OneToMany:
+                            // TODO: Handle one to many
+                            //sb.AppendLine($"            @for (var i = 0; i < ViewBag.{pluralizedRelatedModelName}.Count; i++)");
+                            //sb.AppendLine($"            {{");
+                            //sb.AppendLine($"                var item = ViewBag.{pluralizedRelatedModelName}[i];");
+                            //sb.AppendLine($"                <input name=\"{propertyName}\" id=\"{propertyName}@i\" type=\"checkbox\" value=\"@item.Value\" /> <label for=\"{propertyName}@i\">@item.Text</label><br />");
+                            //sb.AppendLine($"            }}");
+                            break;
+                    }
                 }
+                else
+                {
+                    switch (property.ControlType)
+                    {
+                        case PropertyControlType.InputText:
+                            sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"text\" class=\"form-control\" />");
+                            break;
+                        case PropertyControlType.InputNumber:
+                            sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"number\" class=\"form-control\" />");
+                            break;
+                        case PropertyControlType.Calendar:
+                            sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"date\" class=\"form-control\" />");
+                            break;
+                        case PropertyControlType.InputFile:
+                        case PropertyControlType.Image:
+                            sb.AppendLine($"            <input asp-for=\"{propertyName}\" type=\"file\" class=\"form-control\" />");
+                            break;
+                        case PropertyControlType.Textarea:
+                            sb.AppendLine($"            <textarea asp-for=\"{propertyName}\" class=\"form-control\"></textarea>");
+                            break;
+                        case PropertyControlType.Checkbox:
+                            sb.AppendLine($"            <input type=\"checkbox\" asp-for=\"{propertyName}\" class = \"form-control\" />");
+                            break;
+                    }
+                }
+                
                 sb.AppendLine($"            <span asp-validation-for=\"{propertyName}\" class=\"text-danger\"></span>");
                 sb.AppendLine("        </div>");
                 sb.AppendLine("    </div>");
