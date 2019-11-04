@@ -155,7 +155,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 {
                     if (property.RelationalType == PropertyRelationalType.OneToOne)
                     {
-                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                        sb.AppendLine($"        public int{(property.IsRequired ? "" : "?")} {property.Name}Id {{ get; set; }}");
                     }
                     else if (property.RelationalType == PropertyRelationalType.OneToMany)
                     {
@@ -168,7 +168,8 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 }
                 else
                 {
-                    sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                    var nullable = property.IsRequired || property.DataType == PropertyDataType.String ? "" : "?";
+                    sb.AppendLine($"        public {property.DataType}{nullable} {property.Name} {{ get; set; }}");
                 }
             }
 
@@ -235,7 +236,7 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 {
                     if (property.RelationalType == PropertyRelationalType.OneToOne)
                     {
-                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                        sb.AppendLine($"        public int{(property.IsRequired ? "" : "?")} {property.Name}Id {{ get; set; }}");
                     }
                     else if (property.RelationalType == PropertyRelationalType.OneToMany)
                     {
@@ -248,7 +249,8 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 }
                 else
                 {
-                    sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                    var nullable = property.IsRequired || property.DataType == PropertyDataType.String ? "" : "?";
+                    sb.AppendLine($"        public {property.DataType}{nullable} {property.Name} {{ get; set; }}");
                 }
             }
 

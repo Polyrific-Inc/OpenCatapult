@@ -402,7 +402,15 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             sb.AppendLine();
             sb.AppendLine($"            var entity = await _{camelizedName}Repository.GetById(updatedEntity.Id, cancellationToken);");
             foreach (var property in model.Properties)
+            {
                 sb.AppendLine($"            entity.{property.Name} = updatedEntity.{property.Name};");
+
+                if (property.RelationalType == PropertyRelationalType.OneToOne)
+                {
+                    sb.AppendLine($"            entity.{property.Name}Id = updatedEntity.{property.Name}Id;");
+                }
+            }
+
             sb.AppendLine($"            await _{camelizedName}Repository.Update(entity, cancellationToken);");
             sb.AppendLine("        }");
             sb.AppendLine();
@@ -608,12 +616,12 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
             {
                 if (_baseProperties.Contains(property.Name))
                     continue;
-
+                
                 if (!string.IsNullOrEmpty(property.RelatedProjectDataModelName))
                 {
                     if (property.RelationalType == PropertyRelationalType.OneToOne)
                     {
-                        sb.AppendLine($"        public int {property.Name}Id {{ get; set; }}");
+                        sb.AppendLine($"        public int{(property.IsRequired ? "" : "?")} {property.Name}Id {{ get; set; }}");
                         sb.AppendLine($"        public {property.RelatedProjectDataModelName} {property.Name} {{ get; set; }}");
                     }
                     else if (property.RelationalType == PropertyRelationalType.OneToMany)
@@ -627,7 +635,8 @@ namespace Polyrific.Catapult.TaskProviders.AspNetCoreMvc.ProjectGenerators
                 }
                 else
                 {
-                    sb.AppendLine($"        public {property.DataType} {property.Name} {{ get; set; }}");
+                    var nullable = property.IsRequired || property.DataType == PropertyDataType.String ? "" : "?";
+                    sb.AppendLine($"        public {property.DataType}{nullable} {property.Name} {{ get; set; }}");
                 }                
             }
 
