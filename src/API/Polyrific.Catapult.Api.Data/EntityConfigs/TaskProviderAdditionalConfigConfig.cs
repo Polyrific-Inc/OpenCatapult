@@ -48,6 +48,11 @@ namespace Polyrific.Catapult.Api.Data.EntityConfigs
                 new TaskProviderAdditionalConfig { Id = 16, TaskProviderId = 7, Name = "CommandText", Label = "Command Text", Type = "string", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382268" },
                 new TaskProviderAdditionalConfig { Id = 17, TaskProviderId = 7, Name = "CommandScriptPath", Label = "Command Script Path", Hint = "You can provide a script file (it is recommended to use this if the input contains multiple lines of commands)", Type = "file", IsRequired = false, IsSecret = false, Created = new DateTime(2018, 9, 28, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382269" }
             );
+
+            // Additional configs for GitHub provider
+            builder.HasData(
+                new TaskProviderAdditionalConfig { Id = 18, TaskProviderId = 2, Name = "SkipMemberConfig", Label = "Skip Project Member Configuration?", Type = "boolean", Hint = "Do you want to skip the process of assigning project member to github project?", IsRequired = false, IsSecret = false, Created = new DateTime(2020, 01, 31, 7, 23, 37, 58, DateTimeKind.Utc), ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382270" }
+            );
         }
     }
 }

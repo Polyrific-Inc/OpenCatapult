@@ -315,7 +315,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             }
         }
 
-        public async Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository = true, List<string> members = null)
+        public async Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository = true, bool skipMemberConfig = false, List<string> members = null)
         {
             try
             {
@@ -348,6 +348,11 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                 else
                 {
                     _logger.LogInformation($"Repository {repositoryOwner}/{projectName} is already exists");
+                }
+
+                if (skipMemberConfig)
+                {
+                    return "";
                 }
                 
                 if (repositoryOwner.Equals(currentUser.Login, StringComparison.InvariantCultureIgnoreCase))

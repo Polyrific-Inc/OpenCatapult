@@ -184,7 +184,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
                 attempt++;
 
-                error = await _gitHubUtils.CreateRepositoryIfNotExists(_config.ProjectName, _config.RepoOwner, _config.IsPrivateRepository ?? true, _config.Members);
+                error = await _gitHubUtils.CreateRepositoryIfNotExists(_config.ProjectName, _config.RepoOwner, _config.IsPrivateRepository ?? true, _config.SkipMemberConfig ?? false, _config.Members);
                 if (string.IsNullOrEmpty(error))
                 {
                     return "";

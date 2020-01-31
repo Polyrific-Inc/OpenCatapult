@@ -150,6 +150,11 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
 
                 if (additionalConfigs.ContainsKey("RepoAuthToken"))
                     config.RepoAuthToken = additionalConfigs["RepoAuthToken"];
+
+                if (additionalConfigs.ContainsKey("SkipMemberConfig") && bool.TryParse(additionalConfigs["SkipMemberConfig"], out var skipMemberConfig))
+                {
+                    config.SkipMemberConfig = skipMemberConfig;
+                }                    
             }
 
             if (projectMembers != null)

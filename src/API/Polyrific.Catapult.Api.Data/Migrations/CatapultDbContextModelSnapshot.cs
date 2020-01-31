@@ -1471,6 +1471,19 @@ namespace Polyrific.Catapult.Api.Data.Migrations
                             Name = "CommandScriptPath",
                             TaskProviderId = 7,
                             Type = "file"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ConcurrencyStamp = "c48cafcc-b3e9-4375-a2c2-f30404382270",
+                            Created = new DateTime(2020, 1, 31, 7, 23, 37, 58, DateTimeKind.Utc),
+                            Hint = "Do you want to skip the process of assigning project member to github project?",
+                            IsRequired = false,
+                            IsSecret = false,
+                            Label = "Skip Project Member Configuration?",
+                            Name = "SkipMemberConfig",
+                            TaskProviderId = 2,
+                            Type = "boolean"
                         });
                 });
 

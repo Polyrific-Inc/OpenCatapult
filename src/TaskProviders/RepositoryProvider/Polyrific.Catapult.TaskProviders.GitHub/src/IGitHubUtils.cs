@@ -82,7 +82,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// <param name="isPrivateRepository">Is remote repository private?</param>
         /// <param name="members">List of github member</param>
         /// <returns></returns>
-        Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository, List<string> members);
+        Task<string> CreateRepositoryIfNotExists(string projectName, string repositoryOwner, bool isPrivateRepository, bool skipMemberConfig, List<string> members);
 
         /// <summary>
         /// Delete a repository if it's exists

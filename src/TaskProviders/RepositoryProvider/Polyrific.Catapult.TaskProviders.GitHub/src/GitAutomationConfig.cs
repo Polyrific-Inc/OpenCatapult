@@ -56,5 +56,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// List of the github usernames that are given access to the repository
         /// </summary>
         public List<string> Members { get; set; }
+
+        public bool? SkipMemberConfig { get; set; }
     }
 }

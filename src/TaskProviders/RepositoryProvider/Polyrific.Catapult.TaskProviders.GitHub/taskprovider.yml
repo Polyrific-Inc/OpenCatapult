@@ -8,3 +8,10 @@ version: '1.0.0-rc'
 tags: 'Repository, GitHub, Source Control, Git'
 required-services:
   - GitHub
+additional-configs:
+  - name: SkipMemberConfig
+    label: Skip Project Member Configuration?
+    type: boolean
+    is-required: false
+    is-secret: false
+    hint:  Do you want to skip the process of assigning project member to github project?

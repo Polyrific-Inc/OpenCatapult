@@ -2,24 +2,30 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Polyrific.Catapult.Api.Data;
 
-namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
+namespace Polyrific.Catapult.Api.Data.Migrations
 {
-    [DbContext(typeof(CatapultSqliteDbContext))]
-    partial class CatapultSqliteDbContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(CatapultDbContext))]
+    [Migration("20200131093828_GithubAdditionalConfig")]
+    partial class GithubAdditionalConfig
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062");
+                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128)
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ApplicationSetting", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllowedValues");
 
@@ -58,7 +64,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalAccountType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -89,7 +96,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalService", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -119,7 +127,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalServiceProperty", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AdditionalLogic");
 
@@ -245,7 +254,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ExternalServiceType", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -288,7 +298,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.HelpContext", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -508,7 +519,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobCounter", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -529,7 +541,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobDefinition", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -556,7 +569,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobQueue", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("CatapultEngineIPAddress");
 
@@ -605,7 +619,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.JobTaskDefinition", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AdditionalConfigString");
 
@@ -638,7 +653,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ManagedFile", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -659,7 +675,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Client");
 
@@ -687,7 +704,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ProjectDataModel", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -720,7 +738,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ProjectDataModelProperty", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -765,7 +784,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ProjectMember", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -794,7 +814,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.ProjectMemberRole", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -843,7 +864,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp");
 
@@ -1077,7 +1099,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProvider", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Author");
 
@@ -1205,7 +1228,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderAdditionalConfig", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AllowedValues");
 
@@ -1468,7 +1492,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Core.Entities.TaskProviderTag", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -1799,7 +1824,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.ApplicationRole", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
@@ -1814,7 +1840,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasName("RoleNameIndex");
+                        .HasName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Roles");
 
@@ -1852,7 +1879,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.ApplicationRoleClaim", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -1870,7 +1898,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.ApplicationUser", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("AccessFailedCount");
 
@@ -1914,7 +1943,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasName("UserNameIndex");
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("Users");
 
@@ -1940,7 +1970,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.ApplicationUserClaim", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ClaimType");
 
@@ -2010,7 +2041,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.CatapultEngineProfile", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("CatapultEngineId");
 
@@ -2031,7 +2063,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                     b.HasKey("Id");
 
                     b.HasIndex("CatapultEngineId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[CatapultEngineId] IS NOT NULL");
 
                     b.ToTable("CatapultEngineProfile");
                 });
@@ -2039,7 +2072,8 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
             modelBuilder.Entity("Polyrific.Catapult.Api.Data.Identity.UserProfile", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int?>("ApplicationUserId");
 
@@ -2064,10 +2098,12 @@ namespace Polyrific.Catapult.Api.Data.Migrations.CatapultSqliteDb
                     b.HasKey("Id");
 
                     b.HasIndex("ApplicationUserId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[ApplicationUserId] IS NOT NULL");
 
                     b.HasIndex("AvatarFileId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AvatarFileId] IS NOT NULL");
 
                     b.ToTable("UserProfile");
 
