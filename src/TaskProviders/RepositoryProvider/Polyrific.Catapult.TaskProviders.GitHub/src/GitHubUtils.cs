@@ -151,7 +151,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             return false;
         }
 
-        public async Task<bool> Push(string remoteUrl, string localRepository, string branch)
+        public async Task<bool> Push(string remoteUrl, string localRepository, string baseBranch, string branch)
         {
             var options = new PushOptions
             {
@@ -162,7 +162,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             var repo = new Repository(localRepository);
             try
             {
-                var masterBranch = repo.Branches["master"];
+                var masterBranch = repo.Branches[baseBranch];
                 if (masterBranch.TrackingDetails.CommonAncestor == null)
                 {
                     _logger.LogInformation("Pushing master branch");
@@ -209,7 +209,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             catch (MergeFetchHeadNotFoundException headEx)
             {
                 // If the master branch is not found, then it's an empty repository, and we should not mark the task as error
-                if (headEx.Message.Contains("refs/heads/master"))
+                if (headEx.Message.Contains("refs/heads/master") || headEx.Message.Contains("refs/heads/main"))
                 {
                     _logger.LogWarning(headEx.Message);
 
@@ -267,7 +267,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
                         Commands.Stage(repo, ".gitignore");
 
                     repo.Commit("Initial commit", signature, signature);
-                    var masterBranch = repo.Branches["master"];
+                    var masterBranch = repo.Branches[baseBranch];
 
                     var remote = repo.Network.Remotes["origin"];
                     repo.Branches.Update(masterBranch,

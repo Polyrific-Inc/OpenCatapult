@@ -83,7 +83,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             if (!string.IsNullOrEmpty(error))
                 return ("", "", null, error);
 
-            error = await _gitAutomation.Push(workingBranch);
+            error = await _gitAutomation.Push(baseBranch, workingBranch);
             if (!string.IsNullOrEmpty(error))
                 return ("", "", null, error);
 

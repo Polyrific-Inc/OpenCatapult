@@ -72,16 +72,16 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             return "Failed committing changes";
         }
 
-        public async Task<string> Push(string branch)
+        public async Task<string> Push(string baseBranch, string branch)
         {
             var attempt = 1;
             while (attempt <= MaxAttempt)
             {
-                _logger.LogInformation($"Push {branch} into remote repository: {_config.RemoteUrl} (attempt #{attempt})");
+                _logger.LogInformation($"Push {branch} from branch {baseBranch} into remote repository: {_config.RemoteUrl} (attempt #{attempt})");
 
                 attempt++;
 
-                var success = await _gitHubUtils.Push(_config.RemoteUrl, _config.LocalRepository, branch);
+                var success = await _gitHubUtils.Push(_config.RemoteUrl, _config.LocalRepository, baseBranch, branch);
                 if (success)
                 {
                     _logger.LogInformation($"All changes from {branch} have been successfully pushed into: {_config.RemoteUrl}");

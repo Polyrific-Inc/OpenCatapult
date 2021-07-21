@@ -41,9 +41,10 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
         /// </summary>
         /// <param name="remoteUrl">URL of the remote repository</param>
         /// <param name="localRepository">Location of the local repository</param>
+        /// <param name="baseBranch">Name of the base branch</param>
         /// <param name="branch">Name of the branch</param>
         /// <returns>Success status</returns>
-        Task<bool> Push(string remoteUrl, string localRepository, string branch);
+        Task<bool> Push(string remoteUrl, string localRepository, string baseBranch, string branch);
 
         /// <summary>
         /// Pull source code changes from remote repository
