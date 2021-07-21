@@ -236,7 +236,7 @@ namespace Polyrific.Catapult.TaskProviders.GitHub
             var branchObj = repo.Branches[branch] != null ? repo.Branches[branch] : repo.Branches[$"origin/{branch}"];
 
             // when there's no master branch, then we're initiating an empty repository, and should skip checkout
-            if (branchObj == null && branch.ToLower() == "master")
+            if (branchObj == null && (branch.ToLower() == "master" || branch.ToLower() == "main"))
             {
                 return Task.FromResult(true);
             }
